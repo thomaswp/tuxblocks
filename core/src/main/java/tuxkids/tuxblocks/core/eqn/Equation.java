@@ -1,5 +1,5 @@
 package tuxkids.tuxblocks.core.eqn;
 
 public class Equation {
-	private IExpression leftHandSide, rightHandSide;
+	private Expression leftHandSide, rightHandSide;
 }

@@ -1,30 +1,30 @@
 package tuxkids.tuxblocks.core.eqn;
 
-public class Variable extends Expression {
+public class Number extends Expression {
 
-	private String name;
+	private int value;
 	
-	public String getName() {
-		return name;
+	public int getValue() {
+		return value;
 	}
 	
-	public Variable(String name) {
-		this.name = name;
+	public Number(int value) {
+		this.value = value;
 	}
 	
 	@Override
 	public String toMathString() {
-		return name;
+		return "" + value;
 	}
 
 	@Override
 	public boolean hasVariable() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public int evaluate() throws NonevaluatableException {
-		throw new NonevaluatableException();
+		return value;
 	}
 
 	@Override
