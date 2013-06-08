@@ -1,19 +1,19 @@
-package tuxkids.tuxblocks.core.eqn;
+package tuxkids.tuxblocks.core.expression;
 
-public class Addition extends BinaryOperation {
+public class Multiplication extends BinaryOperation {
 
-	public Addition(Expression operandA, Expression operandB) {
+	public Multiplication(Expression operandA, Expression operandB) {
 		super(operandA, operandB);
 	}
 
 	@Override
 	public int operate(int a, int b) {
-		return a + b;
+		return a * b;
 	}
 
 	@Override
 	public String getSymbol() {
-		return "+";
+		return "*";
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class Addition extends BinaryOperation {
 
 	@Override
 	public int getPrecedence() {
-		return Expression.PREC_ADD;
+		return Expression.PREC_MULT;
 	}
 
 }

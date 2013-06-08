@@ -1,61 +1,53 @@
 package tuxkids.tuxblocks.core.blocks;
 
-import playn.core.GroupLayer;
 import playn.core.ImageLayer;
-import playn.core.PlayN;
-import tuxkids.tuxblocks.core.eqn.Expression;
-import tuxkids.tuxblocks.core.eqn.ModificationOperation;
+import tuxkids.tuxblocks.core.expression.ModificationOperation;
+import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class ModifierBlock extends Block {
 	
-	private Block baseBlock;
-	private ModificationOperation op;
-	private float myWidth, myHeight, width, height;
-	private ImageLayer mySprite;
+	private ModificationOperation modifier, inverseModifier;
+	private boolean isInverted;
+	private ImageLayer inverseSprite;
 	
-	public ModifierBlock(Block baseBlock, ModificationOperation op) {
-		this.baseBlock = baseBlock;
-		this.op = op;
-		if (op.getPrecedence() == Expression.PREC_ADD) {
-			myWidth = NUM_SIZE / 3; //baseBlock.getHeight() * RECT_RATIO;
-			myHeight = baseBlock.getHeight();
-			width = baseBlock.getWidth() + myWidth;
-			height = baseBlock.getHeight();
+	public ModificationOperation getModifier() {
+		return isInverted ? inverseModifier : modifier;
+	}
+	
+	public ImageLayer getSprite() {
+		return isInverted ? inverseSprite : sprite;
+	}
+	
+	public boolean isInverted() {
+		return isInverted;
+	}
+	
+	public ModifierBlock(ModificationOperation op, int width, int height) {
+		this.modifier = op;
+		inverseModifier = op.getInverse();
+		sprite = generateSprite(width, height,
+				Formatter.format("%s%d", op.getSymbol(), op.getValue()), 
+				op.getColor());
+		inverseSprite = generateSprite(width, height, 
+				Formatter.format("%s%d", inverseModifier.getSymbol(), inverseModifier.getValue()), 
+				inverseModifier.getColor());
+	}
+	
+	public void invert() {
+		isInverted = !isInverted;
+		if (isInverted) {
+			sprite.parent().add(inverseSprite);
+			sprite.parent().remove(sprite);
+			inverseSprite.setTranslation(sprite.tx(), sprite.ty());
 		} else {
-			myWidth = baseBlock.getWidth();
-			myHeight = NUM_SIZE / 3; //baseBlock.getWidth() * RECT_RATIO;
-			width = baseBlock.getWidth();
-			height = baseBlock.getHeight() + myHeight;
-		}
-		mySprite = generateSprite((int)myWidth, (int)myHeight);
-		GroupLayer group = PlayN.graphics().createGroupLayer();
-		sprite = group;
-		group.add(mySprite);
-		group.add(baseBlock.getSprite());
-		if (op.getPrecedence() == Expression.PREC_ADD) {
-			mySprite.setTranslation(baseBlock.getWidth(), 0);
-		} else {
-			baseBlock.getSprite().setTranslation(0, mySprite.height());
+			inverseSprite.parent().add(sprite);
+			inverseSprite.parent().remove(inverseSprite);
+			sprite.setTranslation(inverseSprite.tx(), inverseSprite.ty());
 		}
 	}
-
+	
 	@Override
-	public float getWidth() {
-		return width;
-	}
-
-	@Override
-	public float getHeight() {
-		return height;
-	}
-
-	@Override
-	public int getColor() {
-		return op.getColor();
-	}
-
-	@Override
-	public String getText() {
-		return String.format("%s%d", op.getSymbol(), op.getValue());
+	public String toString() {
+		return Formatter.format("%s%d", modifier.getSymbol(), modifier.getValue());
 	}
 }

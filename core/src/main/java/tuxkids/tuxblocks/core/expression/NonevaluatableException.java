@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.eqn;
+package tuxkids.tuxblocks.core.expression;
 
 public class NonevaluatableException extends Exception {
 	private static final long serialVersionUID = 1L;

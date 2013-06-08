@@ -1,4 +1,6 @@
-package tuxkids.tuxblocks.core.eqn;
+package tuxkids.tuxblocks.core.expression;
+
+import tuxkids.tuxblocks.core.utils.Formatter;
 
 public abstract class BinaryOperation extends Expression {
 	
@@ -28,7 +30,7 @@ public abstract class BinaryOperation extends Expression {
 			bString = "(" + bString + ")";
 		}
 		
-		return String.format("%s %s %s", aString, 
+		return Formatter.format("%s %s %s", aString, 
 				getSymbol(), bString);
 	}
 

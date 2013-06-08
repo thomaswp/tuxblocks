@@ -1,6 +1,7 @@
-package tuxkids.tuxblocks.core.eqn;
+package tuxkids.tuxblocks.core.expression;
 
 import playn.core.Color;
+import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class Minus extends ModificationOperation {
 
@@ -10,7 +11,7 @@ public class Minus extends ModificationOperation {
 
 	@Override
 	public String toMathString() {
-		return String.format("%s %s %d", operand.toMathString(), getSymbol(), value);
+		return Formatter.format("%s %s %d", operand.toMathString(), getSymbol(), value);
 	}
 
 	@Override
@@ -38,5 +39,8 @@ public class Minus extends ModificationOperation {
 		return Color.rgb(0, 0, 255);
 	}
 
-
+	@Override
+	public ModificationOperation getInverse() {
+		return new Plus(operand, value);
+	}
 }

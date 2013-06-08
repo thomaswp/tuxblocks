@@ -1,4 +1,10 @@
-package tuxkids.tuxblocks.core.eqn;
+package tuxkids.tuxblocks.core.expression;
+
+import playn.core.Canvas;
+import playn.core.PlayN;
+import playn.core.TextFormat;
+import playn.core.TextLayout;
+import pythagoras.f.Vector;
 
 public abstract class Expression {
 
@@ -26,5 +32,24 @@ public abstract class Expression {
 	
 	public Expression over(int value) {
 		return new Over(this, value);
+	}
+	
+	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
+		final String mathString = toMathString();
+		return new ExpressionWriter(textFormat) {
+			
+			private TextLayout layout;
+			
+			@Override
+			public void drawExpression(Canvas canvas) {
+				canvas.fillText(layout, 0, 0);
+			}
+
+			@Override
+			public Vector formatExpression(TextFormat textFormat) {
+				layout = layout(mathString, textFormat);
+				return new Vector(layout.width(), layout.height());
+			}
+		};
 	}
 }

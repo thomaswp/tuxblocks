@@ -1,6 +1,12 @@
-package tuxkids.tuxblocks.core.eqn;
+package tuxkids.tuxblocks.core.expression;
 
+import playn.core.Canvas;
 import playn.core.Color;
+import playn.core.PlayN;
+import playn.core.TextFormat;
+import playn.core.TextLayout;
+import pythagoras.f.Vector;
+import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class Plus extends ModificationOperation {
 
@@ -10,7 +16,7 @@ public class Plus extends ModificationOperation {
 
 	@Override
 	public String toMathString() {
-		return String.format("%s %s %d", operand.toMathString(), getSymbol(), value);
+		return Formatter.format("%s %s %d", operand.toMathString(), getSymbol(), value);
 	}
 
 	@Override
@@ -37,5 +43,9 @@ public class Plus extends ModificationOperation {
 	public int getColor() {
 		return Color.rgb(255, 0, 0);
 	}
-
+	
+	@Override
+	public ModificationOperation getInverse() {
+		return new Minus(operand, value);
+	}
 }

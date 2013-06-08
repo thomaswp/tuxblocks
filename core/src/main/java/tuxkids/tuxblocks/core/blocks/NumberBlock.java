@@ -1,36 +1,13 @@
 package tuxkids.tuxblocks.core.blocks;
 
-import playn.core.CanvasImage;
 import playn.core.Color;
-import playn.core.Layer;
-import playn.core.PlayN;
+import tuxkids.tuxblocks.core.expression.Expression;
 
-public class NumberBlock extends Block {
-
-	private int value;
+public class NumberBlock extends BaseBlock {
 	
-	public NumberBlock(int value) {
-		this.value = value;
-		sprite = generateSprite(NUM_SIZE, NUM_SIZE);
-	}
-
-	@Override
-	public int getColor() {
-		return Color.rgb(200, 150, 0);
-	}
-
-	@Override
-	public String getText() {
-		return "" + value;
-	}
-
-	@Override
-	public float getWidth() {
-		return NUM_SIZE;
-	}
-
-	@Override
-	public float getHeight() {
-		return NUM_SIZE;
+	public NumberBlock(tuxkids.tuxblocks.core.expression.Number number) {
+		super(number);
+		sprite = generateSprite(BASE_SIZE, BASE_SIZE, "" + number.getValue(), 
+				Color.rgb(200, 200, 0));
 	}
 }

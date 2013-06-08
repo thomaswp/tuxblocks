@@ -1,34 +1,16 @@
 package tuxkids.tuxblocks.core.blocks;
 
 import playn.core.Color;
+import tuxkids.tuxblocks.core.expression.Variable;
 
-public class VariableBlock extends Block {
+public class VariableBlock extends BaseBlock {
 
 	private String symbol;
 	
-	public VariableBlock(String symbol) {
-		this.symbol = symbol;
-		sprite = generateSprite(NUM_SIZE, NUM_SIZE);
-	}
-
-	@Override
-	public int getColor() {
-		return Color.rgb(200, 0, 150);
-	}
-
-	@Override
-	public String getText() {
-		return symbol;
-	}
-
-	@Override
-	public float getWidth() {
-		return NUM_SIZE;
-	}
-
-	@Override
-	public float getHeight() {
-		return NUM_SIZE;
+	public VariableBlock(Variable variable) {
+		super(variable);
+		this.symbol = variable.getName();
+		sprite = generateSprite(BASE_SIZE, BASE_SIZE, symbol, Color.rgb(200, 0, 200));
 	}
 
 }

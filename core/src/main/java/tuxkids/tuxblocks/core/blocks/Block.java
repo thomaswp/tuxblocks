@@ -12,60 +12,64 @@ import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-import tuxkids.tuxblocks.core.eqn.BinaryOperation;
-import tuxkids.tuxblocks.core.eqn.Expression;
-import tuxkids.tuxblocks.core.eqn.ModificationOperation;
-import tuxkids.tuxblocks.core.eqn.Number;
-import tuxkids.tuxblocks.core.eqn.Variable;
+import tuxkids.tuxblocks.core.expression.Expression;
+import tuxkids.tuxblocks.core.expression.ModificationOperation;
+import tuxkids.tuxblocks.core.expression.Number;
+import tuxkids.tuxblocks.core.expression.Variable;
 
 public abstract class Block {
 	
-	public final static int NUM_SIZE = 75;
-	public final static float RECT_RATIO = 0.4f;
+	public final static int BASE_SIZE = 150;
+	public final static int MOD_SIZE = BASE_SIZE / 3;
 	
 	private static TextFormat textFormat;
 	
-	protected Layer sprite;
+	protected ImageLayer sprite;
 
+	public float width() {
+		return sprite.width();
+	}
+	
+	public float height() {
+		return sprite.height();
+	}
+	
 	public Layer getSprite() {
 		return sprite;
 	}
 	
-	public static Block createBlock(Expression exp) {
+	public static BaseBlock createBlock(Expression exp) {
 		if (exp instanceof ModificationOperation) {
 			ModificationOperation modOp = (ModificationOperation) exp;
-			Block base = createBlock(modOp.getOperand());
-			return new ModifierBlock(base, modOp);
+			BaseBlock base = createBlock(modOp.getOperand());
+			base.addModifier(modOp);
+			return base;
 		} else if (exp instanceof Number) {
-			return new NumberBlock(((Number) exp).getValue());
+			return new NumberBlock(((Number) exp));
 		} else if (exp instanceof Variable) {
-			return new VariableBlock(((Variable) exp).getName());
+			return new VariableBlock(((Variable) exp));
 		}
 		return null;
 	}
 	
-	protected ImageLayer generateSprite(int width, int height) {
+	protected ImageLayer generateSprite(int width, int height, String text, int color) {
 		if (textFormat == null) {
 			Font font = PlayN.graphics().createFont("Arial", Font.Style.PLAIN, 20);
 			textFormat = new TextFormat().withFont(font);
 		}
 		
 		CanvasImage image = PlayN.graphics().createImage(width, height);
-		image.canvas().setFillColor(getColor());
+		//image.canvas().setAlpha(0.5f);
+		image.canvas().setFillColor(color);
 		image.canvas().fillRect(0, 0, width, height);
 		image.canvas().setStrokeColor(Color.rgb(0, 0, 0));
-		image.canvas().strokeRect(0, 0, width, height);
+		image.canvas().strokeRect(0, 0, width - 1, height - 1);
 		image.canvas().setFillColor(Color.rgb(0, 0, 0));
 		
-		TextLayout layout = PlayN.graphics().layoutText(getText(), textFormat);
+		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);
 		float textX = (image.width() - layout.width()) / 2;
 		float textY = (image.height() - layout.height()) / 2;
 		image.canvas().fillText(layout, textX, textY);
 		return PlayN.graphics().createImageLayer(image);
 	}
-	
-	public abstract float getWidth();
-	public abstract float getHeight();
-	public abstract int getColor();
-	public abstract String getText();
 }

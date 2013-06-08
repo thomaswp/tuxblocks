@@ -1,2 +1,4 @@
 *.class
 */target/
+html/gwt-unitCache/*
+html/war/WEB-INF/deploy/*

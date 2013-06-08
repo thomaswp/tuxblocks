@@ -1,24 +1,24 @@
-package tuxkids.tuxblocks.core.eqn;
+package tuxkids.tuxblocks.core.expression;
 
-public class Subtraction extends BinaryOperation {
+public class Addition extends BinaryOperation {
 
-	public Subtraction(Expression operandA, Expression operandB) {
+	public Addition(Expression operandA, Expression operandB) {
 		super(operandA, operandB);
 	}
 
 	@Override
 	public int operate(int a, int b) {
-		return a - b;
+		return a + b;
 	}
 
 	@Override
 	public String getSymbol() {
-		return "-";
+		return "+";
 	}
 
 	@Override
 	public boolean isCommutative() {
-		return false;
+		return true;
 	}
 
 	@Override

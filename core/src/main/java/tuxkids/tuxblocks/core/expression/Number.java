@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.eqn;
+package tuxkids.tuxblocks.core.expression;
 
 public class Number extends Expression {
 
