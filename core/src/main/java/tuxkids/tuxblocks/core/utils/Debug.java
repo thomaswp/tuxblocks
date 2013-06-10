@@ -8,10 +8,11 @@ import playn.core.PlayN;
  * enabled/disabled or redirected. Currently uses System.out for output.
  */
 public class Debug {
-	/**
-	 * Set to true to have Debug do output, and false to stifle it
-	 */
+	/** Set to true to have Debug do output, and false to stifle it	 */
 	public static boolean DEBUG = true;
+	
+	/** Set to true to show what class is printing a debug statement */
+	public static boolean SHOW_TRACE = false;
 	
 	public static void write(long x) {
 		write("" + x);
@@ -50,23 +51,26 @@ public class Debug {
 	public static void write(String text) {
 		if (!DEBUG) return;
 		
-		String msg = "---{" + text + "}---";
-//		String tag = "";
-//		try
-//		{
-//			throw new Exception("Who called me?");
-//		}
-//		catch( Exception e )
-//		{
-//			int i = 1;
-//			while (e.getStackTrace()[i].getClassName().equals(Debug.class.getName()) &&
-//					e.getStackTrace()[i].getMethodName().equals("write")) i++;
-//			tag += ": " +
-//			e.getStackTrace()[i].getClassName() + 
-//			"." +
-//			e.getStackTrace()[i].getMethodName() + 
-//			"()" ;
-//		}
-		PlayN.log().debug(msg);
+		if (SHOW_TRACE) {
+			try
+			{
+				throw new Exception("Who called me?");
+			}
+			catch( Exception e )
+			{
+				int i = 1;
+				while (e.getStackTrace()[i].getClassName().equals(Debug.class.getName()) &&
+						e.getStackTrace()[i].getMethodName().equals("write")) i++;
+				String cName = e.getStackTrace()[i].getClassName();
+				int index = cName.lastIndexOf(".");
+				if (index > 0 && index < cName.length() - 1) 
+					cName = cName.substring(index + 1);
+				text = 
+				cName + "." +
+				e.getStackTrace()[i].getMethodName() + 
+				"(): " + text;
+			}
+		}
+		PlayN.log().debug(text);
 	}
 }
