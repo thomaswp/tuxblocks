@@ -9,7 +9,6 @@ import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import pythagoras.f.Point;
 import tripleplay.game.ScreenStack;
-import tuxkids.tuxblocks.core.EquationSprite;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
@@ -60,8 +59,7 @@ public class SolveScene extends GameScreen implements Listener {
 	}
 
 	private void refreshEquationSprite() {
-		equationSprite.refresh(dragging, dragging != null && dragging.isInverted() ? 
-				draggingTo : draggingFrom);
+		equationSprite.refresh(dragging, draggingTo, draggingFrom);
 		ImageLayer layer = equationSprite.getLayer();
 		this.layer.add(layer);
 		layer.setTy(10);
@@ -110,14 +108,20 @@ public class SolveScene extends GameScreen implements Listener {
 	@Override
 	public void onPointerEnd(Event event) {
 		if (dragging != null) {
+			boolean dragTo = draggingTo.isShowingPreview();
+			leftHandSide.stopShowingPreview();
+			rightHandSide.stopShowingPreview();
+
+			layer.remove(dragging.getSprite());
+			
 			BaseBlock dragStop;
-			if (dragging.isInverted()) {
+			if (dragTo) {
 				dragStop = draggingTo;
+				dragStop.addModifier(dragging.getModifier());
 			} else {
 				dragStop = draggingFrom;
+				dragStop.addModifier(dragging.getOriginalModifier());
 			}
-			layer.remove(dragging.getSprite());
-			dragStop.addModifier(dragging.getModifier());
 			dragStop.getLastModifier().getSprite().addListener(this);
 			dragging = null;
 			refreshEquationSprite();
@@ -138,6 +142,13 @@ public class SolveScene extends GameScreen implements Listener {
 				dragging.invert();
 			}
 			refreshEquationSprite();
+			
+			float blockCX = dragging.getSprite().tx() + dragging.width() / 2;
+			float blockCY = dragging.getSprite().ty() + dragging.height() / 2;
+			leftHandSide.updateShowPreview(blockCX, blockCY, 
+					dragging.getModifier());
+			rightHandSide.updateShowPreview(blockCX, blockCY, 
+					dragging.getModifier());
 		}
 	}
 

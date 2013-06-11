@@ -14,6 +14,10 @@ public class ModifierBlock extends Block {
 		return isInverted ? inverseModifier : modifier;
 	}
 	
+	public ModificationOperation getOriginalModifier() {
+		return modifier;
+	}
+	
 	public ImageLayer getSprite() {
 		return isInverted ? inverseSprite : sprite;
 	}

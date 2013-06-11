@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.solve;
 
 import playn.core.Canvas;
 import playn.core.CanvasImage;
@@ -13,6 +13,7 @@ import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
 import tuxkids.tuxblocks.core.solve.expression.ExpressionWriter;
+import tuxkids.tuxblocks.core.solve.expression.ModificationOperation;
 
 public class EquationSprite {
 	
@@ -31,20 +32,25 @@ public class EquationSprite {
 			Font font = PlayN.graphics().createFont("Arial", Style.PLAIN, 20);
 			textFormat = new TextFormat().withFont(font);
 		}
-		refresh(null, null);
+		refresh(null, null, null);
 	}
 	
-	public void refresh(ModifierBlock dragging, BaseBlock closest) {
+	public void refresh(ModifierBlock dragging, BaseBlock draggingTo, BaseBlock draggingFrom) {
 		if (layer != null) layer.destroy();
 		Expression leftExpression = leftHandSide.getTopLevelExpression();
 		Expression rightExpression = rightHandSide.getTopLevelExpression();
+		
+		BaseBlock toModify = null;
 		if (dragging != null) {
-			if (leftHandSide == closest) {
-				dragging.getModifier().setOperand(leftExpression);
-				leftExpression = dragging.getModifier();
+			toModify = draggingTo.isShowingPreview() ? draggingTo : draggingFrom;
+			ModificationOperation modOp = draggingTo.isShowingPreview() ? 
+					dragging.getModifier() : dragging.getOriginalModifier();
+			if (leftHandSide == toModify) {
+				modOp.setOperand(leftExpression);
+				leftExpression = modOp;
 			} else {
-				dragging.getModifier().setOperand(rightExpression);
-				rightExpression = dragging.getModifier();
+				modOp.setOperand(rightExpression);
+				rightExpression = modOp;
 			}
 		}
 		
@@ -64,7 +70,7 @@ public class EquationSprite {
 		canvas.setStrokeColor(colorNormal);
 		
 		canvas.save();
-		if (dragging != null && closest == leftHandSide) {
+		if (toModify == leftHandSide) {
 			canvas.setFillColor(colorHighlight);
 			canvas.setStrokeColor(colorHighlight);
 		}
@@ -79,7 +85,7 @@ public class EquationSprite {
 		canvas.restore();
 		
 		canvas.save();
-		if (dragging != null && closest == rightHandSide) {
+		if (toModify == rightHandSide) {
 			canvas.setFillColor(colorHighlight);
 			canvas.setStrokeColor(colorHighlight);
 		}
