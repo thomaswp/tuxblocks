@@ -11,7 +11,8 @@ import playn.core.Game;
 import playn.core.ImageLayer;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
-import tuxkids.tuxblocks.core.defense.DefenseScene;
+import tuxkids.tuxblocks.core.defense.DefenseScreen;
+import tuxkids.tuxblocks.core.defense.NumberSelectScreen;
 import tuxkids.tuxblocks.core.screen.FadeTransition;
 import tuxkids.tuxblocks.core.solve.SolveScene;
 
@@ -45,7 +46,8 @@ public class TuxBlocksGame extends Game.Default {
 	@Override
 	public void init() {
 		//screens.push(new SolveScene(screens));
-		screens.push(new DefenseScene(screens));
+		//screens.push(new DefenseScreen(screens));
+		screens.push(new NumberSelectScreen(screens));
 	}
 	
 	private int frames;

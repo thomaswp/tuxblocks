@@ -42,9 +42,9 @@ public class Walker extends PlayNObject {
 	private void createSprite() {
 		CanvasImage image = graphics().createImage(grid.getCellSize(), grid.getCellSize());
 		image.canvas().setFillColor(Colors.BLUE);
-		image.canvas().setStrokeColor(Colors.BLUE);
+		image.canvas().setStrokeColor(Colors.BLACK);
 		image.canvas().fillRect(0, 0, image.width(), image.height());
-		image.canvas().strokeRect(0, 0, image.width(), image.height());
+		image.canvas().strokeRect(0, 0, image.width() - 1, image.height() - 1);
 		sprite = graphics().createImageLayer(image);
 	}
 	
@@ -75,11 +75,27 @@ public class Walker extends PlayNObject {
 		walkingMs += clock.dt();
 		
 		float perc = (float)walkingMs / walkCellTime;
-		float x = lerp(lastLocation.y * grid.getCellSize(), 
-				location.y * grid.getCellSize(), perc);
-		float y = lerp(lastLocation.x * grid.getCellSize(), 
-				location.x * grid.getCellSize(), perc);
+//		float x = lerp(lastLocation.y * grid.getCellSize(), 
+//				location.y * grid.getCellSize(), perc);
+//		float y = lerp(lastLocation.x * grid.getCellSize(), 
+//				location.x * grid.getCellSize(), perc);
+		
+		int dx = -(location.y - lastLocation.y);
+		int dy = -(location.x - lastLocation.x);
+		
+
+		float x = Math.max(location.y, lastLocation.y) * grid.getCellSize();
+		float y = Math.max(location.x, lastLocation.x) * grid.getCellSize();
 		
 		sprite.setTranslation(x, y);
+		
+		float scaleX = dx * (float)Math.cos(Math.PI * perc);
+		if (dx == 0) scaleX = 1;
+		float scaleY = dy * (float)Math.cos(Math.PI * perc);
+		if (dy == 0) scaleY = 1;
+		
+		debug("%f %f", scaleX, scaleY);
+		sprite.setScale(scaleX, scaleY);
+		
 	}
 }

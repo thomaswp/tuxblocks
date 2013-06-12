@@ -5,6 +5,7 @@ import playn.core.GroupLayer;
 import playn.core.Keyboard;
 import playn.core.PlayN;
 import playn.core.Pointer;
+import pythagoras.f.Vector;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class PlayNObject {
@@ -58,5 +59,10 @@ public class PlayNObject {
 	
 	public static float lerp(float x0, float x1, float perc) {
 		return x0 * (1 - perc) + x1 * perc;
+	}
+	
+	public static void lerp(Vector v0, float x1, float y1, float perc) {
+		v0.x = lerp(v0.x, x1, perc);
+		v0.y = lerp(v0.y, y1, perc);
 	}
 }

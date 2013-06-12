@@ -16,11 +16,11 @@ import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.Debug;
 
-public class DefenseScene extends GameScreen implements Listener {
+public class DefenseScreen extends GameScreen implements Listener {
 
 	private Grid grid;
 	
-	public DefenseScene(ScreenStack screens) {
+	public DefenseScreen(ScreenStack screens) {
 		super(screens);
 	}
 	
