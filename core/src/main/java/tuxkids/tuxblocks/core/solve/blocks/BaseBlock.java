@@ -3,14 +3,21 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
+import playn.core.CanvasImage;
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;
 import playn.core.Layer;
+import playn.core.Layer.HitTester;
 import playn.core.PlayN;
+import playn.core.Pointer.Event;
+import playn.core.Pointer.Listener;
 import playn.core.TextFormat;
 import pythagoras.f.Point;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
 import tuxkids.tuxblocks.core.solve.expression.ModificationOperation;
+import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 public abstract class BaseBlock extends Block {
 
@@ -18,9 +25,15 @@ public abstract class BaseBlock extends Block {
 	protected List<ModifierBlock> modifiers = new ArrayList<ModifierBlock>();
 	protected Expression baseExpression;
 	protected ModifierBlock previewBlock;
+	protected ImageLayer simplifyCircle;
+	protected OnSimplifyListener simplifyListener;
 	
 	public boolean isShowingPreview() {
 		return previewBlock != null;
+	}
+	
+	public void setSimplifyListener(OnSimplifyListener simplifyListener) {
+		this.simplifyListener = simplifyListener;
 	}
 	
 	public ModifierBlock getLastModifier() {
@@ -56,6 +69,47 @@ public abstract class BaseBlock extends Block {
 	public BaseBlock(Expression baseExpression) {
 		this.baseExpression = baseExpression;
 		groupLayer = PlayN.graphics().createGroupLayer();
+		
+		final int rad = MOD_SIZE / 4, padding = MOD_SIZE / 4;
+		CanvasImage simplifyImage = CanvasUtils.createCircle(rad, getColor(), 1, Colors.DARK_GRAY);
+		simplifyCircle = graphics().createImageLayer(simplifyImage);
+		simplifyCircle.setOrigin(simplifyImage.width() / 2, simplifyImage.height() / 2);
+		simplifyCircle.setDepth(5);
+		simplifyCircle.setTint(getColor());
+		simplifyCircle.setAlpha(0.8f);
+		simplifyCircle.addListener(new SimplifyListener());
+		simplifyCircle.setHitTester(new HitTester() {
+			@Override
+			public Layer hitTest(Layer layer, Point p) {
+				float r = rad;
+				//if (modifiers.size() > 1) r += padding;
+				r += padding;
+				float dx = p.x - rad;
+				float dy = p.y - rad;
+				if (dx * dx + dy * dy <  r * r) {
+					return layer;
+				}
+				return null;
+			}
+		});
+		groupLayer.add(simplifyCircle);
+		updateSimplify();
+	}
+	
+	protected abstract boolean canSimplify();
+	
+	private void updateSimplify() {
+		if (!canSimplify() || modifiers.isEmpty()) {
+			simplifyCircle.setVisible(false);
+		} else {
+			ModifierBlock block = modifiers.get(0);
+			if (block.getModifier().getPrecedence() == Expression.PREC_ADD) {
+				simplifyCircle.setTranslation(width(), -height() / 2);
+			} else {
+				simplifyCircle.setTranslation(width() / 2, -height());
+			}
+			simplifyCircle.setVisible(true);
+		}
 	}
 	
 	@Override
@@ -92,6 +146,7 @@ public abstract class BaseBlock extends Block {
 			modifiers.add(modBlock);
 		}
 		groupLayer.add(modBlock.sprite);
+		updateSimplify();
 	}
 
 	public ModifierBlock pop() {
@@ -99,6 +154,7 @@ public abstract class BaseBlock extends Block {
 		ModifierBlock modBlock = modifiers.remove(modifiers.size() - 1);
 		modBlock.getModifier().setOperand(null);
 		groupLayer.remove(modBlock.sprite);
+		updateSimplify();
 		return modBlock;
 	}
 	
@@ -135,5 +191,42 @@ public abstract class BaseBlock extends Block {
 
 	public Object toMathString() {
 		return getTopLevelExpression().toMathString();
+	}
+	
+	public interface OnSimplifyListener {
+		public void onSimplify(BaseBlock baseBlock, String expression);
+	}
+	
+	protected class SimplifyListener implements Listener {
+		@Override
+		public void onPointerStart(Event event) {
+			float dx = simplifyCircle.width() / 2 - event.localX();
+			float dy = simplifyCircle.height() / 2 - event.localY();
+			float rad = simplifyCircle.width() / 2;
+			if (dx * dx + dy * dy > rad * rad) {
+				//Propogate...
+			}
+		}
+
+		@Override
+		public void onPointerEnd(Event event) {
+			float dx = simplifyCircle.width() / 2 - event.localX();
+			float dy = simplifyCircle.height() / 2 - event.localY();
+			float rad = simplifyCircle.width() * 2;
+			if (dx * dx + dy * dy < rad * rad) {
+				if (simplifyListener != null) {
+					simplifyListener.onSimplify(BaseBlock.this, "3 + 2 = %");
+				}
+			}
+		}
+
+		@Override
+		public void onPointerDrag(Event event) {
+		}
+
+		@Override
+		public void onPointerCancel(Event event) {
+			
+		}
 	}
 }

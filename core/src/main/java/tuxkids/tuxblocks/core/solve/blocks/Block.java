@@ -12,12 +12,13 @@ import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
 import tuxkids.tuxblocks.core.solve.expression.ModificationOperation;
 import tuxkids.tuxblocks.core.solve.expression.Number;
 import tuxkids.tuxblocks.core.solve.expression.Variable;
 
-public abstract class Block {
+public abstract class Block extends PlayNObject{
 	
 	public final static int BASE_SIZE = 150;
 	public final static int MOD_SIZE = BASE_SIZE / 3;
@@ -37,6 +38,8 @@ public abstract class Block {
 	public Layer getSprite() {
 		return sprite;
 	}
+	
+	public abstract int getColor();
 	
 	public static BaseBlock createBlock(Expression exp) {
 		if (exp instanceof ModificationOperation) {

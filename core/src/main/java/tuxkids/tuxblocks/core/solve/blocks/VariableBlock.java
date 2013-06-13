@@ -5,12 +5,22 @@ import tuxkids.tuxblocks.core.solve.expression.Variable;
 
 public class VariableBlock extends BaseBlock {
 
-	private String symbol;
+	private Variable variable;
 	
 	public VariableBlock(Variable variable) {
 		super(variable);
-		this.symbol = variable.getName();
-		sprite = generateSprite(BASE_SIZE, BASE_SIZE, symbol, Color.rgb(200, 0, 200));
+		this.variable = variable;
+		sprite = generateSprite(BASE_SIZE, BASE_SIZE, variable.getName(), getColor());
+	}
+
+	@Override
+	protected boolean canSimplify() {
+		return false;
+	}
+
+	@Override
+	public int getColor() {
+		return Color.rgb(200, 0, 200);
 	}
 
 }

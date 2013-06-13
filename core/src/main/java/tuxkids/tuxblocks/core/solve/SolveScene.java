@@ -4,6 +4,7 @@ import static playn.core.PlayN.graphics;
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.ImageLayer;
+import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
@@ -11,6 +12,7 @@ import pythagoras.f.Point;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
+import tuxkids.tuxblocks.core.solve.blocks.BaseBlock.OnSimplifyListener;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
@@ -18,7 +20,7 @@ import tuxkids.tuxblocks.core.solve.expression.Number;
 import tuxkids.tuxblocks.core.solve.expression.Variable;
 import tuxkids.tuxblocks.core.utils.Debug;
 
-public class SolveScene extends GameScreen implements Listener {
+public class SolveScene extends GameScreen implements Listener, OnSimplifyListener {
 	
 	private BaseBlock leftHandSide, rightHandSide;
 	private BaseBlock draggingFrom, draggingTo;
@@ -47,12 +49,14 @@ public class SolveScene extends GameScreen implements Listener {
 		leftHandSide.getGroupLayer().setTx(graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
 		layer.add(leftHandSide.getGroupLayer());
 		leftHandSide.getLastModifier().getSprite().addListener(this);
+		leftHandSide.setSimplifyListener(this);
 		
 		rightHandSide = Block.createBlock(new Number(5));
 		rightHandSide.getGroupLayer().setTy(graphics().height());
 		rightHandSide.getGroupLayer().setTx(3 * graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
 		layer.add(rightHandSide.getGroupLayer());
 		//rightHandSide.getSprite().addListener(this);
+		rightHandSide.setSimplifyListener(this);
 
 		equationSprite = new EquationSprite(leftHandSide, rightHandSide);
 		refreshEquationSprite();
@@ -77,6 +81,7 @@ public class SolveScene extends GameScreen implements Listener {
 	
 	@Override
 	public void onPointerStart(Event event) {
+		Debug.write("drag!");
 		if (dragging != null) return;
 		dragging = null;
 		draggingFrom = null;
@@ -154,8 +159,12 @@ public class SolveScene extends GameScreen implements Listener {
 
 	@Override
 	public void onPointerCancel(Event event) {
-		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onSimplify(BaseBlock baseBlock, String expression) {
+		pushScreen(new NumberSelectScreen(screens, expression, 0));
 	}
 
 }

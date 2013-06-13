@@ -54,4 +54,9 @@ public class ModifierBlock extends Block {
 	public String toString() {
 		return Formatter.format("%s%d", modifier.getSymbol(), modifier.getValue());
 	}
+
+	@Override
+	public int getColor() {
+		return modifier.getColor();
+	}
 }

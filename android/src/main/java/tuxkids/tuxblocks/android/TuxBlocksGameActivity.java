@@ -7,8 +7,14 @@ import tuxkids.tuxblocks.core.TuxBlocksGame;
 
 public class TuxBlocksGameActivity extends GameActivity {
 
-  @Override
-  public void main(){
-    PlayN.run(new TuxBlocksGame());
-  }
+	@Override
+	public void main(){
+
+		PlayN.run(new TuxBlocksGame());
+	}
+
+	@Override 
+	public void onBackPressed () {
+
+	} 
 }

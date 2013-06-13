@@ -1,9 +1,7 @@
 package tuxkids.tuxblocks.core;
 
-import static playn.core.PlayN.*;
-
-import java.util.List;
-
+import static playn.core.PlayN.currentTime;
+import static playn.core.PlayN.graphics;
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Color;
@@ -11,8 +9,6 @@ import playn.core.Game;
 import playn.core.ImageLayer;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
-import tuxkids.tuxblocks.core.defense.DefenseScreen;
-import tuxkids.tuxblocks.core.defense.NumberSelectScreen;
 import tuxkids.tuxblocks.core.screen.FadeTransition;
 import tuxkids.tuxblocks.core.solve.SolveScene;
 
@@ -21,20 +17,19 @@ public class TuxBlocksGame extends Game.Default {
 	public static final int UPDATE_RATE = 33;
 	
 	protected final Clock.Source clock = new Clock.Source(UPDATE_RATE);
-	
 
     protected final ScreenStack screens = new ScreenStack() {
 //        @Override protected void handleError (RuntimeException error) {
 //            log().warn("Screen failure", error);
 //        }
-//        @Override protected Transition defaultPushTransition () {
+        @Override protected Transition defaultPushTransition () {
 //        	return fade;
-//            //return slide();
-//        }
-//        @Override protected Transition defaultPopTransition () {
-//            //return new FadeTransition(screens); 
-//            return slide().right();
-//        }
+            return slide();
+        }
+        @Override protected Transition defaultPopTransition () {
+            //return new FadeTransition(screens); 
+            return slide().right();
+        }
     };
     
 	private FadeTransition fade = new FadeTransition(screens);
@@ -44,10 +39,10 @@ public class TuxBlocksGame extends Game.Default {
 	}
 
 	@Override
-	public void init() {
-		//screens.push(new SolveScene(screens));
+	public void init() {		
+		screens.push(new SolveScene(screens));
 		//screens.push(new DefenseScreen(screens));
-		screens.push(new NumberSelectScreen(screens));
+		//screens.push(new NumberSelectScreen(screens));
 	}
 	
 	private int frames;
