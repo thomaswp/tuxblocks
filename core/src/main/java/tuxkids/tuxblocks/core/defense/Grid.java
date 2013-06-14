@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.defense;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import playn.core.Canvas;
@@ -13,7 +14,13 @@ import playn.core.util.Clock;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.defense.projectile.Projectile;
+import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
+import tuxkids.tuxblocks.core.defense.tower.Tower;
+import tuxkids.tuxblocks.core.defense.walker.Peon;
+import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.MultiList;
 
 public class Grid extends PlayNObject implements Listener {
 	private int cellSize;
@@ -22,7 +29,13 @@ public class Grid extends PlayNObject implements Listener {
 	private ImageLayer gridSprite;
 	private boolean[][] passability;
 	private List<Walker> walkers = new ArrayList<Walker>();
-	private Point destination;
+	private List<Projectile> projectiles = new ArrayList<Projectile>();
+	private List<Tower> towers = new ArrayList<Tower>();
+	@SuppressWarnings("unchecked")
+	private MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers);
+	private Point walkerStart, walkerDestination;
+	private Tower toPlace;
+	private List<Point> currentPath;
 	
 	public int width() {
 		return cols * cellSize;
@@ -38,6 +51,10 @@ public class Grid extends PlayNObject implements Listener {
 	
 	public int cols() {
 		return cols;
+	}
+	
+	public List<Point> currentPath() {
+		return currentPath;
 	}
 	
 	public GroupLayer getLayer() {
@@ -63,9 +80,10 @@ public class Grid extends PlayNObject implements Listener {
 		int maxRowSize = maxHeight / rows, maxColSize = maxWidth / cols;
 		cellSize = Math.min(maxRowSize, maxColSize);
 		groupLayer = graphics().createGroupLayer();
-		destination = new Point(rows - 1, cols - 1);
+		walkerStart = new Point();
+		walkerDestination = new Point(rows - 1, cols - 1);
+		refreshPath();
 		createGridSprite();
-		createPlace();
 	}
 	
 	long timer;
@@ -73,36 +91,36 @@ public class Grid extends PlayNObject implements Listener {
 		timer += delta;
 		if (timer > 5000) {
 			timer -= 5000;
-			addWalker(new Walker(this, new Point(0, 0), destination, 500));
+			addWalker(new Peon().place(this, walkerStart, walkerDestination));
 		}
-
-		for (Walker walker : walkers) {
-			walker.update(delta);
+		
+		int nObjects = gridObjects.size();
+		for (int i = 0; i < nObjects; i++) {
+			GridObject gridObject = gridObjects.get(i);
+			if (gridObject.update(delta)) {
+				gridObjects.remove(gridObject);
+				i--; nObjects--;
+			}
 		}
+		
+		updateToPlace();
 	}
 	
 	public void paint(Clock clock) {
-		for (Walker walker : walkers) {
-			walker.paint(clock);
+		int nObjects = gridObjects.size();
+		for (int i = 0; i < nObjects; i++) {
+			GridObject gridObject = gridObjects.get(i);
+			gridObject.paint(clock);
 		}
+	}
+	
+	private void refreshPath() {
+		currentPath = Pathing.getPath(this, walkerStart, walkerDestination);
 	}
 	
 	public void addWalker(Walker walker) {
 		walkers.add(walker);
 		groupLayer.add(walker.getSprite());
-	}
-
-	private ImageLayer place;
-	private Point placePos = new Point();
-	private void createPlace() {
-		CanvasImage image = graphics().createImage(cellSize * 2, cellSize * 2);
-		image.canvas().setFillColor(Colors.WHITE);
-		image.canvas().setStrokeColor(Colors.BLACK);
-		image.canvas().fillRect(0, 0, image.width(), image.height());
-		image.canvas().strokeRect(0, 0, image.width(), image.height());
-		groupLayer.add(place = graphics().createImageLayer(image));
-		place.setVisible(false);
-		place.setDepth(1);
 	}
 	
 	private void createGridSprite() {
@@ -125,9 +143,9 @@ public class Grid extends PlayNObject implements Listener {
 //				if (path != null && path.contains(new Point(i,j))) {
 //					canvas.setFillColor(Colors.BLUE);
 //				} else 
-				if (!passability[i][j]) {
-					canvas.setFillColor(Colors.BLACK);
-				}
+//				if (!passability[i][j]) {
+//					canvas.setFillColor(Colors.BLACK);
+//				}
 				canvas.fillRect(x, y, cellSize, cellSize);
 				canvas.strokeRect(x, y, cellSize, cellSize);
 			}
@@ -140,70 +158,118 @@ public class Grid extends PlayNObject implements Listener {
 	}
 
 	public Point getCell(float x, float y) {
-		return new Point((int)y / cellSize, (int)x / cellSize);
+		int r = Math.min(Math.max((int)y / cellSize, 0), rows - 1);
+		int c = Math.min(Math.max((int)x / cellSize, 0), cols - 1);
+		return new Point(r, c);
+	}
+	
+	public Point getCell(float x, float y, float width, float height) {
+		return getCell(x - width / 2 + getCellSize() / 2, y - height / 2 + getCellSize() / 2);
+	}
+	
+	private int truncate(float x) {
+		return (int)(x / cellSize) * cellSize;
 	}
 	
 	@Override
 	public void onPointerStart(Event event) {
-		place.setVisible(true);
+		//Debug.write(System.currentTimeMillis());
+		toPlace = new PeaShooter().preview(this, getCell(event.localX(), event.localY()));
+		toPlace.setCoordinates(getCell(event.localX(), event.localY(), toPlace.width(), toPlace.height()));
+		updateToPlace();
+		groupLayer.add(toPlace.layer());
+		validPlacementMap.clear();
 	}
 
 	@Override
 	public void onPointerEnd(Event event) {
-		if (place.tint() == Colors.GREEN) {
-			Point p = getCell(event.x(), event.y());
-			for (int i = 0; i < 2; i++) {
-				for (int j = 0; j < 2; j++) {
-					passability[i+p.x][j+p.y]= false; 
-				}
-			}
-//			for (Walker walker : walkers) {
-//				walker.refreshPath();
-//			}
-			createGridSprite();
+		if (canPlace()) {
+			toPlace.place(this, toPlace.coordinates());
+			towers.add(toPlace);
+			refreshPath();
+		} else if (toPlace != null) {
+			toPlace.layer().destroy();
 		}
-		place.setVisible(false);
+		toPlace = null;
 	}
 
 	@Override
 	public void onPointerDrag(Event event) {
-		Point p = getCell(event.x(), event.y());
-		if (!placePos.equals(p)) {
-			placePos.setLocation(p);
-			place.setTint(canPlace(p) ? Colors.GREEN : Colors.RED);
-			place.setTranslation(placePos.y * cellSize, placePos.x * cellSize);
-			Debug.write(placePos);
+		if (toPlace != null) {
+			toPlace.setCoordinates(getCell(event.localX(), event.localY(), toPlace.width(), toPlace.height()));
+			updateToPlace();
 		}
 	}
 	
-	private boolean canPlace(Point p) {
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 2; j++) {
-				if (!passability[p.x+i][p.y+j]) return false;
+	private void updateToPlace() {
+		if (toPlace == null) return;
+		toPlace.layer().setAlpha(canPlace() ? 1 : 0.5f);
+	}
+
+	private boolean canPlace() {
+		if (toPlace == null) return false;
+
+		Point p = toPlace.coordinates();
+		int rows = toPlace.rows(), cols = toPlace.cols();
+		
+		if (p.x < 0 || p.x + rows > this.rows || p.y < 0 || p.y + cols > this.cols){
+			return false;
+		}
+		
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				for (Walker walker : walkers) {
-					if (walker.getLocation().distanceSq(p.x+i, p.y+j) == 0) {
+					Point walkerPos = walker.coordinates();
+					if (walkerPos.x == p.x + i && walkerPos.y == p.y + j) {
 						return false;
 					}
 				}
 			}
 		}
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 2; j++) {
+		
+		if (validPlacementMap.containsKey(p)) return validPlacementMap.get(p);
+		boolean canPlace = canPlaceStatic(p);
+		validPlacementMap.put(p.clone(), canPlace);
+		
+		return canPlace;
+	}
+	
+	private HashMap<Point, Boolean> validPlacementMap = new HashMap<Point, Boolean>();
+	private boolean canPlaceStatic(Point p) {
+		
+		int rows = toPlace.rows(), cols = toPlace.cols();
+		
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				if (!passability[p.x+i][p.y+j]) return false;
+			}
+		}
+		
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				passability[p.x+i][p.y+j] = false;
 			}
 		}
-		List<Point> path = Pathing.getPath(this, new Point(0, 0), new Point(rows - 1, cols - 1));
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 2; j++) {
+		List<Point> path = Pathing.getPath(this, walkerStart, walkerDestination);
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				passability[p.x+i][p.y+j] = true;
 			}
 		}
 		return path != null;
+//		return true;
 	}
 
 	@Override
 	public void onPointerCancel(Event event) {
-		// TODO Auto-generated method stub
 		
+	}
+
+	public void fireProjectile(Tower tower) {
+		if (walkers.size() == 0) return;
+		Projectile p = tower.createProjectile();
+		p.place(this, walkers.get(0), tower.position().clone());
+		groupLayer.add(p.layer());
+		projectiles.add(p);
 	}
 }

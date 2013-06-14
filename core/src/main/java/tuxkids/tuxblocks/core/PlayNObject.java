@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core;
 
+import playn.core.Assets;
 import playn.core.Graphics;
 import playn.core.GroupLayer;
 import playn.core.Keyboard;
@@ -12,6 +13,7 @@ import pythagoras.f.Vector;
 import pythagoras.i.IPoint;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.Positioned;
 
 public class PlayNObject {
 	protected static Graphics graphics() {
@@ -24,6 +26,10 @@ public class PlayNObject {
 	
 	protected static Keyboard keyboard() {
 		return PlayN.keyboard();
+	}
+	
+	protected static Assets assets() {
+		return PlayN.assets();
 	}
 	
 	protected static long currentTime() {
@@ -94,6 +100,8 @@ public class PlayNObject {
 			return ((Event) o).x();
 		} else if (o instanceof Layer) {
 			return ((Layer) o).tx();
+		} else if (o instanceof Positioned) {
+			return ((Positioned) o).x();
 		}
 		return 0;
 	}
@@ -107,6 +115,8 @@ public class PlayNObject {
 			return ((Event) o).y();
 		} else if (o instanceof Layer) {
 			return ((Layer) o).ty();
+		} else if (o instanceof Positioned) {
+			return ((Positioned) o).y();
 		}
 		return 0;
 	}

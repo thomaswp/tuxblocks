@@ -52,4 +52,9 @@ public abstract class Expression {
 			}
 		};
 	}
+	
+	@Override
+	public String toString() {
+		return toMathString();
+	}
 }

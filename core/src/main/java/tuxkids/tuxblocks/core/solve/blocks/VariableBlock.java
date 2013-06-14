@@ -23,4 +23,9 @@ public class VariableBlock extends BaseBlock {
 		return Color.rgb(200, 0, 200);
 	}
 
+	@Override
+	protected String getText() {
+		return variable.toMathString();
+	}
+
 }

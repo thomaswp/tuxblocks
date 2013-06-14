@@ -15,6 +15,8 @@ import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock.OnSimplifyListener;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
+import tuxkids.tuxblocks.core.solve.expression.Equation;
+import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
 import tuxkids.tuxblocks.core.solve.expression.Number;
 import tuxkids.tuxblocks.core.solve.expression.Variable;
@@ -27,6 +29,7 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 	private ModifierBlock dragging;
 	private Point dragOffset = new Point();
 	private EquationSprite equationSprite;
+	private BaseBlock simplyfyResult;
 	
 	public SolveScene(ScreenStack screens) {
 		super(screens);
@@ -35,6 +38,16 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 	@Override
 	public void wasAdded() {
 		
+//		
+//		for (int i = 1; i < 5; i++) {
+//			for (int j = 0; j < 5; j++) {
+//				Equation eq = EquationGenerator.generate(i);
+//				Debug.write(i + ": " + eq.toMathString() + "| x = " + eq.getAnswer());
+//			}
+//		}
+		
+		Equation eq = EquationGenerator.generate(4);
+		
 		CanvasImage background = graphics().createImage(graphics().width(), graphics().height());
 		background.canvas().setFillColor(Color.rgb(255, 255, 255));
 		background.canvas().fillRect(0, 0, graphics().width() / 2, graphics().height());
@@ -42,20 +55,18 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 		background.canvas().fillRect(graphics().width() / 2, 0, graphics().width() / 2, graphics().height());
 		layer.add(graphics().createImageLayer(background));
 
-		Expression e = new Variable("x").plus(5).over(3).plus(2).times(2);
-
-		leftHandSide = Block.createBlock(e);
+		leftHandSide = Block.createBlock(eq.getLeftHandSide());
 		leftHandSide.getGroupLayer().setTy(graphics().height());
 		leftHandSide.getGroupLayer().setTx(graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
 		layer.add(leftHandSide.getGroupLayer());
-		leftHandSide.getLastModifier().getSprite().addListener(this);
+		if (leftHandSide.hasModifier())	leftHandSide.getLastModifier().getSprite().addListener(this);
 		leftHandSide.setSimplifyListener(this);
 		
-		rightHandSide = Block.createBlock(new Number(5));
+		rightHandSide = Block.createBlock(eq.getRightHandSide());
 		rightHandSide.getGroupLayer().setTy(graphics().height());
 		rightHandSide.getGroupLayer().setTx(3 * graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
 		layer.add(rightHandSide.getGroupLayer());
-		//rightHandSide.getSprite().addListener(this);
+		if (rightHandSide.hasModifier()) rightHandSide.getSprite().addListener(this);
 		rightHandSide.setSimplifyListener(this);
 
 		equationSprite = new EquationSprite(leftHandSide, rightHandSide);
@@ -81,7 +92,6 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 	
 	@Override
 	public void onPointerStart(Event event) {
-		Debug.write("drag!");
 		if (dragging != null) return;
 		dragging = null;
 		draggingFrom = null;
@@ -162,9 +172,25 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 
 	}
 
+	
 	@Override
-	public void onSimplify(BaseBlock baseBlock, String expression) {
-		pushScreen(new NumberSelectScreen(screens, expression, 0));
+	public void onSimplify(BaseBlock baseBlock, String expression, int answer, int start) {
+		simplyfyResult = baseBlock;
+		NumberSelectScreen nss = new NumberSelectScreen(screens, expression, answer);
+		nss.setFocusedNumber(start);
+		pushScreen(nss);
+	}
+	
+	@Override
+	protected void onChildScreenFinished(GameScreen screen) {
+		super.onChildScreenFinished(screen);
+		if (screen instanceof NumberSelectScreen) {
+			Integer answer = ((NumberSelectScreen) screen).selectedAnswer();
+			if (answer != null) {
+				simplyfyResult.simplfy(answer);
+				refreshEquationSprite();
+			}
+		}
 	}
 
 }

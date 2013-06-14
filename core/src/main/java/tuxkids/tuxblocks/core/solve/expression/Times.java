@@ -72,7 +72,7 @@ public class Times extends ModificationOperation {
 				rightParenLayout = PlayN.graphics().layoutText(")", bigFormat);
 				factorLayout = PlayN.graphics().layoutText("" + value, textFormat);
 				return new Vector(factorLayout.width() + leftParenLayout.width() + 
-						childWriter.width() + rightParenLayout.width(), 
+						childWriter.width() + rightParenLayout.width() + SPACING * 2, 
 						childWriter.height());
 			}
 			

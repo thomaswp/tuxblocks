@@ -24,6 +24,8 @@ import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Button;
+import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
@@ -38,6 +40,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private final static int MAX_NUMS = 70;
 	private final static int RECT_INTERVAL = 300;
 	private final static int MAX_RECTS = 30;
+	private final static int MAX_SPRITE_CREATE_PER_FRAME = 10;
 	
 	private List<Point> numberPoints = new ArrayList<Point>();
 	private List<ImageLayer> numberImages = new ArrayList<ImageLayer>();
@@ -52,6 +55,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private GroupLayer foregroundLayer, backgroundLayer, equationLayer;
 	private List<BackgroundSprite> backgroundSprites = 
 			new ArrayList<BackgroundSprite>();
+	private int createsSpritesThisFrame;
 	private int rectTimer;
 	private int backgroundPrimaryColor;
 	private float backgroundPrimaryHue;
@@ -60,8 +64,18 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private Point equationAnswerPoint;
 	private String expression;
 	private int answer;
-	private ImageLayer backLayer;
+	private Button buttonBack, buttonCenter;
 	private Image backImageOk, backImageBack, backImageCancel;
+	private Point recenterPoint = new Point();
+	
+	public Integer selectedAnswer() {
+		if (selectedPoint == null) return null;
+		return getNumber(selectedPoint);
+	}
+	
+	public void setFocusedNumber(int number) {
+		recenterPoint = getPoint(number);
+	}
 	
 	public NumberSelectScreen(ScreenStack screens, String expression, int answer) {
 		super(screens);
@@ -72,8 +86,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	@Override
 	public void wasAdded() {
 		SPACING = (int)(height() / 3.5f);
+		position.set(recenterPoint.x * SPACING, recenterPoint.y * SPACING);
 		textFormat = new TextFormat().withFont(
 				graphics().createFont("Arial", Style.PLAIN, SPACING / 3));
+		equationFormat = new TextFormat().withFont(
+				graphics().createFont("Arial", Style.PLAIN, SPACING / 3 * 0.8f)); //32));
 		backgroundLayer = graphics().createGroupLayer();
 		
 		foregroundLayer = graphics().createGroupLayer();
@@ -84,35 +101,14 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - equationHeight / 2);
 		backgroundLayer.setTranslation(0, equationHeight / 2);
 		update(0);
-		
-		PlayN.keyboard().setListener(new Keyboard.Listener() {
-			
-			@Override
-			public void onKeyUp(playn.core.Keyboard.Event event) {
-			}
-			
-			@Override
-			public void onKeyTyped(TypedEvent event) {
-			}
-			
-			@Override
-			public void onKeyDown(playn.core.Keyboard.Event event) {
-				if (event.key() == Key.SPACE || event.key() == Key.BACK) {
-					screens.remove(NumberSelectScreen.this);
-				}
-			}
-		});
 	}
 	
 	private void createEquation(String equation) {
 		int index = equation.indexOf(PLACEHOLDER);
 		String before = equation.substring(0, index);
 		String after = equation.substring(index + 1);
-		
-		TextFormat format = equationFormat = new TextFormat().withFont(
-				graphics().createFont("Arial", Style.PLAIN, 32));;
 
-		TextLayout sampleNumber = graphics().layoutText("-999", format);
+		TextLayout sampleNumber = graphics().layoutText("-999", equationFormat);
 
 		int boxSpace = 10;
 		float boxWidth = sampleNumber.width() + boxSpace;
@@ -122,12 +118,12 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		TextLayout beforeLayout = null, afterLayout = null;
 		
 		if (!before.isEmpty()) {
-			beforeLayout = graphics().layoutText(before, format);
+			beforeLayout = graphics().layoutText(before, equationFormat);
 			width += beforeLayout.width() + boxSpace;
 			height = Math.max(beforeLayout.height(), height);
 		}
 		if (!after.isEmpty()) {
-			afterLayout = graphics().layoutText(after, format);
+			afterLayout = graphics().layoutText(after, equationFormat);
 			width += afterLayout.width() + boxSpace;
 			height = Math.max(afterLayout.height(), height);
 		}
@@ -169,52 +165,39 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		backImageOk = PlayN.assets().getImage("images/ok.png");
 		backImageBack = PlayN.assets().getImage("images/back.png");
 		backImageCancel = PlayN.assets().getImage("images/cancel.png");
-		backLayer = graphics().createImageLayer(backImageBack);
-		final float bgHeight = screenImage.height();
-		final float rAlpha = 0.5f;
-		backLayer.image().addCallback(new Callback<Image>() {
+		float bgHeight = screenImage.height();
+		float buttonHeight = bgHeight * 0.8f;
+		buttonBack = new Button(backImageBack, buttonHeight, buttonHeight, true);
+		buttonBack.setPosition(buttonBack.width() / 2 + 10, bgHeight / 2);
+		buttonBack.setTint(backgroundPrimaryColor);
+		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
-			public void onSuccess(Image result) {
-				backLayer.setOrigin(result.width() / 2, result.height() / 2);
-				backLayer.setScale(Math.min(bgHeight / result.height() * 0.8f, 1));
-				backLayer.setTranslation(result.width() * backLayer.scaleX() / 2 + 10, bgHeight / 2);
-				backLayer.setTint(backgroundPrimaryColor);
-				backLayer.setAlpha(rAlpha);
-			}
-
-			@Override
-			public void onFailure(Throwable cause) {
-				cause.printStackTrace();
-			}
-		});
-		backLayer.addListener(new Listener() {
-			@Override
-			public void onPointerStart(Event event) {
-				backLayer.setAlpha(1);
-			}
-			
-			@Override
-			public void onPointerEnd(Event event) {
-				backLayer.setAlpha(rAlpha);
-				if (PlayNObject.distance(event, backLayer) < backLayer.width() / 2 * backgroundLayer.scaleX()) {
+			public void onRelease(boolean inButton) {
+				if (inButton) {
 					if (selectedPoint != null && getNumber(selectedPoint) != answer) {
-						backLayer.setImage(backImageCancel);
+						buttonBack.setImage(backImageCancel);
 					} else {
 						popThis();
 					}
 				}
 			}
-			
-			@Override public void onPointerDrag(Event event) { }
-			
-			@Override public void onPointerCancel(Event event) { }
 		});
-
+		 
+		buttonCenter = new Button("images/center.png", buttonHeight, buttonHeight, true);
+		buttonCenter.setPosition(width() - buttonCenter.width() / 2 - 10, bgHeight / 2);
+		buttonCenter.setTint(backgroundPrimaryColor);
+		buttonCenter.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(boolean inButton) {
+				selectedPoint = new Point(recenterPoint);
+			}
+		});
 		
 		equationLayer = graphics().createGroupLayer();
 		equationLayer.add(screenLayer);
 		equationLayer.add(eqLayer);
-		equationLayer.add(backLayer);
+		equationLayer.add(buttonBack.layer());
+		equationLayer.add(buttonCenter.layer());
 		
 		equationHeight = screenLayer.height();
 		equationBlankX += eqLayer.tx(); 
@@ -227,7 +210,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			equationLayer.remove(equationAnswer);
 			equationAnswer = null;
 			equationAnswerPoint = null;
-			backLayer.setImage(backImageBack);
+			buttonBack.setImage(backImageBack);
 		} else if (selectedPoint != null && !selectedPoint.equals(equationAnswerPoint)) {
 			equationAnswerPoint = new Point(selectedPoint);
 			if (equationAnswer != null) equationLayer.remove(equationAnswer);
@@ -238,9 +221,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			equationAnswer.setOrigin(equationAnswer.width() / 2, equationAnswer.height() / 2);
 			equationAnswer.setTranslation(equationBlankX, equationHeight / 2);
 			equationLayer.add(equationAnswer);
-			if (backLayer.image() == backImageBack) {
-				backLayer.setImage(backImageOk);
-			}
+			buttonBack.setImage(backImageOk);
 		}
 	}
 
@@ -285,21 +266,24 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		
 		updateEquationAnswer();
 		
+		createsSpritesThisFrame = 0;
 		Point p = new Point();
 		for (int i = left; i <= right; i++) {
 			for (int j = top; j <= bot; j++) {
 				p.setLocation(i, j);
 				ImageLayer layer = getNumberSprite(p);
+				if (layer == null) continue;
 				float dx = position.x - p.x * SPACING;
 				float dy = position.y - p.y * SPACING;
 				float distance = (float)Math.sqrt(dx * dx + dy * dy);
 				float alpha = 1 - Math.min(distance / SPACING / 5, 1);
+				float preAlpha = layer.alpha();
 				if (p.equals(selectedPoint)) {
 					layer.setTint(backgroundPrimaryColor);
 				} else {
 					layer.setTint(Colors.WHITE);
 				}
-				layer.setAlpha(alpha);
+				layer.setAlpha(lerp(preAlpha, alpha, 1 - (float)Math.pow(0.995, delta)));
 			}
 		}
 		
@@ -330,7 +314,6 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	}
 	
 	private ImageLayer getNumberSprite(Point p) {
-		
 		int index = numberPoints.indexOf(p);
 		if (index >= 0) {
 			ImageLayer layer = numberImages.remove(index);
@@ -339,6 +322,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			numberPoints.add(point);
 			return layer;
 		}
+
+		if (createsSpritesThisFrame == MAX_SPRITE_CREATE_PER_FRAME) {
+			return null;
+		}
+		createsSpritesThisFrame++;
 
 		p = p.clone();
 		
@@ -352,6 +340,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		layer.setOrigin(image.width() / 2, image.height() / 2);
 		layer.setTranslation(p.x * SPACING, p.y * SPACING);
 		layer.addListener(new NumberListener(p));
+		layer.setAlpha(0);
 		foregroundLayer.add(layer);
 		numberImages.add(layer);
 		numberPoints.add(p);
@@ -359,7 +348,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		if (numberImages.size() > MAX_NUMS) {
 			ImageLayer rem = numberImages.remove(0);
 			numberPoints.remove(0);
-			foregroundLayer.remove(rem);
+			rem.destroy();
 		}
 		
 		return layer;
@@ -368,12 +357,20 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private int getNumber(Point p) {
 		return p.x - p.y * 10;
 	}
+	
+	private Point getPoint(int number) {
+		if (number >= 0) {
+			return new Point(number % 10, -number / 10);
+		} else {
+			return new Point(number % 10, -number / 10);
+		}
+	}
 
 	private boolean dragging;
 	@Override
 	public void onPointerStart(Event event) {
-		float dis = PlayNObject.distance(event, backLayer);
-		if (dis < backLayer.width() / 2 * backLayer.scaleX()) {
+		if (buttonBack.hit(event.x(), event.y()) ||
+				buttonCenter.hit(event.x(), event.y())) {
 			return;
 		}
 		dragging = true;

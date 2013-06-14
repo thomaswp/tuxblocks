@@ -1,17 +1,33 @@
 package tuxkids.tuxblocks.core.screen;
 
 import playn.core.Graphics;
+import playn.core.Key;
+import playn.core.Keyboard;
+import playn.core.Keyboard.Event;
+import playn.core.Keyboard.Listener;
+import playn.core.Keyboard.TypedEvent;
 import playn.core.PlayN;
 import pythagoras.f.Vector;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.PlayNObject;
 
-public class GameScreen extends Screen {
+public class GameScreen extends Screen implements Listener {
 	protected ScreenStack screens;
 	protected GameScreen topActivity;
 	private OnScreenFinishedListener onScreenFinishedListener;
 	protected int depth;
+	
+	@Override
+	public void wasShown() {
+		super.wasShown();
+		PlayN.keyboard().setListener(this);
+	}
+	
+	@Override
+	public void wasRemoved() {
+		layer.destroy();
+	}
 	
 	public int getDepth() {
 		return depth;
@@ -57,5 +73,24 @@ public class GameScreen extends Screen {
 	
 	protected interface OnScreenFinishedListener {
 		void onScreenFinished();
+	}
+
+	@Override
+	public void onKeyDown(Event event) {
+		if (event.key() == Key.BACK) {
+			popThis();
+		}
+	}
+
+	@Override
+	public void onKeyTyped(TypedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onKeyUp(Event event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

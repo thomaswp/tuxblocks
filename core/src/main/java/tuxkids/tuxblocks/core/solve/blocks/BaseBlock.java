@@ -16,6 +16,7 @@ import pythagoras.f.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
 import tuxkids.tuxblocks.core.solve.expression.ModificationOperation;
+import tuxkids.tuxblocks.core.solve.expression.NonevaluatableException;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.Debug;
 
@@ -97,6 +98,7 @@ public abstract class BaseBlock extends Block {
 	}
 	
 	protected abstract boolean canSimplify();
+	protected abstract String getText();
 	
 	private void updateSimplify() {
 		if (!canSimplify() || modifiers.isEmpty()) {
@@ -194,7 +196,7 @@ public abstract class BaseBlock extends Block {
 	}
 	
 	public interface OnSimplifyListener {
-		public void onSimplify(BaseBlock baseBlock, String expression);
+		public void onSimplify(BaseBlock baseBlock, String expression, int answer, int start);
 	}
 	
 	protected class SimplifyListener implements Listener {
@@ -214,8 +216,17 @@ public abstract class BaseBlock extends Block {
 			float dy = simplifyCircle.height() / 2 - event.localY();
 			float rad = simplifyCircle.width() * 2;
 			if (dx * dx + dy * dy < rad * rad) {
-				if (simplifyListener != null) {
-					simplifyListener.onSimplify(BaseBlock.this, "3 + 2 = %");
+				if (simplifyListener != null && !modifiers.isEmpty()) {
+					String exp = modifiers.get(0).getModifier().toMathString();
+					int answer = 0;
+					int start = 0;
+					try {
+						answer = modifiers.get(0).getModifier().evaluate();
+						start = baseExpression.evaluate();
+					} catch (NonevaluatableException e) {
+						e.printStackTrace();
+					}
+					simplifyListener.onSimplify(BaseBlock.this, exp + " = %", answer, start);
 				}
 			}
 		}
@@ -228,5 +239,23 @@ public abstract class BaseBlock extends Block {
 		public void onPointerCancel(Event event) {
 			
 		}
+	}
+
+	public void simplfy(int to) {
+		ModifierBlock remove = modifiers.remove(0);
+		if (!modifiers.isEmpty()) {
+			modifiers.get(0).getModifier().setOperand(baseExpression);
+		}
+		float width = sprite.width(), height = sprite.height();
+		if (remove.getModifier().getPrecedence() == Expression.PREC_ADD) {
+			width += MOD_SIZE;
+		} else {
+			height += MOD_SIZE;
+		}
+		((NumberBlock)this).setValue(to);
+		sprite.destroy();
+		remove.getSprite().destroy();
+		sprite = generateSprite((int)width, (int)height, getText(), getColor());
+		updateSimplify();
 	}
 }

@@ -22,5 +22,14 @@ public class NumberBlock extends BaseBlock {
 	public int getColor() {
 		return Color.rgb(200, 0, 200);
 	}
+
+	@Override
+	protected String getText() {
+		return number.toMathString();
+	}
+	
+	protected void setValue(int value) {
+		number.setValue(value);
+	}
 	
 }

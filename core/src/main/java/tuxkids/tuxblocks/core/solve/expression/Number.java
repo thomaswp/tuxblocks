@@ -37,4 +37,8 @@ public class Number extends Expression {
 		return PREC_NUM;
 	}
 
+	public void setValue(int value) {
+		this.value = value;
+	}
+
 }
