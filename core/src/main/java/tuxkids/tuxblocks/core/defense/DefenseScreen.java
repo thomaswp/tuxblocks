@@ -19,6 +19,7 @@ import tuxkids.tuxblocks.core.utils.Debug;
 public class DefenseScreen extends GameScreen implements Listener {
 
 	private Grid grid;
+	private Inventory inventory; 
 	
 	public DefenseScreen(ScreenStack screens) {
 		super(screens);
@@ -26,8 +27,13 @@ public class DefenseScreen extends GameScreen implements Listener {
 	
 	@Override
 	public void wasAdded() {
-		grid = new Grid(20, 40, (int)width(), (int)height());
+		float maxGridWidth = width() * 0.8f; 
+		grid = new Grid(19, 25, (int)maxGridWidth, (int)height());
+		grid.getLayer().setTranslation(width() - grid.width(), (height() - grid.height()) / 2);
 		layer.add(grid.getLayer());
+		
+		inventory = new Inventory(grid, (int)(width() - grid.width()), (int)(height()));
+		layer.add(inventory.layer());
 	}
 
 	@Override

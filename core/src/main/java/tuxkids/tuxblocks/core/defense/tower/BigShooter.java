@@ -2,38 +2,36 @@ package tuxkids.tuxblocks.core.defense.tower;
 
 import playn.core.CanvasImage;
 import playn.core.Image;
-import playn.core.ImageLayer;
 import playn.core.PlayN;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.defense.projectile.Pea;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
-import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class PeaShooter extends Tower {
+public class BigShooter extends Tower {
 
 	@Override
 	public int rows() {
-		return 1;
+		return 2;
 	}
 
 	@Override
 	public int cols() {
-		return 1;
+		return 2;
 	}
 
 	@Override
 	public int damage() {
-		return 1;
+		return 5;
 	}
 
 	@Override
 	public int fireRate() {
-		return 500;
+		return 1000;
 	}
 
 	@Override
 	public float range() {
-		return 5;
+		return 6;
 	}
 
 	@Override
@@ -43,12 +41,12 @@ public class PeaShooter extends Tower {
 
 	@Override
 	public Tower copy() {
-		return new PeaShooter();
+		return new BigShooter();
 	}
 
 	@Override
 	public String name() {
-		return "Pea Shooter";
+		return "B.I.G. Shooter";
 	}
 
 }

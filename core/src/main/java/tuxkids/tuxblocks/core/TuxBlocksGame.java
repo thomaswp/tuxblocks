@@ -15,9 +15,10 @@ import tuxkids.tuxblocks.core.solve.SolveScene;
 
 public class TuxBlocksGame extends Game.Default {
 
-	public static final int UPDATE_RATE = 33;
+	public static final int UPDATE_RATE = 1000 / 30;
 	
-	protected final Clock.Source clock = new Clock.Source(UPDATE_RATE);
+	protected final SolidClock clock = new SolidClock(UPDATE_RATE);
+	//protected final Clock.Source clock = new Clock.Source(UPDATE_RATE);
 
     protected final ScreenStack screens = new ScreenStack() {
 //        @Override protected void handleError (RuntimeException error) {
@@ -33,17 +34,21 @@ public class TuxBlocksGame extends Game.Default {
         }
     };
     
-	private FadeTransition fade = new FadeTransition(screens);
+	private static TuxBlocksGame instance;
+	
+	public static int screenDepth() {
+		return instance.screens.size();
+	}
 	
 	public TuxBlocksGame() {
 		super(UPDATE_RATE); // call update every 33ms (30 times per second)
+		instance = this;
 	}
 
 	@Override
 	public void init() {		
-		//screens.push(new SolveScene(screens));
+//		screens.push(new SolveScene(screens));
 		screens.push(new DefenseScreen(screens));
-		//screens.push(new NumberSelectScreen(screens));
 	}
 	
 	private int frames;

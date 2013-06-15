@@ -1,23 +1,27 @@
 package tuxkids.tuxblocks.core;
 
+import playn.core.Color;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Positioned;
 
-public class Button extends PlayNObject implements Positioned, Listener {
+public class Button extends PlayNObject implements Positioned {
 	
-	private final static float UNPRESSED_ALPHA = 0.5f;
+	public final static float UNPRESSED_ALPHA = 0.5f;
 	
 	private ImageLayer imageLayer;
 	private OnPressedListener onPressedListener;
 	private OnReleasedListener onReleaseListener;
+	private OnDragListener onDragListener;
 	private float width, height;
 	private boolean pressed;
 	private boolean isCircle;
+	private int tint, tintPressed;
 
 	public ImageLayer layer() {
 		return imageLayer;
@@ -97,9 +101,22 @@ public class Button extends PlayNObject implements Positioned, Listener {
 		this.onReleaseListener = onReleasedListener;
 	}
 	
+	public void setOnDragListener(OnDragListener onDragListener) {
+		this.onDragListener = onDragListener;
+	}
+	
 	public void setTint(int tint) {
-		imageLayer.setTint(tint);
-		imageLayer.setAlpha(pressed ? 1 : UNPRESSED_ALPHA);
+		setTint(tint, tint);
+	}
+	
+	public void setTint(int tint, float alphaUnpressed) {
+		setTint(Color.withAlpha(tint, (int)(255 * alphaUnpressed)), tint);
+	}
+	
+	public void setTint(int tint, int tintPressed) {
+		this.tint = tint;
+		this.tintPressed = tintPressed;
+		imageLayer.setTint(pressed ? tintPressed : tint);
 	}
 	
 	public Button(String imagePath, float width, float height, boolean isCircle) {
@@ -112,8 +129,8 @@ public class Button extends PlayNObject implements Positioned, Listener {
 		this.isCircle = isCircle;
 		imageLayer = graphics().createImageLayer();
 		setImage(image);
-		imageLayer.addListener(this);
-		imageLayer.setAlpha(UNPRESSED_ALPHA);
+		imageLayer.addListener(new PointerListener());
+		setTint(Colors.WHITE, UNPRESSED_ALPHA);
 	}
 	
 	public boolean hit(float x, float y) {
@@ -137,44 +154,53 @@ public class Button extends PlayNObject implements Positioned, Listener {
 				height / imageLayer.image().height());
 	}
 
-	@Override
-	public void onPointerStart(Event event) {
-		if (!insideLocal(event)) return;
-		imageLayer.setAlpha(1);
-		pressed = true;
-		if (onPressedListener != null) onPressedListener.onPress();
-	}
-
-	@Override
-	public void onPointerEnd(Event event) {
-		if (!pressed) return;
-		imageLayer.setAlpha(UNPRESSED_ALPHA);
-		pressed = false;
-		if (onReleaseListener != null) onReleaseListener.onRelease(insideLocal(event));
-	}
-	
-	private boolean insideLocal(Event event) {
-		float dw = image().width() / 2;
-		float dh = image().height() / 2;
-		if (isCircle) {
-			return distance(event.localX(), event.localY(), dw, dh) <= dw;
-		} else {
-			return Math.abs(event.localX() - dw) <= dw &&
-					Math.abs(event.localY() - dh) <= dh;
+	private class PointerListener implements Listener {
+		
+		@Override
+		public void onPointerStart(Event event) {
+			if (!insideLocal(event)) return;
+			imageLayer.setTint(tintPressed);
+			pressed = true;
+			if (onPressedListener != null) onPressedListener.onPress(event);
 		}
+
+		@Override
+		public void onPointerEnd(Event event) {
+			if (!pressed) return;
+			imageLayer.setTint(tint);
+			pressed = false;
+			if (onReleaseListener != null) onReleaseListener.onRelease(event, insideLocal(event));
+		}
+		
+		private boolean insideLocal(Event event) {
+			float dw = image().width() / 2;
+			float dh = image().height() / 2;
+			if (isCircle) {
+				return distance(event.localX(), event.localY(), dw, dh) <= dw;
+			} else {
+				return Math.abs(event.localX() - dw) <= dw &&
+						Math.abs(event.localY() - dh) <= dh;
+			}
+		}
+
+		@Override
+		public void onPointerDrag(Event event) { 
+			if (onDragListener != null) onDragListener.onDrag(event);
+		}
+
+		@Override
+		public void onPointerCancel(Event event) { }
 	}
-
-	@Override
-	public void onPointerDrag(Event event) { }
-
-	@Override
-	public void onPointerCancel(Event event) { }
 	
 	public interface OnReleasedListener {
-		public void onRelease(boolean inButton);
+		public void onRelease(Event event, boolean inButton);
 	}
 	
 	public interface OnPressedListener {
-		public void onPress();
+		public void onPress(Event event);
+	}
+	
+	public interface OnDragListener {
+		public void onDrag(Event event);
 	}
 }

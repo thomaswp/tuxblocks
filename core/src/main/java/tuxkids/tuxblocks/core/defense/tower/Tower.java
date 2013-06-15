@@ -1,13 +1,19 @@
 package tuxkids.tuxblocks.core.defense.tower;
 
+import playn.core.CanvasImage;
+import playn.core.Color;
+import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.PlayN;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
+import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public abstract class Tower extends GridObject {
 	
@@ -24,7 +30,9 @@ public abstract class Tower extends GridObject {
 	public abstract int fireRate();
 	public abstract float range();
 	public abstract Projectile createProjectile();
-	protected abstract ImageLayer createLayer();
+//	public abstract Image createImage(float width, float height, int color);
+	public abstract Tower copy();
+	public abstract String name();
 
 	public float width() {
 		return cols() * grid.getCellSize();
@@ -57,15 +65,19 @@ public abstract class Tower extends GridObject {
 				row * grid.getCellSize() + height() / 2);
 	}
 	
-	public Tower preview(Grid grid, Point coordinates) {
+	public Tower preview(Grid grid) {
 		this.grid = grid;
-		if (layer == null) layer = createLayer();
-		setCoordinates(coordinates);
+		layer = graphics().createImageLayer(
+				createImage(grid.getCellSize() * cols(), 
+						grid.getCellSize() * rows(), 
+						Colors.WHITE));
+		layer.setTint(Colors.RED);
 		return this;
 	}
 	
 	public Tower place(Grid grid, Point coordinates) {
-		preview(grid, coordinates);
+		preview(grid);
+		setCoordinates(coordinates);
 		for (int i = 0; i < rows(); i++) {
 			for (int j = 0; j < cols(); j++) {
 				grid.getPassability()[i + coordinates.x][j + coordinates.y] = false;
@@ -75,20 +87,26 @@ public abstract class Tower extends GridObject {
 	}
 	
 	public boolean update(int delta) {
-		fireTimer += delta;
-		if (fireTimer > fireRate()) {
-			fireTimer -= fireRate();
-			fire();
+		int fireRate = fireRate();
+		if (fireRate > 0 && fireTimer > fireRate) {
+			if (fire()) {
+				fireTimer -= fireRate;
+			} else {
+				fireTimer = fireRate;
+			}
 		}
 		return false;
 	}
 	
 	public void paint(Clock clock) {
-		
+		fireTimer += clock.dt();
+		float perc = (float)Math.pow((float)fireTimer / fireRate(),0.5);
+		perc = Math.min(perc, 1);
+		layer.setTint(Colors.blend(Colors.RED, Colors.GRAY, perc));
 	}
 	
-	protected void fire() {
-		grid.fireProjectile(this);
+	protected boolean fire() {
+		return grid.fireProjectile(this);
 	}
 	
 	public boolean canPlace(int row, int col) {
@@ -98,5 +116,24 @@ public abstract class Tower extends GridObject {
 			}
 		}
 		return true;
+	}
+	
+	public Image createRadiusImage() {
+		if (range() == 0) return null;
+		float rad = range() * grid.getCellSize();
+		int color = Color.rgb(255, 0, 100);
+		return CanvasUtils.createCircle(rad, Color.withAlpha(color, 50), 1, color);
+	}
+	
+	public Image createImage(float width, float height, int color) {
+		int padding = 5, rad = (int)(Math.min(width, height) * 0.1f);
+		CanvasImage image = PlayN.graphics().createImage(width, height);
+		image.canvas().setFillColor(color);
+		image.canvas().fillRoundRect(padding, padding, 
+				image.width() - padding * 2, image.height() - padding * 2, rad);
+		image.canvas().setStrokeColor(Colors.BLACK);
+		image.canvas().strokeRoundRect(padding, padding, 
+				image.width() - padding * 2 - 1, image.height() - padding * 2 - 1, rad);
+		return image;
 	}
 }

@@ -62,9 +62,10 @@ public class GameScreen extends Screen implements Listener {
 	}
 	
 	protected void popThis() {
+		PlayN.keyboard().setListener(null);
 		screens.remove(this);
 		layer.setDepth(-1);
-		onScreenFinishedListener.onScreenFinished();
+		if (onScreenFinishedListener != null) onScreenFinishedListener.onScreenFinished();
 	}
 	
 	protected void onChildScreenFinished(GameScreen screen) {
@@ -77,7 +78,7 @@ public class GameScreen extends Screen implements Listener {
 
 	@Override
 	public void onKeyDown(Event event) {
-		if (event.key() == Key.BACK) {
+		if (event.key() == Key.BACK || event.key() == Key.ESCAPE) {
 			popThis();
 		}
 	}

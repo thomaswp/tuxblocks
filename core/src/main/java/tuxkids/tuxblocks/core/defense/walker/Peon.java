@@ -1,7 +1,5 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
-import pythagoras.i.Point;
-import tuxkids.tuxblocks.core.defense.Grid;
 
 public class Peon extends SlideWalker {
 
@@ -13,6 +11,11 @@ public class Peon extends SlideWalker {
 	@Override
 	public int walkCellTime() {
 		return 500;
+	}
+
+	@Override
+	public Walker copy() {
+		return new Peon();
 	}
 
 }

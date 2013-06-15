@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.android;
 
+import android.util.Log;
 import playn.android.GameActivity;
 import playn.core.PlayN;
 
@@ -15,6 +16,8 @@ public class TuxBlocksGameActivity extends GameActivity {
 
 	@Override 
 	public void onBackPressed () {
-
+		if (TuxBlocksGame.screenDepth() == 0) {
+			finish();
+		}
 	} 
 }

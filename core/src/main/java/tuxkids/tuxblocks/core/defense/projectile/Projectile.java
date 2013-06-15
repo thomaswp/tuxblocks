@@ -7,6 +7,7 @@ import pythagoras.f.Vector;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.GridObject;
+import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 
 public abstract class Projectile extends GridObject {
@@ -16,6 +17,7 @@ public abstract class Projectile extends GridObject {
 	protected Vector velocity;
 	protected ImageLayer layer;
 	protected Walker target;
+	protected int damage;
 	
 	public Layer layer() {
 		return layer;
@@ -24,10 +26,11 @@ public abstract class Projectile extends GridObject {
 	public abstract float speed();
 	public abstract ImageLayer createLayer();
 	
-	public void place(Grid grid, Walker target, Vector position) {
+	public void place(Grid grid, Walker target, Tower source) {
 		this.grid = grid;
 		this.target = target;
-		this.position = position;
+		this.position = source.position().clone();
+		this.damage = source.damage();
 		velocity = new Vector();
 		target.position().subtract(position, velocity);
 		if (velocity.length() > 0) velocity = velocity.scale(speed() / velocity.length());
@@ -37,12 +40,19 @@ public abstract class Projectile extends GridObject {
 	
 	@Override
 	public boolean update(int delta) {
-		float dx = target.position().x - position.x;
-		float dy = target.position().y - position.y;
-		if (Math.abs(dx) < target.width() / 2 && Math.abs(dy) < target.height() / 2) {
+		Walker hit = grid.getHitWalker(position);
+		if (hit != null) {
 			layer.destroy();
-			debug("!");
+			target.damage(damage);
 			return true;
+		}
+		if (grid.isOutOfBounds(position)) {
+			layer.destroy();
+			return true;
+		}
+		if (target.isAlive()) {
+			target.position().subtract(position, velocity);
+			if (velocity.length() > 0) velocity = velocity.scale(speed() / velocity.length());
 		}
 		return false;
 	}

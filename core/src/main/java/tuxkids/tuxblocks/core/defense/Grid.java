@@ -8,21 +8,24 @@ import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;
-import playn.core.Pointer.Event;
-import playn.core.Pointer.Listener;
+import playn.core.PlayN;
 import playn.core.util.Clock;
+import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
-import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
+import tuxkids.tuxblocks.core.defense.round.Round;
+import tuxkids.tuxblocks.core.defense.round.Wave;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Peon;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
-public class Grid extends PlayNObject implements Listener {
+public class Grid extends PlayNObject {
+	
+	private final static boolean SHOW_GRID = true;
+	
 	private int cellSize;
 	private int rows, cols;
 	private GroupLayer groupLayer;
@@ -35,7 +38,9 @@ public class Grid extends PlayNObject implements Listener {
 	private MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers);
 	private Point walkerStart, walkerDestination;
 	private Tower toPlace;
+	private ImageLayer toPlacePreview;
 	private List<Point> currentPath;
+	private Round round;
 	
 	public int width() {
 		return cols * cellSize;
@@ -80,18 +85,42 @@ public class Grid extends PlayNObject implements Listener {
 		int maxRowSize = maxHeight / rows, maxColSize = maxWidth / cols;
 		cellSize = Math.min(maxRowSize, maxColSize);
 		groupLayer = graphics().createGroupLayer();
-		walkerStart = new Point();
-		walkerDestination = new Point(rows - 1, cols - 1);
+		walkerStart = new Point(rows / 2, 0);
+		walkerDestination = new Point(rows / 2, cols - 1);
+		for (int i = 0; i < rows; i++) {
+			if (i != rows / 2) {
+				passability[i][0] = false;
+				passability[i][cols - 1] = false;
+			}
+		}
+		for (int i = 0; i < cols; i++) {
+			passability[0][i] = false;
+			passability[rows - 1][i] = false;
+		}
 		refreshPath();
 		createGridSprite();
+		
+		round = new Round() {
+			@Override
+			protected void populateRound() {
+				addWave(new Wave(new Peon(), 500, 3), 3000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 500, 3), 6000);
+			}
+		};
 	}
-	
-	long timer;
+
 	public void update(int delta) {
-		timer += delta;
-		if (timer > 5000) {
-			timer -= 5000;
-			addWalker(new Peon().place(this, walkerStart, walkerDestination));
+		Walker walker = round.update(delta);
+		if (walker != null) {
+			addWalker(walker.place(this, walkerStart, walkerDestination));
 		}
 		
 		int nObjects = gridObjects.size();
@@ -143,17 +172,16 @@ public class Grid extends PlayNObject implements Listener {
 //				if (path != null && path.contains(new Point(i,j))) {
 //					canvas.setFillColor(Colors.BLUE);
 //				} else 
-//				if (!passability[i][j]) {
-//					canvas.setFillColor(Colors.BLACK);
-//				}
+				if (!passability[i][j]) {
+					canvas.setFillColor(Colors.GRAY);
+				}
 				canvas.fillRect(x, y, cellSize, cellSize);
-				canvas.strokeRect(x, y, cellSize, cellSize);
+				if (SHOW_GRID) canvas.strokeRect(x, y, cellSize, cellSize);
 			}
 		}
 		gridSprite = graphics().createImageLayer(image);
 		//gridSprite.setAlpha(0.2f);
 		groupLayer.add(gridSprite);
-		gridSprite.addListener(this);
 		gridSprite.setDepth(-1);
 	}
 
@@ -167,23 +195,32 @@ public class Grid extends PlayNObject implements Listener {
 		return getCell(x - width / 2 + getCellSize() / 2, y - height / 2 + getCellSize() / 2);
 	}
 	
-	private int truncate(float x) {
-		return (int)(x / cellSize) * cellSize;
-	}
-	
-	@Override
-	public void onPointerStart(Event event) {
-		//Debug.write(System.currentTimeMillis());
-		toPlace = new PeaShooter().preview(this, getCell(event.localX(), event.localY()));
-		toPlace.setCoordinates(getCell(event.localX(), event.localY(), toPlace.width(), toPlace.height()));
-		updateToPlace();
+	public void startPlacement(Tower toPlace) {
+		this.toPlace = toPlace;
+		toPlace.preview(this);
+		toPlace.layer().setVisible(false);
 		groupLayer.add(toPlace.layer());
 		validPlacementMap.clear();
+		
+		toPlacePreview = graphics().createImageLayer(toPlace.createRadiusImage());
+		centerImageLayer(toPlacePreview);
+		groupLayer.add(toPlacePreview);
+		updateToPlace();
 	}
 
-	@Override
-	public void onPointerEnd(Event event) {
-		if (canPlace()) {
+	public void updatePlacement(float globalX, float globalY) {
+		float localX = globalX - groupLayer.tx(), localY = globalY - groupLayer.ty();
+		if (toPlace != null) {
+			Point cell = getCell(localX, localY, toPlace.width(), toPlace.height());
+			toPlace.setCoordinates(cell);
+			toPlace.layer().setVisible(!isOutOfBounds(localX, localY));
+			updateToPlace();
+		}
+	}
+
+	public boolean endPlacement(float globalX, float globalY) {
+		boolean canPlace = canPlace();
+		if (canPlace) {
 			toPlace.place(this, toPlace.coordinates());
 			towers.add(toPlace);
 			refreshPath();
@@ -191,19 +228,16 @@ public class Grid extends PlayNObject implements Listener {
 			toPlace.layer().destroy();
 		}
 		toPlace = null;
-	}
-
-	@Override
-	public void onPointerDrag(Event event) {
-		if (toPlace != null) {
-			toPlace.setCoordinates(getCell(event.localX(), event.localY(), toPlace.width(), toPlace.height()));
-			updateToPlace();
-		}
+		toPlacePreview.destroy();
+		toPlacePreview = null;
+		return canPlace;
 	}
 	
 	private void updateToPlace() {
 		if (toPlace == null) return;
 		toPlace.layer().setAlpha(canPlace() ? 1 : 0.5f);
+		toPlacePreview.setTranslation(toPlace.position().x, toPlace.position().y);
+		toPlacePreview.setVisible(toPlace.layer().visible() && toPlace.layer().alpha() == 1);
 	}
 
 	private boolean canPlace() {
@@ -239,6 +273,8 @@ public class Grid extends PlayNObject implements Listener {
 		
 		int rows = toPlace.rows(), cols = toPlace.cols();
 		
+		if (p.equals(walkerStart)) return false;
+		
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				if (!passability[p.x+i][p.y+j]) return false;
@@ -260,16 +296,43 @@ public class Grid extends PlayNObject implements Listener {
 //		return true;
 	}
 
-	@Override
-	public void onPointerCancel(Event event) {
-		
-	}
-
-	public void fireProjectile(Tower tower) {
-		if (walkers.size() == 0) return;
+	public boolean fireProjectile(Tower tower) {
+		if (walkers.size() == 0) return false;
+		Walker target = null;
+		float targetDis = Float.MAX_VALUE;
+		for (Walker walker : walkers) {
+			if (!walker.isAlive()) continue;
+			float dis = walker.position().distance(tower.position());
+			if (dis < tower.range() * cellSize && dis < targetDis) {
+				target = walker;
+				targetDis = dis;
+			}
+		}
+		if (target == null) return false;
 		Projectile p = tower.createProjectile();
-		p.place(this, walkers.get(0), tower.position().clone());
+		p.place(this, target, tower);
 		groupLayer.add(p.layer());
 		projectiles.add(p);
+		return true;
+	}
+	
+	public Walker getHitWalker(Vector position) {
+		for (Walker walker : walkers) {
+			if (!walker.isAlive()) continue;
+			float dx = walker.position().x - position.x;
+			float dy = walker.position().y - position.y;
+			if (Math.abs(dx) < walker.width() / 2 && Math.abs(dy) < walker.height() / 2) {
+				return walker;
+			}
+		}
+		return null;
+	}
+
+	public boolean isOutOfBounds(Vector position) {
+		return isOutOfBounds(position.x, position.y);
+	}
+	
+	public boolean isOutOfBounds(float x, float y) {
+		return x < 0 || y < 0 || x >= width() || y >= height();
 	}
 }

@@ -24,6 +24,7 @@ public abstract class Walker extends GridObject {
 	protected Point coordinates, lastCoordinates, destination;
 	protected ImageLayer sprite;
 	protected int hp;
+	protected float alpha = 1;
 	
 	private float walkingMs;
 	private boolean placed;
@@ -32,6 +33,7 @@ public abstract class Walker extends GridObject {
 	protected abstract void updateMovement(float perc);
 	public abstract int getMaxHp();
 	public abstract int walkCellTime();
+	public abstract Walker copy();
 	
 	public ImageLayer getSprite() {
 		return sprite;
@@ -53,6 +55,10 @@ public abstract class Walker extends GridObject {
 		return grid.getCellSize();
 	}
 	
+	public boolean isAlive() {
+		return hp > 0;
+	}
+	
 	public Walker place(Grid grid, Point coordinates, Point desitnation) {
 		this.grid = grid;
 		this.destination = desitnation;
@@ -70,18 +76,21 @@ public abstract class Walker extends GridObject {
 	
 	private void createSprite() {
 		CanvasImage image = graphics().createImage(grid.getCellSize(), grid.getCellSize());
-		image.canvas().setFillColor(Colors.BLUE);
+		image.canvas().setFillColor(Colors.WHITE);
 		image.canvas().setStrokeColor(Colors.BLACK);
-		image.canvas().fillRect(0, 0, image.width(), image.height());
-		image.canvas().strokeRect(0, 0, image.width() - 1, image.height() - 1);
+		int border = 5;
+		image.canvas().fillRect(border, border, image.width() - border * 2, image.height() - border * 2);
+		image.canvas().strokeRect(border, border, image.width() - 1 - border * 2, 
+				image.height() - 1 - border * 2);
 		sprite = graphics().createImageLayer(image);
+		update(0);
 	}
 	
 	public void refreshPath() {
 		path = Pathing.getPath(grid, coordinates, destination);
 		path.remove(0);
 	}
-	
+
 	public boolean update(int delta) {
 		if (walkingMs >= walkCellTime()) {
 			walkingMs -= walkCellTime();
@@ -98,15 +107,21 @@ public abstract class Walker extends GridObject {
 				return true;
 			}
 		}
+		sprite.setTint(Colors.blend(Colors.BLUE, Colors.RED, (float)hp / getMaxHp()));
+		sprite.setAlpha(alpha);
 		return false;
 	}
 	
 	public void paint(Clock clock) {
 		walkingMs += clock.dt();
 		float perc = (float)walkingMs / walkCellTime();
-		position.set((lerp(coordinates.y, lastCoordinates.y, perc) + 0.5f) * grid.getCellSize(),
-				(lerp(coordinates.x, lastCoordinates.x, perc) + 0.5f) * grid.getCellSize());
+		position.set((lerp(coordinates.y, lastCoordinates.y, 1 - perc) + 0.5f) * grid.getCellSize(),
+				(lerp(coordinates.x, lastCoordinates.x, 1 - perc) + 0.5f) * grid.getCellSize());
 		updateMovement(perc);		
+	}
+	public void damage(int damage) {
+		hp -= damage;
+		hp = Math.max(hp, 0);
 	}
 	
 }

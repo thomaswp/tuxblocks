@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core;
 import playn.core.Assets;
 import playn.core.Graphics;
 import playn.core.GroupLayer;
+import playn.core.ImageLayer;
 import playn.core.Keyboard;
 import playn.core.Layer;
 import playn.core.PlayN;
@@ -68,6 +69,14 @@ public class PlayNObject {
 		Debug.write(msg);
 	}
 	
+	protected static void debug(long msg) {
+		Debug.write(msg);
+	}
+	
+	protected static void debug(Object o) {
+		Debug.write(o);
+	}
+	
 	public static float lerp(float x0, float x1, float perc) {
 		return x0 * (1 - perc) + x1 * perc;
 	}
@@ -119,5 +128,10 @@ public class PlayNObject {
 			return ((Positioned) o).y();
 		}
 		return 0;
+	}
+	
+	protected static void centerImageLayer(ImageLayer layer) {
+		if (layer.image() != null)
+			layer.setOrigin(layer.width() / 2, layer.height() / 2);
 	}
 }

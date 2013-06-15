@@ -169,10 +169,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		float buttonHeight = bgHeight * 0.8f;
 		buttonBack = new Button(backImageBack, buttonHeight, buttonHeight, true);
 		buttonBack.setPosition(buttonBack.width() / 2 + 10, bgHeight / 2);
-		buttonBack.setTint(backgroundPrimaryColor);
+		buttonBack.setTint(backgroundPrimaryColor, Button.UNPRESSED_ALPHA);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
-			public void onRelease(boolean inButton) {
+			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					if (selectedPoint != null && getNumber(selectedPoint) != answer) {
 						buttonBack.setImage(backImageCancel);
@@ -185,10 +185,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		 
 		buttonCenter = new Button("images/center.png", buttonHeight, buttonHeight, true);
 		buttonCenter.setPosition(width() - buttonCenter.width() / 2 - 10, bgHeight / 2);
-		buttonCenter.setTint(backgroundPrimaryColor);
+		buttonCenter.setTint(backgroundPrimaryColor, Button.UNPRESSED_ALPHA);
 		buttonCenter.setOnReleasedListener(new OnReleasedListener() {
 			@Override
-			public void onRelease(boolean inButton) {
+			public void onRelease(Event event, boolean inButton) {
 				selectedPoint = new Point(recenterPoint);
 			}
 		});
