@@ -17,7 +17,8 @@
     <gwt.module>tuxkids.tuxblocks.TuxBlocksGame</gwt.module>
     <gwt.name>tuxblocks</gwt.name>
     <!-- Desired Google App Engine SDK version -->
-    <gae.version>1.6.1</gae.version>
+	<gae.version>1.6.1</gae.version>
+    <!-- <gae.version>1.8.1</gae.version> -->
   </properties>
 
   <dependencies>
