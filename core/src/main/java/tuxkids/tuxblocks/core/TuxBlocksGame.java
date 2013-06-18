@@ -24,11 +24,11 @@ public class TuxBlocksGame extends Game.Default {
 //        @Override protected void handleError (RuntimeException error) {
 //            log().warn("Screen failure", error);
 //        }
-        @Override protected Transition defaultPushTransition () {
+        @Override public Transition defaultPushTransition () {
 //        	return fade;
             return slide();
         }
-        @Override protected Transition defaultPopTransition () {
+        @Override public Transition defaultPopTransition () {
             //return new FadeTransition(screens); 
             return slide().right();
         }

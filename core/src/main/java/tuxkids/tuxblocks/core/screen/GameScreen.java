@@ -10,6 +10,7 @@ import playn.core.PlayN;
 import pythagoras.f.Vector;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
+import tripleplay.game.ScreenStack.Transition;
 import tuxkids.tuxblocks.core.PlayNObject;
 
 public class GameScreen extends Screen implements Listener {
@@ -50,6 +51,10 @@ public class GameScreen extends Screen implements Listener {
 	}
 	
 	protected void pushScreen(final GameScreen screen) {
+		pushScreen(screen, screens.slide().left());
+	}
+	
+	protected void pushScreen(final GameScreen screen, Transition transition) {
 		topActivity = screen;
 		screen.onScreenFinishedListener = new OnScreenFinishedListener() {
 			@Override
@@ -58,14 +63,18 @@ public class GameScreen extends Screen implements Listener {
 			}
 		};
 		screen.depth = depth + 1;
-		screens.push(screen);
+		screens.push(screen, transition);
+	}
+	
+	protected void popThis(Transition transition) {
+		PlayN.keyboard().setListener(null);
+		screens.remove(this, transition);
+		layer.setDepth(-1);
+		if (onScreenFinishedListener != null) onScreenFinishedListener.onScreenFinished();
 	}
 	
 	protected void popThis() {
-		PlayN.keyboard().setListener(null);
-		screens.remove(this);
-		layer.setDepth(-1);
-		if (onScreenFinishedListener != null) onScreenFinishedListener.onScreenFinished();
+		popThis(screens.slide().right());
 	}
 	
 	protected void onChildScreenFinished(GameScreen screen) {

@@ -22,6 +22,7 @@ public class Button extends PlayNObject implements Positioned {
 	private boolean pressed;
 	private boolean isCircle;
 	private int tint, tintPressed;
+	private boolean enabled = true;
 
 	public ImageLayer layer() {
 		return imageLayer;
@@ -59,6 +60,10 @@ public class Button extends PlayNObject implements Positioned {
 	
 	public int tint() {
 		return imageLayer.tint();
+	}
+	
+	public boolean enabled() {
+		return enabled;
 	}
 	
 	public void setPosition(float x, float y) {
@@ -106,7 +111,7 @@ public class Button extends PlayNObject implements Positioned {
 	}
 	
 	public void setTint(int tint) {
-		setTint(tint, tint);
+		setTint(tint, UNPRESSED_ALPHA);
 	}
 	
 	public void setTint(int tint, float alphaUnpressed) {
@@ -116,11 +121,22 @@ public class Button extends PlayNObject implements Positioned {
 	public void setTint(int tint, int tintPressed) {
 		this.tint = tint;
 		this.tintPressed = tintPressed;
-		imageLayer.setTint(pressed ? tintPressed : tint);
+		refreshTint();
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		refreshTint();
 	}
 	
 	public Button(String imagePath, float width, float height, boolean isCircle) {
 		this(assets().getImage(imagePath), width, height, isCircle);
+	}
+	
+	private void refreshTint() {
+		int tint = pressed ? tintPressed : this.tint;
+		if (!enabled) tint = Colors.blend(tint, Color.withAlpha(Colors.BLACK, Color.alpha(tint)), 0.5f);
+		imageLayer.setTint(tint);
 	}
 	
 	public Button(Image image, float width, float height, boolean isCircle) {
@@ -158,17 +174,17 @@ public class Button extends PlayNObject implements Positioned {
 		
 		@Override
 		public void onPointerStart(Event event) {
-			if (!insideLocal(event)) return;
-			imageLayer.setTint(tintPressed);
+			if (!enabled || !insideLocal(event)) return;
 			pressed = true;
+			refreshTint();
 			if (onPressedListener != null) onPressedListener.onPress(event);
 		}
 
 		@Override
 		public void onPointerEnd(Event event) {
-			if (!pressed) return;
-			imageLayer.setTint(tint);
+			if (!enabled || !pressed) return;
 			pressed = false;
+			refreshTint();
 			if (onReleaseListener != null) onReleaseListener.onRelease(event, insideLocal(event));
 		}
 		
@@ -185,6 +201,7 @@ public class Button extends PlayNObject implements Positioned {
 
 		@Override
 		public void onPointerDrag(Event event) { 
+			if (!enabled) return; 
 			if (onDragListener != null) onDragListener.onDrag(event);
 		}
 

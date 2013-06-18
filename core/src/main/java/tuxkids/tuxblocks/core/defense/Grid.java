@@ -24,7 +24,7 @@ import tuxkids.tuxblocks.core.utils.MultiList;
 
 public class Grid extends PlayNObject {
 	
-	private final static boolean SHOW_GRID = true;
+	private final static boolean SHOW_GRID = false;
 	
 	private int cellSize;
 	private int rows, cols;
@@ -41,6 +41,7 @@ public class Grid extends PlayNObject {
 	private ImageLayer toPlacePreview;
 	private List<Point> currentPath;
 	private Round round;
+	private float targetAlpha;
 	
 	public int width() {
 		return cols * cellSize;
@@ -117,7 +118,18 @@ public class Grid extends PlayNObject {
 		};
 	}
 
+	public void fadeIn(float targetAlpha) {
+		this.targetAlpha = targetAlpha;
+		groupLayer.setAlpha(0);
+	}
+	
 	public void update(int delta) {
+		if (groupLayer.alpha() < targetAlpha * 0.99f) {
+			groupLayer.setAlpha(lerp(groupLayer.alpha(), targetAlpha, 1 - (float)Math.pow(0.99, delta)));
+		} else {
+			groupLayer.setAlpha(targetAlpha);
+		}
+		
 		Walker walker = round.update(delta);
 		if (walker != null) {
 			addWalker(walker.place(this, walkerStart, walkerDestination));
@@ -207,13 +219,25 @@ public class Grid extends PlayNObject {
 		groupLayer.add(toPlacePreview);
 		updateToPlace();
 	}
+	
+	private float getPlaceX(float globalX) {
+		float placeX = globalX - getGlobalTx(groupLayer);
+		if (PlayN.platform().touch().hasTouch()) placeX -= width() / 20;
+		return  placeX;
+	}
+	
+	private float getPlaceY(float globalY) {
+		float placeY = globalY - getGlobalTy(groupLayer);
+		if (PlayN.platform().touch().hasTouch()) placeY -= width() / 20;
+		return  placeY;
+	}
 
 	public void updatePlacement(float globalX, float globalY) {
-		float localX = globalX - groupLayer.tx(), localY = globalY - groupLayer.ty();
+		float placeX = getPlaceX(globalX), placeY = getPlaceY(globalY);
 		if (toPlace != null) {
-			Point cell = getCell(localX, localY, toPlace.width(), toPlace.height());
+			Point cell = getCell(placeX, placeY, toPlace.width(), toPlace.height());
 			toPlace.setCoordinates(cell);
-			toPlace.layer().setVisible(!isOutOfBounds(localX, localY));
+			toPlace.layer().setVisible(!isOutOfBounds(placeX, placeY));
 			updateToPlace();
 		}
 	}

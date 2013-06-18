@@ -1,5 +1,3 @@
-cd /D %~dp0
-call mvn -Pandroid install
 @echo off
 SETLOCAL ENABLEDELAYEDEXPANSION
 set check=0

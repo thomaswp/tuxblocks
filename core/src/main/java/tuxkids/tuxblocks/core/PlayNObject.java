@@ -134,4 +134,24 @@ public class PlayNObject {
 		if (layer.image() != null)
 			layer.setOrigin(layer.width() / 2, layer.height() / 2);
 	}
+	
+	public static float getGlobalTx(Layer layer) {
+		Layer parent = layer;
+		float tx = 0;
+		while (parent != null) {
+			tx += parent.tx();
+			parent = parent.parent();
+		}
+		return tx;
+	}
+	
+	public static float getGlobalTy(Layer layer) {
+		Layer parent = layer;
+		float ty = 0;
+		while (parent != null) {
+			ty += parent.ty();
+			parent = parent.parent();
+		}
+		return ty;
+	}
 }
