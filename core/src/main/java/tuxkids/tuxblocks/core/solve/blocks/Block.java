@@ -12,6 +12,7 @@ import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
 import tuxkids.tuxblocks.core.solve.expression.ModificationOperation;
@@ -57,7 +58,7 @@ public abstract class Block extends PlayNObject{
 	
 	protected ImageLayer generateSprite(int width, int height, String text, int color) {
 		if (textFormat == null) {
-			Font font = PlayN.graphics().createFont("Arial", Font.Style.PLAIN, 20);
+			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, 20);
 			textFormat = new TextFormat().withFont(font);
 		}
 		

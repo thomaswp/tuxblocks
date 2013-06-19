@@ -12,6 +12,8 @@ public class Pathing {
 
 	private final static int[] offRows = new int[] {0, 1, 0, -1};
 	private final static int[] offCols = new int[] {1, 0, -1, 0};
+//	private final static int[] offRows = new int[] {0, 1, 0, -1, 0, 2, 0, -2};
+//	private final static int[] offCols = new int[] {1, 0, -1, 0, 2, 0, -2, 0};
 	
 	public static List<Point> getPath(Grid grid, Point from, Point to) {
 		List<Point> closedSet = new ArrayList<Point>(),

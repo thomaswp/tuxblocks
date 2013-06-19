@@ -45,4 +45,14 @@ public class HorizontalWall extends Tower {
 		return "Horizontal Wall";
 	}
 
+	@Override
+	public int cost() {
+		return 2;
+	}
+
+	@Override
+	public int commonness() {
+		return 1;
+	}
+
 }

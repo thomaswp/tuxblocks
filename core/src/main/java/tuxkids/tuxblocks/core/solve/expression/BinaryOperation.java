@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.solve.expression;
 
 import tuxkids.tuxblocks.core.utils.Formatter;
+import tuxkids.tuxblocks.core.utils.HashCode;
 
 public abstract class BinaryOperation extends Expression {
 	
@@ -58,4 +59,10 @@ public abstract class BinaryOperation extends Expression {
 	public abstract String getSymbol();
 	public abstract int operate(int a, int b);
 	public abstract boolean isCommutative();
+	
+	@Override
+	public void addFields(HashCode hashCode) {
+		hashCode.addField(operandA);
+		hashCode.addField(operandB);
+	}
 }

@@ -14,9 +14,11 @@ import pythagoras.f.Vector;
 import pythagoras.i.IPoint;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 import tuxkids.tuxblocks.core.utils.Positioned;
 
-public class PlayNObject {
+public abstract class PlayNObject {
 	protected static Graphics graphics() {
 		return PlayN.graphics();
 	}
@@ -78,6 +80,11 @@ public class PlayNObject {
 	}
 	
 	public static float lerp(float x0, float x1, float perc) {
+		return x0 * (1 - perc) + x1 * perc;
+	}
+	
+	public static float lerpTime(float x0, float x1, float base, float dt) {
+		float perc = 1 - (float) Math.pow(base, dt);
 		return x0 * (1 - perc) + x1 * perc;
 	}
 	
@@ -153,5 +160,25 @@ public class PlayNObject {
 			parent = parent.parent();
 		}
 		return ty;
+	}
+	
+	private HashCode hashCode;
+	protected PlayNObject() {
+		if (this instanceof Hashable) hashCode = new HashCode((Hashable) this);
+	}
+	
+	@Override
+	public int hashCode() {
+		if (hashCode == null) return super.hashCode();
+		return hashCode.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (hashCode == null) return super.equals(obj);
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!this.getClass().equals(obj.getClass())) return false;
+		return hashCode.equals(((PlayNObject) obj).hashCode);
 	}
 }

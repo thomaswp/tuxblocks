@@ -6,6 +6,8 @@ import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
+import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
 public abstract class ModificationOperation extends Expression {
 
@@ -71,4 +73,9 @@ public abstract class ModificationOperation extends Expression {
 	public abstract int getColor();
 	public abstract ModificationOperation getInverse();
 
+	@Override
+	public void addFields(HashCode hashCode) {
+		hashCode.addField(operand);
+		hashCode.addField(value);
+	}
 }

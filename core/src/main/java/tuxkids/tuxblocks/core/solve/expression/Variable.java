@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.solve.expression;
 
+import tuxkids.tuxblocks.core.utils.HashCode;
+
 public class Variable extends Expression {
 
 	private String name;
@@ -35,6 +37,11 @@ public class Variable extends Expression {
 	@Override
 	public int getPrecedence() {
 		return PREC_NUM;
+	}
+
+	@Override
+	public void addFields(HashCode hashCode) {
+		hashCode.addField(name);
 	}
 
 }

@@ -1,0 +1,14 @@
+(echo | set /p= %DATE% %TIME%: ) >> log.txt
+:loop
+IF "%~1"=="" GOTO cont
+IF /I "%~1"=="/u" SET UPDATE=Y
+IF /I "%~1"=="/p" SET PRIMARY=Y
+IF /I "%~1"=="/s" SET SECONDARY=Y
+IF /I "%~1"=="/d" SHIFT & SET DISTRO="%~1"
+SHIFT & GOTO loop
+
+ECHO is on.
+C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core
+C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core
+Tue 06/18/2013 14:55:42.75: C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src
+Tue 06/18/2013 14:56:16.99: C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src\main C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src\main\java C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src\main\java\tuxkids C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src\main\java\tuxkids\tuxblocks C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src\main\java\tuxkids\tuxblocks\core C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src\main\java\tuxkids\tuxblocks\core\defense C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src\main\java\tuxkids\tuxblocks\core\defense\select C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\src\main\java\tuxkids\tuxblocks\core\defense\select\ProblemButton.java C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\target C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\target\classes C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\target\classes\tuxkids C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\target\classes\tuxkids\tuxblocks C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\target\classes\tuxkids\tuxblocks\core C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\target\classes\tuxkids\tuxblocks\core\defense C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\target\classes\tuxkids\tuxblocks\core\defense\select C:\Users\Thomas\Documents\Eclipse\Tux\tuxblocks\core\target\classes\tuxkids\tuxblocks\core\defense\select\ProblemButton.class

@@ -1,5 +1,9 @@
 package tuxkids.tuxblocks.core.defense.tower;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Image;
@@ -23,6 +27,7 @@ public abstract class Tower extends GridObject {
 	
 	private int fireTimer;
 	private Vector position = new Vector();
+	private int id;
 	
 	public abstract int rows();
 	public abstract int cols();
@@ -30,9 +35,32 @@ public abstract class Tower extends GridObject {
 	public abstract int fireRate();
 	public abstract float range();
 	public abstract Projectile createProjectile();
-//	public abstract Image createImage(float width, float height, int color);
 	public abstract Tower copy();
 	public abstract String name();
+	public abstract int cost();
+	public abstract int commonness();
+
+	private static int nextTowerId;
+	private static HashMap<Class<?>, Integer> towerIds =
+			new HashMap<Class<?>, Integer>();
+	
+	private final static Tower[] towers = new Tower[] {
+		new PeaShooter(),
+		new BigShooter(),
+		new VerticalWall(),
+		new HorizontalWall(),
+	};
+	private final static List<Tower> towerBag;
+	static {
+		towerBag = new ArrayList<Tower>();
+		for (Tower tower : towers) 
+			for (int i = 0; i < tower.commonness(); i++) 
+				towerBag.add(tower);
+	}
+	
+	public static Tower[] towers() {
+		return towers;
+	}
 
 	public float width() {
 		return cols() * grid.getCellSize();
@@ -52,6 +80,31 @@ public abstract class Tower extends GridObject {
 	
 	public Vector position() {
 		return position;
+	}
+	
+	public int id() {
+		return id;
+	}
+	
+	public static Tower getTowerById(int id) {
+		return towers[id];
+	}
+
+	public static Tower randomTower() {
+		return towerBag.get((int)(Math.random() * towerBag.size()));
+	}
+	
+	public static int towerCount() {
+		return towers.length;
+	}
+	
+	public Tower() {
+		Integer id = towerIds.get(getClass()); 
+		if (id == null) {
+			id = nextTowerId++;
+			towerIds.put(getClass(), id);
+		}
+		this.id = id;
 	}
 	
 	public void setCoordinates(Point coordinates) {

@@ -1,7 +1,9 @@
 package tuxkids.tuxblocks.core.defense;
 
 import java.net.PasswordAuthentication;
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 import playn.core.CanvasImage;
 import playn.core.Color;
@@ -17,6 +19,7 @@ import playn.core.Pointer.Listener;
 import playn.core.TextLayout;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Button.OnDragListener;
 import tuxkids.tuxblocks.core.Button.OnPressedListener;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
@@ -26,6 +29,7 @@ import tuxkids.tuxblocks.core.defense.tower.HorizontalWall;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.VerticalWall;
+import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class Inventory extends PlayNObject {
@@ -35,19 +39,11 @@ public class Inventory extends PlayNObject {
 	private Grid grid;
 	private GroupLayer groupLayer;
 	private int width, height;
-	private int counts[];
 	private ImageLayer countSprites[];
 	private Button itemButtons[];
 	private TextFormat textFormat;
 	private Button buttonPlus;
 	private DefenseScreen screen;
-	
-	private final static Tower[] towers = new Tower[] {
-		new PeaShooter(),
-		new BigShooter(),
-		new VerticalWall(),
-		new HorizontalWall(),
-	};
 	
 	public GroupLayer layer() {
 		return groupLayer;
@@ -69,9 +65,13 @@ public class Inventory extends PlayNObject {
 	
 	private float getItemSpriteY(int index) {
 		int i = index / 2;
-		int rows = (towers.length + 1) / 2;
+		int rows = (Tower.towers().length + 1) / 2;
 		float spriteHeight = getItemSpriteSize() + ITEM_SPRITE_MARGIN * 2 + getItemCaptionHeight();
 		return height / 2 + (i - (rows - 1) * 0.5f) * spriteHeight;
+	}
+	
+	private int[] towerCounts() {
+		return screen.state().towerCounts();
 	}
 	
 	public Inventory(DefenseScreen screen, Grid grid, int width, int height) {
@@ -80,23 +80,22 @@ public class Inventory extends PlayNObject {
 		this.grid = grid;
 		this.width = width;
 		this.height = height;
-		counts = new int[towers.length];
 		
 		textFormat = new TextFormat().withFont(
-				graphics().createFont("Arial", Style.BOLD, getItemSpriteSize() / 7));
+				graphics().createFont(Constant.FONT_NAME, Style.BOLD, getItemSpriteSize() / 7));
 		//createBackgroundSprite();
 		createSelectionSprites();
 		createCountSprites();
 		createPlusButton();
 		
-		addItem(0, 3);
-		addItem(2, 1);
-		addItem(3, 1);
+//		addItem(0, 100);
+//		addItem(2, 1);
+//		addItem(3, 1);
 	}
 	
 	private void createPlusButton() {
 		Image image = assets().getImage("images/plus.png");
-		int size = this.width / 4;
+		float size = GameScreen.defaultButtonSize();
 		buttonPlus = new Button(image, size, size, true);
 		buttonPlus.setPosition(size * 0.6f, size * 0.6f);
 		buttonPlus.setTint(Colors.blend(Colors.RED, Colors.BLACK, 0.9f), 
@@ -112,12 +111,12 @@ public class Inventory extends PlayNObject {
 	}
 	
 	private void addItem(int index, int count) {
-		counts[index] += count;
+		towerCounts()[index] += count;
 		refreshCountSprite(index);
 	}
 	
 	private void createCountSprites() {
-		countSprites = new ImageLayer[counts.length];
+		countSprites = new ImageLayer[towerCounts().length];
 		for (int i = 0; i < countSprites.length; i++) {
 			countSprites[i] = graphics().createImageLayer();
 			countSprites[i].setTranslation(getItemSpriteX(i) - getItemSpriteSize() / 2 + ITEM_SPRITE_MARGIN, 
@@ -127,14 +126,20 @@ public class Inventory extends PlayNObject {
 		}
 	}
 	
+	public void refreshCountSprites() {
+		for (int i = 0; i < countSprites.length; i++) {
+			refreshCountSprite(i);
+		}
+	}
+	
 	private void refreshCountSprite(int index) {
-		String text = "x" + counts[index];
+		String text = "x" + towerCounts()[index];
 		TextLayout layout = graphics().layoutText(text, textFormat);
 		CanvasImage image = graphics().createImage(layout.width(), layout.height());
 		image.canvas().setFillColor(Colors.BLACK);
 		image.canvas().fillText(layout, 0, 0);
 		countSprites[index].setImage(image);
-		itemButtons[index].setEnabled(counts[index] > 0);
+		itemButtons[index].setEnabled(towerCounts()[index] > 0);
 	}
 	
 	private void createSelectionSprites() {
@@ -145,9 +150,9 @@ public class Inventory extends PlayNObject {
 		float cellSize = (spriteSize - padding * 2) / 3;
 		float strokeWidth = 5;
 		
-		itemButtons = new Button[towers.length];
+		itemButtons = new Button[Tower.towers().length];
 		for (int index = 0; index < itemButtons.length; index++) {
-			final Tower tower = towers[index];
+			final Tower tower = Tower.getTowerById(index);
 			
 			CanvasImage image = graphics().createImage(spriteSize, spriteSize + textHeight);
 			image.canvas().setFillColor(Colors.WHITE);
@@ -185,7 +190,7 @@ public class Inventory extends PlayNObject {
 				public void onPointerEnd(Event event) {
 					if (!button.enabled()) return;
 					if (grid.endPlacement(event.x(), event.y())) {
-						counts[fi]--;
+						towerCounts()[fi]--;
 						refreshCountSprite(fi);
 					}
 				}

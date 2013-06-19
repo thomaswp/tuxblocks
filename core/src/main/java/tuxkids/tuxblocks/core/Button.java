@@ -66,6 +66,46 @@ public class Button extends PlayNObject implements Positioned {
 		return enabled;
 	}
 	
+	public float left() {
+		return x() - width / 2;
+	}
+	
+	public float top() {
+		return y() - height / 2;
+	}
+	
+	public float right() {
+		return x() + width / 2;
+	}
+	
+	public float bottom() {
+		return y() + height / 2;
+	}
+	
+	public void setLeft(float left) {
+		setX(left + width / 2);
+	}
+	
+	public void setTop(float top) {
+		setY(top + height / 2);
+	}
+	
+	public void setRight(float right) {
+		setX(right - width / 2);
+	}
+	
+	public void setBottom(float bottom) {
+		setY(bottom - height / 2);
+	}
+	
+	public void setX(float x) {
+		imageLayer.setTx(x);
+	}
+	
+	public void setY(float y) {
+		imageLayer.setTy(y);
+	}
+	
 	public void setPosition(float x, float y) {
 		imageLayer.setTranslation(x, y);
 	}
@@ -149,6 +189,14 @@ public class Button extends PlayNObject implements Positioned {
 		setTint(Colors.WHITE, UNPRESSED_ALPHA);
 	}
 	
+	public Button(Image image, boolean isCircle) {
+		this(image, image.width(), image.height(), isCircle);
+	}
+	
+	public void destroy() {
+		imageLayer.destroy();
+	}
+
 	public boolean hit(float x, float y) {
 		if (isCircle) {
 			return hitCircle(x, y);

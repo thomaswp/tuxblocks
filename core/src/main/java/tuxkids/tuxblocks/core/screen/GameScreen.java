@@ -11,13 +11,21 @@ import pythagoras.f.Vector;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.solve.expression.Equation;
 
 public class GameScreen extends Screen implements Listener {
+	
 	protected ScreenStack screens;
+	protected GameState state;
 	protected GameScreen topActivity;
 	private OnScreenFinishedListener onScreenFinishedListener;
 	protected int depth;
+	
+	public static float defaultButtonSize() {
+		return graphics().height() * 0.15f;
+	}
 	
 	@Override
 	public void wasShown() {
@@ -34,8 +42,13 @@ public class GameScreen extends Screen implements Listener {
 		return depth;
 	}
 	
-	public GameScreen(ScreenStack screens) {
+	public GameState state() {
+		return state;
+	}
+	
+	public GameScreen(ScreenStack screens, GameState state) {
 		this.screens = screens;
+		this.state = state;
 	}
 	
 	protected static Graphics graphics() {
@@ -50,7 +63,7 @@ public class GameScreen extends Screen implements Listener {
 		PlayNObject.lerp(v0, x1, y1, perc);
 	}
 	
-	protected void pushScreen(final GameScreen screen) {
+	protected void pushScreen(GameScreen screen) {
 		pushScreen(screen, screens.slide().left());
 	}
 	

@@ -51,4 +51,14 @@ public class PeaShooter extends Tower {
 		return "Pea Shooter";
 	}
 
+	@Override
+	public int cost() {
+		return 1;
+	}
+
+	@Override
+	public int commonness() {
+		return 5;
+	}
+
 }

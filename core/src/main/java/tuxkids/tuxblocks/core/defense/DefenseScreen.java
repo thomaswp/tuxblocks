@@ -16,6 +16,7 @@ import pythagoras.f.Transform;
 import pythagoras.i.Point;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
@@ -28,8 +29,8 @@ public class DefenseScreen extends GameScreen implements Listener {
 	private ImageLayer background;
 	private GroupLayer gridHolder;
 	
-	public DefenseScreen(ScreenStack screens) {
-		super(screens);
+	public DefenseScreen(ScreenStack screens, GameState gameState) {
+		super(screens, gameState);
 	}
 	
 	@Override
@@ -56,6 +57,12 @@ public class DefenseScreen extends GameScreen implements Listener {
 			gridHolder.add(grid.getLayer());
 			grid.fadeIn(1);
 		}
+	}
+	
+	@Override
+	public void wasShown() {
+		super.wasShown();
+		inventory.refreshCountSprites();
 	}
 	
 	@Override
@@ -101,7 +108,7 @@ public class DefenseScreen extends GameScreen implements Listener {
 	}
 	
 	public void pushSelectScreen() {
-		pushScreen(new SelectScreen(screens, grid), screens.slide().right());
+		pushScreen(new SelectScreen(screens, state, grid), screens.slide().right());
 	}
 
 }

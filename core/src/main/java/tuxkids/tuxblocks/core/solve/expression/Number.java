@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.solve.expression;
 
+import tuxkids.tuxblocks.core.utils.HashCode;
+
 public class Number extends Expression {
 
 	private int value;
@@ -39,6 +41,11 @@ public class Number extends Expression {
 
 	public void setValue(int value) {
 		this.value = value;
+	}
+
+	@Override
+	public void addFields(HashCode hashCode) {
+		hashCode.addField(value);
 	}
 
 }

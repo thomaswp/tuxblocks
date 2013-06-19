@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import tuxkids.tuxblocks.core.utils.Debug;
+
 
 public class EquationGenerator {
 
@@ -13,6 +15,12 @@ public class EquationGenerator {
 	private final static int MIN_TIMES = 2;
 	private final static int MAX_RHS = 500;
 	
+	private final static float PLUS_DIFFICULTY = 1;
+	private final static float MINUS_DIFFICULTY = 1.3f;
+	private final static float TIMES_DIFFICULTY = 3;
+	private final static float DIVIDE_DIFFICULTY = 4;
+	private final static float MIN_DIFFICULTY = 5;
+	
 	private final static Random random = new Random();
 	
 	private enum Operation {
@@ -21,6 +29,7 @@ public class EquationGenerator {
 	
 	public static Equation generate(int steps) {
 		int answer = random.nextInt(MAX_ANSWER * 2 + 1) - MAX_ANSWER;
+		double difficulty = answer / 3;
 		int rhs = answer;
 		Expression lhs = new Variable("x");
 		Operation lastOperation = null;
@@ -37,7 +46,7 @@ public class EquationGenerator {
 			
 			int maxTimes = MAX_TIMES;
 			if (rhs != 0) maxTimes = Math.min(maxTimes, Math.abs(MAX_RHS / rhs));
-			if (maxTimes == 1) operations.remove(Operation.Times);
+			if (maxTimes <= MIN_TIMES) operations.remove(Operation.Times);
 			
 			if (operations.size() > 1 && lastOperationInv != null)
 				operations.remove(lastOperationInv);
@@ -46,30 +55,40 @@ public class EquationGenerator {
 			lastOperation = operation;
 			lastTimes = null;
 			
+			double ds = difficulty;
+			int r = rhs;
+			int value;
 			if (operation == Operation.Plus) {
 				lastOperationInv = Operation.Minus;
-				int value = random.nextInt(MAX_ADD_SUB - 1) + 1;
+				value = random.nextInt(MAX_ADD_SUB - 1) + 1;
+				difficulty += PLUS_DIFFICULTY * Math.min(Math.abs(value), Math.abs(rhs));
 				lhs = lhs.plus(value);
 				rhs += value;
 			} else if (operation == Operation.Minus) {
 				lastOperationInv = Operation.Plus;
-				int value = random.nextInt(MAX_ADD_SUB - 1) + 1;
+				value = random.nextInt(MAX_ADD_SUB - 1) + 1;
+				difficulty += MINUS_DIFFICULTY * Math.min(Math.abs(value), Math.abs(rhs));
 				lhs = lhs.minus(value);
 				rhs -= value;
 			} else if (operation == Operation.Times) {
 				lastOperationInv = Operation.Over;
-				int value = random.nextInt(maxTimes - MIN_TIMES) + MIN_TIMES;
+				value = random.nextInt(maxTimes - MIN_TIMES) + MIN_TIMES;
 				lhs = lhs.times(value);
 				rhs *= value;
 				lastTimes = value;
+				difficulty += TIMES_DIFFICULTY * Math.sqrt(Math.abs(rhs));
 			} else {
 				lastOperationInv = Operation.Times;
-				int value = factors.get(random.nextInt(factors.size()));
+				value = factors.get(random.nextInt(factors.size()));
+				difficulty += DIVIDE_DIFFICULTY * Math.sqrt(Math.abs(rhs));
 				lhs = lhs.over(value);
 				rhs /= value;
 			}
+			difficulty += MIN_DIFFICULTY;
+			ds = difficulty - ds;
+			//Debug.write("%d %s %d: %f", r, operation, value, ds);
 		}
-		return new Equation(lhs, new Number(rhs), answer);
+		return new Equation(lhs, new Number(rhs), answer, (int)difficulty);
 	}
 	public static List<Integer> getFactors(int n) {
 		List<Integer> factors = new ArrayList<Integer>();

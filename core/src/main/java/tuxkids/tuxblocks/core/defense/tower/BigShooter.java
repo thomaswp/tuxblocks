@@ -49,4 +49,14 @@ public class BigShooter extends Tower {
 		return "B.I.G. Shooter";
 	}
 
+	@Override
+	public int cost() {
+		return 4;
+	}
+
+	@Override
+	public int commonness() {
+		return 3;
+	}
+
 }

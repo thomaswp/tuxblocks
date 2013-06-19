@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core.solve;
 import static playn.core.PlayN.graphics;
 import playn.core.CanvasImage;
 import playn.core.Color;
+import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
@@ -10,6 +11,11 @@ import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import pythagoras.f.Point;
 import tripleplay.game.ScreenStack;
+import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Button;
+import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock.OnSimplifyListener;
@@ -24,29 +30,32 @@ import tuxkids.tuxblocks.core.utils.Debug;
 
 public class SolveScene extends GameScreen implements Listener, OnSimplifyListener {
 	
+	private Equation startEquation;
 	private BaseBlock leftHandSide, rightHandSide;
 	private BaseBlock draggingFrom, draggingTo;
 	private ModifierBlock dragging;
 	private Point dragOffset = new Point();
 	private EquationSprite equationSprite;
 	private BaseBlock simplyfyResult;
+	private Button buttonBack;
+	private Image buttonImageOk, buttonImageBack;
 	
-	public SolveScene(ScreenStack screens) {
-		super(screens);
+	public SolveScene(ScreenStack screens, GameState gameState, Equation equation) {
+		super(screens, gameState);
+		this.startEquation = equation;
+	}
+	
+	public boolean solved() {
+		return dragging == null && !leftHandSide.hasModifier() && !rightHandSide.hasModifier();
+	}
+
+	public Equation equation() {
+		return new Equation(leftHandSide.getTopLevelExpression(), rightHandSide.getTopLevelExpression(), 
+				startEquation.answer(), startEquation.difficulty());
 	}
 	
 	@Override
 	public void wasAdded() {
-		
-//		
-//		for (int i = 1; i < 5; i++) {
-//			for (int j = 0; j < 5; j++) {
-//				Equation eq = EquationGenerator.generate(i);
-//				Debug.write(i + ": " + eq.toMathString() + "| x = " + eq.getAnswer());
-//			}
-//		}
-		
-		Equation eq = EquationGenerator.generate(4);
 		
 		CanvasImage background = graphics().createImage(graphics().width(), graphics().height());
 		background.canvas().setFillColor(Color.rgb(255, 255, 255));
@@ -55,20 +64,34 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 		background.canvas().fillRect(graphics().width() / 2, 0, graphics().width() / 2, graphics().height());
 		layer.add(graphics().createImageLayer(background));
 
-		leftHandSide = Block.createBlock(eq.getLeftHandSide());
+		leftHandSide = Block.createBlock(startEquation.leftHandSide());
 		leftHandSide.getGroupLayer().setTy(graphics().height());
 		leftHandSide.getGroupLayer().setTx(graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
 		layer.add(leftHandSide.getGroupLayer());
 		if (leftHandSide.hasModifier())	leftHandSide.getLastModifier().getSprite().addListener(this);
 		leftHandSide.setSimplifyListener(this);
 		
-		rightHandSide = Block.createBlock(eq.getRightHandSide());
+		rightHandSide = Block.createBlock(startEquation.rightHandSide());
 		rightHandSide.getGroupLayer().setTy(graphics().height());
 		rightHandSide.getGroupLayer().setTx(3 * graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
 		layer.add(rightHandSide.getGroupLayer());
 		if (rightHandSide.hasModifier()) rightHandSide.getSprite().addListener(this);
 		rightHandSide.setSimplifyListener(this);
 
+		buttonImageBack = PlayN.assets().getImage(Constant.BUTTON_DOWN);
+		buttonImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
+		buttonBack = new Button(buttonImageBack, defaultButtonSize(), defaultButtonSize(), true);
+		buttonBack.setPosition(buttonBack.width() * 0.6f, buttonBack.height() * 0.6f);
+		buttonBack.layer().setDepth(10);
+		buttonBack.setTint(Colors.BLUE);
+		buttonBack.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) popThis(screens.slide().up());
+			}
+		});
+		layer.add(buttonBack.layer());
+		
 		equationSprite = new EquationSprite(leftHandSide, rightHandSide);
 		refreshEquationSprite();
 	}
@@ -79,6 +102,7 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 		this.layer.add(layer);
 		layer.setTy(10);
 		layer.setTx(graphics().width() / 2);
+		buttonBack.setImage(solved() ? buttonImageOk : buttonImageBack);
 	}
 	
 	@Override
@@ -176,7 +200,7 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 	@Override
 	public void onSimplify(BaseBlock baseBlock, String expression, int answer, int start) {
 		simplyfyResult = baseBlock;
-		NumberSelectScreen nss = new NumberSelectScreen(screens, expression, answer);
+		NumberSelectScreen nss = new NumberSelectScreen(screens, state, expression, answer);
 		nss.setFocusedNumber(start);
 		pushScreen(nss);
 	}

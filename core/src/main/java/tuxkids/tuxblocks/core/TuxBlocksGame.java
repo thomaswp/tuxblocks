@@ -7,11 +7,19 @@ import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Game;
 import playn.core.ImageLayer;
+import playn.core.TextFormat;
+import playn.core.Font.Style;
+import playn.core.TextLayout;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.screen.FadeTransition;
 import tuxkids.tuxblocks.core.solve.SolveScene;
+import tuxkids.tuxblocks.core.solve.expression.Equation;
+import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
+import tuxkids.tuxblocks.core.solve.expression.Number;
+import tuxkids.tuxblocks.core.solve.expression.Variable;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 public class TuxBlocksGame extends Game.Default {
 
@@ -41,14 +49,20 @@ public class TuxBlocksGame extends Game.Default {
 	}
 	
 	public TuxBlocksGame() {
-		super(UPDATE_RATE); // call update every 33ms (30 times per second)
+		super(UPDATE_RATE);
 		instance = this;
 	}
 
 	@Override
-	public void init() {		
-//		screens.push(new SolveScene(screens));
-		screens.push(new DefenseScreen(screens));
+	public void init() {	
+//		TextFormat format = new TextFormat().withFont(graphics().createFont("Arial", Style.PLAIN, 20));
+//		TextLayout layout = graphics().layoutText("(", format);
+//		Debug.write("%f %f %f %f", layout.ascent(), layout.descent(), layout.height(), layout.width());
+//		Equation eq = EquationGenerator.generate(4);
+//		Debug.write(eq.toMathString());
+//		screens.push(new SolveScene(screens, eq));
+		
+		screens.push(new DefenseScreen(screens, new GameState()));
 	}
 	
 	private int frames;

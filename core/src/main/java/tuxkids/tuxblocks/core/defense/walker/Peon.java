@@ -1,7 +1,7 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
 
-public class Peon extends FlipWalker {
+public class Peon extends SlideWalker {
 
 	@Override
 	public int getMaxHp() {

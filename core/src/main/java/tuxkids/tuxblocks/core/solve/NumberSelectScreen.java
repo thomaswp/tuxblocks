@@ -25,7 +25,9 @@ import pythagoras.i.Point;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
@@ -77,8 +79,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		recenterPoint = getPoint(number);
 	}
 	
-	public NumberSelectScreen(ScreenStack screens, String expression, int answer) {
-		super(screens);
+	public NumberSelectScreen(ScreenStack screens, GameState gameState, String expression, int answer) {
+		super(screens, gameState);
 		this.expression = expression;
 		this.answer = answer;
 	}
@@ -88,9 +90,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		SPACING = (int)(height() / 3.5f);
 		position.set(recenterPoint.x * SPACING, recenterPoint.y * SPACING);
 		textFormat = new TextFormat().withFont(
-				graphics().createFont("Arial", Style.PLAIN, SPACING / 3));
+				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3));
 		equationFormat = new TextFormat().withFont(
-				graphics().createFont("Arial", Style.PLAIN, SPACING / 3 * 0.8f)); //32));
+				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3 * 0.8f)); //32));
 		backgroundLayer = graphics().createGroupLayer();
 		
 		foregroundLayer = graphics().createGroupLayer();
@@ -101,6 +103,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - equationHeight / 2);
 		backgroundLayer.setTranslation(0, equationHeight / 2);
 		update(0);
+	}
+	
+	private boolean transitionCompleted() {
+		return layer.tx() == 0;
 	}
 	
 	private void createEquation(String equation) {
@@ -166,7 +172,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		backImageBack = PlayN.assets().getImage("images/back.png");
 		backImageCancel = PlayN.assets().getImage("images/cancel.png");
 		float bgHeight = screenImage.height();
-		float buttonHeight = bgHeight * 0.8f;
+		float buttonHeight =  bgHeight * 0.8f;
 		buttonBack = new Button(backImageBack, buttonHeight, buttonHeight, true);
 		buttonBack.setPosition(buttonBack.width() / 2 + 10, bgHeight / 2);
 		buttonBack.setTint(backgroundPrimaryColor, Button.UNPRESSED_ALPHA);
@@ -235,7 +241,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private void createBackground() {
 		backgroundPrimaryHue = (float)Math.random();
 		backgroundPrimaryColor = ColorUtils.hsvToRgb(backgroundPrimaryHue, 1, 1);
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 0; i++) {
 			createBackgroundSprite();
 		}
 		backgroundLayer.setDepth(-100);
@@ -287,7 +293,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			}
 		}
 		
-		if (backgroundSprites.size() < MAX_RECTS) {
+		if (transitionCompleted() && backgroundSprites.size() < MAX_RECTS) {
 			rectTimer += delta;
 			if (rectTimer >= RECT_INTERVAL) {
 				rectTimer -= RECT_INTERVAL;

@@ -45,4 +45,14 @@ public class VerticalWall extends Tower {
 		return "Vertical Wall";
 	}
 
+	@Override
+	public int cost() {
+		return 2;
+	}
+
+	@Override
+	public int commonness() {
+		return 1;
+	}
+
 }

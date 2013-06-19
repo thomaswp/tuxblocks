@@ -5,8 +5,10 @@ import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
+import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
-public abstract class Expression {
+public abstract class Expression extends PlayNObject implements Hashable {
 
 	public final static int PREC_ADD = 0;
 	public final static int PREC_MULT = 1;

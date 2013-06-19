@@ -66,7 +66,7 @@ public class Times extends ModificationOperation {
 			@Override
 			protected Vector formatExpression(TextFormat textFormat) {
 				Font font = PlayN.graphics().createFont(textFormat.font.name(), 
-						textFormat.font.style(), childWriter.height() * 1.1f);
+						textFormat.font.style(), childWriter.height() * 1f);
 				TextFormat bigFormat = new TextFormat().withFont(font);
 				leftParenLayout = PlayN.graphics().layoutText("(", bigFormat);
 				rightParenLayout = PlayN.graphics().layoutText(")", bigFormat);
@@ -86,10 +86,12 @@ public class Times extends ModificationOperation {
 				canvas.restore();
 				
 				canvas.fillText(factorLayout, 0, (height() - factorLayout.height()) / 2);
+				float ph = leftParenLayout.height();
+				//canvas.strokeRect(factorLayout.width(), (height() - ph) / 2, leftParenLayout.width(), ph);
 				canvas.fillText(leftParenLayout, factorLayout.width(), 
-						(height() - leftParenLayout.height()) / 2);
+						(height() - ph) / 2);
 				canvas.fillText(rightParenLayout, width() - rightParenLayout.width(),
-						(height() - rightParenLayout.height()) / 2);
+						(height() - ph) / 2);
 			}
 		};
 	}

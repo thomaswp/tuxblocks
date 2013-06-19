@@ -9,6 +9,7 @@ import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
@@ -29,7 +30,7 @@ public class EquationSprite {
 		this.leftHandSide = leftHandSide;
 		this.rightHandSide = rightHandSide;
 		if (textFormat == null) {
-			Font font = PlayN.graphics().createFont("Arial", Style.PLAIN, 20);
+			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20);
 			textFormat = new TextFormat().withFont(font);
 		}
 		refresh(null, null, null);
