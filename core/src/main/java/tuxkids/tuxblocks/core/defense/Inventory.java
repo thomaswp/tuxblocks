@@ -88,10 +88,9 @@ public class Inventory extends PlayNObject {
 		createSelectionSprites();
 		createCountSprites();
 		
-		addItem(0, 1);
-		addItem(1, 1);
-		addItem(2, 1);
-		addItem(3, 1);
+		for (int i = 0; i < 4; i++) {
+			addItem(i, 3);	
+		}
 	}
 	
 	private void addItem(int index, int count) {

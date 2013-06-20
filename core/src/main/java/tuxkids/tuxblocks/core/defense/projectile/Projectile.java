@@ -29,4 +29,8 @@ public abstract class Projectile extends GridObject {
 		this.damage = source.damage();
 		layer = graphics().createImageLayer(createImage());
 	}
+
+	protected void onFinish() {
+		layer.destroy();
+	}
 }

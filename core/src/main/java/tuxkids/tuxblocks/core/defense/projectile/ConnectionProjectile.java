@@ -26,7 +26,7 @@ public abstract class ConnectionProjectile extends Projectile {
 		timer += delta;
 		if (timer > duration()) {
 			target.damage(damage);
-			layer.destroy();
+			onFinish();
 			return true;
 		}
 		return false;
@@ -37,7 +37,7 @@ public abstract class ConnectionProjectile extends Projectile {
 		direction.set(target.position());
 		direction.subtract(source.position(), direction);
 		layer.transform().setRotation(direction.angle());
-		layer.transform().setScale(direction.length() / layer.image().width(), 0.1f);
+		layer.transform().setScale(direction.length() / layer.image().width(), 1f);
 	}
 
 }

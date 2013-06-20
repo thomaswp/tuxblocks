@@ -15,33 +15,38 @@ public abstract class BodyProjectile extends Projectile {
 	protected Vector position;
 	protected Vector velocity;
 	
-	public abstract float speed();
+	private Vector temp = new Vector();
+	
+	public abstract float maxSpeed();
+	public abstract float acceleration();
 	
 	public void place(Grid grid, Walker target, Tower source) {
 		super.place(grid, target, source);
+		centerImageLayer(layer);
 		
 		this.position = source.position().clone();
 		velocity = new Vector();
-		target.position().subtract(position, velocity);
-		if (velocity.length() > 0) velocity = velocity.scale(speed() / velocity.length());
-		layer.setOrigin(layer.width() / 2, layer.height() / 2);
+		update(0);
 	}
 	
 	@Override
 	public boolean update(int delta) {
 		Walker hit = grid.getHitWalker(position);
 		if (hit != null) {
-			layer.destroy();
 			target.damage(damage);
+			onFinish();
 			return true;
 		}
 		if (grid.isOutOfBounds(position)) {
-			layer.destroy();
+			onFinish();
 			return true;
 		}
 		if (target.isAlive()) {
-			target.position().subtract(position, velocity);
-			if (velocity.length() > 0) velocity = velocity.scale(speed() / velocity.length());
+			target.position().subtract(position, temp);
+			temp.normalizeLocal();
+			layer.setRotation(temp.angle());
+			velocity.addScaled(temp, acceleration() * delta * 30, velocity);
+			if (velocity.length() > maxSpeed()) velocity.scale(maxSpeed() / velocity.length(), velocity);
 		}
 		return false;
 	}

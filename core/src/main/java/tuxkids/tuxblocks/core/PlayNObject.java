@@ -3,12 +3,14 @@ package tuxkids.tuxblocks.core;
 import playn.core.Assets;
 import playn.core.Graphics;
 import playn.core.GroupLayer;
+import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Keyboard;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer;
 import playn.core.Pointer.Event;
+import playn.core.util.Callback;
 import pythagoras.f.IVector;
 import pythagoras.f.Vector;
 import pythagoras.i.IPoint;
@@ -137,9 +139,20 @@ public abstract class PlayNObject {
 		return 0;
 	}
 	
-	protected static void centerImageLayer(ImageLayer layer) {
-		if (layer.image() != null)
-			layer.setOrigin(layer.width() / 2, layer.height() / 2);
+	protected static void centerImageLayer(final ImageLayer layer) {
+		if (layer.image() != null) {
+			layer.image().addCallback(new Callback<Image>() {
+				@Override
+				public void onSuccess(Image result) {
+					layer.setOrigin(result.width() / 2, result.height() / 2);
+				}
+
+				@Override
+				public void onFailure(Throwable cause) { }	
+			});
+			
+		}
+			
 	}
 	
 	public static float getGlobalTx(Layer layer) {

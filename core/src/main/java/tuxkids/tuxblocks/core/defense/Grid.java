@@ -7,11 +7,14 @@ import java.util.List;
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.GroupLayer;
+import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
+import tripleplay.particle.Emitter;
+import tripleplay.particle.Particles;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
@@ -43,6 +46,12 @@ public class Grid extends PlayNObject {
 	private Round round;
 	private float targetAlpha;
 	private int towerColor;
+	private Particles particles;
+	private GroupLayer particlesLayer;
+	
+	public Particles particles() {
+		return particles;
+	}
 	
 	public int towerColor() {
 		return towerColor;
@@ -110,6 +119,11 @@ public class Grid extends PlayNObject {
 		refreshPath();
 		createGridSprite();
 		
+		particles = new Particles();
+		particlesLayer = graphics().createGroupLayer();
+		particlesLayer.setDepth(5);
+		groupLayer.add(particlesLayer);
+		
 		round = new Round() {
 			@Override
 			protected void populateRound() {
@@ -125,6 +139,11 @@ public class Grid extends PlayNObject {
 				addWave(new Wave(new Peon(), 500, 3), 6000);
 			}
 		};
+	}
+	
+	public Emitter createEmitter(int maxParticles, Image image) {
+		Emitter e = particles.createEmitter(maxParticles, image, particlesLayer);
+		return e;
 	}
 
 	public void fadeIn(float targetAlpha) {
@@ -162,6 +181,7 @@ public class Grid extends PlayNObject {
 			GridObject gridObject = gridObjects.get(i);
 			gridObject.paint(clock);
 		}
+		particles.paint(clock);
 	}
 	
 	private void refreshPath() {
