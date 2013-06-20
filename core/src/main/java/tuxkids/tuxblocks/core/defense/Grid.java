@@ -42,6 +42,11 @@ public class Grid extends PlayNObject {
 	private List<Point> currentPath;
 	private Round round;
 	private float targetAlpha;
+	private int towerColor;
+	
+	public int towerColor() {
+		return towerColor;
+	}
 	
 	public int width() {
 		return cols * cellSize;
@@ -73,6 +78,10 @@ public class Grid extends PlayNObject {
 
 	public float getCellSize() {
 		return cellSize;
+	}
+	
+	public void setTowerColor(int themeColor) {
+		this.towerColor = themeColor;
 	}
 	
 	public Grid(int rows, int cols, int maxWidth, int maxHeight) {

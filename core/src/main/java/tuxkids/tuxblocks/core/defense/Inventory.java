@@ -147,7 +147,7 @@ public class Inventory extends PlayNObject {
 					spriteSize - strokeWidth + 2, 
 					spriteSize  - strokeWidth + 2, rad);
 			
-			Image towerImage = tower.createImage(cellSize, Colors.RED);
+			Image towerImage = tower.createImage(cellSize, grid.towerColor());
 			image.canvas().drawImage(towerImage, (spriteSize - towerImage.width()) / 2, 
 					(spriteSize - towerImage.height()) / 2);
 			

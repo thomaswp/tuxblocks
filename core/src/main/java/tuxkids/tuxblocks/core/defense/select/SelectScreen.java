@@ -61,9 +61,8 @@ public class SelectScreen extends GameScreen {
 		
 		
 		gridHolder = graphics().createGroupLayer();
-		gridHolder.setOrigin(grid.width(), grid.height());
-		gridHolder.setScale(0.25f);
-		gridHolder.setTranslation(width(), height());
+		gridHolder.setScale(menu.height() / grid.height());
+		gridHolder.setTranslation(0, 0);
 		gridHolder.setAlpha(0.75f);
 		layer.add(gridHolder);
 		
@@ -102,7 +101,7 @@ public class SelectScreen extends GameScreen {
 				int index = col * rows + row;
 				if (index >= problems.size()) return;
 				
-				final ProblemButton pb = new ProblemButton(state.problems().get(index), width, minHeight);
+				final ProblemButton pb = new ProblemButton(state.problems().get(index), width, minHeight, grid.towerColor());
 				problemLayer.add(pb.layer());
 				pb.setPosition((col + 0.5f) * width() / cols, y + pb.height() / 2);
 				y += pb.height() + margin;

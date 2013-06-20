@@ -12,7 +12,9 @@ import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Key;
 import playn.core.Keyboard;
+import playn.core.Layer;
 import playn.core.Keyboard.TypedEvent;
+import playn.core.Layer.HitTester;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
@@ -28,10 +30,12 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.ColorUtils;
+import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Sobol;
 
 public class NumberSelectScreen extends GameScreen implements Listener {
@@ -40,8 +44,6 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	private int SPACING = 150;
 	private final static int MAX_NUMS = 70;
-	private final static int RECT_INTERVAL = 300;
-	private final static int MAX_RECTS = 30;
 	private final static int MAX_SPRITE_CREATE_PER_FRAME = 10;
 	
 	private List<Point> numberPoints = new ArrayList<Point>();
@@ -55,12 +57,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private List<Double> timeTrail = new ArrayList<Double>();
 	
 	private GroupLayer foregroundLayer, backgroundLayer, equationLayer;
-	private List<BackgroundSprite> backgroundSprites = 
-			new ArrayList<BackgroundSprite>();
 	private int createsSpritesThisFrame;
-	private int rectTimer;
-	private int backgroundPrimaryColor;
-	private float backgroundPrimaryHue;
+	private int themeColor;
 	private float equationHeight, equationBlankX;
 	private ImageLayer equationAnswer;
 	private Point equationAnswerPoint;
@@ -69,6 +67,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private Button buttonBack, buttonCenter;
 	private Image backImageOk, backImageBack, backImageCancel;
 	private Point recenterPoint = new Point();
+	
+	private MenuSprite menu;
 	
 	public Integer selectedAnswer() {
 		if (selectedPoint == null) return null;
@@ -89,6 +89,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	public void wasAdded() {
 		super.wasAdded();
 		
+		themeColor = state.themeColor();
+		
 		SPACING = (int)(height() / 3.5f);
 		position.set(recenterPoint.x * SPACING, recenterPoint.y * SPACING);
 		lastPosition.set(position);
@@ -108,11 +110,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		update(0);
 	}
 	
-	private boolean transitionCompleted() {
-		return layer.tx() == 0;
-	}
-	
 	private void createEquation(String equation) {
+		menu = new MenuSprite(width(), defaultButtonSize() * 1.2f);
+		
 		int index = equation.indexOf(PLACEHOLDER);
 		String before = equation.substring(0, index);
 		String after = equation.substring(index + 1);
@@ -121,8 +121,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 
 		int boxSpace = 10;
 		float boxWidth = sampleNumber.width() + boxSpace;
-		float boxHeight = (sampleNumber.height() + boxSpace);
-		boxHeight = (boxHeight + boxWidth) / 2;
+		float boxHeight = defaultButtonSize(); //(sampleNumber.height() + boxSpace);
+		//boxHeight = (boxHeight + boxWidth) / 2;
 		float width = 0, height = 0;
 		TextLayout beforeLayout = null, afterLayout = null;
 		
@@ -149,8 +149,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			x += beforeLayout.width() + boxSpace;
 		}
 		
-		canvas.setFillColor(Color.withAlpha(backgroundPrimaryColor, 100));
-		canvas.setStrokeColor(backgroundPrimaryColor);
+		canvas.setFillColor(Color.withAlpha(themeColor, 100));
+		canvas.setStrokeColor(themeColor);
 		canvas.fillRect(x, (height - boxHeight) / 2, boxWidth, boxHeight);
 		canvas.strokeRect(x, (height - boxHeight) / 2, 
 				boxWidth - 0.5f, boxHeight - 0.5f);
@@ -163,22 +163,16 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		}
 		
 		ImageLayer eqLayer = graphics().createImageLayer(eqImage);
-		
-		CanvasImage screenImage = CanvasUtils.createRect(width(), eqLayer.height() * 1.2f,
-				Colors.LIGHT_GRAY, 1, Colors.DARK_GRAY);
-		ImageLayer screenLayer = graphics().createImageLayer(screenImage);
-		eqLayer.setTranslation((screenLayer.width() - eqLayer.width()) / 2,
-				(screenLayer.height() - eqLayer.height()) / 2);
-		screenLayer.setAlpha(0.75f);
+		eqLayer.setTranslation((width() - eqLayer.width()) / 2, (menu.height() - eqLayer.height()) / 2); 
 		
 		backImageOk = PlayN.assets().getImage("images/ok.png");
 		backImageBack = PlayN.assets().getImage("images/back.png");
 		backImageCancel = PlayN.assets().getImage("images/cancel.png");
-		float bgHeight = screenImage.height();
-		float buttonHeight =  bgHeight * 0.8f;
+		float bgHeight = menu.height();
+		float buttonHeight =  defaultButtonSize();
 		buttonBack = new Button(backImageBack, buttonHeight, buttonHeight, true);
 		buttonBack.setPosition(buttonBack.width() / 2 + 10, bgHeight / 2);
-		buttonBack.setTint(backgroundPrimaryColor, Button.UNPRESSED_ALPHA);
+		buttonBack.setTint(themeColor, Button.UNPRESSED_ALPHA);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -194,7 +188,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		 
 		buttonCenter = new Button("images/center.png", buttonHeight, buttonHeight, true);
 		buttonCenter.setPosition(width() - buttonCenter.width() / 2 - 10, bgHeight / 2);
-		buttonCenter.setTint(backgroundPrimaryColor, Button.UNPRESSED_ALPHA);
+		buttonCenter.setTint(themeColor, Button.UNPRESSED_ALPHA);
 		buttonCenter.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -203,12 +197,12 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		});
 		
 		equationLayer = graphics().createGroupLayer();
-		equationLayer.add(screenLayer);
+		equationLayer.add(menu.layer());
 		equationLayer.add(eqLayer);
 		equationLayer.add(buttonBack.layer());
 		equationLayer.add(buttonCenter.layer());
 		
-		equationHeight = screenLayer.height();
+		equationHeight = menu.height();
 		equationBlankX += eqLayer.tx(); 
 		
 		layer.add(equationLayer);
@@ -233,25 +227,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			buttonBack.setImage(backImageOk);
 		}
 	}
-
-	private void createBackgroundSprite() {
-		BackgroundSprite sprite = new BackgroundSprite(backgroundPrimaryHue, 
-				(float)backgroundSprites.size() / 20); 
-		backgroundSprites.add(sprite);
-		backgroundLayer.add(sprite.layer);
-	}
 	
 	private void createBackground() {
-		backgroundPrimaryHue = (float)Math.random();
-		backgroundPrimaryColor = ColorUtils.hsvToRgb(backgroundPrimaryHue, 1, 1);
-		for (int i = 0; i < 0; i++) {
-			createBackgroundSprite();
-		}
 		backgroundLayer.setDepth(-100);
-		
-//		CanvasImage bgImage = CanvasUtils.createRect(width(), height(), Colors.BLACK);
-//		ImageLayer bg = graphics().createImageLayer(bgImage);
-//		bg.setDepth(-101);
 		
 		CanvasImage circleImage = CanvasUtils.createCircle(SPACING / 2, 
 				Color.argb(0, 0, 0, 0), 20, Colors.WHITE);
@@ -262,7 +240,6 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		circle.setDepth(0);
 		
 		backgroundLayer.add(circle);
-//		backgroundLayer.add(bg);
 		layer.add(backgroundLayer);
 	}
 	
@@ -282,19 +259,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		for (int i = left; i <= right; i++) {
 			for (int j = top; j <= bot; j++) {
 				p.setLocation(i, j);
-				getNumberSprite(p);
+				createNumberSprite(p);
 			}
-		}
-		
-//		if (transitionCompleted() && backgroundSprites.size() < MAX_RECTS) {
-//			rectTimer += delta;
-//			if (rectTimer >= RECT_INTERVAL) {
-//				rectTimer -= RECT_INTERVAL;
-//				createBackgroundSprite();
-//			}
-//		}
-		for (BackgroundSprite bg : backgroundSprites) {
-			bg.update(delta);
 		}
 	}
 	
@@ -316,7 +282,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			float alpha = 1 - Math.min(distance / SPACING / 5, 1);
 			float preAlpha = layer.alpha();
 			if (p.equals(selectedPoint)) {
-				layer.setTint(backgroundPrimaryColor);
+				layer.setTint(themeColor);
 			} else {
 				layer.setTint(Colors.WHITE);
 			}
@@ -335,7 +301,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		foregroundLayer.setTranslation(-position.x, -position.y);
 	}
 	
-	private ImageLayer getNumberSprite(Point p) {
+	private ImageLayer createNumberSprite(Point p) {
 		int index = numberPoints.indexOf(p);
 		if (index >= 0) {
 			ImageLayer layer = numberImages.remove(index);
@@ -354,7 +320,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		
 		int border = 0;
 		TextLayout layout = PlayN.graphics().layoutText("" + getNumber(p), textFormat);
-		CanvasImage image = graphics().createImage(layout.width() + border * 2, 
+		final CanvasImage image = graphics().createImage(layout.width() + border * 2, 
 				layout.height() + border * 2);
 		image.canvas().setFillColor(Colors.WHITE);
 		image.canvas().fillText(layout, border, border);
@@ -363,6 +329,13 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		layer.setTranslation(p.x * SPACING, p.y * SPACING);
 		layer.addListener(new NumberListener(p));
 		layer.setAlpha(0);
+		layer.setHitTester(new HitTester() {
+			@Override
+			public Layer hitTest(Layer layer, pythagoras.f.Point p) {
+				if (p.distance(image.width() / 2, image.height() / 2) < SPACING / 2.5f) return layer;
+				return null;
+			}
+		});
 		foregroundLayer.add(layer);
 		numberImages.add(layer);
 		numberPoints.add(p);
@@ -466,46 +439,5 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 
 		@Override
 		public void onPointerCancel(Event event) { }
-	}
-	
-	private Sobol sobolD4 = new Sobol(4);
-	private class BackgroundSprite {
-		private ImageLayer layer;
-		private float depth;
-		private Vector originalPos;
-		private float maxAlpha;
-		
-		public BackgroundSprite(float hue, float r) {
-			double[] point = sobolD4.nextPoint();
-			int size = (int)(point[0] * 250 + 50);
-			float h = hue;
-			if (r < 1f / 3) {
-				h = h + 0.7f;
-			} else if (r < 2f / 3) {
-				h = h + 0.3f;
-			}
-
-			float s = (float)Math.random() * 0.5f + 0.5f;
-			float v = (float)Math.random() * 0.3f + 0.4f;
-			CanvasImage image = CanvasUtils.createRect(size, size, 
-					ColorUtils.hsvToRgb(h, s, v), 1, Colors.DARK_GRAY);
-			layer = graphics().createImageLayer(image);
-			maxAlpha = (float)Math.random() * 0.4f + 0.4f;
-			layer.setAlpha(0);
-			
-			layer.setOrigin(image.width() / 2, image.height() / 2);
-			originalPos = new Vector(width() * ((float)point[1] * 1.6f - 0.3f), 
-					((float)point[2] * 1.6f - 0.3f) * height());
-			layer.setTranslation(originalPos.x, originalPos.y);
-			
-			depth = (float)point[3] * 15 + 5;
-			layer.setDepth(-depth);
-		}
-		
-		public void update(int delta) {
-			layer.setTranslation(originalPos.x + foregroundLayer.tx() / depth, 
-					originalPos.y + foregroundLayer.ty() / depth);
-			layer.setAlpha(lerp(layer.alpha(), maxAlpha, 1 - (float)Math.pow(0.999, delta)));
-		}
 	}
 }

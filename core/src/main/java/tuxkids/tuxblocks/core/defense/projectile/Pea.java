@@ -1,10 +1,11 @@
 package tuxkids.tuxblocks.core.defense.projectile;
 
+import playn.core.Image;
 import playn.core.ImageLayer;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class Pea extends Projectile {
+public class Pea extends BodyProjectile {
 
 	@Override
 	public float speed() {
@@ -12,9 +13,8 @@ public class Pea extends Projectile {
 	}
 
 	@Override
-	public ImageLayer createLayer() {
-		return graphics().createImageLayer(
-				CanvasUtils.createCircle(3, Colors.LIGHT_GRAY, 1, Colors.BLACK));
+	public Image createImage() {
+		return CanvasUtils.createCircle(3, Colors.LIGHT_GRAY, 1, Colors.BLACK);
 	}
 
 }

@@ -107,7 +107,7 @@ public abstract class Walker extends GridObject {
 				return true;
 			}
 		}
-		sprite.setTint(Colors.blend(Colors.BLUE, Colors.RED, (float)hp / getMaxHp()));
+		sprite.setTint(Colors.blend(Colors.BLACK, grid.towerColor(), (float)hp / getMaxHp()));
 		sprite.setAlpha(alpha);
 		return false;
 	}

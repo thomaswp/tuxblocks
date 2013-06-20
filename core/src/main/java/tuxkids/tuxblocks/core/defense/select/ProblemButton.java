@@ -23,6 +23,7 @@ public class ProblemButton extends Button {
 	private Problem problem;
 	private float minHeight;
 	private ProblemButton above, below;
+	private int towerColor;
 	
 	public Equation equation() {
 		return problem.equation();
@@ -30,7 +31,7 @@ public class ProblemButton extends Button {
 	
 	public void setEquation(Equation equation) {
 		problem.setEquation(equation);
-		setImage(createImage(problem, width(), minHeight));
+		setImage(createImage(problem, width(), minHeight, towerColor));
 		float top = top();
 		setSize(image().width(), image().height());
 		setTop(top);
@@ -56,13 +57,14 @@ public class ProblemButton extends Button {
 		return problem;
 	}
 	
-	public ProblemButton(Problem problem, float width, float minHeight) {
-		super(createImage(problem, width, minHeight), false);
+	public ProblemButton(Problem problem, float width, float minHeight, int towerColor) {
+		super(createImage(problem, width, minHeight, towerColor), false);
 		this.problem = problem;
 		this.minHeight = minHeight;
+		this.towerColor = towerColor;
 	}
 
-	private static Image createImage(Problem problem, float width, float minHeight) {
+	private static Image createImage(Problem problem, float width, float minHeight, int towerColor) {
 
 		float strokeWidth = 5;
 		float padding = strokeWidth * 2;
@@ -94,7 +96,7 @@ public class ProblemButton extends Button {
 		canvas.strokeRoundRect(strokeWidth / 2, strokeWidth / 2, width - strokeWidth, height - strokeWidth, rectRad);
 		
 		Tower reward = problem.reward();
-		Image rewardImage = reward.createImage(cellSize, Colors.RED);
+		Image rewardImage = reward.createImage(cellSize, towerColor);
 		float rewardImageX = width - padding - (rewardImageSize + rewardImage.width()) / 2;
 		float rewardImageY = padding + (rewardImageSize - rewardImage.height()) / 2;
 		canvas.drawImage(rewardImage, rewardImageX, rewardImageY);

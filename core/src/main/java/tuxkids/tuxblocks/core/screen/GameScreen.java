@@ -31,7 +31,7 @@ public class GameScreen extends Screen implements Listener {
 	
 	public Button createMenuButton(String path) {
 		Button button = new Button(path, defaultButtonSize(), defaultButtonSize(), true);
-		button.setTint(state.background().primaryColor());
+		button.setTint(state.themeColor());
 		return button;
 	}
 	

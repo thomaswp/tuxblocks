@@ -26,6 +26,14 @@ public class GameState {
 		return background;
 	}
 	
+	public int themeColor() {
+		return background().primaryColor();
+	}
+	
+	public void newThemeColor() {
+		background.newThemeColor();
+	}
+	
 	public GameState() {
 		background = new GameBackgroundSprite();
 		towerCounts = new int[Tower.towerCount()];

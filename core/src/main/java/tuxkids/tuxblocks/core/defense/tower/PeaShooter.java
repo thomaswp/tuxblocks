@@ -5,6 +5,7 @@ import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.defense.projectile.Lightning;
 import tuxkids.tuxblocks.core.defense.projectile.Pea;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
@@ -38,7 +39,7 @@ public class PeaShooter extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		return new Pea();
+		return new Lightning();
 	}
 
 	@Override

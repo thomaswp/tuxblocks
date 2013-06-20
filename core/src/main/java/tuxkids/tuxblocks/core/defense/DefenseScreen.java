@@ -31,7 +31,6 @@ public class DefenseScreen extends GameScreen {
 
 	private Grid grid;
 	private Inventory inventory; 
-	private ImageLayer background;
 	private GroupLayer gridHolder;
 	private SelectScreen selectScreen;
 	private Button buttonPlus;
@@ -52,6 +51,7 @@ public class DefenseScreen extends GameScreen {
 		
 		float maxGridWidth = width() * 0.7f; 
 		grid = new Grid(19, 28, (int)maxGridWidth, (int)(height() - titleBarHeight));
+		grid.setTowerColor(state.themeColor());
 		gridHolder = graphics().createGroupLayer();
 		gridHolder.setTranslation(width() - grid.width(), (height() + titleBarHeight - grid.height()) / 2);
 		gridHolder.setDepth(1);
@@ -98,6 +98,7 @@ public class DefenseScreen extends GameScreen {
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					buttonStart.layer().setVisible(false);
+					state.newThemeColor();
 				}
 			}
 		});

@@ -15,12 +15,14 @@ import tuxkids.tuxblocks.core.utils.Sobol;
 
 public class GameBackgroundSprite extends PlayNObject {
 
-	private final static int RECT_INTERVAL = 300;
+	private final static int CREATE_RECT_INTERVAL = 300;
+	private static final int REMOVE_RECT_INTERVAL = 1500;
 	private final static int MAX_RECTS = 30;
 	
 	private GroupLayer groupLayer;
-	private List<BackgroundSprite> backgroundSprites = 
-			new ArrayList<BackgroundSprite>();
+	private List<BackgroundSprite> 
+		backgroundSprites = new ArrayList<BackgroundSprite>(),
+		toRemove = new ArrayList<BackgroundSprite>();
 	private int rectTimer;
 	private int primaryColor;
 	private float primaryHue;
@@ -48,9 +50,9 @@ public class GameBackgroundSprite extends PlayNObject {
 	}
 	
 	public GameBackgroundSprite() {
-	
 		groupLayer = graphics().createGroupLayer();
-		createBackground();
+		groupLayer.setDepth(-100);
+		newThemeColor();
 		update(0);
 	}
 
@@ -61,22 +63,28 @@ public class GameBackgroundSprite extends PlayNObject {
 		groupLayer.add(sprite.layer);
 	}
 	
-	private void createBackground() {
+	private void removeBackgroundSprite() {
+		backgroundSprites.get((int)(Math.random() * backgroundSprites.size())).beginRemove();
+	}
+	
+
+	public void newThemeColor() {
 		primaryHue = (float)Math.random();
 		primaryColor = ColorUtils.hsvToRgb(primaryHue, 1, 1);
-		for (int i = 0; i < 0; i++) {
-			createBackgroundSprite();
-		}
-		groupLayer.setDepth(-100);
 	}
 	
 	public void update(int delta) {
-		
+
+		rectTimer += delta;
 		if (backgroundSprites.size() < MAX_RECTS) {
-			rectTimer += delta;
-			if (rectTimer >= RECT_INTERVAL) {
-				rectTimer -= RECT_INTERVAL;
+			if (rectTimer >= CREATE_RECT_INTERVAL) {
+				rectTimer -= CREATE_RECT_INTERVAL;
 				createBackgroundSprite();
+			}
+		} else {
+			if (rectTimer >= REMOVE_RECT_INTERVAL) {
+				rectTimer -= REMOVE_RECT_INTERVAL;
+				removeBackgroundSprite();
 			}
 		}
 	}
@@ -85,18 +93,22 @@ public class GameBackgroundSprite extends PlayNObject {
 		for (BackgroundSprite bg : backgroundSprites) {
 			bg.update((int) clock.dt());
 		}
+		backgroundSprites.removeAll(toRemove);
+		toRemove.clear();
 	}
 	
-	private Sobol sobolD4 = new Sobol(4);
+	private Sobol sobolD5 = new Sobol(5);
 	private class BackgroundSprite {
 		private ImageLayer layer;
 		private float depth;
 		private Vector originalPos;
 		private float maxAlpha;
+		private boolean removing;
 		
 		public BackgroundSprite(float hue, float r) {
-			double[] point = sobolD4.nextPoint();
+			double[] point = sobolD5.nextPoint();
 			int size = (int)(point[0] * 250 + 50);
+			r = (float)point[4];
 			float h = hue;
 			if (r < 1f / 3) {
 				h = h + 0.7f;
@@ -124,7 +136,16 @@ public class GameBackgroundSprite extends PlayNObject {
 		public void update(int delta) {
 			layer.setTranslation(originalPos.x + offset.x / depth, 
 					originalPos.y + offset.y / depth);
-			layer.setAlpha(lerp(layer.alpha(), maxAlpha, 1 - (float)Math.pow(0.999, delta)));
+			float targetAlpha = removing ? 0 : maxAlpha;
+			layer.setAlpha(lerpTime(layer.alpha(), targetAlpha, 0.999f, delta));
+			if (removing && layer.alpha() < 0.01f) {
+				layer.destroy();
+				toRemove.add(this);
+			}
+		}
+		
+		public void beginRemove() {
+			removing = true;
 		}
 	}
 }

@@ -123,7 +123,7 @@ public abstract class Tower extends GridObject {
 		layer = graphics().createImageLayer(
 				createImage(grid.getCellSize(), 
 						Colors.WHITE));
-		layer.setTint(Colors.RED);
+		layer.setTint(grid.towerColor());
 		return this;
 	}
 	
@@ -154,7 +154,7 @@ public abstract class Tower extends GridObject {
 		fireTimer += clock.dt();
 		float perc = (float)Math.pow((float)fireTimer / fireRate(),0.5);
 		perc = Math.min(perc, 1);
-		layer.setTint(Colors.blend(Colors.RED, Colors.GRAY, perc));
+		layer.setTint(Colors.blend(grid.towerColor(), Colors.GRAY, perc));
 	}
 	
 	protected boolean fire() {
