@@ -20,6 +20,7 @@ import playn.core.TextLayout;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.Button.OnDragListener;
 import tuxkids.tuxblocks.core.Button.OnPressedListener;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
@@ -35,6 +36,7 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
 public class Inventory extends PlayNObject {
 	
 	private final static int ITEM_SPRITE_MARGIN = 5;
+	private final static int COLS = 2;
 	
 	private Grid grid;
 	private GroupLayer groupLayer;
@@ -42,7 +44,6 @@ public class Inventory extends PlayNObject {
 	private ImageLayer countSprites[];
 	private Button itemButtons[];
 	private TextFormat textFormat;
-	private Button buttonPlus;
 	private DefenseScreen screen;
 	
 	public GroupLayer layer() {
@@ -50,7 +51,7 @@ public class Inventory extends PlayNObject {
 	}
 	
 	private int getItemSpriteSize() {
-		return (int) (width * 0.45f);
+		return (int) ((width - ITEM_SPRITE_MARGIN * 2) / COLS * 0.9f);
 	}
 	
 	private int getItemCaptionHeight() {
@@ -58,14 +59,14 @@ public class Inventory extends PlayNObject {
 	}
 	
 	private float getItemSpriteX(int index) {
-		int j = index % 2;
+		int j = index % COLS;
 		float spriteWidth = getItemSpriteSize() + ITEM_SPRITE_MARGIN * 2;
-		return width / 2 + (j - 0.5f) * spriteWidth;
+		return width / 2 + (j - (COLS - 1) * 0.5f) * spriteWidth;
 	}
 	
 	private float getItemSpriteY(int index) {
-		int i = index / 2;
-		int rows = (Tower.towers().length + 1) / 2;
+		int i = index / COLS;
+		int rows = (Tower.towers().length - 1) / COLS + 1;
 		float spriteHeight = getItemSpriteSize() + ITEM_SPRITE_MARGIN * 2 + getItemCaptionHeight();
 		return height / 2 + (i - (rows - 1) * 0.5f) * spriteHeight;
 	}
@@ -83,31 +84,14 @@ public class Inventory extends PlayNObject {
 		
 		textFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.BOLD, getItemSpriteSize() / 7));
-		//createBackgroundSprite();
+//		createBackgroundSprite();
 		createSelectionSprites();
 		createCountSprites();
-		createPlusButton();
 		
-//		addItem(0, 100);
-//		addItem(2, 1);
-//		addItem(3, 1);
-	}
-	
-	private void createPlusButton() {
-		Image image = assets().getImage("images/plus.png");
-		float size = GameScreen.defaultButtonSize();
-		buttonPlus = new Button(image, size, size, true);
-		buttonPlus.setPosition(size * 0.6f, size * 0.6f);
-		buttonPlus.setTint(Colors.blend(Colors.RED, Colors.BLACK, 0.9f), 
-		Colors.blend(Colors.RED, Colors.BLACK, 0.7f));
-		groupLayer.add(buttonPlus.layer());
-		
-		buttonPlus.setOnReleasedListener(new OnReleasedListener() {
-			@Override
-			public void onRelease(Event event, boolean inButton) {
-				screen.pushSelectScreen();
-			}
-		});
+		addItem(0, 1);
+		addItem(1, 1);
+		addItem(2, 1);
+		addItem(3, 1);
 	}
 	
 	private void addItem(int index, int count) {
@@ -157,18 +141,18 @@ public class Inventory extends PlayNObject {
 			CanvasImage image = graphics().createImage(spriteSize, spriteSize + textHeight);
 			image.canvas().setFillColor(Colors.WHITE);
 			image.canvas().fillRoundRect(0, 0, spriteSize, spriteSize, rad);
-			image.canvas().setStrokeColor(Colors.BLACK);
+			image.canvas().setStrokeColor(Colors.DARK_GRAY);
 			image.canvas().setStrokeWidth(strokeWidth);
 			image.canvas().strokeRoundRect(strokeWidth / 2 - 1, strokeWidth / 2 - 1, 
 					spriteSize - strokeWidth + 2, 
 					spriteSize  - strokeWidth + 2, rad);
 			
-			Image towerImage = tower.createImage(cellSize * tower.cols(), cellSize * tower.rows(), Colors.RED);
+			Image towerImage = tower.createImage(cellSize, Colors.RED);
 			image.canvas().drawImage(towerImage, (spriteSize - towerImage.width()) / 2, 
 					(spriteSize - towerImage.height()) / 2);
 			
 			TextLayout layout = graphics().layoutText(tower.name(), textFormat);
-			image.canvas().setFillColor(Colors.BLACK);
+			image.canvas().setFillColor(Colors.WHITE);
 			image.canvas().fillText(layout, (image.width() - layout.width()) / 2, 
 					image.height() - textHeight + ITEM_SPRITE_MARGIN / 2);
 			
@@ -212,8 +196,9 @@ public class Inventory extends PlayNObject {
 	}
 	
 	private void createBackgroundSprite() {
-		Image image = CanvasUtils.createRect(width, height, Colors.LIGHT_GRAY, 1, Colors.BLACK);
+		Image image = CanvasUtils.createRect(width, height, Color.rgb(200, 125, 125), 1, Colors.DARK_GRAY);
 		ImageLayer layer = graphics().createImageLayer(image);
+		layer.setAlpha(MenuSprite.DEFAULT_ALPHA);
 		groupLayer.add(layer);
 	}
 

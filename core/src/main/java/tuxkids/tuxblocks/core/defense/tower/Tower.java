@@ -121,8 +121,7 @@ public abstract class Tower extends GridObject {
 	public Tower preview(Grid grid) {
 		this.grid = grid;
 		layer = graphics().createImageLayer(
-				createImage(grid.getCellSize() * cols(), 
-						grid.getCellSize() * rows(), 
+				createImage(grid.getCellSize(), 
 						Colors.WHITE));
 		layer.setTint(Colors.RED);
 		return this;
@@ -178,8 +177,10 @@ public abstract class Tower extends GridObject {
 		return CanvasUtils.createCircle(rad, Color.withAlpha(color, 50), 1, color);
 	}
 	
-	public Image createImage(float width, float height, int color) {
-		int padding = 5, rad = (int)(Math.min(width, height) * 0.1f);
+	public Image createImage(float cellSize, int color) {
+		int width = (int)(cellSize * cols()), height = (int)(cellSize * rows());
+		int padding = (int)(cellSize * 0.1f); 
+		int rad = (int)(Math.min(width, height) * 0.1f);
 		CanvasImage image = PlayN.graphics().createImage(width, height);
 		image.canvas().setFillColor(color);
 		image.canvas().fillRoundRect(padding, padding, 

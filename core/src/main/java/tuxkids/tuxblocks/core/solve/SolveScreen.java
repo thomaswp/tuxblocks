@@ -16,6 +16,7 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock.OnSimplifyListener;
@@ -28,7 +29,7 @@ import tuxkids.tuxblocks.core.solve.expression.Number;
 import tuxkids.tuxblocks.core.solve.expression.Variable;
 import tuxkids.tuxblocks.core.utils.Debug;
 
-public class SolveScene extends GameScreen implements Listener, OnSimplifyListener {
+public class SolveScreen extends GameScreen implements Listener, OnSimplifyListener {
 	
 	private Equation startEquation;
 	private BaseBlock leftHandSide, rightHandSide;
@@ -40,8 +41,7 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 	private Button buttonBack;
 	private Image buttonImageOk, buttonImageBack;
 	
-	public SolveScene(ScreenStack screens, GameState gameState, Equation equation) {
-		super(screens, gameState);
+	public void setEquation(Equation equation) {
 		this.startEquation = equation;
 	}
 	
@@ -54,36 +54,27 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 				startEquation.answer(), startEquation.difficulty());
 	}
 	
-	@Override
-	public void wasAdded() {
+	public SolveScreen(final ScreenStack screens, GameState gameState) {
+		super(screens, gameState);
 		
 		CanvasImage background = graphics().createImage(graphics().width(), graphics().height());
 		background.canvas().setFillColor(Color.rgb(255, 255, 255));
 		background.canvas().fillRect(0, 0, graphics().width() / 2, graphics().height());
 		background.canvas().setFillColor(Color.rgb(100, 100, 100));
 		background.canvas().fillRect(graphics().width() / 2, 0, graphics().width() / 2, graphics().height());
-		layer.add(graphics().createImageLayer(background));
-
-		leftHandSide = Block.createBlock(startEquation.leftHandSide());
-		leftHandSide.getGroupLayer().setTy(graphics().height());
-		leftHandSide.getGroupLayer().setTx(graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
-		layer.add(leftHandSide.getGroupLayer());
-		if (leftHandSide.hasModifier())	leftHandSide.getLastModifier().getSprite().addListener(this);
-		leftHandSide.setSimplifyListener(this);
+		ImageLayer bg = graphics().createImageLayer(background);
+		bg.setDepth(-10);
+//		layer.add(bg);
 		
-		rightHandSide = Block.createBlock(startEquation.rightHandSide());
-		rightHandSide.getGroupLayer().setTy(graphics().height());
-		rightHandSide.getGroupLayer().setTx(3 * graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
-		layer.add(rightHandSide.getGroupLayer());
-		if (rightHandSide.hasModifier()) rightHandSide.getSprite().addListener(this);
-		rightHandSide.setSimplifyListener(this);
+		MenuSprite menu = new MenuSprite(width(), defaultButtonSize() * 1.2f);
+		menu.layer().setDepth(-1);
+		layer.add(menu.layer());
 
 		buttonImageBack = PlayN.assets().getImage(Constant.BUTTON_DOWN);
 		buttonImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
-		buttonBack = new Button(buttonImageBack, defaultButtonSize(), defaultButtonSize(), true);
+		buttonBack = createMenuButton(Constant.BUTTON_DOWN);
 		buttonBack.setPosition(buttonBack.width() * 0.6f, buttonBack.height() * 0.6f);
 		buttonBack.layer().setDepth(10);
-		buttonBack.setTint(Colors.BLUE);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -91,14 +82,41 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 			}
 		});
 		layer.add(buttonBack.layer());
+	}
+	
+	@Override
+	public void wasAdded() {
+		super.wasAdded();
+
+		leftHandSide = Block.createBlock(startEquation.leftHandSide());
+		leftHandSide.layer().setTy(graphics().height());
+		leftHandSide.layer().setTx(graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
+		layer.add(leftHandSide.layer());
+		if (leftHandSide.hasModifier())	leftHandSide.getLastModifier().getSprite().addListener(this);
+		leftHandSide.setSimplifyListener(this);
+		
+		rightHandSide = Block.createBlock(startEquation.rightHandSide());
+		rightHandSide.layer().setTy(graphics().height());
+		rightHandSide.layer().setTx(3 * graphics().width() / 4 - leftHandSide.getGroupWidth() / 2);
+		layer.add(rightHandSide.layer());
+		if (rightHandSide.hasModifier()) rightHandSide.getLastModifier().getSprite().addListener(this);
+		rightHandSide.setSimplifyListener(this);
 		
 		equationSprite = new EquationSprite(leftHandSide, rightHandSide);
 		refreshEquationSprite();
 	}
+	
+	@Override
+	public void wasRemoved() {
+		super.wasRemoved();
+		equationSprite.layer().destroy();
+		leftHandSide.layer().destroy();
+		rightHandSide.layer().destroy();
+	}
 
 	private void refreshEquationSprite() {
 		equationSprite.refresh(dragging, draggingTo, draggingFrom);
-		ImageLayer layer = equationSprite.getLayer();
+		ImageLayer layer = equationSprite.layer();
 		this.layer.add(layer);
 		layer.setTy(10);
 		layer.setTx(graphics().width() / 2);
@@ -107,11 +125,12 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 	
 	@Override
 	public void update(int delta) {
+		super.update(delta);
 	}
 
 	@Override
 	public void paint(Clock clock) {
-		
+		super.paint(clock);
 	}
 	
 	@Override
@@ -135,8 +154,8 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 					draggingFrom.getLastModifier().getSprite().addListener(this);
 				}
 				dragOffset.set(
-						draggingFrom.getGroupLayer().tx() + dragging.getSprite().tx() - event.x(), 
-						draggingFrom.getGroupLayer().ty() + dragging.getSprite().ty() - event.y());
+						draggingFrom.layer().tx() + dragging.getSprite().tx() - event.x(), 
+						draggingFrom.layer().ty() + dragging.getSprite().ty() - event.y());
 				dragging.getSprite().setTranslation(event.x() + dragOffset.x, event.y() + dragOffset.y);
 				layer.add(dragging.getSprite());
 				refreshEquationSprite();
@@ -174,7 +193,7 @@ public class SolveScene extends GameScreen implements Listener, OnSimplifyListen
 			dragging.getSprite().setTranslation(
 					event.x() + dragOffset.x,
 					event.y() + dragOffset.y);
-			float distanceX = Math.abs(dragging.getSprite().tx() + dragging.getSprite().width() / 2 - (draggingFrom.getGroupLayer().tx() + draggingFrom.getGroupWidth() / 2));
+			float distanceX = Math.abs(dragging.getSprite().tx() + dragging.getSprite().width() / 2 - (draggingFrom.layer().tx() + draggingFrom.getGroupWidth() / 2));
 			if (!dragging.isInverted() && distanceX > graphics().width() / 4 + 5) {
 				dragging.invert();
 			} else if (dragging.isInverted() && distanceX < graphics().width() / 4 - 5) {

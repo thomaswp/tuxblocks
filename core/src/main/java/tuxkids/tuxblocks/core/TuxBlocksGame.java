@@ -12,9 +12,10 @@ import playn.core.Font.Style;
 import playn.core.TextLayout;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
+import tripleplay.ui.Background;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.screen.FadeTransition;
-import tuxkids.tuxblocks.core.solve.SolveScene;
+import tuxkids.tuxblocks.core.solve.SolveScreen;
 import tuxkids.tuxblocks.core.solve.expression.Equation;
 import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.expression.Number;
@@ -44,6 +45,8 @@ public class TuxBlocksGame extends Game.Default {
     
 	private static TuxBlocksGame instance;
 	
+	private GameBackgroundSprite background;
+	
 	public static int screenDepth() {
 		return instance.screens.size();
 	}
@@ -62,7 +65,13 @@ public class TuxBlocksGame extends Game.Default {
 //		Debug.write(eq.toMathString());
 //		screens.push(new SolveScene(screens, eq));
 		
-		screens.push(new DefenseScreen(screens, new GameState()));
+		GameState state = new GameState();
+		background = state.background();
+		background.layer().setDepth(-10);
+		graphics().rootLayer().add(background.layer());
+		
+		screens.push(new DefenseScreen(screens, state));
+		
 	}
 	
 	private int frames;
@@ -87,12 +96,14 @@ public class TuxBlocksGame extends Game.Default {
 
 	@Override
 	public void update(int delta) {
+		background.update(delta);
 		clock.update(delta);
         screens.update(delta);
 	}
 
 	@Override
 	public void paint(float alpha) {
+		background.paint(clock);
 		clock.paint(alpha);
         screens.paint(clock);
 		updateFPS();

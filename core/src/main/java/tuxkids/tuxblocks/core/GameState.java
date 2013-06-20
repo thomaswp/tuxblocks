@@ -12,6 +12,7 @@ import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
 public class GameState {
 	private int[] towerCounts;
 	private List<Problem> problems;
+	private GameBackgroundSprite background;
 	
 	public int[] towerCounts() {
 		return towerCounts;
@@ -21,12 +22,17 @@ public class GameState {
 		return problems;
 	}
 	
+	public GameBackgroundSprite background() {
+		return background;
+	}
+	
 	public GameState() {
+		background = new GameBackgroundSprite();
 		towerCounts = new int[Tower.towerCount()];
 		problems = new ArrayList<Problem>();
-		int maxSteps = 1;
-		int minSteps = 1;
-		for (int i = 0; i < 10; i++) {
+		int maxSteps = 2;
+		int minSteps = 4;
+		for (int i = 0; i < 8; i++) {
 			Equation eq = EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps);
 			Tower reward = Tower.randomTower();
 			int count = Math.round(eq.difficulty() / 10f / reward.cost());

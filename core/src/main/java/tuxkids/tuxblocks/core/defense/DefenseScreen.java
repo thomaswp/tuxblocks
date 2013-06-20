@@ -7,6 +7,7 @@ import java.util.List;
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.GroupLayer;
+import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
@@ -16,18 +17,26 @@ import pythagoras.f.Transform;
 import pythagoras.i.Point;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Button;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.Debug;
 
-public class DefenseScreen extends GameScreen implements Listener {
+public class DefenseScreen extends GameScreen {
 
 	private Grid grid;
 	private Inventory inventory; 
 	private ImageLayer background;
 	private GroupLayer gridHolder;
+	private SelectScreen selectScreen;
+	private Button buttonPlus;
+	private Button buttonStart;
+	private MenuSprite menuSprite;
 	
 	public DefenseScreen(ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
@@ -35,21 +44,63 @@ public class DefenseScreen extends GameScreen implements Listener {
 	
 	@Override
 	public void wasAdded() {
-		background = graphics().createImageLayer(
-				CanvasUtils.createRect(width(), height(), Colors.LIGHT_GRAY));
-		layer.add(background);
+//		background = graphics().createImageLayer(
+//				CanvasUtils.createRect(width(), height(), Colors.LIGHT_GRAY));
+//		layer.add(background);
 
+		float titleBarHeight = defaultButtonSize() * 1.2f;
+		
 		float maxGridWidth = width() * 0.7f; 
-		grid = new Grid(19, 23, (int)maxGridWidth, (int)height());
+		grid = new Grid(19, 28, (int)maxGridWidth, (int)(height() - titleBarHeight));
 		gridHolder = graphics().createGroupLayer();
-		gridHolder.setTranslation(width() - grid.width(), (height() - grid.height()) / 2);
+		gridHolder.setTranslation(width() - grid.width(), (height() + titleBarHeight - grid.height()) / 2);
 		gridHolder.setDepth(1);
 		layer.add(gridHolder);
 		addGrid();
 		
-		inventory = new Inventory(this, grid, (int)(width() - grid.width()), (int)(height()));
+		menuSprite = new MenuSprite(width(), titleBarHeight);
+		layer.add(menuSprite.layer());
+		
+		inventory = new Inventory(this, grid, (int)(width() - grid.width()), (int)(height() - titleBarHeight));
 		inventory.layer().setDepth(1);
+		inventory.layer().setTy(titleBarHeight);
 		layer.add(inventory.layer());
+		
+		selectScreen = new SelectScreen(screens, state, grid);
+		
+		createPlusButton();
+		createStartButton();
+	}
+	
+	private void createPlusButton() {
+		float size = GameScreen.defaultButtonSize();
+		buttonPlus = createMenuButton(Constant.BUTTON_PLUS);
+		buttonPlus.setPosition(size * 0.6f, size * 0.6f);
+		buttonPlus.layer().setDepth(1);
+		layer.add(buttonPlus.layer());
+		
+		buttonPlus.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) pushSelectScreen();
+			}
+		});
+	}
+	
+	private void createStartButton() {
+		float size = defaultButtonSize();
+		buttonStart = createMenuButton(Constant.BUTTON_OK);
+		buttonStart.setPosition(width() - size * 0.6f, size * 0.6f);
+		buttonStart.layer().setDepth(1);
+		layer.add(buttonStart.layer());
+		buttonStart.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					buttonStart.layer().setVisible(false);
+				}
+			}
+		});
 	}
 	
 	private void addGrid() {
@@ -70,7 +121,7 @@ public class DefenseScreen extends GameScreen implements Listener {
 		super.showTransitionCompleted();
 		addGrid();
 	}
-
+	
 	@Override
 	public void update(int delta) {
 		super.update(delta);
@@ -83,32 +134,8 @@ public class DefenseScreen extends GameScreen implements Listener {
 		super.paint(clock);
 		grid.paint(clock);
 	}
-
-	@Override
-	public void onPointerStart(Event event) {
-		screens.remove(this);
-	}
-
-	@Override
-	public void onPointerEnd(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onPointerDrag(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onPointerCancel(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public void pushSelectScreen() {
-		pushScreen(new SelectScreen(screens, state, grid), screens.slide().right());
+		pushScreen(selectScreen, screens.slide().right());
 	}
-
 }

@@ -178,7 +178,7 @@ public abstract class PlayNObject {
 		if (hashCode == null) return super.equals(obj);
 		if (this == obj) return true;
 		if (obj == null) return false;
-		if (!this.getClass().equals(obj.getClass())) return false;
+		if (this.getClass() != obj.getClass()) return false;
 		return hashCode.equals(((PlayNObject) obj).hashCode);
 	}
 }

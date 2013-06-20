@@ -78,7 +78,7 @@ public abstract class Walker extends GridObject {
 		CanvasImage image = graphics().createImage(grid.getCellSize(), grid.getCellSize());
 		image.canvas().setFillColor(Colors.WHITE);
 		image.canvas().setStrokeColor(Colors.BLACK);
-		int border = 5;
+		int border = (int)(grid.getCellSize() * 0.1f);
 		image.canvas().fillRect(border, border, image.width() - border * 2, image.height() - border * 2);
 		image.canvas().strokeRect(border, border, image.width() - 1 - border * 2, 
 				image.height() - 1 - border * 2);

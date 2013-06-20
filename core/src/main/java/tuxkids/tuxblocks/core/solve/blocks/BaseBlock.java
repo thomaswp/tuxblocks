@@ -63,7 +63,7 @@ public abstract class BaseBlock extends Block {
 		return -lastModifier.sprite.ty();
 	}
 	
-	public GroupLayer getGroupLayer() {
+	public GroupLayer layer() {
 		return groupLayer;
 	}
 	

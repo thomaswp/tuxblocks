@@ -11,6 +11,7 @@ import pythagoras.f.Vector;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
+import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.expression.Equation;
@@ -22,20 +23,65 @@ public class GameScreen extends Screen implements Listener {
 	protected GameScreen topActivity;
 	private OnScreenFinishedListener onScreenFinishedListener;
 	protected int depth;
+	private boolean entering, exiting;
 	
 	public static float defaultButtonSize() {
 		return graphics().height() * 0.15f;
+	}
+	
+	public Button createMenuButton(String path) {
+		Button button = new Button(path, defaultButtonSize(), defaultButtonSize(), true);
+		button.setTint(state.background().primaryColor());
+		return button;
+	}
+	
+	public boolean exiting() {
+		return exiting;
+	}
+	
+	public boolean entering() {
+		return entering;
 	}
 	
 	@Override
 	public void wasShown() {
 		super.wasShown();
 		PlayN.keyboard().setListener(this);
+		entering = true;
+	}
+
+	float lastTx, lastTy;
+	@Override
+	public void showTransitionCompleted() {
+		super.showTransitionCompleted();
+		lastTx = 0;
+		lastTy = 0;
+		entering = false;
+	}
+	
+	@Override
+	public void hideTransitionStarted() {
+		exiting = true;
+	}
+	
+	@Override
+	public void wasHidden() {
+		exiting = false;
+	}
+
+	
+	@Override
+	public void update(int delta) {
+		if (exiting()) {
+			state.background().scroll(layer.tx() - lastTx, layer.ty() - lastTy);
+			lastTx = layer.tx();
+			lastTy = layer.ty();
+		}
 	}
 	
 	@Override
 	public void wasRemoved() {
-		layer.destroy();
+		//layer.destroy();
 	}
 	
 	public int getDepth() {

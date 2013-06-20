@@ -49,7 +49,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private TextFormat textFormat, equationFormat;
 	private Point selectedPoint, possibleSelectedPoint;
 	private Vector velocity = new Vector();
-	private Vector position = new Vector();
+	private Vector position = new Vector(), lastPosition = new Vector();
 	private Vector dragOffset = new Vector();
 	private List<Vector> positionTrail = new ArrayList<Vector>();
 	private List<Double> timeTrail = new ArrayList<Double>();
@@ -87,8 +87,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 
 	@Override
 	public void wasAdded() {
+		super.wasAdded();
+		
 		SPACING = (int)(height() / 3.5f);
 		position.set(recenterPoint.x * SPACING, recenterPoint.y * SPACING);
+		lastPosition.set(position);
 		textFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3));
 		equationFormat = new TextFormat().withFont(
@@ -265,6 +268,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	@Override
 	public void update(int delta) {
+		super.update(delta);
+		
 		int left = (int)((position.x - width() / 2) / SPACING - 0.5);
 		int right = (int)((position.x + width() / 2) / SPACING + 0.5);
 		int top = (int)((position.y - height() / 2) / SPACING - 0.5);
@@ -277,29 +282,17 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		for (int i = left; i <= right; i++) {
 			for (int j = top; j <= bot; j++) {
 				p.setLocation(i, j);
-				ImageLayer layer = getNumberSprite(p);
-				if (layer == null) continue;
-				float dx = position.x - p.x * SPACING;
-				float dy = position.y - p.y * SPACING;
-				float distance = (float)Math.sqrt(dx * dx + dy * dy);
-				float alpha = 1 - Math.min(distance / SPACING / 5, 1);
-				float preAlpha = layer.alpha();
-				if (p.equals(selectedPoint)) {
-					layer.setTint(backgroundPrimaryColor);
-				} else {
-					layer.setTint(Colors.WHITE);
-				}
-				layer.setAlpha(lerp(preAlpha, alpha, 1 - (float)Math.pow(0.995, delta)));
+				getNumberSprite(p);
 			}
 		}
 		
-		if (transitionCompleted() && backgroundSprites.size() < MAX_RECTS) {
-			rectTimer += delta;
-			if (rectTimer >= RECT_INTERVAL) {
-				rectTimer -= RECT_INTERVAL;
-				createBackgroundSprite();
-			}
-		}
+//		if (transitionCompleted() && backgroundSprites.size() < MAX_RECTS) {
+//			rectTimer += delta;
+//			if (rectTimer >= RECT_INTERVAL) {
+//				rectTimer -= RECT_INTERVAL;
+//				createBackgroundSprite();
+//			}
+//		}
 		for (BackgroundSprite bg : backgroundSprites) {
 			bg.update(delta);
 		}
@@ -307,6 +300,29 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	@Override
 	public void paint(Clock clock) {
+		super.paint(clock);
+
+		state.background().scroll(lastPosition.x - position.x, lastPosition.y - position.y);
+		lastPosition.set(position);
+		
+		updateEquationAnswer();
+		
+		for (int i = 0; i < numberImages.size(); i++) {
+			ImageLayer layer = numberImages.get(i);
+			Point p = numberPoints.get(i);
+			float dx = position.x - p.x * SPACING;
+			float dy = position.y - p.y * SPACING;
+			float distance = (float)Math.sqrt(dx * dx + dy * dy);
+			float alpha = 1 - Math.min(distance / SPACING / 5, 1);
+			float preAlpha = layer.alpha();
+			if (p.equals(selectedPoint)) {
+				layer.setTint(backgroundPrimaryColor);
+			} else {
+				layer.setTint(Colors.WHITE);
+			}
+			layer.setAlpha(lerp(preAlpha, alpha, 1 - (float)Math.pow(0.995, clock.dt())));
+		}
+		
 		if (selectedPoint == null) {
 			position.x += velocity.x * clock.dt();
 			position.y += velocity.y * clock.dt();

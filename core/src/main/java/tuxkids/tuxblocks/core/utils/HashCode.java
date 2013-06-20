@@ -251,11 +251,13 @@ public class HashCode {
 		inRightEquals = false;
 	}
 	
+	//TODO: support inheritance
 	public boolean equals(HashCode hash) {
 		if (hash == null) return false;
 		Hashable hashable = hash.hashable;
 		if (this.hashable == hashable) return true;
 		if (this.hashable == null || hashable == null) return false;
+		if (this.hashable.getClass() != hashable.getClass()) return false;
 		
 		if (hash.hashCode() != hashCode()) return false;
 		

@@ -87,14 +87,14 @@ public class ProblemButton extends Button {
 		float cellSize = rewardImageSize / 3;
 		
 		canvas.setFillColor(Colors.WHITE);
-		canvas.setStrokeColor(Colors.BLACK);
+		canvas.setStrokeColor(Colors.DARK_GRAY);
 		canvas.setStrokeWidth(strokeWidth);
 
-		canvas.fillRoundRect(0, 0, width, height, rectRad);
+		canvas.fillRoundRect(strokeWidth / 2, strokeWidth / 2, width - strokeWidth, height - strokeWidth, rectRad);
 		canvas.strokeRoundRect(strokeWidth / 2, strokeWidth / 2, width - strokeWidth, height - strokeWidth, rectRad);
 		
 		Tower reward = problem.reward();
-		Image rewardImage = reward.createImage(reward.cols() * cellSize, reward.rows() * cellSize, Colors.RED);
+		Image rewardImage = reward.createImage(cellSize, Colors.RED);
 		float rewardImageX = width - padding - (rewardImageSize + rewardImage.width()) / 2;
 		float rewardImageY = padding + (rewardImageSize - rewardImage.height()) / 2;
 		canvas.drawImage(rewardImage, rewardImageX, rewardImageY);

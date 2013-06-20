@@ -1,4 +1,6 @@
 *.class
+*.dll
+*.so
 */target/
 html/gwt-unitCache/*
 html/war/WEB-INF/deploy/*

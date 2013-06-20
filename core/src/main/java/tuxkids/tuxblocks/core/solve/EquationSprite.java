@@ -22,7 +22,7 @@ public class EquationSprite {
 	private static TextFormat textFormat;
 	private BaseBlock rightHandSide, leftHandSide;
 	
-	public ImageLayer getLayer() {
+	public ImageLayer layer() {
 		return layer;
 	}
 	
