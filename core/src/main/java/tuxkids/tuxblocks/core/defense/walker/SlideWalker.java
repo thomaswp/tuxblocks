@@ -12,7 +12,7 @@ public abstract class SlideWalker extends Walker {
 				coordinates.y * grid.getCellSize(), perc);
 		float y = lerp(lastCoordinates.x * grid.getCellSize(), 
 				coordinates.x * grid.getCellSize(), perc);
-		sprite.setTranslation(x, y);
+		layer.setTranslation(x, y);
 	}
 	
 }

@@ -6,11 +6,12 @@ import java.util.List;
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.ImageLayer;
+import playn.core.Layer;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
-
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.GridObject;
@@ -22,7 +23,7 @@ public abstract class Walker extends GridObject {
 	protected Grid grid;
 	protected List<Point> path;
 	protected Point coordinates, lastCoordinates, destination;
-	protected ImageLayer sprite;
+	protected ImageLayerTintable layer;
 	protected int hp;
 	protected float alpha = 1;
 	
@@ -35,8 +36,12 @@ public abstract class Walker extends GridObject {
 	public abstract int walkCellTime();
 	public abstract Walker copy();
 	
-	public ImageLayer getSprite() {
-		return sprite;
+	public Layer layerAddable() {
+		return layer.layer();
+	}
+	
+	public ImageLayerTintable layer() {
+		return layer;
 	}
 	
 	public Point coordinates() {
@@ -56,7 +61,11 @@ public abstract class Walker extends GridObject {
 	}
 	
 	public boolean isAlive() {
-		return hp > 0;
+		return hp > 0 && !destroyed();
+	}
+	
+	public boolean destroyed() {
+		return layer.layer().destroyed();
 	}
 	
 	public Walker place(Grid grid, Point coordinates, Point desitnation) {
@@ -82,7 +91,7 @@ public abstract class Walker extends GridObject {
 		image.canvas().fillRect(border, border, image.width() - border * 2, image.height() - border * 2);
 		image.canvas().strokeRect(border, border, image.width() - 1 - border * 2, 
 				image.height() - 1 - border * 2);
-		sprite = graphics().createImageLayer(image);
+		layer = new ImageLayerTintable(image);
 		update(0);
 	}
 	
@@ -103,12 +112,12 @@ public abstract class Walker extends GridObject {
 				}
 				coordinates = nLoc;
 			} else {
-				sprite.destroy();
+				layer.destroy();
 				return true;
 			}
 		}
-		sprite.setTint(Colors.blend(Colors.BLACK, grid.towerColor(), (float)hp / getMaxHp()));
-		sprite.setAlpha(alpha);
+		layer.setTint(Colors.BLACK, grid.towerColor(), (float)hp / getMaxHp());
+		layer.setAlpha(alpha);
 		return false;
 	}
 	

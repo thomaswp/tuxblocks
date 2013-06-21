@@ -21,8 +21,8 @@ public abstract class InchWalker extends Walker {
 			x = coordinates.y * cellSize + ox;
 			y = coordinates.x * cellSize + oy;
 		}
-		sprite.setOrigin(ox, oy);
-		sprite.setTranslation(x, y);
-		sprite.setScale(scaleX, scaleY);
+		layer.setOrigin(ox, oy);
+		layer.setTranslation(x, y);
+		layer.setScale(scaleX, scaleY);
 	}
 }

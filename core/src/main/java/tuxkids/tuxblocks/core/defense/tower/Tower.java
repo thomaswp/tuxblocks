@@ -8,11 +8,13 @@ import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.GridObject;
@@ -23,7 +25,7 @@ public abstract class Tower extends GridObject {
 	
 	protected Grid grid;
 	protected Point coordinates = new Point();
-	protected ImageLayer layer;
+	protected ImageLayerTintable layer;
 	
 	private int fireTimer;
 	private Vector position = new Vector();
@@ -70,8 +72,12 @@ public abstract class Tower extends GridObject {
 		return rows() * grid.getCellSize();
 	}
 	
-	public ImageLayer layer() {
+	public ImageLayerTintable layer() {
 		return layer;
+	}
+	
+	public Layer layerAddable() {
+		return layer.layer();
 	}
 	
 	public Point coordinates() {
@@ -120,7 +126,7 @@ public abstract class Tower extends GridObject {
 	
 	public Tower preview(Grid grid) {
 		this.grid = grid;
-		layer = graphics().createImageLayer(
+		layer = new ImageLayerTintable(
 				createImage(grid.getCellSize(), 
 						Colors.WHITE));
 		layer.setTint(grid.towerColor());
@@ -138,6 +144,7 @@ public abstract class Tower extends GridObject {
 		return this;
 	}
 	
+	@Override
 	public boolean update(int delta) {
 		int fireRate = fireRate();
 		if (fireRate > 0 && fireTimer > fireRate) {
@@ -147,14 +154,15 @@ public abstract class Tower extends GridObject {
 				fireTimer = fireRate;
 			}
 		}
+		float perc = (float)Math.pow((float)fireTimer / fireRate(), 0.5);
+		perc = Math.min(perc, 1);
+		layer.setTint(grid.towerColor(), Colors.GRAY, perc);
 		return false;
 	}
 	
+	@Override
 	public void paint(Clock clock) {
 		fireTimer += clock.dt();
-		float perc = (float)Math.pow((float)fireTimer / fireRate(),0.5);
-		perc = Math.min(perc, 1);
-		layer.setTint(Colors.blend(grid.towerColor(), Colors.GRAY, perc));
 	}
 	
 	protected boolean fire() {

@@ -162,7 +162,7 @@ public class Inventory extends PlayNObject {
 			button.setTint(Colors.WHITE, Color.rgb(230, 230, 230));
 			
 			final int fi = index;
-			button.layer().addListener(new Listener() {
+			button.imageLayer().addListener(new Listener() {
 				@Override
 				public void onPointerStart(Event event) {
 					if (!button.enabled()) return;
@@ -189,7 +189,7 @@ public class Inventory extends PlayNObject {
 				public void onPointerCancel(Event event) { }
 			});
 			
-			groupLayer.add(button.layer());
+			groupLayer.add(button.addableLayer());
 			itemButtons[index] = button;
 		}
 	}

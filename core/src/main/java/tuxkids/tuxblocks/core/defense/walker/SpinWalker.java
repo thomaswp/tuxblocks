@@ -8,8 +8,8 @@ public abstract class SpinWalker extends Walker {
 				coordinates.y * grid.getCellSize(), perc);
 		float y = lerp(lastCoordinates.x * grid.getCellSize(), 
 				coordinates.x * grid.getCellSize(), perc);
-		sprite.setOrigin(sprite.width() / 2, sprite.height() / 2);
-		sprite.setTranslation(x + sprite.originX(), y + sprite.originY());
-		sprite.setRotation((float) (perc * Math.PI));
+		layer.setOrigin(layer.width() / 2, layer.height() / 2);
+		layer.setTranslation(x + layer.originX(), y + layer.originY());
+		layer.setRotation((float) (perc * Math.PI));
 	}
 }

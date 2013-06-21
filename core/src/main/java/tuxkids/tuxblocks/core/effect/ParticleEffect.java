@@ -25,7 +25,6 @@ public abstract class ParticleEffect extends Effect {
 
 	@Override
 	public boolean update(int delta) {
-		debug("!");
 		if (timer < lifespan) {
 			particles.add(new Particle(image, layer));
 		}

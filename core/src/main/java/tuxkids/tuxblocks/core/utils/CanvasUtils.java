@@ -63,6 +63,8 @@ public class CanvasUtils extends PlayNObject {
 	}
 	
 	public static Image tintImage(Image image, int tint, float perc) {
+		if (!image.isReady()) return null;
+		
 		int width = (int)image.width(), height = (int)image.height();
 		CanvasImage shifted = graphics().createImage(width, height);
 		int[] rgb = new int[width * height];
@@ -70,17 +72,17 @@ public class CanvasUtils extends PlayNObject {
 		for (int i = 0; i < rgb.length; i++) {
 			rgb[i] = blendAdditive(rgb[i], tint, perc);
 		}
-		if (setter != null) {
-			setter.set(shifted, 0, 0, width, height, rgb, 0, width);
+		if (pixelSetter != null) {
+			pixelSetter.set(shifted, 0, 0, width, height, rgb, 0, width);
 		} else {
 			shifted.setRgb(0, 0, width, height, rgb, 0, width);
 		}
 		return shifted;
 	}
 	
-	public static Setter setter;
+	public static PixelSetter pixelSetter;
 	
-	public interface Setter {
+	public interface PixelSetter {
 		public void set(CanvasImage o, int x, int y, int width, int height, int[] rgb, int offset, int scanSize);
 	}
 	
@@ -89,7 +91,7 @@ public class CanvasUtils extends PlayNObject {
 	}
 
 	public static int blendAdditive(int c1, int c2, float perc) {
-		return Color.argb(Color.alpha(c1),
+		return Color.argb(Math.min(Color.alpha(c1), Color.alpha(c2)),
 				255 - Math.min((int)(255 - Color.red(c1) + (255 - Color.red(c2)) * perc), 255),
 				255 - Math.min((int)(255 - Color.green(c1) + (255 - Color.green(c2)) * perc), 255),
 				255 - Math.min((int)(255 - Color.blue(c1) + (255 - Color.blue(c2)) * perc), 255));

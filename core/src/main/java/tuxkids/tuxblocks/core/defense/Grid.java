@@ -193,7 +193,7 @@ public class Grid extends PlayNObject {
 	
 	public void addWalker(Walker walker) {
 		walkers.add(walker);
-		groupLayer.add(walker.getSprite());
+		groupLayer.add(walker.layerAddable());
 	}
 	
 	private void createGridSprite() {
@@ -243,7 +243,7 @@ public class Grid extends PlayNObject {
 		this.toPlace = toPlace;
 		toPlace.preview(this);
 		toPlace.layer().setVisible(false);
-		groupLayer.add(toPlace.layer());
+		groupLayer.add(toPlace.layerAddable());
 		validPlacementMap.clear();
 		
 		toPlacePreview = graphics().createImageLayer(toPlace.createRadiusImage());

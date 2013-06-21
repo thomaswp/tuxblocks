@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.utils;
 
 import playn.core.PlayN;
+import tuxkids.tuxblocks.core.PlayNObject;
 
 
 /**
@@ -61,6 +62,8 @@ public class Debug {
 				int i = 1;
 				while (e.getStackTrace()[i].getClassName().equals(Debug.class.getName()) &&
 						e.getStackTrace()[i].getMethodName().equals("write")) i++;
+				while (e.getStackTrace()[i].getClassName().equals(PlayNObject.class.getName()) &&
+						e.getStackTrace()[i].getMethodName().equals("debug")) i++;
 				String cName = e.getStackTrace()[i].getClassName();
 				int index = cName.lastIndexOf(".");
 				if (index > 0 && index < cName.length() - 1) 

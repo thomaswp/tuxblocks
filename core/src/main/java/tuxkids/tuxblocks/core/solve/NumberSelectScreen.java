@@ -30,6 +30,7 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
@@ -67,6 +68,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private Button buttonBack, buttonCenter;
 	private Image backImageOk, backImageBack, backImageCancel;
 	private Point recenterPoint = new Point();
+	private ImageLayerTintable selectedNumberLayer;
 	
 	private MenuSprite menu;
 	
@@ -107,6 +109,12 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		createEquation(expression);
 		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - equationHeight / 2);
 		backgroundLayer.setTranslation(0, equationHeight / 2);
+		
+		selectedNumberLayer = new ImageLayerTintable();
+		selectedNumberLayer.setDepth(10);
+		selectedNumberLayer.setTint(themeColor);
+		foregroundLayer.add(selectedNumberLayer.layer());
+		
 		update(0);
 	}
 	
@@ -199,8 +207,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		equationLayer = graphics().createGroupLayer();
 		equationLayer.add(menu.layer());
 		equationLayer.add(eqLayer);
-		equationLayer.add(buttonBack.layer());
-		equationLayer.add(buttonCenter.layer());
+		equationLayer.add(buttonBack.addableLayer());
+		equationLayer.add(buttonCenter.addableLayer());
 		
 		equationHeight = menu.height();
 		equationBlankX += eqLayer.tx(); 
@@ -273,6 +281,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		
 		updateEquationAnswer();
 		
+		selectedNumberLayer.setVisible(false);
 		for (int i = 0; i < numberImages.size(); i++) {
 			ImageLayer layer = numberImages.get(i);
 			Point p = numberPoints.get(i);
@@ -282,9 +291,14 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			float alpha = 1 - Math.min(distance / SPACING / 5, 1);
 			float preAlpha = layer.alpha();
 			if (p.equals(selectedPoint)) {
-				layer.setTint(themeColor);
+//				selectedNumberLayer.setTint(themeColor);
+				selectedNumberLayer.setImage(layer.image());
+				selectedNumberLayer.setTranslation(layer.tx(), layer.ty());
+				selectedNumberLayer.setOrigin(layer.width() / 2, layer.height() / 2);
+				selectedNumberLayer.setVisible(true);
+				layer.setVisible(false);
 			} else {
-				layer.setTint(Colors.WHITE);
+				layer.setVisible(true);
 			}
 			layer.setAlpha(lerp(preAlpha, alpha, 1 - (float)Math.pow(0.995, clock.dt())));
 		}

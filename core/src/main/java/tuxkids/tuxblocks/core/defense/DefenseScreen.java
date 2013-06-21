@@ -76,8 +76,8 @@ public class DefenseScreen extends GameScreen {
 		float size = GameScreen.defaultButtonSize();
 		buttonPlus = createMenuButton(Constant.BUTTON_PLUS);
 		buttonPlus.setPosition(size * 0.6f, size * 0.6f);
-		buttonPlus.layer().setDepth(1);
-		layer.add(buttonPlus.layer());
+		buttonPlus.addableLayer().setDepth(1);
+		layer.add(buttonPlus.addableLayer());
 		
 		buttonPlus.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -91,13 +91,13 @@ public class DefenseScreen extends GameScreen {
 		float size = defaultButtonSize();
 		buttonStart = createMenuButton(Constant.BUTTON_OK);
 		buttonStart.setPosition(width() - size * 0.6f, size * 0.6f);
-		buttonStart.layer().setDepth(1);
-		layer.add(buttonStart.layer());
+		buttonStart.addableLayer().setDepth(1);
+		layer.add(buttonStart.addableLayer());
 		buttonStart.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					buttonStart.layer().setVisible(false);
+					buttonStart.addableLayer().setVisible(false);
 					state.newThemeColor();
 				}
 			}

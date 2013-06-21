@@ -43,7 +43,7 @@ public class SelectScreen extends GameScreen {
 		this.grid = grid;
 		
 		Button button = createMenuButton(Constant.BUTTON_FORWARD);
-		button.layer().setDepth(1);
+		button.addableLayer().setDepth(1);
 		button.setPosition(width() - button.width() * 0.6f, button.height() * 0.6f);
 		button.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -53,7 +53,7 @@ public class SelectScreen extends GameScreen {
 				}
 			}
 		});
-		layer.add(button.layer());
+		layer.add(button.addableLayer());
 		
 		MenuSprite menu = new MenuSprite(width(), defaultButtonSize() * 1.2f);
 		menu.layer().setDepth(-1);
@@ -102,7 +102,7 @@ public class SelectScreen extends GameScreen {
 				if (index >= problems.size()) return;
 				
 				final ProblemButton pb = new ProblemButton(state.problems().get(index), width, minHeight, grid.towerColor());
-				problemLayer.add(pb.layer());
+				problemLayer.add(pb.addableLayer());
 				pb.setPosition((col + 0.5f) * width() / cols, y + pb.height() / 2);
 				y += pb.height() + margin;
 				pb.setTint(Color.withAlpha(Colors.WHITE, 225), Colors.LIGHT_GRAY);
@@ -157,9 +157,9 @@ public class SelectScreen extends GameScreen {
 		}
 		
 		if (!entering() && del && selectedProblem != null) {
-			selectedProblem.layer().setAlpha(PlayNObject.lerpTime(
-					selectedProblem.layer().alpha(), 0, 0.995f, clock.dt()));
-			if (selectedProblem.layer().alpha() < 0.03f) {
+			selectedProblem.addableLayer().setAlpha(PlayNObject.lerpTime(
+					selectedProblem.addableLayer().alpha(), 0, 0.995f, clock.dt()));
+			if (selectedProblem.addableLayer().alpha() < 0.03f) {
 				solveProblem(selectedProblem);
 				del = false;
 			}

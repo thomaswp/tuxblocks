@@ -13,14 +13,14 @@ public abstract class FlipWalker extends Walker {
 		float x = Math.max(coordinates.y, lastCoordinates.y) * grid.getCellSize();
 		float y = Math.max(coordinates.x, lastCoordinates.x) * grid.getCellSize();
 		
-		sprite.setTranslation(x, y);
+		layer.setTranslation(x, y);
 		
 		float scaleX = dx * (float)Math.cos(Math.PI * perc);
 		if (dx == 0) scaleX = 1;
 		float scaleY = dy * (float)Math.cos(Math.PI * perc);
 		if (dy == 0) scaleY = 1;
 		
-		sprite.setScale(scaleX, scaleY);
+		layer.setScale(scaleX, scaleY);
 	}
 
 }

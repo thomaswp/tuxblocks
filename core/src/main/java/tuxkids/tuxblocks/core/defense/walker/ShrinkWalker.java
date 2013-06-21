@@ -12,10 +12,10 @@ public abstract class ShrinkWalker extends Walker {
 		} else {
 			coords = coordinates;
 		}
-		sprite.setOrigin(sprite.width() / 2, sprite.height() / 2);
-		sprite.setScale((float) Math.abs(Math.cos(Math.PI * perc)));
-		sprite.setTranslation(coords.y * grid.getCellSize() + sprite.originX(), 
-				coords.x * grid.getCellSize() + sprite.originY());
+		layer.setOrigin(layer.width() / 2, layer.height() / 2);
+		layer.setScale((float) Math.abs(Math.cos(Math.PI * perc)));
+		layer.setTranslation(coords.y * grid.getCellSize() + layer.originX(), 
+				coords.x * grid.getCellSize() + layer.originY());
 	}
 
 }

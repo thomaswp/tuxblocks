@@ -6,9 +6,9 @@ import playn.html.HtmlGame;
 import playn.html.HtmlPlatform;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.CanvasUtils.Setter;
+import tuxkids.tuxblocks.core.utils.CanvasUtils.PixelSetter;
 
-public class TuxBlocksGameHtml extends HtmlGame implements Setter {
+public class TuxBlocksGameHtml extends HtmlGame implements PixelSetter {
 
 	private HtmlPlatform platform;
 
@@ -18,7 +18,7 @@ public class TuxBlocksGameHtml extends HtmlGame implements Setter {
 		// use config to customize the HTML platform, if needed
 		platform = HtmlPlatform.register(config);
 		platform.assets().setPathPrefix("tuxblocks/");
-		CanvasUtils.setter = this;
+		CanvasUtils.pixelSetter = this;
 		PlayN.run(new TuxBlocksGame());
 	}
 

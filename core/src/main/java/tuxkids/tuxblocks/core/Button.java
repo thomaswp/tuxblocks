@@ -1,8 +1,10 @@
 package tuxkids.tuxblocks.core;
 
 import playn.core.Color;
+import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Layer;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
@@ -14,7 +16,7 @@ public class Button extends PlayNObject implements Positioned {
 	
 	public final static float UNPRESSED_ALPHA = 0.5f;
 	
-	private ImageLayer imageLayer;
+	private ImageLayerTintable imageLayer;
 	private OnPressedListener onPressedListener;
 	private OnReleasedListener onReleaseListener;
 	private OnDragListener onDragListener;
@@ -24,7 +26,11 @@ public class Button extends PlayNObject implements Positioned {
 	private int tint, tintPressed;
 	private boolean enabled = true;
 
-	public ImageLayer layer() {
+	public Layer addableLayer() {
+		return imageLayer.layer();
+	}
+	
+	public ImageLayerTintable imageLayer() {
 		return imageLayer;
 	}
 	
@@ -183,7 +189,7 @@ public class Button extends PlayNObject implements Positioned {
 		this.width = width;
 		this.height = height;
 		this.isCircle = isCircle;
-		imageLayer = graphics().createImageLayer();
+		imageLayer = new ImageLayerTintable();
 		setImage(image);
 		imageLayer.addListener(new PointerListener());
 		setTint(Colors.WHITE, UNPRESSED_ALPHA);
@@ -248,7 +254,7 @@ public class Button extends PlayNObject implements Positioned {
 		}
 
 		@Override
-		public void onPointerDrag(Event event) { 
+		public void onPointerDrag(Event event) {
 			if (!enabled) return; 
 			if (onDragListener != null) onDragListener.onDrag(event);
 		}

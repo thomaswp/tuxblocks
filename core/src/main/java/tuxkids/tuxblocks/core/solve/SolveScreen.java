@@ -74,14 +74,14 @@ public class SolveScreen extends GameScreen implements Listener, OnSimplifyListe
 		buttonImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
 		buttonBack = createMenuButton(Constant.BUTTON_DOWN);
 		buttonBack.setPosition(buttonBack.width() * 0.6f, buttonBack.height() * 0.6f);
-		buttonBack.layer().setDepth(10);
+		buttonBack.addableLayer().setDepth(10);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) popThis(screens.slide().up());
 			}
 		});
-		layer.add(buttonBack.layer());
+		layer.add(buttonBack.addableLayer());
 	}
 	
 	@Override
