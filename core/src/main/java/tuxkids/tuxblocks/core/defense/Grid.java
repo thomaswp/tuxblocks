@@ -23,6 +23,8 @@ import tuxkids.tuxblocks.core.defense.round.Wave;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Peon;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
+import tuxkids.tuxblocks.core.effect.Effect;
+import tuxkids.tuxblocks.core.effect.Explosion;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
 public class Grid extends PlayNObject {
@@ -37,8 +39,9 @@ public class Grid extends PlayNObject {
 	private List<Walker> walkers = new ArrayList<Walker>();
 	private List<Projectile> projectiles = new ArrayList<Projectile>();
 	private List<Tower> towers = new ArrayList<Tower>();
+	private List<Effect> effects = new ArrayList<Effect>();
 	@SuppressWarnings("unchecked")
-	private MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers);
+	private MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers, effects);
 	private Point walkerStart, walkerDestination;
 	private Tower toPlace;
 	private ImageLayer toPlacePreview;
@@ -387,5 +390,11 @@ public class Grid extends PlayNObject {
 	
 	public boolean isOutOfBounds(float x, float y) {
 		return x < 0 || y < 0 || x >= width() || y >= height();
+	}
+
+	public void addEffect(Explosion explosion) {
+		effects.add(explosion);
+		explosion.layer().setDepth(5);
+		groupLayer.add(explosion.layer());
 	}
 }
