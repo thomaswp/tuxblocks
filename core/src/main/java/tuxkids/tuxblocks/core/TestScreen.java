@@ -19,7 +19,7 @@ public class TestScreen extends GameScreen {
 	public void wasAdded() {
 		int tint = Color.rgb(125, 255, 0);
 		
-		layer.add(graphics().createImageLayer(CanvasUtils.createRect(width(), height(), Colors.WHITE)).setDepth(-1));
+		layer.add(graphics().createImageLayer(CanvasUtils.createRect(width(), height(), Colors.LIGHT_GRAY)).setDepth(-1));
 		
 		Image test = CanvasUtils.createCircle(50, Colors.PINK, 3, Colors.GREEN);
 		ImageLayer l1 = graphics().createImageLayer(test);

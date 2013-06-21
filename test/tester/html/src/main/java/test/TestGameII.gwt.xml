@@ -1,0 +1,11 @@
+<module rename-to='tester'>
+  <inherits name='playn.PlayN'/>
+  <inherits name='TestGameIIAssets'/>
+
+  <source path='core'/>
+  <source path='html'/>
+
+  <public path="resources" />
+
+  <entry-point class='test.html.TestGameIIHtml'/>
+</module>

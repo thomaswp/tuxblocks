@@ -15,6 +15,7 @@
 
   <properties>
     <playn.version>1.7</playn.version>
+    <ooo.version>1.7</ooo.version>
   </properties>
 
   <profiles>

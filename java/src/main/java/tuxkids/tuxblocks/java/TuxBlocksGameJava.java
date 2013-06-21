@@ -2,7 +2,6 @@ package tuxkids.tuxblocks.java;
 
 import playn.core.PlayN;
 import playn.java.JavaPlatform;
-import playn.java.
 import tuxkids.tuxblocks.core.TuxBlocksGame;
 
 public class TuxBlocksGameJava {

@@ -62,22 +62,30 @@ public class CanvasUtils extends PlayNObject {
 		return tintImage(image, tint, 1);
 	}
 	
-	public static CanvasImage ci;
-	
 	public static Image tintImage(Image image, int tint, float perc) {
 		int width = (int)image.width(), height = (int)image.height();
 		CanvasImage shifted = graphics().createImage(width, height);
-		ci = shifted;
 		int[] rgb = new int[width * height];
 		image.getRgb(0, 0, width, height, rgb, 0, width);
 		for (int i = 0; i < rgb.length; i++) {
 			rgb[i] = blendAdditive(rgb[i], tint, perc);
 		}
-		shifted.canvas().setFillColor(Colors.GRAY);
-		shifted.canvas().fillRect(10, 0, 10, 10);
-		shifted.setRgb(0, 0, width, height, rgb, 0, width);
-		shifted.canvas().fillRect(0, 0, 10, 10);
+		if (setter != null) {
+			setter.set(shifted, 0, 0, width, height, rgb, 0, width);
+		} else {
+			shifted.setRgb(0, 0, width, height, rgb, 0, width);
+		}
 		return shifted;
+	}
+	
+	public static Setter setter;
+	
+	public interface Setter {
+		public void set(CanvasImage o, int x, int y, int width, int height, int[] rgb, int offset, int scanSize);
+	}
+	
+	public static String colorToString(int c) {
+		return Formatter.format("[%d,%d,%d,%d]", Color.alpha(c), Color.red(c), Color.green(c), Color.blue(c));
 	}
 
 	public static int blendAdditive(int c1, int c2, float perc) {
