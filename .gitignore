@@ -1,7 +1,8 @@
 *.class
 *.dll
 *.so
+*.gwt-log
 */target/
 html/gwt-unitCache/*
 html/war/WEB-INF/deploy/*
-android/assets/images/*
+android/assets/*

@@ -15,12 +15,13 @@ import playn.core.gl.GLShader;
 import playn.core.util.Callback;
 import pythagoras.f.Point;
 import pythagoras.f.Transform;
+import tripleplay.particle.GLStatus;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class ImageLayerTintable extends PlayNObject {
 
-	private static final boolean DISABLE_GL = false;
+	private static final boolean DISABLE_GL = !GLStatus.enabled();
 	
 	private GroupLayer layer;
 	
@@ -109,7 +110,6 @@ public class ImageLayerTintable extends PlayNObject {
 		base.setImage(image);
 		tintMap.clear();
 		tintMap.put(Colors.WHITE, image);
-		debug(tint);
 		setTint(tint);
 	}
 
@@ -194,7 +194,7 @@ public class ImageLayerTintable extends PlayNObject {
 	private Image getTintedImage(Integer color) {
 		Image mapped = tintMap.get(color);
 		if (mapped == null) {
-			debug("Created: %d", color);
+//			debug("Created: %d", color);
 			mapped = CanvasUtils.tintImage(baseImage, color, 1);
 			tintMap.put(color, mapped);
 		}

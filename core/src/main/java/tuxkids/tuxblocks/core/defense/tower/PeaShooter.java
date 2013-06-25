@@ -40,7 +40,7 @@ public class PeaShooter extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		return new Missile();
+		return new Pea();
 	}
 
 	@Override

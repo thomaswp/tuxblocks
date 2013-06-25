@@ -15,6 +15,7 @@ import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.particle.Emitter;
 import tripleplay.particle.Particles;
+import tripleplay.particle.TuxParticles;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
@@ -24,7 +25,6 @@ import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Peon;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.effect.Effect;
-import tuxkids.tuxblocks.core.effect.Explosion;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
 public class Grid extends PlayNObject {
@@ -122,7 +122,7 @@ public class Grid extends PlayNObject {
 		refreshPath();
 		createGridSprite();
 		
-		particles = new Particles();
+		particles = new TuxParticles();
 		particlesLayer = graphics().createGroupLayer();
 		particlesLayer.setDepth(5);
 		groupLayer.add(particlesLayer);
@@ -130,7 +130,7 @@ public class Grid extends PlayNObject {
 		round = new Round() {
 			@Override
 			protected void populateRound() {
-				addWave(new Wave(new Peon(), 500, 3), 3000);
+				addWave(new Wave(new Peon(), 500, 1), 3000);
 				addWave(new Wave(new Peon(), 500, 3), 6000);
 				addWave(new Wave(new Peon(), 500, 3), 6000);
 				addWave(new Wave(new Peon(), 500, 3), 6000);
@@ -392,9 +392,9 @@ public class Grid extends PlayNObject {
 		return x < 0 || y < 0 || x >= width() || y >= height();
 	}
 
-	public void addEffect(Explosion explosion) {
-		effects.add(explosion);
-		explosion.layer().setDepth(5);
-		groupLayer.add(explosion.layer());
+	public void addEffect(Effect effect) {
+		effects.add(effect);
+		effect.layer().setDepth(5);
+		groupLayer.add(effect.layer());
 	}
 }

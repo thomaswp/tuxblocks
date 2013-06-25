@@ -152,7 +152,21 @@ public abstract class PlayNObject {
 			});
 			
 		}
+	}
+	
+	protected static void centerImageLayer(final ImageLayerTintable layer) {
+		if (layer.image() != null) {
+			layer.image().addCallback(new Callback<Image>() {
+				@Override
+				public void onSuccess(Image result) {
+					layer.setOrigin(result.width() / 2, result.height() / 2);
+				}
+
+				@Override
+				public void onFailure(Throwable cause) { }	
+			});
 			
+		}
 	}
 	
 	public static float getGlobalTx(Layer layer) {

@@ -47,6 +47,9 @@ public abstract class BodyProjectile extends Projectile {
 			layer.setRotation(temp.angle());
 			velocity.addScaled(temp, acceleration() * delta * 30, velocity);
 			if (velocity.length() > maxSpeed()) velocity.scale(maxSpeed() / velocity.length(), velocity);
+		} else if (velocity.length() == 0) {
+			onFinish();
+			return true;
 		}
 		return false;
 	}

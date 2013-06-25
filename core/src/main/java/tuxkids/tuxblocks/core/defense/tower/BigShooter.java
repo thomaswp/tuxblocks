@@ -4,6 +4,7 @@ import playn.core.CanvasImage;
 import playn.core.Image;
 import playn.core.PlayN;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.defense.projectile.Missile;
 import tuxkids.tuxblocks.core.defense.projectile.Pea;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 
@@ -36,7 +37,7 @@ public class BigShooter extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		return new Pea();
+		return new Missile();
 	}
 
 	@Override
