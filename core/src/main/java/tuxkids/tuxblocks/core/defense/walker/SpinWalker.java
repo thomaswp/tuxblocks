@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
+import pythagoras.f.FloatMath;
+
 public abstract class SpinWalker extends Walker {
 
 	@Override
@@ -10,6 +12,6 @@ public abstract class SpinWalker extends Walker {
 				coordinates.x * grid.getCellSize(), perc);
 		layer.setOrigin(layer.width() / 2, layer.height() / 2);
 		layer.setTranslation(x + layer.originX(), y + layer.originY());
-		layer.setRotation((float) (perc * Math.PI));
+		layer.setRotation(perc * FloatMath.PI);
 	}
 }

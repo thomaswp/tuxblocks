@@ -11,6 +11,7 @@ import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.util.Clock;
+import pythagoras.f.FloatMath;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
@@ -154,7 +155,7 @@ public abstract class Tower extends GridObject {
 				fireTimer = fireRate;
 			}
 		}
-		float perc = (float)Math.pow((float)fireTimer / fireRate(), 0.5);
+		float perc = FloatMath.pow((float)fireTimer / fireRate(), 0.5f);
 		perc = Math.min(perc, 1);
 		layer.setTint(grid.towerColor(), Colors.GRAY, perc);
 		return false;

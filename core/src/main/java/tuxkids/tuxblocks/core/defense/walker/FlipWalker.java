@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
+import pythagoras.f.FloatMath;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.defense.Grid;
@@ -15,9 +16,9 @@ public abstract class FlipWalker extends Walker {
 		
 		layer.setTranslation(x, y);
 		
-		float scaleX = dx * (float)Math.cos(Math.PI * perc);
+		float scaleX = dx * FloatMath.cos(FloatMath.PI * perc);
 		if (dx == 0) scaleX = 1;
-		float scaleY = dy * (float)Math.cos(Math.PI * perc);
+		float scaleY = dy * FloatMath.cos(FloatMath.PI * perc);
 		if (dy == 0) scaleY = 1;
 		
 		layer.setScale(scaleX, scaleY);

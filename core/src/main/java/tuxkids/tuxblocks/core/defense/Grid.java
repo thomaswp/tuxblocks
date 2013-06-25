@@ -156,7 +156,7 @@ public class Grid extends PlayNObject {
 	
 	public void update(int delta) {
 		if (groupLayer.alpha() < targetAlpha * 0.99f) {
-			groupLayer.setAlpha(lerp(groupLayer.alpha(), targetAlpha, 1 - (float)Math.pow(0.99, delta)));
+			groupLayer.setAlpha(lerpTime(groupLayer.alpha(), targetAlpha, 0.99f, delta));
 		} else {
 			groupLayer.setAlpha(targetAlpha);
 		}

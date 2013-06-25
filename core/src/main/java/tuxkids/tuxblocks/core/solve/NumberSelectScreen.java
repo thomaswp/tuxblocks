@@ -10,34 +10,28 @@ import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.Key;
-import playn.core.Keyboard;
 import playn.core.Layer;
-import playn.core.Keyboard.TypedEvent;
 import playn.core.Layer.HitTester;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-import playn.core.util.Callback;
 import playn.core.util.Clock;
+import pythagoras.f.FloatMath;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
-import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.ColorUtils;
-import tuxkids.tuxblocks.core.utils.Debug;
-import tuxkids.tuxblocks.core.utils.Sobol;
 
 public class NumberSelectScreen extends GameScreen implements Listener {
 
@@ -287,11 +281,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			Point p = numberPoints.get(i);
 			float dx = position.x - p.x * SPACING;
 			float dy = position.y - p.y * SPACING;
-			float distance = (float)Math.sqrt(dx * dx + dy * dy);
+			float distance = FloatMath.sqrt(dx * dx + dy * dy);
 			float alpha = 1 - Math.min(distance / SPACING / 5, 1);
 			float preAlpha = layer.alpha();
 			if (p.equals(selectedPoint)) {
-//				selectedNumberLayer.setTint(themeColor);
 				selectedNumberLayer.setImage(layer.image());
 				selectedNumberLayer.setTranslation(layer.tx(), layer.ty());
 				selectedNumberLayer.setOrigin(layer.width() / 2, layer.height() / 2);
@@ -300,7 +293,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			} else {
 				layer.setVisible(true);
 			}
-			layer.setAlpha(lerp(preAlpha, alpha, 1 - (float)Math.pow(0.995, clock.dt())));
+			layer.setAlpha(PlayNObject.lerpTime(preAlpha, alpha, 0.995f, clock.dt()));
 		}
 		
 		if (selectedPoint == null) {
@@ -309,8 +302,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			velocity.x *= Math.pow(0.995, clock.dt());
 			velocity.y *= Math.pow(0.995, clock.dt());
 		} else {
-			lerp(position, selectedPoint.x * SPACING, selectedPoint.y * SPACING, 
-					1 - (float)Math.pow(0.99, clock.dt()));
+			PlayNObject.lerpTime(position, selectedPoint.x * SPACING, selectedPoint.y * SPACING, 
+					0.99f, clock.dt());
 		}
 		foregroundLayer.setTranslation(-position.x, -position.y);
 	}

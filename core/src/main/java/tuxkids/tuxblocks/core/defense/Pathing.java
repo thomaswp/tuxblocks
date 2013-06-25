@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import pythagoras.f.FloatMath;
 import pythagoras.i.Point;
 
 public class Pathing {
@@ -32,7 +33,7 @@ public class Pathing {
 		openSet.add(from);
 
 		gScore.put(from, 0f);
-		fScore.put(from, (float)Math.sqrt(from.distanceSq(to)));
+		fScore.put(from, FloatMath.sqrt(from.distanceSq(to)));
 
 		while (!openSet.isEmpty()) {
 			Collections.sort(openSet, openSetComparator);
@@ -59,7 +60,7 @@ public class Pathing {
 				if (!openSet.contains(neighbor) || tentativeGScore < gScore.get(neighbor)) {
 					cameFrom.put(neighbor, current);
 					gScore.put(neighbor, tentativeGScore);
-					fScore.put(neighbor, tentativeGScore + (float)Math.sqrt(neighbor.distanceSq(to)));
+					fScore.put(neighbor, tentativeGScore + FloatMath.sqrt(neighbor.distanceSq(to)));
 					if (!openSet.contains(neighbor)) {
 						openSet.add(neighbor);
 					}

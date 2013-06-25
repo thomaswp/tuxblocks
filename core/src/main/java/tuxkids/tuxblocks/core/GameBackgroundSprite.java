@@ -10,7 +10,6 @@ import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.ColorUtils;
 import tuxkids.tuxblocks.core.utils.Sobol;
 
 public class GameBackgroundSprite extends PlayNObject {
@@ -70,7 +69,7 @@ public class GameBackgroundSprite extends PlayNObject {
 
 	public void newThemeColor() {
 		primaryHue = (float)Math.random();
-		primaryColor = ColorUtils.hsvToRgb(primaryHue, 1, 1);
+		primaryColor = CanvasUtils.hsvToRgb(primaryHue, 1, 1);
 	}
 	
 	public void update(int delta) {
@@ -119,7 +118,7 @@ public class GameBackgroundSprite extends PlayNObject {
 			float s = (float)Math.random() * 0.5f + 0.5f;
 			float v = (float)Math.random() * 0.3f + 0.4f;
 			CanvasImage image = CanvasUtils.createRect(size, size, 
-					ColorUtils.hsvToRgb(h, s, v), 1, Colors.DARK_GRAY);
+					CanvasUtils.hsvToRgb(h, s, v), 1, Colors.DARK_GRAY);
 			layer = graphics().createImageLayer(image);
 			maxAlpha = (float)Math.random() * 0.4f + 0.4f;
 			layer.setAlpha(0);

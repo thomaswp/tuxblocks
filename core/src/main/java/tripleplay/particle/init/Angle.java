@@ -19,8 +19,8 @@ public class Angle {
 		return new Initializer() {
 			@Override
 			public void init(int index, float[] data, int start) {
-				double angle = Math.atan2(data[start + VEL_Y], data[start + VEL_X]) + angleOffset;
-				set(data, start, (float)angle);
+				float angle = FloatMath.atan2(data[start + VEL_Y], data[start + VEL_X]) + angleOffset;
+				set(data, start, angle);
 				
 			}
 		};

@@ -1,15 +1,11 @@
 package tuxkids.tuxblocks.core.utils;
 
-import org.w3c.dom.html.HTMLCollection;
-
 import playn.core.CanvasImage;
 import playn.core.Color;
-import playn.core.Graphics;
 import playn.core.Image;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 
 public class CanvasUtils extends PlayNObject {
@@ -95,5 +91,28 @@ public class CanvasUtils extends PlayNObject {
 				255 - Math.min((int)(255 - Color.red(c1) + (255 - Color.red(c2)) * perc), 255),
 				255 - Math.min((int)(255 - Color.green(c1) + (255 - Color.green(c2)) * perc), 255),
 				255 - Math.min((int)(255 - Color.blue(c1) + (255 - Color.blue(c2)) * perc), 255));
+	}
+	
+	public static int hsvToRgb(float hue, float saturation, float value) {
+
+	    int h = (int)(hue * 6) % 6;
+	    float f = hue * 6 - h;
+	    float p = value * (1 - saturation);
+	    float q = value * (1 - f * saturation);
+	    float t = value * (1 - (1 - f) * saturation);
+
+	    switch (h) {
+	      case 0: return rgbFloatToInt(value, t, p);
+	      case 1: return rgbFloatToInt(q, value, p);
+	      case 2: return rgbFloatToInt(p, value, t);
+	      case 3: return rgbFloatToInt(p, q, value);
+	      case 4: return rgbFloatToInt(t, p, value);
+	      case 5: return rgbFloatToInt(value, p, q);
+	      default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
+	    }
+	}
+	
+	private static int rgbFloatToInt(float r, float g, float b) {
+		return Color.rgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
 	}
 }

@@ -11,6 +11,7 @@ import playn.core.PlayN;
 import playn.core.Pointer;
 import playn.core.Pointer.Event;
 import playn.core.util.Callback;
+import pythagoras.f.FloatMath;
 import pythagoras.f.IVector;
 import pythagoras.f.Vector;
 import pythagoras.i.IPoint;
@@ -85,20 +86,25 @@ public abstract class PlayNObject {
 		return x0 * (1 - perc) + x1 * perc;
 	}
 	
-	public static float lerpTime(float x0, float x1, float base, float dt) {
-		float perc = 1 - (float) Math.pow(base, dt);
-		return x0 * (1 - perc) + x1 * perc;
-	}
-	
 	public static void lerp(Vector v0, float x1, float y1, float perc) {
 		v0.x = lerp(v0.x, x1, perc);
 		v0.y = lerp(v0.y, y1, perc);
 	}
 	
+	public static float lerpTime(float x0, float x1, float base, float dt) {
+		float perc = 1 - FloatMath.pow(base, dt);
+		return x0 * (1 - perc) + x1 * perc;
+	}
+
+	public static void lerpTime(Vector v0, int x1, int y1, float base, float dt) {
+		v0.x = lerpTime(v0.x, x1, base, dt);
+		v0.y = lerpTime(v0.y, y1, base, dt);
+	}
+	
 	public static float distance(float x1, float y1, float x2, float y2) {
 		float dx = x2 - x1;
 		float dy = y2 - y1;
-		return (float)Math.sqrt(dx * dx + dy * dy);
+		return FloatMath.sqrt(dx * dx + dy * dy);
 	}
 	
 	public static float distance(Object o1, Object o2) {
