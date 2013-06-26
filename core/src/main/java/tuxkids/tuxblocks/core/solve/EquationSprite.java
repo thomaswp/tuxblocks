@@ -33,18 +33,18 @@ public class EquationSprite {
 			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20);
 			textFormat = new TextFormat().withFont(font);
 		}
-		refresh(null, null, null);
+		refresh(null, null, false);
 	}
 	
-	public void refresh(ModifierBlock dragging, BaseBlock draggingTo, BaseBlock draggingFrom) {
+	public void refresh(ModifierBlock dragging, BaseBlock highlight, boolean flipModifier) {
 		if (layer != null) layer.destroy();
-		Expression leftExpression = leftHandSide.getTopLevelExpression();
-		Expression rightExpression = rightHandSide.getTopLevelExpression();
+		Expression leftExpression = leftHandSide.topLevelExpression();
+		Expression rightExpression = rightHandSide.topLevelExpression();
 		
 		BaseBlock toModify = null;
 		if (dragging != null) {
-			toModify = draggingTo.isShowingPreview() ? draggingTo : draggingFrom;
-			ModificationOperation modOp = draggingTo.isShowingPreview() ? 
+			toModify = highlight;
+			ModificationOperation modOp = flipModifier ? 
 					dragging.getModifier() : dragging.getOriginalModifier();
 			if (leftHandSide == toModify) {
 				modOp.setOperand(leftExpression);

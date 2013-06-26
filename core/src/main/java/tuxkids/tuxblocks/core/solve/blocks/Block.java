@@ -36,7 +36,7 @@ public abstract class Block extends PlayNObject{
 		return sprite.height();
 	}
 	
-	public Layer getSprite() {
+	public Layer layer() {
 		return sprite;
 	}
 	

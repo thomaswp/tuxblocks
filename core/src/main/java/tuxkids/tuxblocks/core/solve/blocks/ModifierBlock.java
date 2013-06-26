@@ -18,12 +18,18 @@ public class ModifierBlock extends Block {
 		return modifier;
 	}
 	
-	public ImageLayer getSprite() {
+	public ImageLayer layer() {
 		return isInverted ? inverseSprite : sprite;
 	}
 	
 	public boolean isInverted() {
 		return isInverted;
+	}
+
+	public void setInverted(boolean inverted) {
+		if (isInverted != inverted) {
+			invert();
+		}
 	}
 	
 	public ModifierBlock(ModificationOperation op, int width, int height) {
