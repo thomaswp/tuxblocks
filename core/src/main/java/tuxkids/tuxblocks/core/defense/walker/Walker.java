@@ -13,18 +13,19 @@ import pythagoras.i.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.Pathing;
+import tuxkids.tuxblocks.core.defense.walker.buff.Buff;
 import tuxkids.tuxblocks.core.utils.Debug;
 
-public abstract class Walker extends GridObject {
+public abstract class Walker extends DiscreteGridObject {
 	
-	protected Grid grid;
 	protected List<Point> path;
-	protected Point coordinates, lastCoordinates, destination;
+	protected Point lastCoordinates, destination;
 	protected ImageLayerTintable layer;
-	protected int hp;
+	protected float hp;
 	protected float alpha = 1;
 	
 	private float walkingMs;
@@ -36,6 +37,8 @@ public abstract class Walker extends GridObject {
 	public abstract int walkCellTime();
 	public abstract Walker copy();
 	
+	protected List<Buff> buffs = new ArrayList<Buff>();
+	
 	public Layer layerAddable() {
 		return layer.layer();
 	}
@@ -44,20 +47,16 @@ public abstract class Walker extends GridObject {
 		return layer;
 	}
 	
-	public Point coordinates() {
-		return coordinates;
-	}
-	
 	public Vector position() {
 		return position;
 	}
 	
 	public float width() {
-		return grid.getCellSize();
+		return grid.cellSize();
 	}
 	
 	public float height() {
-		return grid.getCellSize();
+		return grid.cellSize();
 	}
 	
 	public boolean isAlive() {
@@ -68,8 +67,13 @@ public abstract class Walker extends GridObject {
 		return layer.layer().destroyed();
 	}
 	
-	public Walker place(Grid grid, Point coordinates, Point desitnation) {
-		this.grid = grid;
+	@Override
+	protected void setDepth(float depth) {
+		layer.setDepth(depth);
+	}
+	
+	public Walker place(Grid grid, Point coordinates, Point desitnation, float depth) {
+		place(grid, depth);
 		this.destination = desitnation;
 		this.coordinates = lastCoordinates = coordinates;
 		this.walkingMs = walkCellTime();
@@ -84,10 +88,10 @@ public abstract class Walker extends GridObject {
 	}
 	
 	private void createSprite() {
-		CanvasImage image = graphics().createImage(grid.getCellSize(), grid.getCellSize());
+		CanvasImage image = graphics().createImage(grid.cellSize(), grid.cellSize());
 		image.canvas().setFillColor(Colors.WHITE);
 		image.canvas().setStrokeColor(Colors.BLACK);
-		int border = (int)(grid.getCellSize() * 0.1f);
+		int border = (int)(grid.cellSize() * 0.1f);
 		image.canvas().fillRect(border, border, image.width() - border * 2, image.height() - border * 2);
 		image.canvas().strokeRect(border, border, image.width() - 1 - border * 2, 
 				image.height() - 1 - border * 2);
@@ -100,7 +104,28 @@ public abstract class Walker extends GridObject {
 		path.remove(0);
 	}
 
+	@Override
+	protected float depthRow() {
+		return position.y / grid.cellSize();
+	}
+	
+	@Override
+	protected float depthCol() {
+		return position.x / grid.cellSize();
+	}
+	
+	@Override
 	public boolean update(int delta) {
+		super.update(delta);
+
+		if (hp == 0) {
+			if (layer.alpha() < 0.01f) {
+				layer.destroy();
+				return true;
+			}
+			return false;
+		}
+		
 		if (walkingMs >= walkCellTime()) {
 			walkingMs -= walkCellTime();
 			if (path.size() > 0) {
@@ -116,21 +141,45 @@ public abstract class Walker extends GridObject {
 				return true;
 			}
 		}
-		layer.setTint(Colors.BLACK, grid.towerColor(), (float)hp / getMaxHp());
+		layer.setTint(Colors.WHITE, grid.towerColor(), (float)hp / getMaxHp());
 		layer.setAlpha(alpha);
+		
+		for (int i = 0; i < buffs.size(); i++) {
+			Buff buff = buffs.get(i);
+			if (buff.update(delta)) {
+				buffs.remove(i);
+				i--;
+				continue;
+			}
+		}
+		
 		return false;
 	}
 	
+	@Override
 	public void paint(Clock clock) {
-		walkingMs += clock.dt();
+		float dt = clock.dt();
+		if (hp > 0) {
+			for (Buff buff : buffs) dt = buff.modifySpeed(dt);
+			walkingMs += dt;
+		} else {
+			layer.setAlpha(lerpTime(layer.alpha(), 0, 0.995f, dt));
+		}
 		float perc = (float)walkingMs / walkCellTime();
-		position.set((lerp(coordinates.y, lastCoordinates.y, 1 - perc) + 0.5f) * grid.getCellSize(),
-				(lerp(coordinates.x, lastCoordinates.x, 1 - perc) + 0.5f) * grid.getCellSize());
+		position.set((lerp(coordinates.y, lastCoordinates.y, 1 - perc) + 0.5f) * grid.cellSize(),
+				(lerp(coordinates.x, lastCoordinates.x, 1 - perc) + 0.5f) * grid.cellSize());
 		updateMovement(perc);		
 	}
-	public void damage(int damage) {
+	public void damage(float damage) {
 		hp -= damage;
 		hp = Math.max(hp, 0);
+	}
+	
+	public void addBuff(Buff buff, boolean replaceIfPresent) {
+		if (replaceIfPresent && buffs.contains(buff)) {
+			buffs.remove(buff);
+		}
+		buffs.add(buff);
 	}
 	
 }

@@ -11,22 +11,28 @@ public abstract class ConnectionProjectile extends Projectile {
 
 	protected abstract int duration();
 	
-	private Vector direction = new Vector();
+	protected Vector direction = new Vector();
 	private int timer;
+	
+	protected Vector sourcePosition() {
+		return source.projectileStart();
+	}
+	
+	protected float progress() {
+		return (float)timer / duration();
+	}
 	
 	@Override
 	public void place(Grid grid, Walker target, Tower source) {
 		super.place(grid, target, source);
 		layer.setOrigin(0, layer.height() / 2);
-		layer.setTranslation(source.position().x, source.position().y);
 	}
 	
 	@Override
-	public boolean update(int delta) {
+	public boolean doUpdate(int delta) {
 		timer += delta;
 		if (timer > duration()) {
-			target.damage(damage);
-			onFinish();
+			dealDamage();
 			return true;
 		}
 		return false;
@@ -34,8 +40,9 @@ public abstract class ConnectionProjectile extends Projectile {
 
 	@Override
 	public void paint(Clock clock) {
+		layer.setTranslation(sourcePosition().x, sourcePosition().y);
 		direction.set(target.position());
-		direction.subtract(source.position(), direction);
+		direction.subtract(sourcePosition(), direction);
 		layer.transform().setRotation(direction.angle());
 		layer.transform().setScale(direction.length() / layer.image().width(), 1f);
 	}

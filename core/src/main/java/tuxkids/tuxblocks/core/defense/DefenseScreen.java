@@ -105,8 +105,8 @@ public class DefenseScreen extends GameScreen {
 	}
 	
 	private void addGrid() {
-		if (grid.getLayer().parent() != gridHolder) {
-			gridHolder.add(grid.getLayer());
+		if (grid.layer().parent() != gridHolder) {
+			gridHolder.add(grid.layer());
 			grid.fadeIn(1);
 		}
 	}

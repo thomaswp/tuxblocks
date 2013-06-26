@@ -25,6 +25,7 @@ import tuxkids.tuxblocks.core.utils.Debug;
 public class TuxBlocksGame extends Game.Default {
 
 	public static final int UPDATE_RATE = 1000 / 30;
+	private final static int MAX_DELTA = (int)(UPDATE_RATE * 1.5f);
 	
 	protected final SolidClock clock = new SolidClock(UPDATE_RATE);
 	//protected final Clock.Source clock = new Clock.Source(UPDATE_RATE);
@@ -98,15 +99,16 @@ public class TuxBlocksGame extends Game.Default {
 
 	@Override
 	public void update(int delta) {
-		background.update(delta);
+		delta = Math.min(delta, MAX_DELTA);
 		clock.update(delta);
+		background.update(delta);
         screens.update(delta);
 	}
 
 	@Override
 	public void paint(float alpha) {
-		background.paint(clock);
 		clock.paint(alpha);
+		background.paint(clock);
         screens.paint(clock);
 		updateFPS();
 	}

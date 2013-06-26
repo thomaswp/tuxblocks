@@ -17,24 +17,25 @@ import pythagoras.i.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
+import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public abstract class Tower extends GridObject {
+public abstract class Tower extends DiscreteGridObject {
 	
-	protected Grid grid;
-	protected Point coordinates = new Point();
 	protected ImageLayerTintable layer;
 	
 	private int fireTimer;
 	private Vector position = new Vector();
 	private int id;
+	private Walker lastTarget;
 	
 	public abstract int rows();
 	public abstract int cols();
-	public abstract int damage();
+	public abstract float damage();
 	public abstract int fireRate();
 	public abstract float range();
 	public abstract Projectile createProjectile();
@@ -42,6 +43,10 @@ public abstract class Tower extends GridObject {
 	public abstract String name();
 	public abstract int cost();
 	public abstract int commonness();
+	
+	public float splashRadius() {
+		return 0;
+	}
 
 	private static int nextTowerId;
 	private static HashMap<Class<?>, Integer> towerIds =
@@ -49,7 +54,9 @@ public abstract class Tower extends GridObject {
 	
 	private final static Tower[] towers = new Tower[] {
 		new PeaShooter(),
+		new Freezer(),
 		new BigShooter(),
+		new Zapper(),
 		new VerticalWall(),
 		new HorizontalWall(),
 	};
@@ -65,12 +72,22 @@ public abstract class Tower extends GridObject {
 		return towers;
 	}
 
+	public float baseWidth() {
+		return cols() * grid.cellSize();
+	}
+	
+	public float baseHeight() {
+		return rows() * grid.cellSize();
+	}
+	
 	public float width() {
-		return cols() * grid.getCellSize();
+		return layer.width();
+		
 	}
 	
 	public float height() {
-		return rows() * grid.getCellSize();
+		return layer.height();
+		
 	}
 	
 	public ImageLayerTintable layer() {
@@ -81,11 +98,11 @@ public abstract class Tower extends GridObject {
 		return layer.layer();
 	}
 	
-	public Point coordinates() {
-		return coordinates;
+	public Vector position() {
+		return position;
 	}
 	
-	public Vector position() {
+	public Vector projectileStart() {
 		return position;
 	}
 	
@@ -105,6 +122,18 @@ public abstract class Tower extends GridObject {
 		return towers.length;
 	}
 	
+	public void addBuffs(Walker walker) {
+		
+	}
+	
+	public Walker lastTarget() {
+		return lastTarget;
+	}
+	
+	public void setLastTarget(Walker target) {
+		lastTarget = target;
+	}
+	
 	public Tower() {
 		Integer id = towerIds.get(getClass()); 
 		if (id == null) {
@@ -120,22 +149,34 @@ public abstract class Tower extends GridObject {
 	
 	public void setCoordinates(int row, int col) {
 		coordinates.setLocation(row, col);
-		layer.setTranslation(col * grid.getCellSize(), row * grid.getCellSize());
-		position.set(col * grid.getCellSize() + width() / 2, 
-				row * grid.getCellSize() + height() / 2);
+		layer.setTranslation(col * grid.cellSize() + (baseWidth() - width()) / 2,
+				row * grid.cellSize() + (baseHeight() - height()));				
+		
+//		layer.setTranslation((col + 0.5f) * grid.cellSize() - width() / 2, 
+//				(row + 1) * grid.cellSize() - height());
+		position.set(col * grid.cellSize() + width() / 2, 
+				row * grid.cellSize() + height() / 2);
+//		position.set((col + 0.5f) * grid.cellSize(),
+//				(row + 0.5f) * grid.cellSize());
+	}
+	
+	@Override
+	protected void setDepth(float depth) {
+		layer.setDepth(depth);
 	}
 	
 	public Tower preview(Grid grid) {
+		if (this.grid != null) return this;
 		this.grid = grid;
 		layer = new ImageLayerTintable(
-				createImage(grid.getCellSize(), 
+				createImage(grid.cellSize(), 
 						Colors.WHITE));
 		layer.setTint(grid.towerColor());
 		return this;
 	}
 	
 	public Tower place(Grid grid, Point coordinates) {
-		preview(grid);
+		place(grid, 0);
 		setCoordinates(coordinates);
 		for (int i = 0; i < rows(); i++) {
 			for (int j = 0; j < cols(); j++) {
@@ -147,6 +188,7 @@ public abstract class Tower extends GridObject {
 	
 	@Override
 	public boolean update(int delta) {
+		super.update(delta);
 		int fireRate = fireRate();
 		if (fireRate > 0 && fireTimer > fireRate) {
 			if (fire()) {
@@ -155,9 +197,9 @@ public abstract class Tower extends GridObject {
 				fireTimer = fireRate;
 			}
 		}
-		float perc = FloatMath.pow((float)fireTimer / fireRate(), 0.5f);
-		perc = Math.min(perc, 1);
-		layer.setTint(grid.towerColor(), Colors.GRAY, perc);
+//		float perc = FloatMath.pow((float)fireTimer / fireRate(), 0.5f);
+//		perc = Math.min(perc, 1);
+//		layer.setTint(grid.towerColor(), Colors.GRAY, perc);
 		return false;
 	}
 	
@@ -181,7 +223,7 @@ public abstract class Tower extends GridObject {
 	
 	public Image createRadiusImage() {
 		if (range() == 0) return null;
-		float rad = range() * grid.getCellSize();
+		float rad = range() * grid.cellSize();
 		int color = Color.rgb(255, 0, 100);
 		return CanvasUtils.createCircle(rad, Color.withAlpha(color, 50), 1, color);
 	}

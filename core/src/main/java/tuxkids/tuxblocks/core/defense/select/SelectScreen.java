@@ -80,7 +80,7 @@ public class SelectScreen extends GameScreen {
 		ImmediateLayer il = graphics().createImmediateLayer(new Renderer() {
 			@Override
 			public void render(Surface surface) {
-				surface.drawLayer(SelectScreen.this.grid.getLayer());
+				surface.drawLayer(SelectScreen.this.grid.layer());
 			}
 		});
 		gridHolder.add(il);

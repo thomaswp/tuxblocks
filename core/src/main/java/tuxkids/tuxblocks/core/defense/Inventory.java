@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 
+import javax.sql.RowSet;
+
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Font.Style;
@@ -51,22 +53,28 @@ public class Inventory extends PlayNObject {
 	}
 	
 	private int getItemSpriteSize() {
-		return (int) ((width - ITEM_SPRITE_MARGIN * 2) / COLS * 0.9f);
+		int wSize = (int) ((width - ITEM_SPRITE_MARGIN * 2) / COLS * 0.9f);
+		int hSize = (int) ((height - ITEM_SPRITE_MARGIN * 2) / rows() * 0.9f) - getItemCaptionHeight();
+		return Math.min(wSize, hSize);
 	}
 	
 	private int getItemCaptionHeight() {
-		return (int)(textFormat.font.size() + ITEM_SPRITE_MARGIN);
+		return textFormat == null ? 0 : (int)(textFormat.font.size() + ITEM_SPRITE_MARGIN);
 	}
 	
 	private float getItemSpriteX(int index) {
 		int j = index % COLS;
-		float spriteWidth = getItemSpriteSize() + ITEM_SPRITE_MARGIN * 2;
+		float spriteWidth = width / COLS; //getItemSpriteSize() + ITEM_SPRITE_MARGIN * 2;
 		return width / 2 + (j - (COLS - 1) * 0.5f) * spriteWidth;
+	}
+	
+	private int rows() {
+		return (Tower.towers().length - 1) / COLS + 1;
 	}
 	
 	private float getItemSpriteY(int index) {
 		int i = index / COLS;
-		int rows = (Tower.towers().length - 1) / COLS + 1;
+		int rows = rows();
 		float spriteHeight = getItemSpriteSize() + ITEM_SPRITE_MARGIN * 2 + getItemCaptionHeight();
 		return height / 2 + (i - (rows - 1) * 0.5f) * spriteHeight;
 	}
@@ -88,7 +96,7 @@ public class Inventory extends PlayNObject {
 		createSelectionSprites();
 		createCountSprites();
 		
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < Tower.towerCount(); i++) {
 			addItem(i, 10);	
 		}
 	}
@@ -137,25 +145,28 @@ public class Inventory extends PlayNObject {
 		for (int index = 0; index < itemButtons.length; index++) {
 			final Tower tower = Tower.getTowerById(index);
 			
-			CanvasImage image = graphics().createImage(spriteSize, spriteSize + textHeight);
+			TextLayout layout = graphics().layoutText(tower.name(), textFormat);
+			
+			float indentX = Math.max(0, layout.width() - spriteSize) / 2;
+			
+			CanvasImage image = graphics().createImage(Math.max(spriteSize, layout.width()), spriteSize + textHeight);
 			image.canvas().setFillColor(Colors.WHITE);
-			image.canvas().fillRoundRect(0, 0, spriteSize, spriteSize, rad);
+			image.canvas().fillRoundRect(indentX, 0, spriteSize, spriteSize, rad);
 			image.canvas().setStrokeColor(Colors.DARK_GRAY);
 			image.canvas().setStrokeWidth(strokeWidth);
-			image.canvas().strokeRoundRect(strokeWidth / 2 - 1, strokeWidth / 2 - 1, 
+			image.canvas().strokeRoundRect(indentX + strokeWidth / 2 - 1, strokeWidth / 2 - 1, 
 					spriteSize - strokeWidth + 2, 
 					spriteSize  - strokeWidth + 2, rad);
 			
 			Image towerImage = tower.createImage(cellSize, grid.towerColor());
-			image.canvas().drawImage(towerImage, (spriteSize - towerImage.width()) / 2, 
+			image.canvas().drawImage(towerImage, indentX + (spriteSize - towerImage.width()) / 2, 
 					(spriteSize - towerImage.height()) / 2);
 			
-			TextLayout layout = graphics().layoutText(tower.name(), textFormat);
 			image.canvas().setFillColor(Colors.WHITE);
 			image.canvas().fillText(layout, (image.width() - layout.width()) / 2, 
 					image.height() - textHeight + ITEM_SPRITE_MARGIN / 2);
 			
-			final Button button = new Button(image, image.width(), image.height(), false);
+			final Button button = new Button(image, false);
 			float x = getItemSpriteX(index);
 			float y = getItemSpriteY(index);
 			button.setPosition(x, y);

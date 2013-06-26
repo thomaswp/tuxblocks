@@ -15,8 +15,8 @@ public abstract class ShrinkWalker extends Walker {
 		}
 		layer.setOrigin(layer.width() / 2, layer.height() / 2);
 		layer.setScale(Math.abs(FloatMath.cos(FloatMath.PI * perc)));
-		layer.setTranslation(coords.y * grid.getCellSize() + layer.originX(), 
-				coords.x * grid.getCellSize() + layer.originY());
+		layer.setTranslation(coords.y * grid.cellSize() + layer.originX(), 
+				coords.x * grid.cellSize() + layer.originY());
 	}
 
 }

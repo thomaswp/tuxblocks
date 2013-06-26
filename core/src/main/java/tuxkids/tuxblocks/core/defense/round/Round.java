@@ -11,8 +11,13 @@ public abstract class Round {
 	
 	private int timer;
 	private Wave currentWave;
+	private int nextDepth;
 	
 	protected abstract void populateRound();
+
+	public float nextDepth() {
+		return nextDepth;
+	}
 	
 	public Round() {
 		populateRound();
@@ -27,12 +32,17 @@ public abstract class Round {
 		if (isFinished()) return null;
 		if (currentWave != null) {
 			Walker walker = currentWave.update(delta);
-			if (currentWave.finished()) currentWave = null;
+			if (walker != null) nextDepth--;
+			if (currentWave.finished()) {
+				currentWave = null;
+			}
 			return walker;
 		}
 		timer += delta;
 		if (currentWave == null && waitTimes.size() > 0 && timer >= waitTimes.get(0)) {
 			currentWave = waves.remove(0);
+			waitTimes.remove(0);
+			nextDepth = Walker.MAX_BASE_DEPTH;
 			timer = 0;
 		}
 		return null;

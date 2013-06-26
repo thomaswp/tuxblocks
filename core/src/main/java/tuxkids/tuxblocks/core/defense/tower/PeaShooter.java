@@ -24,7 +24,7 @@ public class PeaShooter extends Tower {
 	}
 
 	@Override
-	public int damage() {
+	public float damage() {
 		return 1;
 	}
 

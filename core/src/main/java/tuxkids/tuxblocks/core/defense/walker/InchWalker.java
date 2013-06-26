@@ -4,7 +4,7 @@ public abstract class InchWalker extends Walker {
 
 	@Override
 	protected void updateMovement(float perc) {
-		float cellSize = grid.getCellSize();
+		float cellSize = grid.cellSize();
 		float ox, oy, scaleX, scaleY, x, y;
 		if (perc < 0.5f) {
 			ox = (0.5f - (coordinates.y - lastCoordinates.y) / 2f) * cellSize;

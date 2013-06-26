@@ -11,8 +11,8 @@ public abstract class FlipWalker extends Walker {
 		int dx = -(coordinates.y - lastCoordinates.y);
 		int dy = -(coordinates.x - lastCoordinates.x);
 
-		float x = Math.max(coordinates.y, lastCoordinates.y) * grid.getCellSize();
-		float y = Math.max(coordinates.x, lastCoordinates.x) * grid.getCellSize();
+		float x = Math.max(coordinates.y, lastCoordinates.y) * grid.cellSize();
+		float y = Math.max(coordinates.x, lastCoordinates.x) * grid.cellSize();
 		
 		layer.setTranslation(x, y);
 		

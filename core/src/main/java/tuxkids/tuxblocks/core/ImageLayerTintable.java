@@ -121,7 +121,7 @@ public class ImageLayerTintable extends PlayNObject {
 		layer.setScale(scaleX, scaleY);
 	}
 
-	public void setDepth(int depth) {
+	public void setDepth(float depth) {
 		layer.setDepth(depth);
 	}
 

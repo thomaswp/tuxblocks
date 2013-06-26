@@ -18,6 +18,7 @@ import tripleplay.particle.Particles;
 import tripleplay.particle.TuxParticles;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.defense.projectile.ChainProjectile;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.round.Round;
 import tuxkids.tuxblocks.core.defense.round.Wave;
@@ -28,12 +29,12 @@ import tuxkids.tuxblocks.core.effect.Effect;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
 public class Grid extends PlayNObject {
-	
+
 	private final static boolean SHOW_GRID = false;
-	
+
 	private int cellSize;
 	private int rows, cols;
-	private GroupLayer groupLayer;
+	private GroupLayer layer, gridLayer, overlayLayer;
 	private ImageLayer gridSprite;
 	private boolean[][] passability;
 	private List<Walker> walkers = new ArrayList<Walker>();
@@ -44,58 +45,57 @@ public class Grid extends PlayNObject {
 	private MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers, effects);
 	private Point walkerStart, walkerDestination;
 	private Tower toPlace;
-	private ImageLayer toPlacePreview;
+	private ImageLayer toPlaceRadius;
 	private List<Point> currentPath;
 	private Round round;
 	private float targetAlpha;
 	private int towerColor;
 	private Particles particles;
-	private GroupLayer particlesLayer;
-	
+
 	public Particles particles() {
 		return particles;
 	}
-	
+
 	public int towerColor() {
 		return towerColor;
 	}
-	
+
 	public int width() {
 		return cols * cellSize;
 	}
-	
+
 	public int height() {
 		return rows * cellSize;
 	}
-	
+
 	public int rows() {
 		return rows;
 	}
-	
+
 	public int cols() {
 		return cols;
 	}
-	
+
 	public List<Point> currentPath() {
 		return currentPath;
 	}
-	
-	public GroupLayer getLayer() {
-		return groupLayer;
+
+	public GroupLayer layer() {
+		return layer;
 	}
-	
+
 	public boolean[][] getPassability() {
 		return passability;
 	}
 
-	public float getCellSize() {
+	public float cellSize() {
 		return cellSize;
 	}
-	
+
 	public void setTowerColor(int themeColor) {
 		this.towerColor = themeColor;
 	}
-	
+
 	public Grid(int rows, int cols, int maxWidth, int maxHeight) {
 		this.rows = rows; this.cols = cols;
 		passability = new boolean[rows][cols];
@@ -106,7 +106,15 @@ public class Grid extends PlayNObject {
 		}
 		int maxRowSize = maxHeight / rows, maxColSize = maxWidth / cols;
 		cellSize = Math.min(maxRowSize, maxColSize);
-		groupLayer = graphics().createGroupLayer();
+
+		layer = graphics().createGroupLayer();
+		gridLayer = graphics().createGroupLayer();
+		layer.add(gridLayer);
+		overlayLayer = graphics().createGroupLayer();
+		overlayLayer.setDepth(1);
+		layer.add(overlayLayer);
+
+
 		walkerStart = new Point(rows / 2, 0);
 		walkerDestination = new Point(rows / 2, cols - 1);
 		for (int i = 0; i < rows; i++) {
@@ -121,63 +129,61 @@ public class Grid extends PlayNObject {
 		}
 		refreshPath();
 		createGridSprite();
-		
+
 		particles = new TuxParticles();
-		particlesLayer = graphics().createGroupLayer();
-		particlesLayer.setDepth(5);
-		groupLayer.add(particlesLayer);
-		
+
 		round = new Round() {
 			@Override
 			protected void populateRound() {
-				addWave(new Wave(new Peon(), 500, 1), 3000);
+				addWave(new Wave(new Peon(), 300, 13), 3000);
 				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 150, 3), 6000);
 				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 150, 3), 6000);
 				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 150, 3), 6000);
 				addWave(new Wave(new Peon(), 500, 3), 6000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
+				addWave(new Wave(new Peon(), 150, 3), 6000);
 				addWave(new Wave(new Peon(), 500, 3), 6000);
 			}
 		};
 	}
-	
+
 	public Emitter createEmitter(int maxParticles, Image image) {
-		Emitter e = particles.createEmitter(maxParticles, image, particlesLayer);
+		Emitter e = particles.createEmitter(maxParticles, image, overlayLayer);
 		return e;
 	}
 
 	public void fadeIn(float targetAlpha) {
 		this.targetAlpha = targetAlpha;
-		groupLayer.setAlpha(0);
+		layer.setAlpha(0);
 	}
-	
+
 	public void update(int delta) {
-		if (groupLayer.alpha() < targetAlpha * 0.99f) {
-			groupLayer.setAlpha(lerpTime(groupLayer.alpha(), targetAlpha, 0.99f, delta));
+		if (layer.alpha() < targetAlpha * 0.99f) {
+			layer.setAlpha(lerpTime(layer.alpha(), targetAlpha, 0.99f, delta));
 		} else {
-			groupLayer.setAlpha(targetAlpha);
+			layer.setAlpha(targetAlpha);
 		}
-		
+
 		Walker walker = round.update(delta);
 		if (walker != null) {
-			addWalker(walker.place(this, walkerStart, walkerDestination));
+			addWalker(walker.place(this, walkerStart, walkerDestination, round.nextDepth()));
 		}
-		
+
 		int nObjects = gridObjects.size();
 		for (int i = 0; i < nObjects; i++) {
 			GridObject gridObject = gridObjects.get(i);
 			if (gridObject.update(delta)) {
 				gridObjects.remove(gridObject);
 				i--; nObjects--;
+				continue;
 			}
 		}
-		
+
 		updateToPlace();
 	}
-	
+
 	public void paint(Clock clock) {
 		int nObjects = gridObjects.size();
 		for (int i = 0; i < nObjects; i++) {
@@ -186,23 +192,23 @@ public class Grid extends PlayNObject {
 		}
 		particles.paint(clock);
 	}
-	
+
 	private void refreshPath() {
 		currentPath = Pathing.getPath(this, walkerStart, walkerDestination);
 	}
-	
+
 	public void addWalker(Walker walker) {
 		walkers.add(walker);
-		groupLayer.add(walker.layerAddable());
+		gridLayer.add(walker.layerAddable());
 	}
-	
+
 	private void createGridSprite() {
 		if (gridSprite != null) {
-			groupLayer.remove(gridSprite);
+			gridLayer.remove(gridSprite);
 		}
-		
+
 		//List<Point> path = Pathing.getPath(this, new Point(0, 0), new Point(rows - 1, cols - 1));
-		
+
 		CanvasImage image = graphics().createImage(width(), height());
 		Canvas canvas = image.canvas();
 		canvas.setFillColor(Colors.WHITE);
@@ -213,9 +219,9 @@ public class Grid extends PlayNObject {
 				int x = j * cellSize;
 				int y = i * cellSize;
 				canvas.setFillColor(Colors.WHITE);
-//				if (path != null && path.contains(new Point(i,j))) {
-//					canvas.setFillColor(Colors.BLUE);
-//				} else 
+				//				if (path != null && path.contains(new Point(i,j))) {
+				//					canvas.setFillColor(Colors.BLUE);
+				//				} else 
 				if (!passability[i][j]) {
 					canvas.setFillColor(Colors.GRAY);
 				}
@@ -225,7 +231,7 @@ public class Grid extends PlayNObject {
 		}
 		gridSprite = graphics().createImageLayer(image);
 		//gridSprite.setAlpha(0.2f);
-		groupLayer.add(gridSprite);
+		gridLayer.add(gridSprite);
 		gridSprite.setDepth(-1);
 	}
 
@@ -234,40 +240,40 @@ public class Grid extends PlayNObject {
 		int c = Math.min(Math.max((int)x / cellSize, 0), cols - 1);
 		return new Point(r, c);
 	}
-	
+
 	public Point getCell(float x, float y, float width, float height) {
-		return getCell(x - width / 2 + getCellSize() / 2, y - height / 2 + getCellSize() / 2);
+		return getCell(x - width / 2 + cellSize() / 2, y - height / 2 + cellSize() / 2);
 	}
-	
+
+	private float getPlaceX(float globalX) {
+		float placeX = globalX - getGlobalTx(gridLayer);
+		if (PlayN.platform().touch().hasTouch()) placeX -= width() / 20;
+		return  placeX;
+	}
+
+	private float getPlaceY(float globalY) {
+		float placeY = globalY - getGlobalTy(gridLayer);
+		if (PlayN.platform().touch().hasTouch()) placeY -= width() / 20;
+		return  placeY;
+	}
+
 	public void startPlacement(Tower toPlace) {
 		this.toPlace = toPlace;
 		toPlace.preview(this);
 		toPlace.layer().setVisible(false);
-		groupLayer.add(toPlace.layerAddable());
+		overlayLayer.add(toPlace.layerAddable());
 		validPlacementMap.clear();
-		
-		toPlacePreview = graphics().createImageLayer(toPlace.createRadiusImage());
-		centerImageLayer(toPlacePreview);
-		groupLayer.add(toPlacePreview);
+
+		toPlaceRadius = graphics().createImageLayer(toPlace.createRadiusImage());
+		centerImageLayer(toPlaceRadius);
+		gridLayer.add(toPlaceRadius);
 		updateToPlace();
-	}
-	
-	private float getPlaceX(float globalX) {
-		float placeX = globalX - getGlobalTx(groupLayer);
-		if (PlayN.platform().touch().hasTouch()) placeX -= width() / 20;
-		return  placeX;
-	}
-	
-	private float getPlaceY(float globalY) {
-		float placeY = globalY - getGlobalTy(groupLayer);
-		if (PlayN.platform().touch().hasTouch()) placeY -= width() / 20;
-		return  placeY;
 	}
 
 	public void updatePlacement(float globalX, float globalY) {
 		float placeX = getPlaceX(globalX), placeY = getPlaceY(globalY);
 		if (toPlace != null) {
-			Point cell = getCell(placeX, placeY, toPlace.width(), toPlace.height());
+			Point cell = getCell(placeX, placeY, toPlace.baseWidth(), toPlace.baseHeight());
 			toPlace.setCoordinates(cell);
 			toPlace.layer().setVisible(!isOutOfBounds(placeX, placeY));
 			updateToPlace();
@@ -278,22 +284,25 @@ public class Grid extends PlayNObject {
 		boolean canPlace = canPlace();
 		if (canPlace) {
 			toPlace.place(this, toPlace.coordinates());
+			overlayLayer.remove(toPlace.layerAddable());
+			gridLayer.add(toPlace.layerAddable());
 			towers.add(toPlace);
+			toPlaceRadius.destroy();
 			refreshPath();
 		} else if (toPlace != null) {
 			toPlace.layer().destroy();
 		}
 		toPlace = null;
-		toPlacePreview.destroy();
-		toPlacePreview = null;
+		toPlaceRadius.destroy();
+		toPlaceRadius = null;
 		return canPlace;
 	}
-	
+
 	private void updateToPlace() {
 		if (toPlace == null) return;
 		toPlace.layer().setAlpha(canPlace() ? 1 : 0.5f);
-		toPlacePreview.setTranslation(toPlace.position().x, toPlace.position().y);
-		toPlacePreview.setVisible(toPlace.layer().visible() && toPlace.layer().alpha() == 1);
+		toPlaceRadius.setTranslation(toPlace.position().x, toPlace.position().y);
+		toPlaceRadius.setVisible(toPlace.layer().visible() && toPlace.layer().alpha() == 1);
 	}
 
 	private boolean canPlace() {
@@ -301,11 +310,11 @@ public class Grid extends PlayNObject {
 
 		Point p = toPlace.coordinates();
 		int rows = toPlace.rows(), cols = toPlace.cols();
-		
+
 		if (p.x < 0 || p.x + rows > this.rows || p.y < 0 || p.y + cols > this.cols){
 			return false;
 		}
-		
+
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				for (Walker walker : walkers) {
@@ -316,27 +325,27 @@ public class Grid extends PlayNObject {
 				}
 			}
 		}
-		
+
 		if (validPlacementMap.containsKey(p)) return validPlacementMap.get(p);
 		boolean canPlace = canPlaceStatic(p);
 		validPlacementMap.put(p.clone(), canPlace);
-		
+
 		return canPlace;
 	}
-	
+
 	private HashMap<Point, Boolean> validPlacementMap = new HashMap<Point, Boolean>();
 	private boolean canPlaceStatic(Point p) {
-		
+
 		int rows = toPlace.rows(), cols = toPlace.cols();
-		
+
 		if (p.equals(walkerStart)) return false;
-		
+
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				if (!passability[p.x+i][p.y+j]) return false;
 			}
 		}
-		
+
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				passability[p.x+i][p.y+j] = false;
@@ -349,7 +358,7 @@ public class Grid extends PlayNObject {
 			}
 		}
 		return path != null;
-//		return true;
+		//		return true;
 	}
 
 	public boolean fireProjectile(Tower tower) {
@@ -359,19 +368,65 @@ public class Grid extends PlayNObject {
 		for (Walker walker : walkers) {
 			if (!walker.isAlive()) continue;
 			float dis = walker.position().distance(tower.position());
-			if (dis < tower.range() * cellSize && dis < targetDis) {
+			if (dis < tower.range() * cellSize) {
+				if (walker == tower.lastTarget()) {
+					target = walker;
+					targetDis = dis;
+					break;
+				} else if (dis < targetDis) {
+					target = walker;
+					targetDis = dis;
+				}
+			}
+		}
+		tower.setLastTarget(target);
+		if (target == null) return false;
+		Projectile p = tower.createProjectile();
+		p.place(this, target, tower);
+		gridLayer.add(p.layer());
+		projectiles.add(p);
+		return true;
+	}
+
+	public boolean fireProjectile(ChainProjectile from) {
+		if (walkers.size() == 0) return false;
+		Walker target = null;
+		float targetDis = Float.MAX_VALUE;
+		for (Walker walker : walkers) {
+			if (!walker.isAlive()) continue;
+			if (from.partOfChain(walker)) continue;
+			float dis = walker.position().distance(from.target().position());
+			if (dis < from.range() * cellSize && dis < targetDis) {
 				target = walker;
 				targetDis = dis;
 			}
 		}
 		if (target == null) return false;
-		Projectile p = tower.createProjectile();
-		p.place(this, target, tower);
-		groupLayer.add(p.layer());
+		ChainProjectile p = from.createProjectile();
+		p.place(this, target, from);
+		gridLayer.add(p.layer());
 		projectiles.add(p);
 		return true;
 	}
-	
+
+	public void dealDamage(Tower source, Walker target, float damage, Vector hit) {
+		if (source.splashRadius() == 0) {
+			target.damage(damage);
+			source.addBuffs(target);
+		} else {
+			float actualRadius = source.splashRadius() * cellSize;
+			for (Walker walker : walkers) {
+				float distance = walker.position().distance(hit);
+				float perc = (actualRadius - distance) / actualRadius;
+				float dealt = perc * damage;
+				if (dealt > 0) {
+					walker.damage(dealt);
+					source.addBuffs(walker);
+				}
+			}
+		}
+	}
+
 	public Walker getHitWalker(Vector position) {
 		for (Walker walker : walkers) {
 			if (!walker.isAlive()) continue;
@@ -387,7 +442,7 @@ public class Grid extends PlayNObject {
 	public boolean isOutOfBounds(Vector position) {
 		return isOutOfBounds(position.x, position.y);
 	}
-	
+
 	public boolean isOutOfBounds(float x, float y) {
 		return x < 0 || y < 0 || x >= width() || y >= height();
 	}
@@ -395,6 +450,6 @@ public class Grid extends PlayNObject {
 	public void addEffect(Effect effect) {
 		effects.add(effect);
 		effect.layer().setDepth(5);
-		groupLayer.add(effect.layer());
+		gridLayer.add(effect.layer());
 	}
 }

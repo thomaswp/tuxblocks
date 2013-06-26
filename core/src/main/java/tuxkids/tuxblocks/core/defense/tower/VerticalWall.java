@@ -16,7 +16,7 @@ public class VerticalWall extends Tower {
 	}
 
 	@Override
-	public int damage() {
+	public float damage() {
 		return 0;
 	}
 

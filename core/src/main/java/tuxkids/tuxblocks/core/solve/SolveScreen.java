@@ -29,6 +29,7 @@ import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.expression.Equation;
 import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.expression.Expression;
+import tuxkids.tuxblocks.core.solve.expression.ModificationOperation;
 import tuxkids.tuxblocks.core.solve.expression.Number;
 import tuxkids.tuxblocks.core.solve.expression.Variable;
 import tuxkids.tuxblocks.core.utils.Debug;
@@ -67,15 +68,6 @@ public class SolveScreen extends GameScreen implements Listener, OnSimplifyListe
 	public SolveScreen(final ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
 		
-		CanvasImage background = graphics().createImage(graphics().width(), graphics().height());
-		background.canvas().setFillColor(Color.rgb(255, 255, 255));
-		background.canvas().fillRect(0, 0, graphics().width() / 2, graphics().height());
-		background.canvas().setFillColor(Color.rgb(100, 100, 100));
-		background.canvas().fillRect(graphics().width() / 2, 0, graphics().width() / 2, graphics().height());
-		ImageLayer bg = graphics().createImageLayer(background);
-		bg.setDepth(-10);
-//		layer.add(bg);
-		
 		menu = new MenuSprite(width(), defaultButtonSize() * 1.2f);
 		menu.layer().setDepth(-1);
 		layer.add(menu.layer());
@@ -108,28 +100,27 @@ public class SolveScreen extends GameScreen implements Listener, OnSimplifyListe
 		layer.add(leftHandSide.layer());
 		if (leftHandSide.hasModifier())	leftHandSide.lastModifier().layer().addListener(this);
 		leftHandSide.setSimplifyListener(this);
+		baseBlocks.add(leftHandSide);
+		leftBaseBlocks.add(leftHandSide);
 		
 		rightHandSide.layer().setTy((graphics().height() + blockHeight + menu.height()) / 2);
 		rightHandSide.layer().setTx(3 * graphics().width() / 4 - rightHandSide.groupWidth() / 2);
 		layer.add(rightHandSide.layer());
 		if (rightHandSide.hasModifier()) rightHandSide.lastModifier().layer().addListener(this);
 		rightHandSide.setSimplifyListener(this);
-		
-		BaseBlock number = BaseBlock.createBlock(new Number(3));
-		number.layer().setTy((graphics().height() + blockHeight + menu.height()) / 2);
-		number.layer().setTx(graphics().width() / 2 - number.groupWidth() / 2);
-		layer.add(number.layer());
-		if (number.hasModifier()) number.lastModifier().layer().addListener(this);
-		number.setSimplifyListener(this);
-		
-		baseBlocks.add(leftHandSide);
-		leftBaseBlocks.add(leftHandSide);
-		baseBlocks.add(number);
-		leftBaseBlocks.add(number);
 		baseBlocks.add(rightHandSide);
 		rightBaseBlocks.add(rightHandSide);
 		
-		equalsX = width() * 2 / 3;
+//		BaseBlock eXtra = BaseBlock.createBlock(new Variable("x"));
+//		eXtra.layer().setTy((graphics().height() + blockHeight + menu.height()) / 2);
+//		eXtra.layer().setTx(graphics().width() / 2 - eXtra.groupWidth() / 2);
+//		layer.add(eXtra.layer());
+//		if (eXtra.hasModifier()) eXtra.lastModifier().layer().addListener(this);
+//		eXtra.setSimplifyListener(this);
+//		baseBlocks.add(eXtra);
+//		leftBaseBlocks.add(eXtra);
+		
+		equalsX = width() / 2;
 		
 		equationSprite = new EquationSprite(leftHandSide, rightHandSide);
 		refreshEquationSprite();
@@ -161,6 +152,10 @@ public class SolveScreen extends GameScreen implements Listener, OnSimplifyListe
 		super.paint(clock);
 	}
 	
+	private BaseBlock startDoubleClick;
+	private double startDoubleClickTime;
+	private final static int DOUBLE_CLICK_TIME = 500;
+	
 	@Override
 	public void onPointerStart(Event event) {
 		if (dragging != null) return;
@@ -170,6 +165,21 @@ public class SolveScreen extends GameScreen implements Listener, OnSimplifyListe
 			for (BaseBlock baseBlock : baseBlocks) {
 				if (baseBlock.hasModifier() &&
 						baseBlock.lastModifier().layer() == event.hit()) {
+					if (baseBlock.lastModifier().getModifier().getPrecedence() == Expression.PREC_MULT &&
+							baseBlocks.size() > 2) {
+						if (startDoubleClick != null && startDoubleClickTime + DOUBLE_CLICK_TIME > event.time()) {
+							ModificationOperation toFlip = baseBlock.lastModifier().getModifier();
+							for (BaseBlock baseBlock2 : baseBlocks) {
+								baseBlock2.addModifier(toFlip.getInverse());
+								baseBlock2.lastModifier().layer().addListener(this);
+							}
+							refreshEquationSprite();
+						} else {
+							startDoubleClick = baseBlock;
+							startDoubleClickTime = event.time();
+						}
+						continue;
+					}
 					draggingFrom = baseBlock;
 					break;
 				}

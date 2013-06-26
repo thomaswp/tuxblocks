@@ -24,21 +24,19 @@ public abstract class BodyProjectile extends Projectile {
 		super.place(grid, target, source);
 		centerImageLayer(layer);
 		
-		this.position = source.position().clone();
+		this.position = source.projectileStart().clone();
 		velocity = new Vector();
 		update(0);
 	}
 	
 	@Override
-	public boolean update(int delta) {
+	public boolean doUpdate(int delta) {
 		Walker hit = grid.getHitWalker(position);
 		if (hit != null) {
-			target.damage(damage);
-			onFinish();
+			dealDamage();
 			return true;
 		}
 		if (grid.isOutOfBounds(position)) {
-			onFinish();
 			return true;
 		}
 		if (target.isAlive()) {
@@ -48,7 +46,6 @@ public abstract class BodyProjectile extends Projectile {
 			velocity.addScaled(temp, acceleration() * delta * 30, velocity);
 			if (velocity.length() > maxSpeed()) velocity.scale(maxSpeed() / velocity.length(), velocity);
 		} else if (velocity.length() == 0) {
-			onFinish();
 			return true;
 		}
 		return false;
@@ -59,5 +56,9 @@ public abstract class BodyProjectile extends Projectile {
 		position.x += velocity.x * clock.dt();
 		position.y += velocity.y * clock.dt();
 		layer.setTranslation(position.x, position.y);
+	}
+	
+	protected Vector getHitPosition() {
+		return position;
 	}
 }

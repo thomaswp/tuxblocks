@@ -4,6 +4,7 @@ import java.util.Random;
 
 import playn.core.Image;
 import pythagoras.f.FloatMath;
+import pythagoras.f.Vector;
 import tripleplay.particle.Emitter;
 import tripleplay.particle.Generator;
 import tripleplay.particle.effect.Alpha;

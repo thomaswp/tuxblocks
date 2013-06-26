@@ -21,7 +21,7 @@ public class BigShooter extends Tower {
 	}
 
 	@Override
-	public int damage() {
+	public float damage() {
 		return 5;
 	}
 
@@ -59,5 +59,9 @@ public class BigShooter extends Tower {
 	public int commonness() {
 		return 3;
 	}
-
+	
+	@Override
+	public float splashRadius() {
+		return 1.4f;
+	}
 }
