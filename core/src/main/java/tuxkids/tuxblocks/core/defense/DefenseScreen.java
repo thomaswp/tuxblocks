@@ -22,10 +22,12 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class DefenseScreen extends GameScreen {
 
@@ -43,41 +45,42 @@ public class DefenseScreen extends GameScreen {
 	
 	@Override
 	public void wasAdded() {
-//		background = graphics().createImageLayer(
-//				CanvasUtils.createRect(width(), height(), Colors.LIGHT_GRAY));
-//		layer.add(background);
 
 		float titleBarHeight = defaultButtonSize() * 1.2f;
 		
 		float maxGridWidth = width() * 0.7f; 
-		grid = new Grid(19, 28, (int)maxGridWidth, (int)(height() - titleBarHeight));
+		Grid testGrid = new Grid(state, 15, 21, (int)maxGridWidth, (int)(height() - titleBarHeight));
+
+		grid = testGrid;//new Grid(state, 15, 21, (int)(testGrid.width() * 1.5f), (int)(testGrid.height() * 1.5f));
 		grid.setTowerColor(state.themeColor());
 		gridHolder = graphics().createGroupLayer();
-		gridHolder.setTranslation(width() - grid.width(), (height() + titleBarHeight - grid.height()) / 2);
+		gridHolder.add(grid.layer());
+		gridHolder.setTranslation(width() - testGrid.width(), (height() + titleBarHeight - testGrid.height()) / 2);
+//		gridHolder.setScale((float)testGrid.width() / grid.width());
 		gridHolder.setDepth(1);
 		layer.add(gridHolder);
-		addGrid();
 		
-		menuSprite = new MenuSprite(width(), titleBarHeight);
-		layer.add(menuSprite.layer());
-		
-		inventory = new Inventory(this, grid, (int)(width() - grid.width()), (int)(height() - titleBarHeight));
+		inventory = new Inventory(this, grid, (int)(width() - testGrid.width()), (int)(height() - titleBarHeight));
 		inventory.layer().setDepth(1);
 		inventory.layer().setTy(titleBarHeight);
 		layer.add(inventory.layer());
+		
+		menuSprite = new MenuSprite(width(), titleBarHeight);
+		layer.add(menuSprite.layer());
 		
 		selectScreen = new SelectScreen(screens, state, grid);
 		
 		createPlusButton();
 		createStartButton();
+		
 	}
 	
 	private void createPlusButton() {
 		float size = GameScreen.defaultButtonSize();
 		buttonPlus = createMenuButton(Constant.BUTTON_PLUS);
 		buttonPlus.setPosition(size * 0.6f, size * 0.6f);
-		buttonPlus.addableLayer().setDepth(1);
-		layer.add(buttonPlus.addableLayer());
+		buttonPlus.layerAddable().setDepth(1);
+		layer.add(buttonPlus.layerAddable());
 		
 		buttonPlus.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -91,24 +94,16 @@ public class DefenseScreen extends GameScreen {
 		float size = defaultButtonSize();
 		buttonStart = createMenuButton(Constant.BUTTON_OK);
 		buttonStart.setPosition(width() - size * 0.6f, size * 0.6f);
-		buttonStart.addableLayer().setDepth(1);
-		layer.add(buttonStart.addableLayer());
+		buttonStart.layerAddable().setDepth(1);
+		layer.add(buttonStart.layerAddable());
 		buttonStart.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					buttonStart.addableLayer().setVisible(false);
-					state.newThemeColor();
+					grid.level().startNextRound();
 				}
 			}
 		});
-	}
-	
-	private void addGrid() {
-		if (grid.layer().parent() != gridHolder) {
-			gridHolder.add(grid.layer());
-			grid.fadeIn(1);
-		}
 	}
 	
 	@Override
@@ -120,14 +115,23 @@ public class DefenseScreen extends GameScreen {
 	@Override
 	public void showTransitionCompleted() {
 		super.showTransitionCompleted();
-		addGrid();
 	}
 	
 	@Override
 	public void update(int delta) {
 		super.update(delta);
 		grid.update(delta);
-
+		Level level = grid.level();
+		buttonStart.layerAddable().setVisible(false);
+		if (level.finished()) {
+			menuSprite.setText("Level Complete!");
+		} if (level.duringRound()) {
+			menuSprite.setText("Round " + level.round());
+		} else {
+			int nextRoundIn = grid.level().timeUntilNextRound() / 1000 + 1;
+			menuSprite.setText(Formatter.format("Next round in %d...", nextRoundIn));
+			buttonStart.layerAddable().setVisible(true);
+		}
 	}
 
 	@Override

@@ -10,7 +10,7 @@ public class NumberBlock extends BaseBlock {
 	public NumberBlock(tuxkids.tuxblocks.core.solve.expression.Number number) {
 		super(number);
 		this.number = number;
-		sprite = generateSprite(BASE_SIZE, BASE_SIZE, "" + number.getValue(), getColor());
+		layer = generateSprite(BASE_SIZE, BASE_SIZE, "" + number.getValue(), getColor());
 	}
 
 	@Override

@@ -4,7 +4,11 @@ import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.defense.Grid;
 
-public abstract class SlideWalker extends Walker {
+public class SlideWalker extends BasicWalker {
+
+	public SlideWalker(int maxHp, int walkCellTime) {
+		super(maxHp, walkCellTime);
+	}
 
 	@Override
 	protected void updateMovement(float perc) {
@@ -13,6 +17,11 @@ public abstract class SlideWalker extends Walker {
 		float y = lerp(lastCoordinates.x * grid.cellSize(), 
 				coordinates.x * grid.cellSize(), perc);
 		layer.setTranslation(x, y);
+	}
+
+	@Override
+	public Walker copy() {
+		return new SlideWalker(maxHp, walkCellTime);
 	}
 	
 }

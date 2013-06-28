@@ -44,32 +44,20 @@ public abstract class Tower extends DiscreteGridObject {
 	public abstract int cost();
 	public abstract int commonness();
 	
-	public float splashRadius() {
-		return 0;
+	private final static List<TowerType> towerBag;
+	static {
+		towerBag = new ArrayList<TowerType>();
+		for (TowerType type : TowerType.values()) 
+			for (int i = 0; i < type.instance().commonness(); i++) 
+				towerBag.add(type);
 	}
 
-	private static int nextTowerId;
-	private static HashMap<Class<?>, Integer> towerIds =
-			new HashMap<Class<?>, Integer>();
-	
-	private final static Tower[] towers = new Tower[] {
-		new PeaShooter(),
-		new Freezer(),
-		new BigShooter(),
-		new Zapper(),
-		new VerticalWall(),
-		new HorizontalWall(),
-	};
-	private final static List<Tower> towerBag;
-	static {
-		towerBag = new ArrayList<Tower>();
-		for (Tower tower : towers) 
-			for (int i = 0; i < tower.commonness(); i++) 
-				towerBag.add(tower);
+	public static TowerType getTypeByIndex(int index) {
+		return TowerType.values()[index];
 	}
 	
-	public static Tower[] towers() {
-		return towers;
+	public float splashRadius() {
+		return 0;
 	}
 
 	public float baseWidth() {
@@ -109,17 +97,13 @@ public abstract class Tower extends DiscreteGridObject {
 	public int id() {
 		return id;
 	}
-	
-	public static Tower getTowerById(int id) {
-		return towers[id];
-	}
 
-	public static Tower randomTower() {
+	public static TowerType randomTower() {
 		return towerBag.get((int)(Math.random() * towerBag.size()));
 	}
 	
 	public static int towerCount() {
-		return towers.length;
+		return TowerType.values().length;
 	}
 	
 	public void addBuffs(Walker walker) {
@@ -132,15 +116,6 @@ public abstract class Tower extends DiscreteGridObject {
 	
 	public void setLastTarget(Walker target) {
 		lastTarget = target;
-	}
-	
-	public Tower() {
-		Integer id = towerIds.get(getClass()); 
-		if (id == null) {
-			id = nextTowerId++;
-			towerIds.put(getClass(), id);
-		}
-		this.id = id;
 	}
 	
 	public void setCoordinates(Point coordinates) {

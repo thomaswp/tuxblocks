@@ -19,7 +19,7 @@ public class ModifierBlock extends Block {
 	}
 	
 	public ImageLayer layer() {
-		return isInverted ? inverseSprite : sprite;
+		return isInverted ? inverseSprite : layer;
 	}
 	
 	public boolean isInverted() {
@@ -35,7 +35,7 @@ public class ModifierBlock extends Block {
 	public ModifierBlock(ModificationOperation op, int width, int height) {
 		this.modifier = op;
 		inverseModifier = op.getInverse();
-		sprite = generateSprite(width, height,
+		layer = generateSprite(width, height,
 				Formatter.format("%s%d", op.getSymbol(), op.getValue()), 
 				op.getColor());
 		inverseSprite = generateSprite(width, height, 
@@ -46,13 +46,13 @@ public class ModifierBlock extends Block {
 	public void invert() {
 		isInverted = !isInverted;
 		if (isInverted) {
-			sprite.parent().add(inverseSprite);
-			sprite.parent().remove(sprite);
-			inverseSprite.setTranslation(sprite.tx(), sprite.ty());
+			layer.parent().add(inverseSprite);
+			layer.parent().remove(layer);
+			inverseSprite.setTranslation(layer.tx(), layer.ty());
 		} else {
-			inverseSprite.parent().add(sprite);
+			inverseSprite.parent().add(layer);
 			inverseSprite.parent().remove(inverseSprite);
-			sprite.setTranslation(inverseSprite.tx(), inverseSprite.ty());
+			layer.setTranslation(inverseSprite.tx(), inverseSprite.ty());
 		}
 	}
 	

@@ -27,7 +27,7 @@ public class BigShooter extends Tower {
 
 	@Override
 	public int fireRate() {
-		return 1000;
+		return 1500;
 	}
 
 	@Override

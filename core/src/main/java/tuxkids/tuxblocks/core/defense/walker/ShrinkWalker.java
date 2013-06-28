@@ -3,7 +3,11 @@ package tuxkids.tuxblocks.core.defense.walker;
 import pythagoras.f.FloatMath;
 import pythagoras.i.Point;
 
-public abstract class ShrinkWalker extends Walker {
+public class ShrinkWalker extends BasicWalker {
+
+	public ShrinkWalker(int maxHp, int walkCellTime) {
+		super(maxHp, walkCellTime);
+	}
 
 	@Override
 	protected void updateMovement(float perc) {
@@ -17,6 +21,11 @@ public abstract class ShrinkWalker extends Walker {
 		layer.setScale(Math.abs(FloatMath.cos(FloatMath.PI * perc)));
 		layer.setTranslation(coords.y * grid.cellSize() + layer.originX(), 
 				coords.x * grid.cellSize() + layer.originY());
+	}
+
+	@Override
+	public Walker copy() {
+		return new ShrinkWalker(maxHp, walkCellTime);
 	}
 
 }

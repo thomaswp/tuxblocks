@@ -2,7 +2,11 @@ package tuxkids.tuxblocks.core.defense.walker;
 
 import pythagoras.f.FloatMath;
 
-public abstract class SpinWalker extends Walker {
+public class SpinWalker extends BasicWalker {
+
+	public SpinWalker(int maxHp, int walkCellTime) {
+		super(maxHp, walkCellTime);
+	}
 
 	@Override
 	protected void updateMovement(float perc) {
@@ -13,5 +17,10 @@ public abstract class SpinWalker extends Walker {
 		layer.setOrigin(layer.width() / 2, layer.height() / 2);
 		layer.setTranslation(x + layer.originX(), y + layer.originY());
 		layer.setRotation(perc * FloatMath.PI);
+	}
+
+	@Override
+	public Walker copy() {
+		return new SpinWalker(maxHp, walkCellTime);
 	}
 }

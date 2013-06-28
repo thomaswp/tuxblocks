@@ -10,7 +10,7 @@ public class VariableBlock extends BaseBlock {
 	public VariableBlock(Variable variable) {
 		super(variable);
 		this.variable = variable;
-		sprite = generateSprite(BASE_SIZE, BASE_SIZE, variable.getName(), getColor());
+		layer = generateSprite(BASE_SIZE, BASE_SIZE, variable.getName(), getColor());
 	}
 
 	@Override

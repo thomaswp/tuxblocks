@@ -71,6 +71,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		return getNumber(selectedPoint);
 	}
 	
+	public boolean hasCorrectAnswer() {
+		Integer answer = selectedAnswer();
+		return answer != null && answer == this.answer;
+	}
+	
 	public void setFocusedNumber(int number) {
 		recenterPoint = getPoint(number);
 	}
@@ -201,8 +206,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		equationLayer = graphics().createGroupLayer();
 		equationLayer.add(menu.layer());
 		equationLayer.add(eqLayer);
-		equationLayer.add(buttonBack.addableLayer());
-		equationLayer.add(buttonCenter.addableLayer());
+		equationLayer.add(buttonBack.layerAddable());
+		equationLayer.add(buttonCenter.layerAddable());
 		
 		equationHeight = menu.height();
 		equationBlankX += eqLayer.tx(); 

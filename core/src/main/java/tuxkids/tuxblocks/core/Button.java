@@ -26,7 +26,7 @@ public class Button extends PlayNObject implements Positioned {
 	private int tint, tintPressed;
 	private boolean enabled = true;
 
-	public Layer addableLayer() {
+	public Layer layerAddable() {
 		return imageLayer.layer();
 	}
 	

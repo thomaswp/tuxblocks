@@ -1,32 +1,31 @@
 package tuxkids.tuxblocks.core.defense.select;
 
-import tuxkids.tuxblocks.core.defense.tower.Tower;
+import tuxkids.tuxblocks.core.defense.round.Reward;
+import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.expression.Equation;
 
 public class Problem {
 	private Equation equation;
-	private Tower reward;
-	private int rewardCount;
+	private Reward reward;
 	
 	public Equation equation() {
 		return equation;
 	}
 	
-	public Tower reward() {
+	public Reward reward() {
 		return reward;
-	}
-	
-	public int rewardCount() {
-		return rewardCount;
 	}
 	
 	public void setEquation(Equation equation) {
 		this.equation = equation;
 	}
 	
-	public Problem(Equation equation, Tower reward, int rewardCount) {
+	public Problem(Equation equation, TowerType reward, int rewardCount) {
+		this(equation, new Reward(reward, rewardCount));
+	}
+
+	public Problem(Equation equation, Reward reward) {
 		this.equation = equation;
 		this.reward = reward;
-		this.rewardCount = rewardCount;
 	}
 }

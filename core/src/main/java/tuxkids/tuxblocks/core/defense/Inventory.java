@@ -22,6 +22,7 @@ import playn.core.TextLayout;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.GameState.InventoryChangedListener;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.Button.OnDragListener;
 import tuxkids.tuxblocks.core.Button.OnPressedListener;
@@ -31,6 +32,7 @@ import tuxkids.tuxblocks.core.defense.tower.BigShooter;
 import tuxkids.tuxblocks.core.defense.tower.HorizontalWall;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
+import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.defense.tower.VerticalWall;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
@@ -64,12 +66,12 @@ public class Inventory extends PlayNObject {
 	
 	private float getItemSpriteX(int index) {
 		int j = index % COLS;
-		float spriteWidth = width / COLS; //getItemSpriteSize() + ITEM_SPRITE_MARGIN * 2;
+		float spriteWidth = width / COLS;
 		return width / 2 + (j - (COLS - 1) * 0.5f) * spriteWidth;
 	}
 	
 	private int rows() {
-		return (Tower.towers().length - 1) / COLS + 1;
+		return (Tower.towerCount() - 1) / COLS + 1;
 	}
 	
 	private float getItemSpriteY(int index) {
@@ -96,15 +98,18 @@ public class Inventory extends PlayNObject {
 		createSelectionSprites();
 		createCountSprites();
 		
-		for (int i = 0; i < Tower.towerCount(); i++) {
-			addItem(i, 10);	
-		}
+//		for (int i = 0; i < Tower.towerCount(); i++) {
+//			addItem(i, 10);	
+//		}
+		
+		screen.state().setInventoryChangedListener(new InventoryChangedListener() {
+			@Override
+			public void onInventoryChanged(int index, int count) {
+				refreshCountSprite(index);
+			}
+		});
 	}
 	
-	private void addItem(int index, int count) {
-		towerCounts()[index] += count;
-		refreshCountSprite(index);
-	}
 	
 	private void createCountSprites() {
 		countSprites = new ImageLayer[towerCounts().length];
@@ -141,11 +146,11 @@ public class Inventory extends PlayNObject {
 		float cellSize = (spriteSize - padding * 2) / 3;
 		float strokeWidth = 5;
 		
-		itemButtons = new Button[Tower.towers().length];
+		itemButtons = new Button[Tower.towerCount()];
 		for (int index = 0; index < itemButtons.length; index++) {
-			final Tower tower = Tower.getTowerById(index);
+			final TowerType towerType = Tower.getTypeByIndex(index);
 			
-			TextLayout layout = graphics().layoutText(tower.name(), textFormat);
+			TextLayout layout = graphics().layoutText(towerType.instance().name(), textFormat);
 			
 			float indentX = Math.max(0, layout.width() - spriteSize) / 2;
 			
@@ -158,7 +163,7 @@ public class Inventory extends PlayNObject {
 					spriteSize - strokeWidth + 2, 
 					spriteSize  - strokeWidth + 2, rad);
 			
-			Image towerImage = tower.createImage(cellSize, grid.towerColor());
+			Image towerImage = towerType.instance().createImage(cellSize, grid.towerColor());
 			image.canvas().drawImage(towerImage, indentX + (spriteSize - towerImage.width()) / 2, 
 					(spriteSize - towerImage.height()) / 2);
 			
@@ -177,7 +182,7 @@ public class Inventory extends PlayNObject {
 				@Override
 				public void onPointerStart(Event event) {
 					if (!button.enabled()) return;
-					grid.startPlacement(tower.copy());
+					grid.startPlacement(towerType.newInstance());
 				}
 				
 				@Override
@@ -200,7 +205,7 @@ public class Inventory extends PlayNObject {
 				public void onPointerCancel(Event event) { }
 			});
 			
-			groupLayer.add(button.addableLayer());
+			groupLayer.add(button.layerAddable());
 			itemButtons[index] = button;
 		}
 	}

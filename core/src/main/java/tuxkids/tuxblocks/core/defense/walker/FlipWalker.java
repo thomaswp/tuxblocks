@@ -5,7 +5,12 @@ import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.defense.Grid;
 
-public abstract class FlipWalker extends Walker {
+public class FlipWalker extends BasicWalker {
+	
+	public FlipWalker(int maxHp, int walkCellTime) {
+		super(maxHp, walkCellTime);
+	}
+
 	@Override
 	protected void updateMovement(float perc) {
 		int dx = -(coordinates.y - lastCoordinates.y);
@@ -22,6 +27,11 @@ public abstract class FlipWalker extends Walker {
 		if (dy == 0) scaleY = 1;
 		
 		layer.setScale(scaleX, scaleY);
+	}
+
+	@Override
+	public Walker copy() {
+		return new FlipWalker(maxHp, walkCellTime);
 	}
 
 }

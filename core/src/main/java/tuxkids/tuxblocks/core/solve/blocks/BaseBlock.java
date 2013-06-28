@@ -54,13 +54,13 @@ public abstract class BaseBlock extends Block {
 	public float groupWidth() {
 		Block lastModifier = lastModifier();
 		if (lastModifier == null) return width();
-		return lastModifier.width() + lastModifier.sprite.tx();
+		return lastModifier.width() + lastModifier.layer.tx();
 	}
 	
 	public float groupHeight() {
 		Block lastModifier = lastModifier();
 		if (lastModifier == null) return height();
-		return -lastModifier.sprite.ty();
+		return -lastModifier.layer.ty();
 	}
 	
 	@Override
@@ -101,6 +101,12 @@ public abstract class BaseBlock extends Block {
 	protected abstract boolean canSimplify();
 	protected abstract String getText();
 	
+	@Override
+	public void destroy() {
+		super.destroy();
+		groupLayer.destroy();
+	}
+	
 	private void updateSimplify() {
 		if (!canSimplify() || modifiers.isEmpty()) {
 			simplifyCircle.setVisible(false);
@@ -131,12 +137,12 @@ public abstract class BaseBlock extends Block {
 		ModifierBlock modBlock;
 		if (mod.getPrecedence() == Expression.PREC_ADD) {
 			modBlock = new ModifierBlock(mod, MOD_SIZE, (int)groupHeight());
-			modBlock.sprite.setTx(groupWidth());
-			modBlock.sprite.setTy(-groupHeight());
-			groupLayer.add(modBlock.sprite);
+			modBlock.layer.setTx(groupWidth());
+			modBlock.layer.setTy(-groupHeight());
+			groupLayer.add(modBlock.layer);
 		} else {
 			modBlock = new ModifierBlock(mod, (int)groupWidth(), MOD_SIZE);
-			modBlock.sprite.setTy(-groupHeight() - modBlock.height());
+			modBlock.layer.setTy(-groupHeight() - modBlock.height());
 		}
 		mod.setOperand(topLevelExpression());
 		if (isPreview) {
@@ -144,11 +150,11 @@ public abstract class BaseBlock extends Block {
 				groupLayer.remove(previewBlock.layer());
 			} 
 			previewBlock = modBlock;
-			previewBlock.sprite.setAlpha(0.5f);
+			previewBlock.layer.setAlpha(0.5f);
 		} else {
 			modifiers.add(modBlock);
 		}
-		groupLayer.add(modBlock.sprite);
+		groupLayer.add(modBlock.layer);
 		updateSimplify();
 	}
 
@@ -156,7 +162,7 @@ public abstract class BaseBlock extends Block {
 		if (modifiers.size() == 0) return null;
 		ModifierBlock modBlock = modifiers.remove(modifiers.size() - 1);
 		modBlock.getModifier().setOperand(null);
-		groupLayer.remove(modBlock.sprite);
+		groupLayer.remove(modBlock.layer);
 		updateSimplify();
 		return modBlock;
 	}
@@ -247,16 +253,16 @@ public abstract class BaseBlock extends Block {
 		if (!modifiers.isEmpty()) {
 			modifiers.get(0).getModifier().setOperand(baseExpression);
 		}
-		float width = sprite.width(), height = sprite.height();
+		float width = layer.width(), height = layer.height();
 		if (remove.getModifier().getPrecedence() == Expression.PREC_ADD) {
 			width += MOD_SIZE;
 		} else {
 			height += MOD_SIZE;
 		}
 		((NumberBlock)this).setValue(to);
-		sprite.destroy();
+		layer.destroy();
 		remove.layer().destroy();
-		sprite = generateSprite((int)width, (int)height, getText(), getColor());
+		layer = generateSprite((int)width, (int)height, getText(), getColor());
 		updateSimplify();
 	}
 }

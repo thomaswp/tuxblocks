@@ -26,18 +26,18 @@ public abstract class Block extends PlayNObject{
 	
 	private static TextFormat textFormat;
 	
-	protected ImageLayer sprite;
+	protected ImageLayer layer;
 
 	public float width() {
-		return sprite.width();
+		return layer.width();
 	}
 	
 	public float height() {
-		return sprite.height();
+		return layer.height();
 	}
 	
 	public Layer layer() {
-		return sprite;
+		return layer;
 	}
 	
 	public abstract int getColor();
@@ -75,5 +75,9 @@ public abstract class Block extends PlayNObject{
 		float textY = (image.height() - layout.height()) / 2;
 		image.canvas().fillText(layout, textX, textY);
 		return PlayN.graphics().createImageLayer(image);
+	}
+	
+	public void destroy() {
+		layer.destroy();
 	}
 }

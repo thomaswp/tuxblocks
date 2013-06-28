@@ -17,9 +17,12 @@ import tripleplay.particle.Emitter;
 import tripleplay.particle.Particles;
 import tripleplay.particle.TuxParticles;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.projectile.ChainProjectile;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
+import tuxkids.tuxblocks.core.defense.round.Level;
+import tuxkids.tuxblocks.core.defense.round.Level.RoundCompletedListener;
 import tuxkids.tuxblocks.core.defense.round.Round;
 import tuxkids.tuxblocks.core.defense.round.Wave;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
@@ -28,7 +31,7 @@ import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.effect.Effect;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
-public class Grid extends PlayNObject {
+public class Grid extends PlayNObject implements RoundCompletedListener {
 
 	private final static boolean SHOW_GRID = false;
 
@@ -47,13 +50,18 @@ public class Grid extends PlayNObject {
 	private Tower toPlace;
 	private ImageLayer toPlaceRadius;
 	private List<Point> currentPath;
-	private Round round;
-	private float targetAlpha;
+	private Level level;
+	private float targetAlpha = 1;
 	private int towerColor;
 	private Particles particles;
+	private GameState state;
 
 	public Particles particles() {
 		return particles;
+	}
+	
+	public Level level() {
+		return level;
 	}
 
 	public int towerColor() {
@@ -96,8 +104,10 @@ public class Grid extends PlayNObject {
 		this.towerColor = themeColor;
 	}
 
-	public Grid(int rows, int cols, int maxWidth, int maxHeight) {
+	public Grid(GameState gameState, int rows, int cols, int maxWidth, int maxHeight) {
+		this.state = gameState;
 		this.rows = rows; this.cols = cols;
+		
 		passability = new boolean[rows][cols];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
@@ -132,21 +142,8 @@ public class Grid extends PlayNObject {
 
 		particles = new TuxParticles();
 
-		round = new Round() {
-			@Override
-			protected void populateRound() {
-				addWave(new Wave(new Peon(), 300, 13), 3000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
-				addWave(new Wave(new Peon(), 150, 3), 6000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
-				addWave(new Wave(new Peon(), 150, 3), 6000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
-				addWave(new Wave(new Peon(), 150, 3), 6000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
-				addWave(new Wave(new Peon(), 150, 3), 6000);
-				addWave(new Wave(new Peon(), 500, 3), 6000);
-			}
-		};
+		level = Level.generate();
+		level.setRoundCompletedListener(this);
 	}
 
 	public Emitter createEmitter(int maxParticles, Image image) {
@@ -166,9 +163,9 @@ public class Grid extends PlayNObject {
 			layer.setAlpha(targetAlpha);
 		}
 
-		Walker walker = round.update(delta);
+		Walker walker = level.update(delta);
 		if (walker != null) {
-			addWalker(walker.place(this, walkerStart, walkerDestination, round.nextDepth()));
+			addWalker(walker.place(this, walkerStart, walkerDestination, 0));
 		}
 
 		int nObjects = gridObjects.size();
@@ -451,5 +448,10 @@ public class Grid extends PlayNObject {
 		effects.add(effect);
 		effect.layer().setDepth(5);
 		gridLayer.add(effect.layer());
+	}
+
+	@Override
+	public void onRoundCompleted(Round round) {
+		round.winRound(state);
 	}
 }

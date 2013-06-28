@@ -76,14 +76,19 @@ public class SolveScreen extends GameScreen implements Listener, OnSimplifyListe
 		buttonImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
 		buttonBack = createMenuButton(Constant.BUTTON_DOWN);
 		buttonBack.setPosition(buttonBack.width() * 0.6f, buttonBack.height() * 0.6f);
-		buttonBack.addableLayer().setDepth(10);
+		buttonBack.layerAddable().setDepth(10);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
-				if (inButton) popThis(screens.slide().up());
+				if (inButton) popThis();
 			}
 		});
-		layer.add(buttonBack.addableLayer());
+		layer.add(buttonBack.layerAddable());
+	}
+	
+	@Override
+	protected void popThis() {
+		popThis(screens.slide().up());
 	}
 	
 	@Override
@@ -129,6 +134,10 @@ public class SolveScreen extends GameScreen implements Listener, OnSimplifyListe
 	@Override
 	public void wasRemoved() {
 		super.wasRemoved();
+		for (BaseBlock block : baseBlocks) block.destroy();
+		baseBlocks.clear();
+		leftBaseBlocks.clear();
+		rightBaseBlocks.clear();
 		equationSprite.layer().destroy();
 		for (BaseBlock baseBlock : baseBlocks) baseBlock.layer().destroy();
 	}
@@ -267,8 +276,8 @@ public class SolveScreen extends GameScreen implements Listener, OnSimplifyListe
 	protected void onChildScreenFinished(GameScreen screen) {
 		super.onChildScreenFinished(screen);
 		if (screen instanceof NumberSelectScreen) {
-			Integer answer = ((NumberSelectScreen) screen).selectedAnswer();
-			if (answer != null) {
+			if (((NumberSelectScreen) screen).hasCorrectAnswer()) {
+				Integer answer = ((NumberSelectScreen) screen).selectedAnswer();
 				simplyfyResult.simplfy(answer);
 				refreshEquationSprite();
 			}

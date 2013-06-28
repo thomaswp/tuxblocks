@@ -4,6 +4,7 @@ import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
@@ -12,7 +13,7 @@ import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.defense.tower.Tower;
+import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.expression.Equation;
 import tuxkids.tuxblocks.core.solve.expression.ExpressionWriter;
 
@@ -24,6 +25,7 @@ public class ProblemButton extends Button {
 	private float minHeight;
 	private ProblemButton above, below;
 	private int towerColor;
+	private float targetAlpha = 1;
 	
 	public Equation equation() {
 		return problem.equation();
@@ -95,8 +97,8 @@ public class ProblemButton extends Button {
 		canvas.fillRoundRect(strokeWidth / 2, strokeWidth / 2, width - strokeWidth, height - strokeWidth, rectRad);
 		canvas.strokeRoundRect(strokeWidth / 2, strokeWidth / 2, width - strokeWidth, height - strokeWidth, rectRad);
 		
-		Tower reward = problem.reward();
-		Image rewardImage = reward.createImage(cellSize, towerColor);
+		TowerType reward = problem.reward().tower;
+		Image rewardImage = reward.instance().createImage(cellSize, towerColor);
 		float rewardImageX = width - padding - (rewardImageSize + rewardImage.width()) / 2;
 		float rewardImageY = padding + (rewardImageSize - rewardImage.height()) / 2;
 		canvas.drawImage(rewardImage, rewardImageX, rewardImageY);
@@ -104,7 +106,7 @@ public class ProblemButton extends Button {
 		canvas.setFillColor(Colors.BLACK);
 		TextFormat countFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, rewardImageSize / 5));
-		TextLayout countLayout = graphics().layoutText("x" + problem.rewardCount(), countFormat);
+		TextLayout countLayout = graphics().layoutText("x" + problem.reward().count, countFormat);
 		canvas.fillText(countLayout, width - padding - rewardImageSize, padding);
 		
 		float lineX = width - padding * 2 - rewardImageSize;
@@ -134,7 +136,22 @@ public class ProblemButton extends Button {
 		return image;
 	}
 	
+	public void fadeIn(float targetAlpha) {
+		layerAddable().setAlpha(0);
+		this.targetAlpha = targetAlpha;
+	}
+	
+	public void fadeOut() {
+		this.targetAlpha = 0;
+	}
+	
 	public void paint(Clock clock) {
+		Layer layer = layerAddable();
+		if (layer.alpha() != targetAlpha) {
+			layer.setAlpha(lerpTime(layer.alpha(), targetAlpha, 0.99f, clock.dt()));
+			if (Math.abs(layer.alpha() - targetAlpha) < 0.01) layer.setAlpha(targetAlpha);
+		}
+		
 		float desiredY = above == null ? 0 : above.bottom();
 		desiredY += MARGIN + height() / 2;
 		float y = lerpTime(y(), desiredY, 0.99f, clock.dt());

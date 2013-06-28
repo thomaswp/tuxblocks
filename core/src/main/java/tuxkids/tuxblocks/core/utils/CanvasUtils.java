@@ -115,4 +115,12 @@ public class CanvasUtils extends PlayNObject {
 	private static int rgbFloatToInt(float r, float g, float b) {
 		return Color.rgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
 	}
+
+	public static Image createString(TextFormat format, String text, int color) {
+		TextLayout layout =  graphics().layoutText(text, format);
+		CanvasImage image = graphics().createImage(layout.width(), layout.height());
+		image.canvas().setFillColor(color);
+		image.canvas().fillText(layout, 0, 0);
+		return image;
+	}
 }

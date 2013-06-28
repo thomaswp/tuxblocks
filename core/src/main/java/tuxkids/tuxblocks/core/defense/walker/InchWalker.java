@@ -1,6 +1,10 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
-public abstract class InchWalker extends Walker {
+public class InchWalker extends BasicWalker {
+
+	public InchWalker(int maxHp, int walkCellTime) {
+		super(maxHp, walkCellTime);
+	}
 
 	@Override
 	protected void updateMovement(float perc) {
@@ -24,5 +28,10 @@ public abstract class InchWalker extends Walker {
 		layer.setOrigin(ox, oy);
 		layer.setTranslation(x, y);
 		layer.setScale(scaleX, scaleY);
+	}
+
+	@Override
+	public Walker copy() {
+		return new InchWalker(maxHp, walkCellTime);
 	}
 }
