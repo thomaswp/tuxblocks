@@ -10,7 +10,7 @@ set PLAYN_S=C:\Users\Thomas\.m2\repository\com\googlecode\playn\playn-core\1.7\p
 set REACT_S=C:\Users\Thomas\.m2\repository\com\threerings\react\1.3.1\react-1.3.1-sources.jar
 set OOO_S=C:\Users\Thomas\.m2\repository\com\threerings\tripleplay\1.7\tripleplay-1.7-sources.jar
 
-:: call j2objc -d objc --prefixes pfx.txt -classpath "%JAVA%" %PY_S%
-:: call j2objc -d objc --prefixes pfx.txt -classpath "%JAVA%:%PY%" %PLAYN_S%
-:: call j2objc -d objc --prefixes pfx.txt -classpath "%JAVA%" %REACT_S%
-:: call j2objc -d objc --prefixes pfx.txt -classpath "%JAVA%:%PLAYN%:%PY%:%REACT%" %OOO_S%
+call j2objc --no-package-directories -d objc --prefixes pfx.txt -classpath "%JAVA%" %PY_S%
+call j2objc --no-package-directories -d objc --prefixes pfx.txt -classpath "%JAVA%:%PY%" %PLAYN_S%
+call j2objc --no-package-directories -d objc --prefixes pfx.txt -classpath "%JAVA%" %REACT_S%
+call j2objc --no-package-directories -d objc --prefixes pfx.txt -classpath "%JAVA%:%PLAYN%:%PY%:%REACT%" %OOO_S%
