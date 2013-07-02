@@ -9,6 +9,7 @@
 #import "IOSFloatArray.h"
 #import "IOSObjectArray.h"
 #import "IPoint.h"
+#import "CubicCurve.h"
 
 @implementation PythagorasFCubicCurve
 

@@ -9,6 +9,7 @@
 #import "IOSDoubleArray.h"
 #import "IVector.h"
 #import "java/lang/Math.h"
+#import "Vector.h"
 
 @implementation PythagorasDVector
 

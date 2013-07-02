@@ -14,6 +14,7 @@
 #import "Vector3.h"
 #import "java/lang/Float.h"
 #import "java/util/Random.h"
+#import "Quaternion.h"
 
 @implementation PythagorasFQuaternion
 

@@ -10,6 +10,7 @@
 #import "MathUtil.h"
 #import "Point.h"
 #import "java/lang/Math.h"
+#import "Points.h"
 
 @implementation PythagorasFPoints
 

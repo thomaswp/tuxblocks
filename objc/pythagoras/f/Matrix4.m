@@ -23,6 +23,7 @@
 #import "Vector4.h"
 #import "java/lang/Math.h"
 #import "java/nio/FloatBuffer.h"
+#import "Matrix4.h"
 
 @implementation PythagorasFMatrix4
 

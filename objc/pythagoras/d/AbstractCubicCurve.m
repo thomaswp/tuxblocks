@@ -19,6 +19,7 @@
 #import "Transform.h"
 #import "java/lang/Math.h"
 #import "java/util/NoSuchElementException.h"
+#import "AbstractCubicCurve.h"
 
 @implementation PythagorasDAbstractCubicCurve
 

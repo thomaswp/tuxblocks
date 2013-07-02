@@ -9,6 +9,7 @@
 #import "FloatMath.h"
 #import "IOSFloatArray.h"
 #import "IVector.h"
+#import "Vector.h"
 
 @implementation PythagorasFVector
 

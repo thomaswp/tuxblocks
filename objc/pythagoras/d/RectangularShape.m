@@ -16,6 +16,7 @@
 #import "Rectangle.h"
 #import "Transform.h"
 #import "java/lang/Math.h"
+#import "RectangularShape.h"
 
 @implementation PythagorasDRectangularShape
 

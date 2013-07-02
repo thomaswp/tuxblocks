@@ -11,6 +11,7 @@
 #import "Vector.h"
 #import "Vectors.h"
 #import "XY.h"
+#import "AbstractVector.h"
 
 @implementation PythagorasFAbstractVector
 

@@ -14,6 +14,7 @@
 #import "java/lang/Double.h"
 #import "java/lang/Math.h"
 #import "java/util/Random.h"
+#import "Quaternion.h"
 
 @implementation PythagorasDQuaternion
 

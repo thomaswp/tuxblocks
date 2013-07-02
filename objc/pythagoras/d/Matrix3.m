@@ -18,6 +18,7 @@
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 #import "java/lang/Math.h"
 #import "java/nio/DoubleBuffer.h"
+#import "Matrix3.h"
 
 @implementation PythagorasDMatrix3
 

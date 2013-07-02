@@ -22,6 +22,7 @@
 #import "Transform.h"
 #import "java/lang/Math.h"
 #import "java/util/NoSuchElementException.h"
+#import "AbstractRectangle.h"
 
 @implementation PythagorasDAbstractRectangle
 

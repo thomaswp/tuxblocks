@@ -14,6 +14,7 @@
 #import "java/util/ArrayList.h"
 #import "java/util/Iterator.h"
 #import "java/util/List.h"
+#import "CrossingHelper.h"
 
 @implementation PythagorasFCrossingHelper
 

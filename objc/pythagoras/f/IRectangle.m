@@ -10,6 +10,7 @@
 #import "IPoint.h"
 #import "Point.h"
 #import "Rectangle.h"
+#import "IRectangle.h"
 
 
 @implementation PythagorasFIRectangle

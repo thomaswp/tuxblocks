@@ -11,6 +11,7 @@
 #import "Platform.h"
 #import "java/lang/Math.h"
 #import "java/nio/FloatBuffer.h"
+#import "Vector4.h"
 
 @implementation PythagorasFVector4
 

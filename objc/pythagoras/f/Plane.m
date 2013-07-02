@@ -14,6 +14,7 @@
 #import "java/lang/Float.h"
 #import "java/lang/Math.h"
 #import "java/nio/FloatBuffer.h"
+#import "Plane.h"
 
 @implementation PythagorasFPlane
 

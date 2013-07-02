@@ -13,6 +13,7 @@
 #import "Transform.h"
 #import "Vector.h"
 #import "java/lang/UnsupportedOperationException.h"
+#import "IdentityTransform.h"
 
 @implementation PythagorasFIdentityTransform
 

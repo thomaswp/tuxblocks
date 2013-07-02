@@ -9,6 +9,7 @@
 #import "FloatMath.h"
 #import "IOSFloatArray.h"
 #import "java/lang/Math.h"
+#import "GeometryUtil.h"
 
 @implementation PythagorasFGeometryUtil
 

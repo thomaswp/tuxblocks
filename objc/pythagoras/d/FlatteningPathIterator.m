@@ -14,6 +14,7 @@
 #import "java/lang/NullPointerException.h"
 #import "java/lang/System.h"
 #import "java/util/NoSuchElementException.h"
+#import "FlatteningPathIterator.h"
 
 @implementation PythagorasDFlatteningPathIterator
 

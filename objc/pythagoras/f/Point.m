@@ -7,6 +7,7 @@
 
 #import "AbstractPoint.h"
 #import "IPoint.h"
+#import "Point.h"
 
 @implementation PythagorasFPoint
 

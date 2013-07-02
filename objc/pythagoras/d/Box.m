@@ -14,6 +14,7 @@
 #import "Vector3.h"
 #import "java/lang/Float.h"
 #import "java/lang/Math.h"
+#import "Box.h"
 
 @implementation PythagorasDBox
 

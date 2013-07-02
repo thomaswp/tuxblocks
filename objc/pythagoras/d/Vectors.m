@@ -11,6 +11,7 @@
 #import "Vector.h"
 #import "java/lang/Float.h"
 #import "java/lang/Math.h"
+#import "Vectors.h"
 
 @implementation PythagorasDVectors
 

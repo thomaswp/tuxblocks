@@ -11,6 +11,7 @@
 #import "Points.h"
 #import "XY.h"
 #import "java/lang/Math.h"
+#import "AbstractPoint.h"
 
 @implementation PythagorasDAbstractPoint
 

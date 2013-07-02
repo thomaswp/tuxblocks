@@ -15,6 +15,7 @@
 #import "RectangularShape.h"
 #import "Transform.h"
 #import "java/util/NoSuchElementException.h"
+#import "AbstractEllipse.h"
 
 @implementation PythagorasFAbstractEllipse
 

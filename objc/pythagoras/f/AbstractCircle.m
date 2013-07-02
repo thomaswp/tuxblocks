@@ -10,6 +10,7 @@
 #import "IPoint.h"
 #import "Platform.h"
 #import "Points.h"
+#import "AbstractCircle.h"
 
 @implementation PythagorasFAbstractCircle
 

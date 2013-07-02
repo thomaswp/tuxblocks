@@ -16,6 +16,7 @@
 #import "Rectangle.h"
 #import "Transform.h"
 #import "java/util/NoSuchElementException.h"
+#import "AbstractLine.h"
 
 @implementation PythagorasFAbstractLine
 

@@ -5,6 +5,8 @@
 //  Created by Thomas on 7/1/13.
 //
 
+#import "NoninvertibleTransformException.h"
+
 @implementation PythagorasUtilNoninvertibleTransformException
 
 - (id)initWithNSString:(NSString *)s {

@@ -6,6 +6,7 @@
 //
 
 #import "IRoundRectangle.h"
+#import "RoundRectangle.h"
 
 @implementation PythagorasDRoundRectangle
 

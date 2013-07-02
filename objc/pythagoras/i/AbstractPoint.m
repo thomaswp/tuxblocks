@@ -8,6 +8,7 @@
 #import "IPoint.h"
 #import "Point.h"
 #import "Points.h"
+#import "AbstractPoint.h"
 
 @implementation PythagorasIAbstractPoint
 

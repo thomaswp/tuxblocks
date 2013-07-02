@@ -11,6 +11,7 @@
 #import "IOSDoubleArray.h"
 #import "Lines.h"
 #import "java/lang/Math.h"
+#import "CubicCurves.h"
 
 @implementation PythagorasDCubicCurves
 

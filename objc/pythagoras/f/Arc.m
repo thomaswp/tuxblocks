@@ -14,6 +14,7 @@
 #import "RectangularShape.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/Math.h"
+#import "Arc.h"
 
 @implementation PythagorasFArc
 

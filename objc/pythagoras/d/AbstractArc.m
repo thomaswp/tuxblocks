@@ -17,6 +17,7 @@
 #import "Transform.h"
 #import "java/lang/Math.h"
 #import "java/util/NoSuchElementException.h"
+#import "AbstractArc.h"
 
 @implementation PythagorasDAbstractArc
 

@@ -9,6 +9,7 @@
 #import "IOSDoubleArray.h"
 #import "IOSFloatArray.h"
 #import "IOSIntArray.h"
+#import "Platform.h"
 
 @implementation PythagorasUtilPlatform
 

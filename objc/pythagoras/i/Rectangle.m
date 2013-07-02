@@ -9,6 +9,7 @@
 #import "IPoint.h"
 #import "IRectangle.h"
 #import "java/lang/Math.h"
+#import "Rectangle.h"
 
 @implementation PythagorasIRectangle
 

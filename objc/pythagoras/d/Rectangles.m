@@ -12,6 +12,7 @@
 #import "Points.h"
 #import "Rectangle.h"
 #import "java/lang/Math.h"
+#import "Rectangles.h"
 
 @implementation PythagorasDRectangles
 

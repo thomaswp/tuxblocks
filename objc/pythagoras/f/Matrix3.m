@@ -19,6 +19,7 @@
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 #import "java/lang/Math.h"
 #import "java/nio/FloatBuffer.h"
+#import "Matrix3.h"
 
 @implementation PythagorasFMatrix3
 

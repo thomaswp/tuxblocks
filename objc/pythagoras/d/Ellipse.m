@@ -5,6 +5,8 @@
 //  Created by Thomas on 7/1/13.
 //
 
+#import "Ellipse.h"
+
 @implementation PythagorasDEllipse
 
 @synthesize x_ = x__;

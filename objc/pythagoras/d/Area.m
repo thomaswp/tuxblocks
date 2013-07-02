@@ -26,6 +26,7 @@
 #import "java/lang/Math.h"
 #import "java/lang/System.h"
 #import "java/util/NoSuchElementException.h"
+#import "Area.h"
 
 @implementation PythagorasDArea
 

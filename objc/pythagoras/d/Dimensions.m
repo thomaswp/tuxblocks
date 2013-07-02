@@ -7,6 +7,7 @@
 
 #import "Dimension.h"
 #import "IDimension.h"
+#import "Dimensions.h"
 
 @implementation PythagorasDDimensions
 

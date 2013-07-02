@@ -5,6 +5,8 @@
 //  Created by Thomas on 7/1/13.
 //
 
+#import "MathUtil.h"
+
 @implementation PythagorasIMathUtil
 
 + (int)clampWithInt:(int)value

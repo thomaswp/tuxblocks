@@ -13,6 +13,7 @@
 #import "java/lang/IndexOutOfBoundsException.h"
 #import "java/lang/Math.h"
 #import "java/nio/FloatBuffer.h"
+#import "Vector3.h"
 
 @implementation PythagorasFVector3
 

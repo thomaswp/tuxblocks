@@ -11,6 +11,7 @@
 #import "Vectors.h"
 #import "XY.h"
 #import "java/lang/Math.h"
+#import "AbstractVector.h"
 
 @implementation PythagorasDAbstractVector
 

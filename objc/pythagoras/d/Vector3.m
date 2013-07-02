@@ -12,6 +12,7 @@
 #import "java/lang/IndexOutOfBoundsException.h"
 #import "java/lang/Math.h"
 #import "java/nio/DoubleBuffer.h"
+#import "Vector3.h"
 
 @implementation PythagorasDVector3
 

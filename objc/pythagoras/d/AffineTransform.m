@@ -17,6 +17,7 @@
 #import "Transforms.h"
 #import "Vector.h"
 #import "java/lang/Math.h"
+#import "AffineTransform.h"
 
 @implementation PythagorasDAffineTransform
 

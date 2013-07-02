@@ -6,6 +6,7 @@
 //
 
 #import "java/lang/Math.h"
+#import "Lines.h"
 
 @implementation PythagorasDLines
 

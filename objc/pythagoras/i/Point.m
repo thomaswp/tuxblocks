@@ -6,6 +6,7 @@
 //
 
 #import "IPoint.h"
+#import "Point.h"
 
 @implementation PythagorasIPoint
 

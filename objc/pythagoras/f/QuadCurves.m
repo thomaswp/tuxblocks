@@ -10,6 +10,7 @@
 #import "IQuadCurve.h"
 #import "Lines.h"
 #import "QuadCurve.h"
+#import "QuadCurves.h"
 
 @implementation PythagorasFQuadCurves
 

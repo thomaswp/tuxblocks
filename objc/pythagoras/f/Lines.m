@@ -6,6 +6,7 @@
 //
 
 #import "FloatMath.h"
+#import "Lines.h"
 
 @implementation PythagorasFLines
 

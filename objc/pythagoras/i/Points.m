@@ -7,6 +7,7 @@
 
 #import "java/lang/Math.h"
 #import "java/lang/StringBuilder.h"
+#import "Points.h"
 
 @implementation PythagorasIPoints
 

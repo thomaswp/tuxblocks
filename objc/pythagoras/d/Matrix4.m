@@ -22,6 +22,7 @@
 #import "Vector4.h"
 #import "java/lang/Math.h"
 #import "java/nio/DoubleBuffer.h"
+#import "Matrix4.h"
 
 @implementation PythagorasDMatrix4
 

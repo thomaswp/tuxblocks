@@ -13,6 +13,7 @@
 #import "Points.h"
 #import "Rectangle.h"
 #import "java/lang/Math.h"
+#import "AbstractRectangle.h"
 
 @implementation PythagorasIAbstractRectangle
 

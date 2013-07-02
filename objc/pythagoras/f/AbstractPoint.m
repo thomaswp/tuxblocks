@@ -11,6 +11,7 @@
 #import "Point.h"
 #import "Points.h"
 #import "XY.h"
+#import "AbstractPoint.h"
 
 @implementation PythagorasFAbstractPoint
 

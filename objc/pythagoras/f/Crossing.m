@@ -12,6 +12,7 @@
 #import "PathIterator.h"
 #import "Rectangle.h"
 #import "java/lang/Math.h"
+#import "Crossing.h"
 
 @implementation PythagorasFCrossing
 
