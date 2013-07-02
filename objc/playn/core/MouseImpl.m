@@ -15,6 +15,7 @@
 #import "PlayN.h"
 #import "Point.h"
 #import "Transform.h"
+#import "MouseImpl.h"
 
 @implementation PlaynCoreMouseImpl
 

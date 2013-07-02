@@ -13,6 +13,7 @@
 #import "InternalTransform.h"
 #import "Scale.h"
 #import "Tint.h"
+#import "ImageGL.h"
 
 @implementation PlaynCoreGlImageGL
 

@@ -8,6 +8,7 @@
 #import "Graphics.h"
 #import "Rectangle.h"
 #import "TextFormat.h"
+#import "AbstractTextLayout.h"
 
 @implementation PlaynCoreAbstractTextLayout
 

@@ -6,6 +6,7 @@
 //
 
 #import "Asserts.h"
+#import "GLUtil.h"
 
 @implementation PlaynCoreGlGLUtil
 

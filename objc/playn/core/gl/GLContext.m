@@ -28,6 +28,7 @@
 #import "java/nio/IntBuffer.h"
 #import "java/util/ArrayList.h"
 #import "java/util/List.h"
+#import "GLContext.h"
 
 @implementation PlaynCoreGlGLContext
 

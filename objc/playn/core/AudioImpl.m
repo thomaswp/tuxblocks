@@ -8,6 +8,7 @@
 #import "AbstractSound.h"
 #import "Platform.h"
 #import "java/lang/Throwable.h"
+#import "AudioImpl.h"
 
 @implementation PlaynCoreAudioImpl
 

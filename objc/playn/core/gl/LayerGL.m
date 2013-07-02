@@ -12,6 +12,7 @@
 #import "InternalTransform.h"
 #import "Layer.h"
 #import "Transform.h"
+#import "LayerGL.h"
 
 @implementation PlaynCoreGlLayerGL
 

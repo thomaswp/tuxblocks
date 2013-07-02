@@ -8,6 +8,7 @@
 #import "Layer.h"
 #import "Point.h"
 #import "java/lang/StringBuilder.h"
+#import "Events.h"
 
 @implementation PlaynCoreEvents
 

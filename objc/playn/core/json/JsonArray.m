@@ -17,6 +17,7 @@
 #import "java/util/Arrays.h"
 #import "java/util/Collection.h"
 #import "java/util/List.h"
+#import "JsonArray.h"
 
 @implementation PlaynCoreJsonJsonArray
 

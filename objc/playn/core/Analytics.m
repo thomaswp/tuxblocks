@@ -7,6 +7,7 @@
 
 #import "Log.h"
 #import "PlayN.h"
+#import "Analytics.h"
 
 @implementation PlaynCoreAnalytics_Category
 

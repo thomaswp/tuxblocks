@@ -14,6 +14,7 @@
 #import "IOSIntArray.h"
 #import "InternalTransform.h"
 #import "java/lang/UnsupportedOperationException.h"
+#import "GLShader.h"
 
 @implementation PlaynCoreGlGLShader
 

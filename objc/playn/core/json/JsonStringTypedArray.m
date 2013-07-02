@@ -8,6 +8,7 @@
 #import "Json.h"
 #import "java/util/ArrayList.h"
 #import "java/util/Collection.h"
+#import "JsonStringTypedArray.h"
 
 @implementation PlaynCoreJsonJsonStringTypedArray
 

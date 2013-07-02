@@ -17,6 +17,7 @@
 #import "Pattern.h"
 #import "Scale.h"
 #import "java/lang/UnsupportedOperationException.h"
+#import "AbstractImageGL.h"
 
 @implementation PlaynCoreGlAbstractImageGL
 

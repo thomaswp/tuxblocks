@@ -12,6 +12,7 @@
 #import "Log.h"
 #import "PlayN.h"
 #import "java/lang/Throwable.h"
+#import "Dispatcher.h"
 
 @implementation PlaynCoreDispatcher_Util
 

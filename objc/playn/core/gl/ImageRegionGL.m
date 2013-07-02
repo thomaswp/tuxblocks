@@ -20,6 +20,7 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/Throwable.h"
 #import "java/lang/UnsupportedOperationException.h"
+#import "ImageRegionGL.h"
 
 @implementation PlaynCoreGlImageRegionGL
 

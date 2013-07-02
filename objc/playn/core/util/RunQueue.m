@@ -8,6 +8,7 @@
 #import "Log.h"
 #import "java/lang/Runnable.h"
 #import "java/lang/Throwable.h"
+#import "RunQueue.h"
 
 @implementation PlaynCoreUtilRunQueue
 

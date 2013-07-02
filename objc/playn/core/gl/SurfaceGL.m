@@ -12,6 +12,7 @@
 #import "Scale.h"
 #import "Surface.h"
 #import "Tint.h"
+#import "SurfaceGL.h"
 
 @implementation PlaynCoreGlSurfaceGL
 

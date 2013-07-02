@@ -12,6 +12,7 @@
 #import "ImmediateLayer.h"
 #import "InternalTransform.h"
 #import "LayerCanvas.h"
+#import "ImmediateLayerCanvas.h"
 
 @implementation PlaynCoreCanvasImmediateLayerCanvas
 

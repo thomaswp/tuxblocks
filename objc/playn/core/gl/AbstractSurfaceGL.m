@@ -26,6 +26,7 @@
 #import "java/lang/Math.h"
 #import "java/util/ArrayList.h"
 #import "java/util/List.h"
+#import "AbstractSurfaceGL.h"
 
 @implementation PlaynCoreGlAbstractSurfaceGL
 

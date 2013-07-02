@@ -11,6 +11,7 @@
 #import "GLProgram.h"
 #import "GLShader.h"
 #import "java/lang/RuntimeException.h"
+#import "QuadShader.h"
 
 @implementation PlaynCoreGlQuadShader
 

@@ -6,6 +6,7 @@
 //
 
 #import "java/lang/IllegalArgumentException.h"
+#import "Font.h"
 
 
 static PlaynCoreFont_StyleEnum *PlaynCoreFont_StyleEnum_PLAIN;

@@ -6,6 +6,7 @@
 //
 
 #import "IRectangle.h"
+#import "UIOverlayStub.h"
 
 @implementation PlaynCoreUIOverlayStub
 

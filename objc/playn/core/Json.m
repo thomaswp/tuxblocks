@@ -11,6 +11,7 @@
 #import "java/util/Arrays.h"
 #import "java/util/Iterator.h"
 #import "java/util/List.h"
+#import "Json.h"
 
 @implementation PlaynCoreJson_TypedArray_Util
 

@@ -9,6 +9,7 @@
 #import "java/io/Flushable.h"
 #import "java/io/IOException.h"
 #import "java/lang/Appendable.h"
+#import "JsonAppendableWriter.h"
 
 @implementation PlaynCoreJsonJsonAppendableWriter
 

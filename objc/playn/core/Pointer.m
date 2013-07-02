@@ -7,6 +7,7 @@
 
 #import "Events.h"
 #import "Layer.h"
+#import "Pointer.h"
 
 @implementation PlaynCorePointer_Event_Impl
 

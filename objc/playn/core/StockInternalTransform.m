@@ -9,6 +9,7 @@
 #import "InternalTransform.h"
 #import "Transform.h"
 #import "Transforms.h"
+#import "StockInternalTransform.h"
 
 @implementation PlaynCoreStockInternalTransform
 

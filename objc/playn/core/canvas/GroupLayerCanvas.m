@@ -16,6 +16,7 @@
 #import "Point.h"
 #import "java/util/Iterator.h"
 #import "java/util/List.h"
+#import "GroupLayerCanvas.h"
 
 @implementation PlaynCoreCanvasGroupLayerCanvas
 

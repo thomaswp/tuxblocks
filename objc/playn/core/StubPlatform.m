@@ -39,6 +39,7 @@
 #import "java/util/HashMap.h"
 #import "java/util/Map.h"
 #import "java/util/Set.h"
+#import "StubPlatform.h"
 
 @implementation PlaynCoreStubPlatform
 

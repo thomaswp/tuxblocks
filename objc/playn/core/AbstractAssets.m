@@ -14,6 +14,7 @@
 #import "Sound.h"
 #import "java/lang/Exception.h"
 #import "java/lang/Throwable.h"
+#import "AbstractAssets.h"
 
 @implementation PlaynCoreAbstractAssets
 

@@ -8,6 +8,7 @@
 #import "Font.h"
 #import "java/lang/Float.h"
 #import "java/lang/IllegalArgumentException.h"
+#import "TextFormat.h"
 
 @implementation PlaynCoreTextFormat
 

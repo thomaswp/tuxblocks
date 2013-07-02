@@ -14,6 +14,7 @@
 #import "java/lang/RuntimeException.h"
 #import "java/nio/Buffer.h"
 #import "java/nio/FloatBuffer.h"
+#import "GL20Program.h"
 
 @implementation PlaynCoreGlGL20Program
 

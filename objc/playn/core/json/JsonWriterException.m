@@ -6,6 +6,7 @@
 //
 
 #import "java/lang/Throwable.h"
+#import "JsonWriterException.h"
 
 @implementation PlaynCoreJsonJsonWriterException
 

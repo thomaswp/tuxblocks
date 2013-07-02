@@ -20,6 +20,7 @@
 #import "java/util/Map.h"
 #import "java/util/Set.h"
 #import "java/util/Stack.h"
+#import "JsonWriterBase.h"
 
 @implementation PlaynCoreJsonJsonWriterBase
 

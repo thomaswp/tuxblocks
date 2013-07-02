@@ -17,6 +17,7 @@
 #import "Surface.h"
 #import "SurfaceGL.h"
 #import "java/lang/UnsupportedOperationException.h"
+#import "SurfaceImageGL.h"
 
 @implementation PlaynCoreGlSurfaceImageGL
 

@@ -14,6 +14,7 @@
 #import "JsonTypes.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/IllegalArgumentException.h"
+#import "JsonImpl.h"
 
 @implementation PlaynCoreJsonJsonImpl
 

@@ -27,6 +27,7 @@
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/IllegalStateException.h"
 #import "java/lang/StringBuilder.h"
+#import "AbstractLayer.h"
 
 @implementation PlaynCoreAbstractLayer
 

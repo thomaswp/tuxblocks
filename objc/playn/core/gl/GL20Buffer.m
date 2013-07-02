@@ -17,6 +17,7 @@
 #import "java/nio/FloatBuffer.h"
 #import "java/nio/IntBuffer.h"
 #import "java/nio/ShortBuffer.h"
+#import "GL20Buffer.h"
 
 @implementation PlaynCoreGlGL20Buffer
 

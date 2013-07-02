@@ -7,6 +7,7 @@
 
 #import "Callback.h"
 #import "java/lang/Exception.h"
+#import "Sound.h"
 
 @implementation PlaynCoreSound_Silence
 

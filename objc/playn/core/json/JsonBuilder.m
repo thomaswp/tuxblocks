@@ -14,6 +14,7 @@
 #import "java/util/Collection.h"
 #import "java/util/Map.h"
 #import "java/util/Stack.h"
+#import "JsonBuilder.h"
 
 @implementation PlaynCoreJsonJsonBuilder
 

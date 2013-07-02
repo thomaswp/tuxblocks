@@ -6,6 +6,7 @@
 //
 
 #import "java/lang/IllegalArgumentException.h"
+#import "Key.h"
 
 
 static PlaynCoreKeyEnum *PlaynCoreKeyEnum_A;

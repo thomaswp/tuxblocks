@@ -18,6 +18,7 @@
 #import "LayerGL.h"
 #import "Tint.h"
 #import "java/lang/Float.h"
+#import "ImageLayerGL.h"
 
 @implementation PlaynCoreGlImageLayerGL
 

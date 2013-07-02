@@ -15,6 +15,7 @@
 #import "LayerCanvas.h"
 #import "Pattern.h"
 #import "java/lang/Float.h"
+#import "ImageLayerCanvas.h"
 
 @implementation PlaynCoreCanvasImageLayerCanvas
 

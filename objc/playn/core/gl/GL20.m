@@ -13,6 +13,7 @@
 #import "java/nio/ByteBuffer.h"
 #import "java/nio/FloatBuffer.h"
 #import "java/nio/IntBuffer.h"
+#import "GL20.h"
 
 
 @implementation PlaynCoreGlGL20

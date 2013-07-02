@@ -11,6 +11,7 @@
 #import "java/lang/Throwable.h"
 #import "java/nio/ByteBuffer.h"
 #import "java/util/List.h"
+#import "Net.h"
 
 @implementation PlaynCoreNet_HttpException
 

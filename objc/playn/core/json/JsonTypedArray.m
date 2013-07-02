@@ -17,6 +17,7 @@
 #import "java/util/Iterator.h"
 #import "java/util/Map.h"
 #import "java/util/NoSuchElementException.h"
+#import "JsonTypedArray.h"
 
 @implementation PlaynCoreJsonJsonTypedArray
 

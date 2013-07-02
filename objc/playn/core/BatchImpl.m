@@ -11,6 +11,7 @@
 #import "java/util/Iterator.h"
 #import "java/util/Map.h"
 #import "java/util/Set.h"
+#import "BatchImpl.h"
 
 @implementation PlaynCoreBatchImpl
 

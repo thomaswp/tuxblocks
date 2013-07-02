@@ -12,6 +12,7 @@
 #import "Path.h"
 #import "Pattern.h"
 #import "TextLayout.h"
+#import "AbstractCanvasGL.h"
 
 @implementation PlaynCoreGlAbstractCanvasGL
 

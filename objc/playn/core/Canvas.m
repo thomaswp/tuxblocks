@@ -11,6 +11,7 @@
 #import "Pattern.h"
 #import "TextLayout.h"
 #import "java/lang/IllegalArgumentException.h"
+#import "Canvas.h"
 
 
 static PlaynCoreCanvas_CompositeEnum *PlaynCoreCanvas_CompositeEnum_SRC;

@@ -9,6 +9,7 @@
 #import "java/lang/Throwable.h"
 #import "java/util/ArrayList.h"
 #import "java/util/List.h"
+#import "Callbacks.h"
 
 @implementation PlaynCoreUtilCallbacks
 

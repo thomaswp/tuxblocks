@@ -20,6 +20,7 @@
 #import "Transform.h"
 #import "Vector.h"
 #import "java/lang/Math.h"
+#import "ImmediateLayerGL.h"
 
 @implementation PlaynCoreGlImmediateLayerGL
 

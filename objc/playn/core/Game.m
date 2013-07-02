@@ -7,6 +7,7 @@
 
 #import "Asserts.h"
 #import "PlayN.h"
+#import "Game.h"
 
 @implementation PlaynCoreGame_Default
 

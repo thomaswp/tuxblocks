@@ -20,6 +20,7 @@
 #import "Vector.h"
 #import "java/lang/Math.h"
 #import "java/util/List.h"
+#import "GroupLayerGL.h"
 
 @implementation PlaynCoreGlGroupLayerGL
 

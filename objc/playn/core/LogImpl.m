@@ -9,6 +9,7 @@
 #import "IOSClass.h"
 #import "Log.h"
 #import "java/lang/Throwable.h"
+#import "LogImpl.h"
 
 @implementation PlaynCoreLogImpl
 

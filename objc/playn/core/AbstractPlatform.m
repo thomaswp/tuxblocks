@@ -29,6 +29,7 @@
 #import "java/lang/Runnable.h"
 #import "java/lang/Throwable.h"
 #import "java/lang/UnsupportedOperationException.h"
+#import "AbstractPlatform.h"
 
 @implementation PlaynCoreAbstractPlatform
 

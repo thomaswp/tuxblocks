@@ -22,6 +22,7 @@
 #import "Touch.h"
 #import "UIOverlay.h"
 #import "java/lang/Runnable.h"
+#import "PlayN.h"
 
 @implementation PlaynCorePlayN
 

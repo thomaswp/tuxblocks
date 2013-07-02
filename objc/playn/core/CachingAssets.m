@@ -11,6 +11,7 @@
 #import "Sound.h"
 #import "java/util/HashMap.h"
 #import "java/util/Map.h"
+#import "CachingAssets.h"
 
 @implementation PlaynCoreCachingAssets
 

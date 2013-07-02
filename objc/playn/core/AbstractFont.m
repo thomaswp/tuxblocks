@@ -6,6 +6,7 @@
 //
 
 #import "Font.h"
+#import "AbstractFont.h"
 
 @implementation PlaynCoreAbstractFont
 

@@ -6,6 +6,7 @@
 //
 
 #import "java/lang/Exception.h"
+#import "JsonParserException.h"
 
 @implementation PlaynCoreJsonJsonParserException
 

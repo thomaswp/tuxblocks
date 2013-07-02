@@ -15,6 +15,7 @@
 #import "Point.h"
 #import "Pointer.h"
 #import "Transform.h"
+#import "PointerImpl.h"
 
 @implementation PlaynCorePointerImpl
 

@@ -28,6 +28,7 @@
 #import "SurfaceLayerCanvas.h"
 #import "TextFormat.h"
 #import "TextLayout.h"
+#import "GraphicsCanvas.h"
 
 @implementation PlaynCoreCanvasGraphicsCanvas
 

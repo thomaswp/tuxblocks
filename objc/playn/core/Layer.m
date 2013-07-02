@@ -17,6 +17,7 @@
 #import "Touch.h"
 #import "Transform.h"
 #import "java/lang/IllegalArgumentException.h"
+#import "Layer.h"
 
 @implementation PlaynCoreLayer_Util
 

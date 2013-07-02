@@ -7,6 +7,7 @@
 
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/Throwable.h"
+#import "Log.h"
 
 
 static PlaynCoreLog_LevelEnum *PlaynCoreLog_LevelEnum_DEBUG_;

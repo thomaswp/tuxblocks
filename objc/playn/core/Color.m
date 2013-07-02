@@ -5,6 +5,8 @@
 //  Created by Thomas on 7/1/13.
 //
 
+#import "Color.h"
+
 @implementation PlaynCoreColor
 
 + (int)argbWithInt:(int)a

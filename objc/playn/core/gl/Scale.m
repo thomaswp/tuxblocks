@@ -9,6 +9,7 @@
 #import "MathUtil.h"
 #import "java/util/ArrayList.h"
 #import "java/util/List.h"
+#import "Scale.h"
 
 @implementation PlaynCoreGlScale
 

@@ -10,6 +10,7 @@
 #import "Key.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/StringBuilder.h"
+#import "Keyboard.h"
 
 @implementation PlaynCoreKeyboard_Event_Impl
 

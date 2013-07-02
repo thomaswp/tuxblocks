@@ -6,6 +6,7 @@
 //
 
 #import "java/lang/Throwable.h"
+#import "Callback.h"
 
 @implementation PlaynCoreUtilCallback_Chain
 

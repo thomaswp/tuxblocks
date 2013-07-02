@@ -25,6 +25,7 @@
 #import "Tint.h"
 #import "Transform.h"
 #import "java/nio/ByteBuffer.h"
+#import "GL20Context.h"
 
 @implementation PlaynCoreGlGL20Context
 

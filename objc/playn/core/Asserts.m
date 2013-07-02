@@ -14,6 +14,7 @@
 #import "java/lang/Integer.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/StringBuilder.h"
+#import "Asserts.h"
 
 @implementation PlaynCoreAsserts
 

@@ -18,6 +18,7 @@
 #import "java/util/List.h"
 #import "java/util/Map.h"
 #import "java/util/Set.h"
+#import "NetImpl.h"
 
 @implementation PlaynCoreNetImpl
 

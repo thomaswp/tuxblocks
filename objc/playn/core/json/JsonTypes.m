@@ -6,6 +6,7 @@
 //
 
 #import "Json.h"
+#import "JsonTypes.h"
 
 @implementation PlaynCoreJsonJsonTypes
 

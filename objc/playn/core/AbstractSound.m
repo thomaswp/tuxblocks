@@ -10,6 +10,7 @@
 #import "MathUtil.h"
 #import "java/lang/Throwable.h"
 #import "java/util/List.h"
+#import "AbstractSound.h"
 
 @implementation PlaynCoreAbstractSound
 

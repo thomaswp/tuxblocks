@@ -8,6 +8,7 @@
 #import "Events.h"
 #import "Layer.h"
 #import "java/lang/StringBuilder.h"
+#import "Mouse.h"
 
 
 @implementation PlaynCoreMouse

@@ -13,6 +13,7 @@
 #import "InternalTransform.h"
 #import "LayerCanvas.h"
 #import "Surface.h"
+#import "SurfaceLayerCanvas.h"
 
 @implementation PlaynCoreCanvasSurfaceLayerCanvas
 

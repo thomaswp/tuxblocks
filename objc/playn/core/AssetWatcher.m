@@ -10,6 +10,7 @@
 #import "Image.h"
 #import "Sound.h"
 #import "java/lang/Throwable.h"
+#import "AssetWatcher.h"
 
 @implementation PlaynCoreAssetWatcher
 

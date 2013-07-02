@@ -28,6 +28,7 @@
 #import "SurfaceLayerGL.h"
 #import "TextFormat.h"
 #import "TextLayout.h"
+#import "GraphicsGL.h"
 
 @implementation PlaynCoreGlGraphicsGL
 

@@ -14,6 +14,7 @@
 #import "java/nio/FloatBuffer.h"
 #import "java/nio/IntBuffer.h"
 #import "java/nio/ShortBuffer.h"
+#import "Buffers.h"
 
 @implementation PlaynCoreUtilBuffers
 

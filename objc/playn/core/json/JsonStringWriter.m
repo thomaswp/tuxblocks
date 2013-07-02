@@ -8,6 +8,7 @@
 #import "Json.h"
 #import "java/lang/Appendable.h"
 #import "java/lang/StringBuilder.h"
+#import "JsonStringWriter.h"
 
 @implementation PlaynCoreJsonJsonStringWriter
 

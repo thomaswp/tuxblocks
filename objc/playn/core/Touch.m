@@ -9,6 +9,7 @@
 #import "IOSObjectArray.h"
 #import "Layer.h"
 #import "java/lang/StringBuilder.h"
+#import "Touch.h"
 
 @implementation PlaynCoreTouch_Event_Impl
 

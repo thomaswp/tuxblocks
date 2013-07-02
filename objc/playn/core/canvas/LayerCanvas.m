@@ -9,6 +9,7 @@
 #import "Canvas.h"
 #import "InternalTransform.h"
 #import "Transform.h"
+#import "LayerCanvas.h"
 
 @implementation PlaynCoreCanvasLayerCanvas
 

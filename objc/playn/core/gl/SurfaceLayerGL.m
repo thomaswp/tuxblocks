@@ -13,6 +13,7 @@
 #import "Surface.h"
 #import "SurfaceGL.h"
 #import "Tint.h"
+#import "SurfaceLayerGL.h"
 
 @implementation PlaynCoreGlSurfaceLayerGL
 

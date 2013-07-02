@@ -15,6 +15,7 @@
 #import "java/lang/UnsupportedOperationException.h"
 #import "java/util/ArrayList.h"
 #import "java/util/List.h"
+#import "GroupLayerImpl.h"
 
 @implementation PlaynCoreGroupLayerImpl
 

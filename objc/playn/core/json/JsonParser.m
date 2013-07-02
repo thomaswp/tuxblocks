@@ -20,6 +20,7 @@
 #import "java/lang/NumberFormatException.h"
 #import "java/lang/StringBuilder.h"
 #import "java/math/BigInteger.h"
+#import "JsonParser.h"
 
 @implementation PlaynCoreJsonJsonParser
 

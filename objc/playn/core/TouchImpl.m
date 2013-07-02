@@ -21,6 +21,7 @@
 #import "java/util/Iterator.h"
 #import "java/util/Map.h"
 #import "java/util/Set.h"
+#import "TouchImpl.h"
 
 @implementation PlaynCoreTouchImpl
 

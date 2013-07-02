@@ -15,6 +15,7 @@
 #import "Path.h"
 #import "Pattern.h"
 #import "Surface.h"
+#import "CanvasSurface.h"
 
 @implementation PlaynCoreCanvasCanvasSurface
 

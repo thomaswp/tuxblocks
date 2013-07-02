@@ -12,6 +12,7 @@
 #import "GLShader.h"
 #import "IOSFloatArray.h"
 #import "IOSIntArray.h"
+#import "IndexedTrisShader.h"
 
 @implementation PlaynCoreGlIndexedTrisShader
 

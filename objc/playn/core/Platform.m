@@ -23,6 +23,7 @@
 #import "UIOverlay.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/Runnable.h"
+#import "Platform.h"
 
 
 static PlaynCorePlatform_TypeEnum *PlaynCorePlatform_TypeEnum_JAVA;
