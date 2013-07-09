@@ -7,20 +7,9 @@ import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Game;
 import playn.core.ImageLayer;
-import playn.core.TextFormat;
-import playn.core.Font.Style;
-import playn.core.TextLayout;
-import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
-import tripleplay.ui.Background;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
-import tuxkids.tuxblocks.core.screen.FadeTransition;
-import tuxkids.tuxblocks.core.solve.SolveScreen;
-import tuxkids.tuxblocks.core.solve.expression.Equation;
-import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
-import tuxkids.tuxblocks.core.solve.expression.Number;
-import tuxkids.tuxblocks.core.solve.expression.Variable;
-import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.solve.blocks.n.SolveScene;
 
 public class TuxBlocksGame extends Game.Default {
 
@@ -71,9 +60,8 @@ public class TuxBlocksGame extends Game.Default {
 		background.layer().setDepth(-10);
 		
 		graphics().rootLayer().add(background.layer());
-		screens.push(new DefenseScreen(screens, state));
-		
-//		screens.push(new TestScreen(screens, state));
+//		screens.push(new DefenseScreen(screens, state));
+		screens.push(new SolveScene(screens, state));
 		
 	}
 	
