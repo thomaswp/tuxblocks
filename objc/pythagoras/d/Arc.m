@@ -13,6 +13,7 @@
 #import "pythagoras/d/IPoint.h"
 #import "pythagoras/d/IRectangle.h"
 #import "pythagoras/d/RectangularShape.h"
+#import "Arc.h"
 
 @implementation PythagorasDArc
 

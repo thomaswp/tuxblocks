@@ -24,6 +24,7 @@
 #import "pythagoras/d/Rectangle.h"
 #import "pythagoras/d/Transform.h"
 #import "pythagoras/util/Platform.h"
+#import "Path.h"
 
 @implementation PythagorasDPath
 

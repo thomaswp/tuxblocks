@@ -6,6 +6,7 @@
 //
 
 #import "IOSFloatArray.h"
+#import "PathIterator.h"
 
 
 @implementation PythagorasFPathIterator

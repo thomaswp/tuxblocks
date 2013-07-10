@@ -26,6 +26,7 @@
 #import "pythagoras/d/Transform.h"
 #import "pythagoras/d/Transforms.h"
 #import "pythagoras/util/Platform.h"
+#import "Area.h"
 
 @implementation PythagorasDArea
 

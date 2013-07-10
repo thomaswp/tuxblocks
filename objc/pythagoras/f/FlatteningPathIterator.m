@@ -14,6 +14,7 @@
 #import "pythagoras/f/CubicCurves.h"
 #import "pythagoras/f/PathIterator.h"
 #import "pythagoras/f/QuadCurves.h"
+#import "FlatteningPathIterator.h"
 
 @implementation PythagorasFFlatteningPathIterator
 

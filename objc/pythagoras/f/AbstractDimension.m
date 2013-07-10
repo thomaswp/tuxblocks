@@ -9,6 +9,7 @@
 #import "pythagoras/f/Dimensions.h"
 #import "pythagoras/f/IDimension.h"
 #import "pythagoras/util/Platform.h"
+#import "AbstractDimension.h"
 
 @implementation PythagorasFAbstractDimension
 

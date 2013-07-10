@@ -11,6 +11,7 @@
 #import "pythagoras/f/IMatrix4.h"
 #import "pythagoras/f/IVector4.h"
 #import "pythagoras/util/Platform.h"
+#import "Vector4.h"
 
 @implementation PythagorasFVector4
 

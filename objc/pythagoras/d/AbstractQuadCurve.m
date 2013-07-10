@@ -20,6 +20,7 @@
 #import "pythagoras/d/QuadCurves.h"
 #import "pythagoras/d/Rectangle.h"
 #import "pythagoras/d/Transform.h"
+#import "AbstractQuadCurve.h"
 
 @implementation PythagorasDAbstractQuadCurve
 

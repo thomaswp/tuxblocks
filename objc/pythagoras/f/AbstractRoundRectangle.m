@@ -17,6 +17,7 @@
 #import "pythagoras/f/RectangularShape.h"
 #import "pythagoras/f/RoundRectangle.h"
 #import "pythagoras/f/Transform.h"
+#import "AbstractRoundRectangle.h"
 
 @implementation PythagorasFAbstractRoundRectangle
 

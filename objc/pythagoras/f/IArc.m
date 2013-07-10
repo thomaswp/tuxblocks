@@ -7,6 +7,7 @@
 
 #import "pythagoras/f/Arc.h"
 #import "pythagoras/f/Point.h"
+#import "IArc.h"
 
 
 @implementation PythagorasFIArc

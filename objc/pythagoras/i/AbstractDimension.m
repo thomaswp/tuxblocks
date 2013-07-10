@@ -8,6 +8,7 @@
 #import "pythagoras/i/Dimension.h"
 #import "pythagoras/i/Dimensions.h"
 #import "pythagoras/i/IDimension.h"
+#import "AbstractDimension.h"
 
 @implementation PythagorasIAbstractDimension
 

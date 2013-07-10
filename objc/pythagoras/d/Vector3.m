@@ -12,6 +12,7 @@
 #import "java/nio/DoubleBuffer.h"
 #import "pythagoras/d/IVector3.h"
 #import "pythagoras/util/Platform.h"
+#import "Vector3.h"
 
 @implementation PythagorasDVector3
 

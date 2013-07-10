@@ -9,6 +9,7 @@
 #import "pythagoras/f/AbstractVector.h"
 #import "pythagoras/f/FloatMath.h"
 #import "pythagoras/f/IVector.h"
+#import "Vector.h"
 
 @implementation PythagorasFVector
 

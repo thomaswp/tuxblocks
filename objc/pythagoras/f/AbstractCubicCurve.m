@@ -19,6 +19,7 @@
 #import "pythagoras/f/Point.h"
 #import "pythagoras/f/Rectangle.h"
 #import "pythagoras/f/Transform.h"
+#import "AbstractCubicCurve.h"
 
 @implementation PythagorasFAbstractCubicCurve
 

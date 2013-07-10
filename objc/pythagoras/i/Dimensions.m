@@ -5,6 +5,8 @@
 //  Created by Thomas on 7/9/13.
 //
 
+#import "Dimensions.h"
+
 @implementation PythagorasIDimensions
 
 + (NSString *)dimenToStringWithInt:(int)width

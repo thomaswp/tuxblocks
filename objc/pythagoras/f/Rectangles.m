@@ -13,6 +13,7 @@
 #import "pythagoras/f/Point.h"
 #import "pythagoras/f/Points.h"
 #import "pythagoras/f/Rectangle.h"
+#import "Rectangles.h"
 
 @implementation PythagorasFRectangles
 

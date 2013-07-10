@@ -14,6 +14,7 @@
 #import "pythagoras/f/IPoint.h"
 #import "pythagoras/f/IRectangle.h"
 #import "pythagoras/f/RectangularShape.h"
+#import "Arc.h"
 
 @implementation PythagorasFArc
 

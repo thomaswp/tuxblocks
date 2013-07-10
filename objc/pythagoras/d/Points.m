@@ -9,6 +9,7 @@
 #import "pythagoras/d/IPoint.h"
 #import "pythagoras/d/MathUtil.h"
 #import "pythagoras/d/Point.h"
+#import "Points.h"
 
 @implementation PythagorasDPoints
 

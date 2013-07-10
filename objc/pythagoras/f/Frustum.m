@@ -15,6 +15,7 @@
 #import "pythagoras/f/Matrix3.h"
 #import "pythagoras/f/Plane.h"
 #import "pythagoras/f/Vector3.h"
+#import "Frustum.h"
 
 @implementation PythagorasFFrustum
 

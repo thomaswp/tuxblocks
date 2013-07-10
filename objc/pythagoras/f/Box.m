@@ -14,6 +14,7 @@
 #import "pythagoras/f/IVector3.h"
 #import "pythagoras/f/MathUtil.h"
 #import "pythagoras/f/Vector3.h"
+#import "Box.h"
 
 @implementation PythagorasFBox
 

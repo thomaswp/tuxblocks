@@ -12,6 +12,7 @@
 #import "pythagoras/f/IShape.h"
 #import "pythagoras/f/PathIterator.h"
 #import "pythagoras/f/Rectangle.h"
+#import "Crossing.h"
 
 @implementation PythagorasFCrossing
 

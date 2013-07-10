@@ -9,6 +9,7 @@
 #import "IOSObjectArray.h"
 #import "pythagoras/d/IPoint.h"
 #import "pythagoras/d/IQuadCurve.h"
+#import "QuadCurve.h"
 
 @implementation PythagorasDQuadCurve
 

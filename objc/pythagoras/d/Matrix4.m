@@ -22,6 +22,7 @@
 #import "pythagoras/d/Vector4.h"
 #import "pythagoras/util/Platform.h"
 #import "pythagoras/util/SingularMatrixException.h"
+#import "Matrix4.h"
 
 @implementation PythagorasDMatrix4
 

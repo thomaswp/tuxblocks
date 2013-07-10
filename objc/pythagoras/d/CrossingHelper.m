@@ -14,6 +14,7 @@
 #import "java/util/List.h"
 #import "pythagoras/d/GeometryUtil.h"
 #import "pythagoras/d/IntersectPoint.h"
+#import "CrossingHelper.h"
 
 @implementation PythagorasDCrossingHelper
 

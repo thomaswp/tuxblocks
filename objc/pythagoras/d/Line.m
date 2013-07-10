@@ -6,6 +6,7 @@
 //
 
 #import "pythagoras/d/IPoint.h"
+#import "Line.h"
 
 @implementation PythagorasDLine
 

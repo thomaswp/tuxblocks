@@ -18,6 +18,7 @@
 #import "pythagoras/f/Transforms.h"
 #import "pythagoras/f/Vector.h"
 #import "pythagoras/util/NoninvertibleTransformException.h"
+#import "AffineTransform.h"
 
 @implementation PythagorasFAffineTransform
 

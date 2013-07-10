@@ -6,6 +6,7 @@
 //
 
 #import "java/lang/Math.h"
+#import "FloatMath.h"
 
 @implementation PythagorasFFloatMath
 

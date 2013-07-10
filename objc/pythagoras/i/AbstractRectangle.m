@@ -13,6 +13,7 @@
 #import "pythagoras/i/Point.h"
 #import "pythagoras/i/Points.h"
 #import "pythagoras/i/Rectangle.h"
+#import "AbstractRectangle.h"
 
 @implementation PythagorasIAbstractRectangle
 

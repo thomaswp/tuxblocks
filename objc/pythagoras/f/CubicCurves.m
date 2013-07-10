@@ -12,6 +12,7 @@
 #import "pythagoras/f/FloatMath.h"
 #import "pythagoras/f/ICubicCurve.h"
 #import "pythagoras/f/Lines.h"
+#import "CubicCurves.h"
 
 @implementation PythagorasFCubicCurves
 

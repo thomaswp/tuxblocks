@@ -9,6 +9,7 @@
 #import "java/lang/Integer.h"
 #import "java/lang/Math.h"
 #import "java/lang/StringBuilder.h"
+#import "MathUtil.h"
 
 @implementation PythagorasDMathUtil
 

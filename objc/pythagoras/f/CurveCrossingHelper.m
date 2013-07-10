@@ -15,6 +15,7 @@
 #import "pythagoras/f/GeometryUtil.h"
 #import "pythagoras/f/IntersectPoint.h"
 #import "pythagoras/f/PathIterator.h"
+#import "CurveCrossingHelper.h"
 
 @implementation PythagorasFCurveCrossingHelper
 

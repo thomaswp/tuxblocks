@@ -9,6 +9,7 @@
 #import "java/lang/Math.h"
 #import "pythagoras/f/Crossing.h"
 #import "pythagoras/f/FloatMath.h"
+#import "GeometryUtil.h"
 
 @implementation PythagorasFGeometryUtil
 

@@ -18,6 +18,7 @@
 #import "pythagoras/f/Rectangle.h"
 #import "pythagoras/f/RectangularShape.h"
 #import "pythagoras/f/Transform.h"
+#import "AbstractArc.h"
 
 @implementation PythagorasFAbstractArc
 

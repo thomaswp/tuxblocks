@@ -13,6 +13,7 @@
 #import "pythagoras/f/FloatMath.h"
 #import "pythagoras/f/IVector3.h"
 #import "pythagoras/util/Platform.h"
+#import "Vector3.h"
 
 @implementation PythagorasFVector3
 

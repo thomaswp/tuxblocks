@@ -8,6 +8,7 @@
 #import "IOSDoubleArray.h"
 #import "java/lang/Math.h"
 #import "pythagoras/d/Crossing.h"
+#import "GeometryUtil.h"
 
 @implementation PythagorasDGeometryUtil
 

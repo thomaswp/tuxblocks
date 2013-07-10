@@ -13,6 +13,7 @@
 #import "pythagoras/d/Point.h"
 #import "pythagoras/d/Transform.h"
 #import "pythagoras/d/Vector.h"
+#import "IdentityTransform.h"
 
 @implementation PythagorasDIdentityTransform
 

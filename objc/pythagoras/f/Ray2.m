@@ -13,6 +13,7 @@
 #import "pythagoras/f/MathUtil.h"
 #import "pythagoras/f/Transform.h"
 #import "pythagoras/f/Vector.h"
+#import "Ray2.h"
 
 @implementation PythagorasFRay2
 

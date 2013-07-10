@@ -14,6 +14,7 @@
 #import "pythagoras/f/MathUtil.h"
 #import "pythagoras/f/Vector3.h"
 #import "pythagoras/util/Platform.h"
+#import "Quaternion.h"
 
 @implementation PythagorasFQuaternion
 

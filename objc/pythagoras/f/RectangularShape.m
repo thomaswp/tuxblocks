@@ -16,6 +16,7 @@
 #import "pythagoras/f/Point.h"
 #import "pythagoras/f/Rectangle.h"
 #import "pythagoras/f/Transform.h"
+#import "RectangularShape.h"
 
 @implementation PythagorasFRectangularShape
 

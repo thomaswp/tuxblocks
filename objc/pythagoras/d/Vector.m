@@ -9,6 +9,7 @@
 #import "java/lang/Math.h"
 #import "pythagoras/d/AbstractVector.h"
 #import "pythagoras/d/IVector.h"
+#import "Vector.h"
 
 @implementation PythagorasDVector
 

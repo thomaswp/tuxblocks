@@ -11,6 +11,7 @@
 #import "pythagoras/d/Points.h"
 #import "pythagoras/d/XY.h"
 #import "pythagoras/util/Platform.h"
+#import "AbstractPoint.h"
 
 @implementation PythagorasDAbstractPoint
 

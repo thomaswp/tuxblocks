@@ -5,6 +5,8 @@
 //  Created by Thomas on 7/9/13.
 //
 
+#import "IntersectPoint.h"
+
 @implementation PythagorasFIntersectPoint
 
 @synthesize begIndex1 = begIndex1_;

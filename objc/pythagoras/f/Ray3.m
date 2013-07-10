@@ -6,6 +6,7 @@
 //
 
 #import "pythagoras/f/Vector3.h"
+#import "Ray3.h"
 
 @implementation PythagorasFRay3
 

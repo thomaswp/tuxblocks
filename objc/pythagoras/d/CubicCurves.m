@@ -11,6 +11,7 @@
 #import "pythagoras/d/CubicCurve.h"
 #import "pythagoras/d/ICubicCurve.h"
 #import "pythagoras/d/Lines.h"
+#import "CubicCurves.h"
 
 @implementation PythagorasDCubicCurves
 

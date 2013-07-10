@@ -5,6 +5,8 @@
 //  Created by Thomas on 7/9/13.
 //
 
+#import "IllegalPathStateException.h"
+
 @implementation PythagorasDIllegalPathStateException
 
 - (id)init {

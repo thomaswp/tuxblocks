@@ -8,6 +8,7 @@
 #import "java/lang/Math.h"
 #import "pythagoras/i/IRectangle.h"
 #import "pythagoras/i/Rectangle.h"
+#import "Rectangles.h"
 
 @implementation PythagorasIRectangles
 

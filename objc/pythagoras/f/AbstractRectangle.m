@@ -22,6 +22,7 @@
 #import "pythagoras/f/RectangularShape.h"
 #import "pythagoras/f/Transform.h"
 #import "pythagoras/util/Platform.h"
+#import "AbstractRectangle.h"
 
 @implementation PythagorasFAbstractRectangle
 

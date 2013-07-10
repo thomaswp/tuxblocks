@@ -11,6 +11,7 @@
 #import "IOSIntArray.h"
 #import "java/lang/Double.h"
 #import "java/lang/Float.h"
+#import "Platform.h"
 
 @implementation PythagorasUtilPlatform
 

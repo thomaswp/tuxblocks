@@ -7,6 +7,7 @@
 
 #import "pythagoras/f/ICircle.h"
 #import "pythagoras/f/IPoint.h"
+#import "Circle.h"
 
 @implementation PythagorasFCircle
 

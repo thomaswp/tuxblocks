@@ -6,6 +6,7 @@
 //
 
 #import "IOSDoubleArray.h"
+#import "PathIterator.h"
 
 
 @implementation PythagorasDPathIterator

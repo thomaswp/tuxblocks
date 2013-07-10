@@ -10,6 +10,7 @@
 #import "java/lang/Math.h"
 #import "java/lang/StringBuilder.h"
 #import "pythagoras/f/FloatMath.h"
+#import "MathUtil.h"
 
 @implementation PythagorasFMathUtil
 

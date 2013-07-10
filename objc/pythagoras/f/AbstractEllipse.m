@@ -15,6 +15,7 @@
 #import "pythagoras/f/PathIterator.h"
 #import "pythagoras/f/RectangularShape.h"
 #import "pythagoras/f/Transform.h"
+#import "AbstractEllipse.h"
 
 @implementation PythagorasFAbstractEllipse
 

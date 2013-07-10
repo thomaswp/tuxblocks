@@ -10,6 +10,7 @@
 #import "pythagoras/f/IPoint.h"
 #import "pythagoras/f/MathUtil.h"
 #import "pythagoras/f/Point.h"
+#import "Points.h"
 
 @implementation PythagorasFPoints
 

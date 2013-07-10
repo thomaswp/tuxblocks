@@ -10,6 +10,7 @@
 #import "pythagoras/d/IPoint.h"
 #import "pythagoras/d/Points.h"
 #import "pythagoras/util/Platform.h"
+#import "AbstractCircle.h"
 
 @implementation PythagorasDAbstractCircle
 

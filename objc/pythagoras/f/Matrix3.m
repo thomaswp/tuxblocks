@@ -19,6 +19,7 @@
 #import "pythagoras/f/Vector3.h"
 #import "pythagoras/util/Platform.h"
 #import "pythagoras/util/SingularMatrixException.h"
+#import "Matrix3.h"
 
 @implementation PythagorasFMatrix3
 

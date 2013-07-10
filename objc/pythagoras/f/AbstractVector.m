@@ -11,6 +11,7 @@
 #import "pythagoras/f/Vectors.h"
 #import "pythagoras/f/XY.h"
 #import "pythagoras/util/Platform.h"
+#import "AbstractVector.h"
 
 @implementation PythagorasFAbstractVector
 

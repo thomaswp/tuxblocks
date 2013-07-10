@@ -11,6 +11,7 @@
 #import "pythagoras/d/IVector.h"
 #import "pythagoras/d/MathUtil.h"
 #import "pythagoras/d/Vector.h"
+#import "Vectors.h"
 
 @implementation PythagorasDVectors
 

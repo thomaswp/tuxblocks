@@ -10,6 +10,7 @@
 #import "pythagoras/d/Path.h"
 #import "pythagoras/d/PathIterator.h"
 #import "pythagoras/d/Transform.h"
+#import "Transforms.h"
 
 @implementation PythagorasDTransforms
 

@@ -9,6 +9,7 @@
 #import "pythagoras/i/IDimension.h"
 #import "pythagoras/i/IPoint.h"
 #import "pythagoras/i/IRectangle.h"
+#import "Rectangle.h"
 
 @implementation PythagorasIRectangle
 

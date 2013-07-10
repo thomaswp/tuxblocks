@@ -12,6 +12,7 @@
 #import "pythagoras/d/Point.h"
 #import "pythagoras/d/Points.h"
 #import "pythagoras/d/Rectangle.h"
+#import "Rectangles.h"
 
 @implementation PythagorasDRectangles
 
