@@ -3,16 +3,18 @@ package tuxkids.tuxblocks.core.solve.blocks.n;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BlockGroup<T extends ModifierBlock> extends Block {
+public abstract class BlockGroup<T extends ModifierBlock> {
 
 	protected ArrayList<T> blocks = new ArrayList<T>();
 	protected BlockGroup<?> modifiers;
 	protected BlockGroup<?> parent;
+	protected BaseBlock base;
 	
 	protected abstract BlockGroup<?> createModifiers();
 	protected abstract boolean canAdd(ModifierBlock block);
 	
 	public boolean modifiesNumber() {
+		if (base != null) return base.modifiesNumber();
 		return parent.blocks.size() == 0 && parent.modifiesNumber();
 	}
 	
@@ -59,12 +61,6 @@ public abstract class BlockGroup<T extends ModifierBlock> extends Block {
 		}
 	}	
 
-	@Override
-	public boolean canRelease(boolean openBlock) {
-		return false;
-	}
-
-	@Override
 	protected String toMathString(String base) {
 		for (ModifierBlock block : blocks) {
 			base = block.toMathString(base);

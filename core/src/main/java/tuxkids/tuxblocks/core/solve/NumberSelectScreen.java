@@ -27,9 +27,9 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 

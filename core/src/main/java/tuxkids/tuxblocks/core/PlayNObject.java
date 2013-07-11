@@ -16,6 +16,7 @@ import pythagoras.f.IVector;
 import pythagoras.f.Vector;
 import pythagoras.i.IPoint;
 import pythagoras.i.Point;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;

@@ -7,8 +7,8 @@ import playn.core.Image;
 import playn.core.Surface;
 import tripleplay.particle.TuxEmitter.ParticleRenderer;
 import tripleplay.particle.init.ColorEffector;
-import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import static tripleplay.particle.ParticleBuffer.*;
 
 public class CanvasParticleRenderer extends PlayNObject implements ParticleRenderer {

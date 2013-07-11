@@ -21,5 +21,4 @@ public abstract class ModifierBlock extends Block {
 	public int value() {
 		return value;
 	}
-	
 }

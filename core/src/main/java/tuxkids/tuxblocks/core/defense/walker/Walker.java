@@ -11,13 +11,13 @@ import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.Pathing;
 import tuxkids.tuxblocks.core.defense.walker.buff.Buff;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public abstract class Walker extends DiscreteGridObject {

@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.layers;
 
 import java.util.HashMap;
 
@@ -17,6 +17,7 @@ import pythagoras.f.Point;
 import pythagoras.f.Transform;
 import tripleplay.particle.GLStatus;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class ImageLayerTintable extends PlayNObject {

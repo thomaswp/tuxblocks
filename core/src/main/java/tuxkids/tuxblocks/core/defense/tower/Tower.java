@@ -15,13 +15,13 @@ import pythagoras.f.FloatMath;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.ImageLayerTintable;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public abstract class Tower extends DiscreteGridObject {
