@@ -2,6 +2,7 @@
 *.dll
 *.so
 *.gwt-log
+*.DS_Store
 */target/
 html/gwt-unitCache/*
 html/war/WEB-INF/deploy/*
