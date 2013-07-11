@@ -1,11 +1,8 @@
 package tuxkids.tuxblocks.core.defense;
 
-import java.net.PasswordAuthentication;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
-
-import javax.sql.RowSet;
 
 import playn.core.CanvasImage;
 import playn.core.Color;
