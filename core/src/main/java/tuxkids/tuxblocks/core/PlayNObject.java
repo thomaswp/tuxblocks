@@ -87,6 +87,12 @@ public abstract class PlayNObject {
 		return x0 * (1 - perc) + x1 * perc;
 	}
 	
+	public static float lerp(float x0, float x1, float perc, float snapDistance) {
+		float x = x0 * (1 - perc) + x1 * perc;
+		if (Math.abs(x - x1) < snapDistance) x = x1;
+		return x;
+	}
+	
 	public static void lerp(Vector v0, float x1, float y1, float perc) {
 		v0.x = lerp(v0.x, x1, perc);
 		v0.y = lerp(v0.y, y1, perc);
@@ -94,12 +100,23 @@ public abstract class PlayNObject {
 	
 	public static float lerpTime(float x0, float x1, float base, float dt) {
 		float perc = 1 - FloatMath.pow(base, dt);
-		return x0 * (1 - perc) + x1 * perc;
+		return lerp(x0, x1, perc);
+	}
+	
+	public static float lerpTime(float x0, float x1, float base, float dt, float snapDistance) {
+		float perc = 1 - FloatMath.pow(base, dt);
+		return lerp(x0, x1, perc, snapDistance);
 	}
 
 	public static void lerpTime(Vector v0, int x1, int y1, float base, float dt) {
 		v0.x = lerpTime(v0.x, x1, base, dt);
 		v0.y = lerpTime(v0.y, y1, base, dt);
+	}
+	
+	public static float shiftTo(float x0, float x1, float maxShift) {
+		float change = x1 - x0;
+		change = Math.min(Math.abs(change), maxShift) * Math.signum(change);
+		return x0 + change;
 	}
 	
 	public static float distance(float x1, float y1, float x2, float y2) {

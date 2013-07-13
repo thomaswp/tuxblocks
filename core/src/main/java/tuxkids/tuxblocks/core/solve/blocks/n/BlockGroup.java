@@ -13,6 +13,14 @@ public abstract class BlockGroup<T extends ModifierBlock> {
 	protected abstract BlockGroup<?> createModifiers();
 	protected abstract boolean canAdd(ModifierBlock block);
 	
+	public List<T> blocks() {
+		return blocks;
+	}
+	
+	public BlockGroup<?> modifiers() {
+		return modifiers;
+	}
+	
 	public boolean modifiesNumber() {
 		if (base != null) return base.modifiesNumber();
 		return parent.blocks.size() == 0 && parent.modifiesNumber();

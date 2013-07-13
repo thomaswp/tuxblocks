@@ -16,4 +16,9 @@ public class TimesBlock extends VerticalBlock {
 		return value + "(" + base + ")";
 	}
 
+	@Override
+	protected String symbol() {
+		return "\u00D7";
+	}
+
 }

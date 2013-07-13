@@ -12,10 +12,10 @@ public class NumberBlock extends BaseBlock {
 	public boolean isNumber() {
 		return true;
 	}
-	
+
 	@Override
-	public String toMathString() {
-		return toMathString("" + value);
+	public String text() {
+		return "" + value;
 	}
 
 }

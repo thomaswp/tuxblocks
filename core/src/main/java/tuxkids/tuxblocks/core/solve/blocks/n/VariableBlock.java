@@ -12,10 +12,10 @@ public class VariableBlock extends BaseBlock {
 	public boolean isNumber() {
 		return false;
 	}
-	
+
 	@Override
-	public String toMathString() {
-		return toMathString(name);
+	public String text() {
+		return name;
 	}
 
 }

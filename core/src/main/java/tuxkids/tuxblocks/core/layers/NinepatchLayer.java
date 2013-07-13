@@ -1,5 +1,8 @@
 package tuxkids.tuxblocks.core.layers;
 
+import java.util.ArrayList;
+
+import playn.core.Color;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
@@ -34,13 +37,25 @@ public class NinepatchLayer extends PlayNObject {
 		this.height = height;
 		onSizeChanged();
 	}
+	
+	public void setWidth(float width) {
+		setSize(width, height);
+	}
+	
+	public void setHeight(float height) {
+		setSize(width, height);
+	}
 
 	public NinepatchLayer(Image image) {
+		this(image, null, null);
+	}
+	
+	public NinepatchLayer(Image image, final int[] widthDims, final int[] heightDims) {
 		layer = graphics().createGroupLayer();
 		image.addCallback(new Callback<Image>() {
 			@Override
 			public void onSuccess(Image result) {
-				load(result);
+				load(result, widthDims, heightDims);
 			}
 
 			@Override
@@ -50,27 +65,41 @@ public class NinepatchLayer extends PlayNObject {
 		});
 	}
 	
-	private void load(Image image) {
-		imageWidth = (int)image.width() - 2;
-		imageHeight = (int)image.height() - 2;
+	public void destroy() {
+		layer.destroy();
+	}
+	
+	private void load(Image image, int[] widthDims, int[] heightDims) {
+		imageWidth = (int)image.width();
+		imageHeight = (int)image.height();
 		
-		int[] topPixels = new int[imageWidth];
-		image.getRgb(1, 0, imageWidth, 1, topPixels, 0, imageWidth);
+		int xOffset = 0, yOffset = 0;
+		if (widthDims == null || heightDims == null) {
+			imageWidth -= 2;
+			imageHeight -= 2;
+			
+			int[] topPixels = new int[imageWidth];
+			image.getRgb(1, 0, imageWidth, 1, topPixels, 0, imageWidth);
+			
+			int[] sidePixels = new int[imageHeight];
+			image.getRgb(0, 1, 1, imageHeight, sidePixels, 0, 1);
+			
+			widthDims = getDims(topPixels);
+			heightDims = getDims(sidePixels);
+			
+			xOffset = yOffset = 1;
+		}
 		
-		int[] sidePixels = new int[imageHeight];
-		image.getRgb(0, 1, 1, imageHeight, sidePixels, 0, 1);
+		this.widthDims = widthDims;
+		this.heightDims = heightDims;
 		
-		widthDims = getDims(topPixels);
-		heightDims = getDims(sidePixels);
-		
-		imageLayers = new ImageLayer[3][];
+		imageLayers = new ImageLayer[heightDims.length][widthDims.length];
 		int y = 0;
-		for (int i = 0; i < 3; i++) {
-			imageLayers[i] = new ImageLayer[3];
+		for (int i = 0; i < heightDims.length; i++) {
 			int x = 0;
-			for (int j = 0; j < 3; j++) {
-				if (widthDims[j] > 0 && heightDims[j] > 0) {
-					Image subImage = image.subImage(x + 1, y + 1, widthDims[j], heightDims[i]);
+			for (int j = 0; j < widthDims.length; j++) {
+				if (widthDims[j] > 0 && heightDims[i] > 0) {
+					Image subImage = image.subImage(x + xOffset, y + yOffset, widthDims[j], heightDims[i]);
 					imageLayers[i][j] = graphics().createImageLayer(subImage);
 					layer.add(imageLayers[i][j]);
 				}
@@ -88,61 +117,67 @@ public class NinepatchLayer extends PlayNObject {
 	
 	private void onSizeChanged() {
 		float w = 0, h = 0;
+		float x = 0, y = 0;
 		if (imageLayers == null) return;
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
+		for (int i = 0; i < heightDims.length; i++) {
+			float yPlus = 0;
+			for (int j = 0; j < widthDims.length; j++) {
 				if (imageLayers[i][j] == null) continue;
 				float width = getLength(j, this.width, widthDims);
 				float height = getLength(i, this.height, heightDims);
-				float x = getPos(j, this.width, widthDims);
-				float y = getPos(i, this.height, heightDims);
 				imageLayers[i][j].setTranslation(x, y);
 				if (width > 0 && height > 0) {
-					imageLayers[i][j].setSize(width, height);
+					float displayWidth = width, displayHeight = height;
+					if (graphics().ctx() == null) {
+						//HTML5 Canvas shows some seams, so stretch a little more
+						displayHeight += 1f;
+						displayWidth += 1f;
+					}
+					imageLayers[i][j].setSize(displayWidth, displayHeight);
 					imageLayers[i][j].setVisible(true);
-					w = imageLayers[i][j].tx() + imageLayers[i][j].width();
-					h = imageLayers[i][j].ty() + imageLayers[i][j].height();
+					w = x + width;
+					h = y + height;
+					x += width;
+					yPlus = height;
 				} else {
 					imageLayers[i][j].setVisible(false);
 				}
 			}
+			y += yPlus;
+			x = 0;
 		}
-		float scaleX = Math.min(width / w, 1);
-		float scaleY = Math.min(height / h, 1);
+		float scaleX = width / w;
+		float scaleY = height / h;
 		layer.setScale(scaleX, scaleY);
 		
 	}
 	
 	private float getLength(int index, float total, int[] dims) {
-		if (index == 1) {
-			return total - dims[0] - dims[2];
+		if (index % 2 == 1) {
+			float d = total;
+			for (int i = 0; i < dims.length; i += 2) d -= dims[i];
+			return d / (dims.length / 2);
 		}
 		return dims[index];
 	}
 	
-	private float getPos(int index, float total, int[] dims) {
-		if (index == 0) return 0;
-		else if (index == 2) return Math.max(dims[0], total - dims[2]);
-		return dims[0];
-	}
-	
 	private int[] getDims(int[] pixels) {
 		int black = Colors.BLACK;
-		int pixelsBefore = 0, pixelsStretch = 0, pixelsAfter = 0;
-		boolean stretched = false;
+		ArrayList<Integer> dims = new ArrayList<Integer>();
+		int current = 0;
+		boolean stretching = false;
 		for (int i = 0; i < pixels.length; i++) {
 			boolean isBlack = pixels[i] == black;
-			if (isBlack) {
-				stretched = true;
-				pixelsStretch++;
-			} else {
-				if (stretched) {
-					pixelsAfter++;
-				} else {
-					pixelsBefore++;
-				}
+			if (stretching != isBlack) {
+				dims.add(current);
+				current = 0;
 			}
+			stretching = isBlack;
+			current++;
 		}
-		return new int[] { pixelsBefore, pixelsStretch, pixelsAfter };
+		dims.add(current);
+		int[] dimsArray = new int[dims.size()];
+		for (int i = 0; i < dimsArray.length; i++) dimsArray[i] = dims.get(i);
+		return dimsArray;
 	}
 }

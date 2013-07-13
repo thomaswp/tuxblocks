@@ -12,8 +12,8 @@ public class MinusBlock extends HorizontalBlock {
 	}
 
 	@Override
-	protected String toMathString(String base) {
-		return base + " - " + value;
+	protected String symbol() {
+		return "-";
 	}
 
 }

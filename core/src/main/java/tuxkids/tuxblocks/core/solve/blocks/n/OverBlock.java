@@ -15,4 +15,9 @@ public class OverBlock extends VerticalBlock {
 	protected String toMathString(String base) {
 		return "(" + base + ") / " + value;
 	}
+
+	@Override
+	protected String symbol() {
+		return "\u00F7";
+	}
 }

@@ -3,9 +3,12 @@ package tuxkids.tuxblocks.core.solve.blocks.n;
 public abstract class BaseBlock extends Block {
 
 	public abstract boolean isNumber();
-	public abstract String toMathString();
 	
 	private HorizontalGroup modifiers = new HorizontalGroup();
+
+	public HorizontalGroup modifiers() {
+		return modifiers;
+	}
 	
 	public BaseBlock() {
 		modifiers.base = this;
@@ -31,6 +34,10 @@ public abstract class BaseBlock extends Block {
 	@Override
 	public boolean canRelease(boolean openBlock) {
 		return openBlock;
+	}
+	
+	public String toMathString() {
+		return toMathString(text());
 	}
 	
 	@Override 

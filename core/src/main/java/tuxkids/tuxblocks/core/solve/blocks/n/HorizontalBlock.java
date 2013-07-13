@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.solve.blocks.n;
 
+import tuxkids.tuxblocks.core.utils.Formatter;
+
 public abstract class HorizontalBlock extends ModifierBlock {
 	
 	
@@ -17,6 +19,11 @@ public abstract class HorizontalBlock extends ModifierBlock {
 		} else {
 			return group.modifiesNumber();	
 		}
+	}
+
+	@Override
+	protected String toMathString(String base) {
+		return Formatter.format("%s %s %d", base, symbol(), value);
 	}
 
 	@Override

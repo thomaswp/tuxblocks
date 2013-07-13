@@ -17,8 +17,14 @@ public abstract class ModifierBlock extends Block {
 	
 	public abstract boolean canSimplify();
 	public abstract boolean canReduce();
+	protected abstract String symbol();
 	
 	public int value() {
 		return value;
+	}
+	
+	@Override
+	public String text() {
+		return symbol() + value;
 	}
 }
