@@ -27,15 +27,15 @@ public abstract class BlockGroup<T extends ModifierBlock> {
 	}
 	
 	public boolean isModifiedHorizontally() {
-		if (parent == null) return false;
-		if (parent.blocks.size() > 0 && parent.blocks.get(0) instanceof HorizontalBlock) return true;
-		return parent.isModifiedHorizontally();
+		if (modifiers == null) return false;
+		if (modifiers.blocks.size() > 0 && modifiers.blocks.get(0) instanceof HorizontalBlock) return true;
+		return modifiers.isModifiedHorizontally();
 	}
 	
 	public boolean isModifiedVertically() {
-		if (parent == null) return false;
-		if (parent.blocks.size() > 0 && parent.blocks.get(0) instanceof VerticalBlock) return true;
-		return parent.isModifiedHorizontally();
+		if (modifiers == null) return false;
+		if (modifiers.blocks.size() > 0 && modifiers.blocks.get(0) instanceof VerticalBlock) return true;
+		return modifiers.isModifiedVertically();
 	}
 	
 	public void addVerticalModifiers(List<VerticalBlock> mods) {

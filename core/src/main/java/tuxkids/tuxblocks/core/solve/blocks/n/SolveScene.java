@@ -14,6 +14,8 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 public class SolveScene extends GameScreen {
 
@@ -26,17 +28,20 @@ public class SolveScene extends GameScreen {
 	@Override
 	public void wasAdded() {
 		BaseBlock block = new VariableBlock("x");
-		block.addModifier(new PlusBlock(5));
-		block.addModifier(new MinusBlock(2));
-		block.addModifier(new TimesBlock(3));
-		block.addModifier(new OverBlock(4));
-		block.addModifier(new TimesBlock(3));
-		block.addModifier(new OverBlock(4));
-		block.addModifier(new PlusBlock(5));
-		block.addModifier(new MinusBlock(2));
+		block.addModifier(new PlusBlock(3));
+		block.addModifier(new MinusBlock(4));
+		block.addModifier(new TimesBlock(5));
+		block.addModifier(new OverBlock(6));
+		block.addModifier(new PlusBlock(7));
+		block.addModifier(new MinusBlock(8));
+		block.addModifier(new TimesBlock(1));
+		block.addModifier(new OverBlock(2));
 		
 		sprite = new BaseBlockSprite(block);
 		layer.addAt(sprite.layerAddable(), 200, 200);
+		sprite.addBlockListener(new BlockListener() {
+			
+		});
 		
 //		int sideWidth = 6; int baseHeight = 50;
 //		int middle = 20;
@@ -75,8 +80,7 @@ public class SolveScene extends GameScreen {
 			
 			@Override
 			public void onPointerEnd(Event event) {
-				// TODO Auto-generated method stub
-				
+				Debug.write(sprite.hierarchy());
 			}
 			
 			@Override

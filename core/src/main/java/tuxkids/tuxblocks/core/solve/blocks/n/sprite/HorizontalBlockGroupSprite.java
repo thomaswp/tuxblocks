@@ -23,6 +23,8 @@ public class HorizontalBlockGroupSprite extends BlockGroupSprite {
 	
 	@Override
 	protected void updateRect(float base, float dt) {
+		rect.y = parentRect.y;
+		rect.x = parentRect.x;
 		rect.width = parentRect.width + children.size() * modSize();
 //		if (children.size() != 0) {
 //			width = children.get(children.size() - 1).right();
@@ -39,7 +41,7 @@ public class HorizontalBlockGroupSprite extends BlockGroupSprite {
 	@Override
 	public void update(int delta) {
 		super.update(delta);
-		time += delta;
+//		time += delta;
 //		if (modifiers != null && time > 3000 && children.size() > 0) {
 //			time = 0;
 //			children.remove(0).layer.destroy();;

@@ -15,7 +15,7 @@ public abstract class Sprite extends PlayNObject {
 	}
 	
 	protected static int wrapSize() {
-		return 10;
+		return 8;
 	}
 	
 	public abstract Layer layer();

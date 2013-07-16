@@ -49,7 +49,7 @@ public class CanvasParticleRenderer extends PlayNObject implements ParticleRende
 	                ));
                 }
                 imageLayer.setAlpha(data[ppos + ALPHA]);
-                surface.drawLayer(imageLayer.layer());
+                surface.drawLayer(imageLayer.layerAddable());
                 rendered++;
                 surface.restore();
             }

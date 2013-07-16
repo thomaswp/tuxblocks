@@ -112,7 +112,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		selectedNumberLayer = new ImageLayerTintable();
 		selectedNumberLayer.setDepth(10);
 		selectedNumberLayer.setTint(themeColor);
-		foregroundLayer.add(selectedNumberLayer.layer());
+		foregroundLayer.add(selectedNumberLayer.layerAddable());
 		
 		update(0);
 	}

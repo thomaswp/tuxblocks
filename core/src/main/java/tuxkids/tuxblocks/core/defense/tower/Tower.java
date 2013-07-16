@@ -83,7 +83,7 @@ public abstract class Tower extends DiscreteGridObject {
 	}
 	
 	public Layer layerAddable() {
-		return layer.layer();
+		return layer.layerAddable();
 	}
 	
 	public Vector position() {

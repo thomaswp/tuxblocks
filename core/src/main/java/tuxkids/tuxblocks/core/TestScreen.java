@@ -32,7 +32,7 @@ public class TestScreen extends GameScreen {
 		layer.add(l1);
 		
 		l2 = new ImageLayerTintable(test);
-		layer.add(l2.layer());
+		layer.add(l2.layerAddable());
 		l2.setTint(tint);
 		l2.setTx(width() - l2.width());
 	}

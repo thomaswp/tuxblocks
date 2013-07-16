@@ -40,7 +40,7 @@ public abstract class Walker extends DiscreteGridObject {
 	protected List<Buff> buffs = new ArrayList<Buff>();
 	
 	public Layer layerAddable() {
-		return layer.layer();
+		return layer.layerAddable();
 	}
 	
 	public ImageLayerTintable layer() {
@@ -64,7 +64,7 @@ public abstract class Walker extends DiscreteGridObject {
 	}
 	
 	public boolean destroyed() {
-		return layer.layer().destroyed();
+		return layer.layerAddable().destroyed();
 	}
 	
 	@Override

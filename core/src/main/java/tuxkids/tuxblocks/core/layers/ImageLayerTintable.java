@@ -20,7 +20,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class ImageLayerTintable extends PlayNObject {
+public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 
 	private static final boolean DISABLE_GL = !GLStatus.enabled();
 	
@@ -45,7 +45,8 @@ public class ImageLayerTintable extends PlayNObject {
 		return base.height();
 	}
 	
-	public Layer layer() {
+	@Override
+	public Layer layerAddable() {
 		return layer;
 	}
 
@@ -97,6 +98,7 @@ public class ImageLayerTintable extends PlayNObject {
 		layer.setTy(ty);
 	}
 	
+	@Override
 	public void setTranslation(float x, float y) {
 		layer.setTranslation(x, y);
 	}
@@ -126,6 +128,7 @@ public class ImageLayerTintable extends PlayNObject {
 		layer.setDepth(depth);
 	}
 
+	@Override
 	public void setVisible(boolean visible) {
 		layer.setVisible(visible);
 	}
@@ -136,6 +139,11 @@ public class ImageLayerTintable extends PlayNObject {
 	
 	public void setRotation(float angle) {
 		layer.setRotation(angle);
+	}
+
+	@Override
+	public void setSize(float width, float height) {
+		layer.setScale(width / baseImage.width(), height / baseImage.height());
 	}
 	
 	public ImageLayerTintable() {

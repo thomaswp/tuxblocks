@@ -8,14 +8,17 @@ import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.PlayN;
+import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.layers.ImageLayerLike.Factory;
 
-public class NinepatchLayer extends PlayNObject {
+public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 
+	private Factory factory;
 	private GroupLayer layer;
-	private ImageLayer[][] imageLayers;
+	private ImageLayerLike[][] imageLayers;
 	private int[] widthDims, heightDims;
 	private int imageWidth, imageHeight;
 	private float width, height;
@@ -28,10 +31,12 @@ public class NinepatchLayer extends PlayNObject {
 		return height;
 	}
 	
+	@Override
 	public Layer layerAddable() {
 		return layer;
 	}
 	
+	@Override
 	public void setSize(float width, float height) {
 		this.width = width;
 		this.height = height;
@@ -46,11 +51,22 @@ public class NinepatchLayer extends PlayNObject {
 		setSize(width, height);
 	}
 
-	public NinepatchLayer(Image image) {
-		this(image, null, null);
+	@Override
+	public void setTranslation(float x, float y) {
+		layer.setTranslation(x, y);
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		layer.setVisible(visible);
+	}
+
+	public NinepatchLayer(Factory factory, Image image) {
+		this(factory, image, null, null);
 	}
 	
-	public NinepatchLayer(Image image, final int[] widthDims, final int[] heightDims) {
+	public NinepatchLayer(Factory factory, Image image, final int[] widthDims, final int[] heightDims) {
+		this.factory = factory;
 		layer = graphics().createGroupLayer();
 		image.addCallback(new Callback<Image>() {
 			@Override
@@ -93,15 +109,15 @@ public class NinepatchLayer extends PlayNObject {
 		this.widthDims = widthDims;
 		this.heightDims = heightDims;
 		
-		imageLayers = new ImageLayer[heightDims.length][widthDims.length];
+		imageLayers = new ImageLayerLike[heightDims.length][widthDims.length];
 		int y = 0;
 		for (int i = 0; i < heightDims.length; i++) {
 			int x = 0;
 			for (int j = 0; j < widthDims.length; j++) {
 				if (widthDims[j] > 0 && heightDims[i] > 0) {
 					Image subImage = image.subImage(x + xOffset, y + yOffset, widthDims[j], heightDims[i]);
-					imageLayers[i][j] = graphics().createImageLayer(subImage);
-					layer.add(imageLayers[i][j]);
+					imageLayers[i][j] = factory.create(subImage);
+					layer.add(imageLayers[i][j].layerAddable());
 				}
 				x += widthDims[j];
 			}
@@ -179,5 +195,38 @@ public class NinepatchLayer extends PlayNObject {
 		int[] dimsArray = new int[dims.size()];
 		for (int i = 0; i < dimsArray.length; i++) dimsArray[i] = dims.get(i);
 		return dimsArray;
+	}
+
+	@Override
+	public void setTint(int tint) {
+		for (int i = 0; i < heightDims.length; i++) {
+			for (int j = 0; j < widthDims.length; j++) {
+				if (imageLayers[i][j] != null) {
+					imageLayers[i][j].setTint(tint);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void setTint(int baseColor, int tintColor, float perc) {
+		for (int i = 0; i < heightDims.length; i++) {
+			for (int j = 0; j < widthDims.length; j++) {
+				if (imageLayers[i][j] != null) {
+					imageLayers[i][j].setTint(baseColor, tintColor, perc);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void addListener(Listener pointerListener) {
+		for (int i = 0; i < heightDims.length; i++) {
+			for (int j = 0; j < widthDims.length; j++) {
+				if (imageLayers[i][j] != null) {
+					imageLayers[i][j].addListener(pointerListener);
+				}
+			}
+		}
 	}
 }
