@@ -7,20 +7,15 @@ import tuxkids.tuxblocks.core.solve.blocks.n.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.VerticalBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.VerticalGroup;
 
-public class VerticalBlockGroupSprite extends BlockGroupSprite {
+public class VerticalModifierGroup extends ModifierGroup {
 
-	protected VerticalGroup group;
 	protected List<ModifierBlockSprite> timesBlocks;
 	protected List<ModifierBlockSprite> divBlocks;
 	
-	public void init() {
+	public VerticalModifierGroup(Sprite parent) {
+		super(parent);
 		timesBlocks = new ArrayList<ModifierBlockSprite>();
 		divBlocks = new ArrayList<ModifierBlockSprite>();
-	}
-	
-	public VerticalBlockGroupSprite(VerticalGroup group, Sprite parent) {
-		super(group, parent);
-		this.group = group;
 	}
 
 	@Override
@@ -68,7 +63,7 @@ public class VerticalBlockGroupSprite extends BlockGroupSprite {
 	@Override
 	protected void addChild(ModifierBlockSprite child) {
 		super.addChild(child);
-		if (child.block instanceof TimesBlock) {
+		if (child instanceof TimesBlockSprite) {
 			timesBlocks.add(child);
 		} else {
 			divBlocks.add(child);
@@ -88,5 +83,15 @@ public class VerticalBlockGroupSprite extends BlockGroupSprite {
 //			divBlocks.remove(mod);
 //			
 //		}
+	}
+
+	@Override
+	protected ModifierGroup createModifiers() {
+		return new HorizontalModifierGroup(this);
+	}
+
+	@Override
+	protected boolean canAdd(ModifierBlockSprite sprite) {
+		return sprite instanceof VerticalModifierSprite;
 	}
 }

@@ -18,6 +18,10 @@ public abstract class Sprite extends PlayNObject {
 		return 8;
 	}
 	
+	protected static float lerpBase() {
+		return 0.99f;
+	}
+	
 	public abstract Layer layer();
 	public abstract float width();
 	public abstract float height();

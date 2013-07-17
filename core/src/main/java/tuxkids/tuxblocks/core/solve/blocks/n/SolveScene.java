@@ -18,7 +18,13 @@ import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.MinusBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.ModifierBlockSprite;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.NumberBlockSprite;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.OverBlockSprite;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.PlusBlockSprite;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.TimesBlockSprite;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.VariableBlockSprite;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class SolveScene extends GameScreen {
@@ -27,64 +33,30 @@ public class SolveScene extends GameScreen {
 		super(screens, state);
 	}
 	
-	BaseBlockSprite sprite1;
-	BaseBlockSprite sprite2;
+	BaseBlockSprite draggingFrom;
 	ModifierBlockSprite dragging;
 	List<BaseBlockSprite> baseBlocks = new ArrayList<BaseBlockSprite>();
 	
 	@Override
 	public void wasAdded() {
-		BaseBlock block = new VariableBlock("x");
-		block.addModifierToExpression(new PlusBlock(3));
-		block.addModifierToExpression(new MinusBlock(4));
-		block.addModifierToExpression(new TimesBlock(5));
-		block.addModifierToExpression(new OverBlock(6));
-		block.addModifierToExpression(new PlusBlock(7));
-		block.addModifierToExpression(new MinusBlock(8));
-		block.addModifierToExpression(new TimesBlock(1));
-		block.addModifierToExpression(new OverBlock(2));
+		BaseBlockSprite sprite = new VariableBlockSprite("x");
+		sprite.addModifier(new PlusBlockSprite(3));
+		sprite.addModifier(new MinusBlockSprite(4));
+		sprite.addModifier(new TimesBlockSprite(5));
+		sprite.addModifier(new OverBlockSprite(6));
+		sprite.addModifier(new PlusBlockSprite(7));
+		sprite.addModifier(new MinusBlockSprite(8));
+		sprite.addModifier(new TimesBlockSprite(1));
+		sprite.addModifier(new OverBlockSprite(2));
 		
-		BaseBlock block2 = new NumberBlock(5);
 		
-		BlockListener listener = new BlockListener() {
-			@Override
-			public void wasGrabbed(ModifierBlockSprite sprite) {
-				layer.add(sprite.layer());
-				sprite.layer().setDepth(1);
-				dragging = sprite;
-			}
-
-			@Override
-			public void wasMoved(ModifierBlockSprite sprite, float gx, float gy) {
-				for (BaseBlockSprite base : baseBlocks) {
-					base.setPreview(base.contains(gx, gy));
-				}
-			}
-
-			@Override
-			public boolean wasReleased(ModifierBlockSprite sprite, float gx,
-					float gy) {
-				dragging = null;
-				BaseBlockSprite r = null;
-				for (BaseBlockSprite base : baseBlocks) {
-					base.clearPreview();
-					if (base.contains(gx, gy)) r = base;
-				}
-				if (r != null) {
-					r.addModifier(sprite);
-					return true;
-				}
-				return false;
-			}
-		};
-		
-		sprite1 = new BaseBlockSprite(block);
+		BaseBlockSprite sprite1 = sprite;
 		layer.addAt(sprite1.layerAddable(), 100, 200);
-		sprite1.addBlockListener(listener);
+		sprite1.addBlockListener(new BListener());
 		
-		sprite2 = new BaseBlockSprite(block2);
+		BaseBlockSprite sprite2 = new NumberBlockSprite(5);
 		layer.addAt(sprite2.layerAddable(), 600, 200);
-		sprite2.addBlockListener(listener);
+		sprite2.addBlockListener(new BListener());
 		
 		baseBlocks.add(sprite1);
 		baseBlocks.add(sprite2);
@@ -126,8 +98,9 @@ public class SolveScene extends GameScreen {
 			
 			@Override
 			public void onPointerEnd(Event event) {
-				Debug.write(sprite1.block().toMathString());
-				Debug.write(sprite1.hierarchy());
+				Debug.write(baseBlocks.get(0).hierarchy());
+				Debug.write("--------------");
+				Debug.write(baseBlocks.get(1).hierarchy());
 			}
 			
 			@Override
@@ -157,4 +130,44 @@ public class SolveScene extends GameScreen {
 		if (dragging != null) dragging.paint(clock);
 	}
 
+	
+	private class BListener implements BlockListener {
+		
+		@Override
+		public void wasGrabbed(ModifierBlockSprite sprite, float gx, float gy) {
+			for (BaseBlockSprite base : baseBlocks) {
+				if (base.contains(gx, gy)) {
+					draggingFrom = base;
+				}
+			}
+			layer.add(sprite.layer());
+			sprite.layer().setDepth(1);
+			dragging = sprite;
+		}
+
+		@Override
+		public void wasMoved(ModifierBlockSprite sprite, float gx, float gy) {
+			for (BaseBlockSprite base : baseBlocks) {
+				base.setPreview(base.contains(gx, gy));
+			}
+		}
+
+		@Override
+		public boolean wasReleased(ModifierBlockSprite sprite, float gx,
+				float gy) {
+			dragging = null;
+			BaseBlockSprite r = null;
+			for (BaseBlockSprite base : baseBlocks) {
+				base.clearPreview();
+				if (base.contains(gx, gy)) r = base;
+			}
+			if (r != null) {
+				r.addModifier(sprite, false);
+				return true;
+			} else {
+				draggingFrom.addModifier(sprite, false);
+				return false;
+			}
+		}
+	}
 }

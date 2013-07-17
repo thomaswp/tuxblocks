@@ -22,13 +22,13 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
 public abstract class BlockSprite extends Sprite {
 
 	protected NinepatchLayer layer;
-	private Block block;
 	
 	protected static TextFormat textFormat;
 	protected static Factory factory;
 	
-	public BlockSprite(Block block) {
-		this.block = block;
+	protected abstract String text();
+	
+	public BlockSprite() {
 		if (textFormat == null) {
 			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, 20);
 			textFormat = new TextFormat().withFont(font);
@@ -59,6 +59,7 @@ public abstract class BlockSprite extends Sprite {
 	}
 
 	protected NinepatchLayer generateNinepatch(String text, int color) {
+		debug(text);
 		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);
 		int sides = 2;
 		int width = sides * 4 + (int)layout.width();
@@ -81,6 +82,6 @@ public abstract class BlockSprite extends Sprite {
 	
 	@Override
 	public String toString() {
-		return block.text();
+		return text();
 	}
 }

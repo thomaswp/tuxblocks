@@ -10,15 +10,19 @@ import playn.core.util.Clock;
 import pythagoras.f.Rectangle;
 import tuxkids.tuxblocks.core.solve.blocks.n.Block;
 import tuxkids.tuxblocks.core.solve.blocks.n.BlockGroup;
+import tuxkids.tuxblocks.core.solve.blocks.n.HorizontalBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.HorizontalGroup;
 import tuxkids.tuxblocks.core.solve.blocks.n.ModifierBlock;
+import tuxkids.tuxblocks.core.solve.blocks.n.VerticalBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.VerticalGroup;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
 
-public abstract class BlockGroupSprite extends Sprite {
+public abstract class ModifierGroup extends Sprite {
 
 	protected abstract void updateChildren(float base, float dt);
 	protected abstract void updateRect(float base, float dt);
+	protected abstract ModifierGroup createModifiers();
+	protected abstract boolean canAdd(ModifierBlockSprite sprite);
 	
 	protected GroupLayer layer;
 	protected Rectangle rect = new Rectangle();
@@ -26,8 +30,7 @@ public abstract class BlockGroupSprite extends Sprite {
 	
 	protected List<ModifierBlockSprite> children = new ArrayList<ModifierBlockSprite>();
 	private List<ModifierBlockSprite> toRemove = new ArrayList<ModifierBlockSprite>();
-	protected BlockGroupSprite modifiers;
-	protected BlockGroup<?> group;
+	protected ModifierGroup modifiers;
 	
 	@Override
 	public Layer layer() {
@@ -53,30 +56,27 @@ public abstract class BlockGroupSprite extends Sprite {
 	public float height() {
 		return rect.height;
 	}
-
-	protected void init() { }
 	
-	public BlockGroupSprite(BlockGroup<?> group, Sprite parent) {
-		this.group = group;
+	public ModifierGroup(Sprite parent) {
 		layer = graphics().createGroupLayer();
-		init();
-		for (ModifierBlock block : group.blocks()) {
-			ModifierBlockSprite child = new ModifierBlockSprite(block, this);
-			addChild(child);
-		}
 		updateParentRect(parent);
-		updateRect(0, 1);
-		updateChildren(0, 1);
-		addModifiers();
+	}
+	
+	public boolean isModifiedHorizontally() {
+		if (modifiers == null) return false;
+		if (modifiers.children.size() > 0 && modifiers instanceof HorizontalModifierGroup) return true;
+		return modifiers.isModifiedHorizontally();
+	}
+	
+	public boolean isModifiedVertically() {
+		if (modifiers == null) return false;
+		if (modifiers.children.size() > 0 && modifiers instanceof VerticalModifierGroup) return true;
+		return modifiers.isModifiedVertically();
 	}
 	
 	protected void addModifiers() {
-		if (modifiers != null || group.modifiers() == null) return;
-		if (group.modifiers() instanceof HorizontalGroup) {
-			modifiers = new HorizontalBlockGroupSprite((HorizontalGroup) group.modifiers(), this);
-		} else {
-			modifiers = new VerticalBlockGroupSprite((VerticalGroup) group.modifiers(), this);
-		}
+		if (modifiers != null) return;
+		modifiers = createModifiers();
 		layer.add(modifiers.layer());
 		modifiers.layer().setDepth(-Float.MAX_VALUE);
 	}
@@ -102,10 +102,7 @@ public abstract class BlockGroupSprite extends Sprite {
 	}
 
 	protected void removeChild(ModifierBlockSprite sprite) {
-//		sprite.layer().destroy();
-//		layer.remove(sprite.layer());
 		children.remove(sprite);
-		group.removeBlock(sprite.block);
 	}
 
 	protected void addChild(ModifierBlockSprite child) {
@@ -118,14 +115,7 @@ public abstract class BlockGroupSprite extends Sprite {
 		
 	}
 	
-	protected void addChild(ModifierBlockSprite child, boolean addToGroup) {
-		addChild(child);
-		if (addToGroup) {
-			group.addBlock(child.block);
-		}
-	}
-	
-	protected BlockGroupSprite updateParentModifiers() {
+	protected ModifierGroup updateParentModifiers() {
 		if (children.size() == 0) {
 			if (modifiers == null) {
 				return null;
@@ -149,10 +139,13 @@ public abstract class BlockGroupSprite extends Sprite {
 			}
 			for (ModifierBlockSprite child : toRemove) {
 				modifiers.modifiers.removeChild(child);
-				addChild(child, true);
+				addChild(child);
 			}
 			toRemove.clear();
 			modifiers = modifiers.modifiers.modifiers;
+			if (modifiers != null) {
+				layer.add(modifiers.layer());
+			}
 		}
 	}
 	
@@ -160,17 +153,16 @@ public abstract class BlockGroupSprite extends Sprite {
 		layer.remove(modifiers.layer());
 	}
 	
-	public void addModifier(ModifierBlockSprite sprite) {
-		if (modifiers != null) {
-			modifiers.addModifier(sprite);
-		} else if (group.canAdd(sprite.block)) {
-			addChild(sprite, true);
-			updateRect(0, 1);
-			updateChildren(0, 1);
+	public void addModifier(ModifierBlockSprite sprite, boolean snap) {
+		if (modifiers == null && canAdd(sprite)) {
+			addChild(sprite);
+			if (snap) {
+				updateRect(0, 1);
+				updateChildren(0, 1);
+			}
 		} else {
-			group.forceCreateModifiers();
-			addModifiers();
-			modifiers.addModifier(sprite);
+			if (modifiers == null) addModifiers();
+			modifiers.addModifier(sprite, snap);
 		}
 	}
 	
@@ -190,7 +182,7 @@ public abstract class BlockGroupSprite extends Sprite {
 		
 		if (modifiers != null) {
 			modifiers.update(delta);
-			BlockGroupSprite newMods = modifiers.updateParentModifiers();
+			ModifierGroup newMods = modifiers.updateParentModifiers();
 			if (newMods != modifiers) {
 				if (newMods != null) {
 					layer.add(newMods.layer());
@@ -204,8 +196,8 @@ public abstract class BlockGroupSprite extends Sprite {
 
 	@Override
 	public void paint(Clock clock) {
-		updateRect(0.995f, clock.dt());
-		updateChildren(0.995f, clock.dt());
+		updateRect(lerpBase(), clock.dt());
+		updateChildren(lerpBase(), clock.dt());
 		for (ModifierBlockSprite sprite : children) {
 			sprite.paint(clock);
 		}

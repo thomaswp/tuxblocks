@@ -9,29 +9,22 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.blocks.n.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.BlockGroup;
 
-public class BaseBlockSprite extends BlockSprite {
+public abstract class BaseBlockSprite extends BlockSprite {
 	
-	protected BaseBlock block;
-	protected HorizontalBlockGroupSprite modifiers;
+	protected HorizontalModifierGroup modifiers;
 	protected GroupLayer groupLayer;
 	
 	public Layer layerAddable() {
 		return groupLayer;
 	}
-
-	public BaseBlock block() {
-		return block;
-	}
 	
-	public BaseBlockSprite(BaseBlock block) {
-		super(block);
-		this.block = block;
-		layer = generateNinepatch(block.text(), Colors.WHITE);
+	public BaseBlockSprite(String text) {
+		layer = generateNinepatch(text, Colors.WHITE);
 		layer.setSize(baseSize(), baseSize());
 		groupLayer = graphics().createGroupLayer();
 		groupLayer.add(layer());
 		
-		modifiers = new HorizontalBlockGroupSprite(block.modifiers(), this);
+		modifiers = new HorizontalModifierGroup(this);
 		groupLayer.add(modifiers.layer());
 		modifiers.layer().setDepth(-1);
 	}
@@ -56,13 +49,13 @@ public class BaseBlockSprite extends BlockSprite {
 	@Override
 	public void update(int delta) {
 		modifiers.update(delta);
-		BlockGroupSprite newMods = modifiers.updateParentModifiers();
+		ModifierGroup newMods = modifiers.updateParentModifiers();
 		if (newMods != modifiers) {
 			if (newMods != null) {
 				groupLayer.add(newMods.layer());
 				newMods.layer().setDepth(modifiers.layer().depth());
 				modifiers.layer().destroy();
-				modifiers = (HorizontalBlockGroupSprite)newMods;
+				modifiers = (HorizontalModifierGroup)newMods;
 			}
 		}
 	}
@@ -79,13 +72,17 @@ public class BaseBlockSprite extends BlockSprite {
 	
 	public interface BlockListener {
 
-		void wasGrabbed(ModifierBlockSprite sprite);
+		void wasGrabbed(ModifierBlockSprite sprite, float gx, float gy);
 		boolean wasReleased(ModifierBlockSprite sprite, float gx, float gy);
 		void wasMoved(ModifierBlockSprite sprite, float gx, float gy);
 		
 	}
 
 	public void addModifier(ModifierBlockSprite sprite) {
-		modifiers.addModifier(sprite);
+		addModifier(sprite, true);
+	}
+	
+	public void addModifier(ModifierBlockSprite sprite, boolean snap) {
+		modifiers.addModifier(sprite, snap);
 	}
 }
