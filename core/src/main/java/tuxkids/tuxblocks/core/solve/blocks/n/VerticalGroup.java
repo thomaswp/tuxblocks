@@ -8,7 +8,7 @@ public class VerticalGroup extends BlockGroup<VerticalBlock> {
 	}
 
 	@Override
-	protected boolean canAdd(ModifierBlock block) {
+	public boolean canAdd(ModifierBlock block) {
 		return block instanceof VerticalBlock;
 	}
 

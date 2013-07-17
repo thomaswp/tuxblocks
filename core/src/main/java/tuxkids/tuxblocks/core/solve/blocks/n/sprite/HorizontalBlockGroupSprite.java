@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
+import tuxkids.tuxblocks.core.solve.blocks.n.BlockGroup;
 import tuxkids.tuxblocks.core.solve.blocks.n.HorizontalGroup;
 
 public class HorizontalBlockGroupSprite extends BlockGroupSprite {
@@ -33,7 +34,7 @@ public class HorizontalBlockGroupSprite extends BlockGroupSprite {
 	}
 
 	@Override
-	protected void parseChildren() {
+	protected void init() {
 
 	}
 

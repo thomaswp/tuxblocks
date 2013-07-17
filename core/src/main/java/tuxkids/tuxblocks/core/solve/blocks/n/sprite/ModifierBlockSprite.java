@@ -18,22 +18,27 @@ import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 import tuxkids.tuxblocks.core.solve.blocks.n.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.OverBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.TimesBlock;
+import tuxkids.tuxblocks.core.solve.blocks.n.VerticalBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class ModifierBlockSprite extends BlockSprite {
 	
 	protected ModifierBlock block;
+	protected BlockListener blockListener;
 	protected int timeElapsed;
-	protected boolean flash;
-	protected boolean removed;
+	protected boolean canRelease;
+	protected BlockGroupSprite group;
+	protected BlockGroupSprite lastGroup;
 	
-	public boolean removed() {
-		return removed;
+	public BlockGroupSprite group() {
+		return group;
 	}
 	
-	public ModifierBlockSprite(ModifierBlock block) {
+	public ModifierBlockSprite(ModifierBlock block, BlockGroupSprite group) {
+		super(block);
 		this.block = block;
+		this.group = group;
 		layer = generateNinepatch(block.text(), Colors.WHITE);
 	}
 	
@@ -110,9 +115,9 @@ public class ModifierBlockSprite extends BlockSprite {
 	
 	@Override
 	public void update(int delta) {
-		if (flash != block.canRelease(true)) {
-			flash = !flash;
-			if (!flash) {
+		if (canRelease != block.canRelease(false)) {
+			canRelease = !canRelease;
+			if (!canRelease) {
 				layer.setTint(Colors.WHITE);
 			}
 		}
@@ -121,30 +126,69 @@ public class ModifierBlockSprite extends BlockSprite {
 	@Override
 	public void paint(Clock clock) {
 		timeElapsed += clock.dt();
-		if (flash) {
+		if (canRelease) {
 			layer.setTint(Color.rgb(200, 200, 255), Colors.WHITE, FloatMath.pow(FloatMath.sin(timeElapsed / 1250f * 2 * FloatMath.PI) / 2 + 0.5f, 0.7f));
 		}
+		if (group == null) {
+			if (block instanceof VerticalBlock) {
+				interpolateRect(layer.tx(), layer.ty(), baseSize(), modSize(), 0.995f, clock.dt());
+			} else {
+				
+			}
+			updateTranslation();
+		}
+	}
+	
+	private float dragOffX;
+	private float dragOffY;
+	private float lastTouchX, lastTouchY;
+	
+	private void updateTranslation() {
+		layer.setTranslation(lastTouchX - dragOffX * width(), 
+				lastTouchY - dragOffY * height());
+		blockListener.wasMoved(ModifierBlockSprite.this, left() + width() / 2, top() + height() / 2);
 	}
 
 	public void addBlockListener(BlockListener listener) {
+		blockListener = listener;
 		layer.addListener(new Listener() {
+			
 			@Override
 			public void onPointerStart(Event event) {
-				if (flash) {
-					removed = true;
+				if (canRelease) {
+					lastGroup = group;
+					group = null;
+					
+					dragOffX = (event.x() - getGlobalTx(layer.layerAddable())) / width();
+					dragOffY = (event.y() - getGlobalTy(layer.layerAddable())) / height();
+					lastTouchX = event.x(); lastTouchY = event.y();
+					
+					blockListener.wasGrabbed(ModifierBlockSprite.this);
 				}
 			}
 			
 			@Override
 			public void onPointerEnd(Event event) {
-				// TODO Auto-generated method stub
-				
+				if (group == null) {
+					if (blockListener.wasReleased(ModifierBlockSprite.this, left() + width() / 2, top() + height() / 2)) {
+//						layer.setTranslation(layer.tx() - getGlobalTx(group.layer()), 
+//								layer.ty() - getGlobalTy(group.layer()));
+					} else {
+						group = lastGroup;
+						lastGroup = null;
+						layer.setTranslation(layer.tx() - getGlobalTx(group.layer()), 
+								layer.ty() - getGlobalTy(group.layer()));
+						group.addChild(ModifierBlockSprite.this, true);
+					}
+				}
 			}
 			
 			@Override
 			public void onPointerDrag(Event event) {
-				// TODO Auto-generated method stub
-				
+				if (group == null) {
+					lastTouchX = event.x(); lastTouchY = event.y();
+					blockListener.wasMoved(ModifierBlockSprite.this, left() + width() / 2, top() + height() / 2);
+				}
 			}
 			
 			@Override

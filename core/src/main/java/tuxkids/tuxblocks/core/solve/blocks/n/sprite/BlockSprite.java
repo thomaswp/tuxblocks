@@ -16,15 +16,19 @@ import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.ImageLayerWrapper;
 import tuxkids.tuxblocks.core.layers.NinepatchLayer;
+import tuxkids.tuxblocks.core.solve.blocks.n.Block;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public abstract class BlockSprite extends Sprite {
 
 	protected NinepatchLayer layer;
+	private Block block;
+	
 	protected static TextFormat textFormat;
 	protected static Factory factory;
 	
-	public BlockSprite() {
+	public BlockSprite(Block block) {
+		this.block = block;
 		if (textFormat == null) {
 			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, 20);
 			textFormat = new TextFormat().withFont(font);
@@ -73,5 +77,10 @@ public abstract class BlockSprite extends Sprite {
 		
 		NinepatchLayer ninePatch = new NinepatchLayer(factory, image, widthDims, heightDims);
 		return ninePatch;
+	}
+	
+	@Override
+	public String toString() {
+		return block.text();
 	}
 }

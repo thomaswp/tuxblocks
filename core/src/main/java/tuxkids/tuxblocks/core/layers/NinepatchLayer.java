@@ -2,17 +2,13 @@ package tuxkids.tuxblocks.core.layers;
 
 import java.util.ArrayList;
 
-import playn.core.Color;
 import playn.core.GroupLayer;
 import playn.core.Image;
-import playn.core.ImageLayer;
 import playn.core.Layer;
-import playn.core.PlayN;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
-import tuxkids.tuxblocks.core.layers.ImageLayerLike.Factory;
 
 public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 
@@ -22,6 +18,16 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	private int[] widthDims, heightDims;
 	private int imageWidth, imageHeight;
 	private float width, height;
+
+	@Override
+	public float tx() {
+		return layer.tx();
+	}
+
+	@Override
+	public float ty() {
+		return layer.ty();
+	}
 	
 	public float width() {
 		return width;

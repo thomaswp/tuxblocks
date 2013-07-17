@@ -38,6 +38,7 @@ public abstract class HorizontalBlock extends ModifierBlock {
 
 	@Override
 	public boolean canRelease(boolean openBlock) {
+		if (group == null) return false;
 		return openBlock || !group.isModifiedVertically();
 	}
 }

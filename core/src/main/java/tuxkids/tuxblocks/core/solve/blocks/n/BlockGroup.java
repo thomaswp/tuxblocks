@@ -3,6 +3,8 @@ package tuxkids.tuxblocks.core.solve.blocks.n;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.utils.Debug;
+
 public abstract class BlockGroup<T extends ModifierBlock> {
 
 	protected ArrayList<T> blocks = new ArrayList<T>();
@@ -11,7 +13,7 @@ public abstract class BlockGroup<T extends ModifierBlock> {
 	protected BaseBlock base;
 	
 	protected abstract BlockGroup<?> createModifiers();
-	protected abstract boolean canAdd(ModifierBlock block);
+	public abstract boolean canAdd(ModifierBlock block);
 	
 	public List<T> blocks() {
 		return blocks;
@@ -51,21 +53,26 @@ public abstract class BlockGroup<T extends ModifierBlock> {
 		
 	}
 	
+	public void forceCreateModifiers() {
+		modifiers = createModifiers();
+	}
+	
 	@SuppressWarnings("unchecked")
-	public void addModifier(ModifierBlock block) {
+	public BlockGroup<?> addModifierToExpression(ModifierBlock block) {
 		if (canAdd(block)) {
 			if (modifiers == null) {
 				blocks.add((T) block);
 				block.group = this;
+				return this;
 			} else {
-				modifiers.addModifier(block);
+				return modifiers.addModifierToExpression(block);
 			}
 		} else {
 			if (modifiers == null) {
 				modifiers = createModifiers();
 				modifiers.parent = this;
 			}
-			modifiers.addModifier(block);
+			return modifiers.addModifierToExpression(block);
 		}
 	}	
 
@@ -75,5 +82,17 @@ public abstract class BlockGroup<T extends ModifierBlock> {
 		}
 		if (modifiers != null) base = modifiers.toMathString(base);
 		return base;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void addBlock(ModifierBlock block) {
+		Debug.write("added %s", block.text());
+		blocks.add((T) block);
+		block.group = this;
+	}
+	
+	public void removeBlock(ModifierBlock block) {
+		blocks.remove(block);
+		block.group = null;
 	}
 }

@@ -46,6 +46,10 @@ public abstract class Sprite extends PlayNObject {
 		return y() + height();
 	}
 	
+	public boolean contains(float x, float y) {
+		return x >= left() && x <= right() && y >= top() && y <= bottom(); 
+	}
+	
 	public abstract void update(int delta);
 	public abstract void paint(Clock clock);
 }

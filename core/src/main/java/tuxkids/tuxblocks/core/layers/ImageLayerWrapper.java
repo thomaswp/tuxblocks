@@ -48,4 +48,14 @@ public class ImageLayerWrapper implements ImageLayerLike {
 		layer.addListener(pointerListener);
 	}
 
+	@Override
+	public float tx() {
+		return layer.tx();
+	}
+
+	@Override
+	public float ty() {
+		return layer.ty();
+	}
+
 }

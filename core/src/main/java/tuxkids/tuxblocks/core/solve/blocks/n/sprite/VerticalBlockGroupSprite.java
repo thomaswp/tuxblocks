@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.solve.blocks.n.TimesBlock;
+import tuxkids.tuxblocks.core.solve.blocks.n.VerticalBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.VerticalGroup;
 
 public class VerticalBlockGroupSprite extends BlockGroupSprite {
@@ -12,16 +13,9 @@ public class VerticalBlockGroupSprite extends BlockGroupSprite {
 	protected List<ModifierBlockSprite> timesBlocks;
 	protected List<ModifierBlockSprite> divBlocks;
 	
-	public void parseChildren() {
+	public void init() {
 		timesBlocks = new ArrayList<ModifierBlockSprite>();
 		divBlocks = new ArrayList<ModifierBlockSprite>();
-		for (ModifierBlockSprite child : children) {
-			if (child.block instanceof TimesBlock) {
-				timesBlocks.add(child);
-			} else {
-				divBlocks.add(child);
-			}
-		}
 	}
 	
 	public VerticalBlockGroupSprite(VerticalGroup group, Sprite parent) {
@@ -33,9 +27,8 @@ public class VerticalBlockGroupSprite extends BlockGroupSprite {
 	protected void updateChildren(float base, float dt) {
 		float y = parentRect.y - modSize();
 		for (ModifierBlockSprite block : timesBlocks) {
-//			block.interpolateRect(rect.x, y, rect.width, parentRect.centerY() - y, base, dt);
 			block.interpolateRect(rect.x, y, rect.width, parentRect.maxY() - y, base, dt);
-			y -= block.height();
+			y -= modSize();
 		}
 
 //		y = parentRect.maxY() + modSize();
@@ -70,6 +63,16 @@ public class VerticalBlockGroupSprite extends BlockGroupSprite {
 		super.removeChild(child);
 		timesBlocks.remove(child);
 		divBlocks.remove(child);
+	}
+	
+	@Override
+	protected void addChild(ModifierBlockSprite child) {
+		super.addChild(child);
+		if (child.block instanceof TimesBlock) {
+			timesBlocks.add(child);
+		} else {
+			divBlocks.add(child);
+		}
 	}
 
 	int time = 1500;

@@ -23,8 +23,8 @@ public abstract class BaseBlock extends Block {
 
 	}
 	
-	public void addModifier(ModifierBlock block) {
-		modifiers.addModifier(block);
+	public BlockGroup<?> addModifierToExpression(ModifierBlock block) {
+		return modifiers.addModifierToExpression(block);
 	}
 
 	public boolean modifiesNumber() {
