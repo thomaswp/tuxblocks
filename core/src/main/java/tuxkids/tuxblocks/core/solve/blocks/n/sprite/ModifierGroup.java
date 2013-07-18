@@ -59,6 +59,20 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		return rect.height;
 	}
 	
+	public float totalWidth() {
+		if (modifiers == null) {
+			return width();
+		}
+		return modifiers.totalWidth();
+	}
+
+	public float offsetX() {
+		if (modifiers == null) {
+			return rect.x;
+		}
+		return modifiers.offsetX();
+	}
+	
 	public ModifierGroup(Sprite parent) {
 		layer = graphics().createGroupLayer();
 		updateParentRect(parent);
@@ -89,11 +103,25 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		
 	}
 	
-	protected void addModifiers() {
+	protected void addNewModifiers() {
 		if (modifiers != null) return;
-		modifiers = createModifiers();
-		layer.add(modifiers.layer());
-		modifiers.layer().setDepth(-Float.MAX_VALUE);
+		setModifiers(createModifiers());
+	}
+	
+	protected ModifierGroup removeModifiers() {
+		ModifierGroup mods = modifiers;
+		if (modifiers != null) layer.remove(modifiers.layer());
+		modifiers = null;
+		return mods;
+	}
+	
+	protected void setModifiers(ModifierGroup mods) {
+		removeModifiers();
+		modifiers = mods;
+		if (modifiers != null) {
+			layer.add(modifiers.layer());
+			modifiers.layer().setDepth(-Float.MAX_VALUE);
+		}
 	}
 	
 	@Override
@@ -129,8 +157,13 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		}
 	}
 
-	protected void removeChild(ModifierBlockSprite sprite) {
-		children.remove(sprite);
+	protected ModifierBlockSprite removeChild(ModifierBlockSprite sprite) {
+		for (int i = 0; i < children.size(); i++) {
+			if (children.get(i) == sprite) {
+				return children.remove(i); // make sure it's the exact sprite and not just .equal()
+			}
+		}
+		return null;
 	}
 
 	protected void addChild(ModifierBlockSprite child) {
@@ -190,7 +223,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 				updateChildren(0, 1);
 			}
 		} else {
-			if (modifiers == null) addModifiers();
+			if (modifiers == null) addNewModifiers();
 			if (snap) {
 				updateRect();
 			}
@@ -199,10 +232,11 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		}
 	}
 
-	public void addExpression(NumberBlockSprite sprite, boolean snap) {
+	public boolean addExpression(NumberBlockSprite sprite, boolean snap) {
 		if (modifiers != null) {
-			modifiers.addExpression(sprite, snap);
+			return modifiers.addExpression(sprite, snap);
 		}
+		return false;
 	}
 	
 	public boolean canAddExpression(NumberBlockSprite sprite) {

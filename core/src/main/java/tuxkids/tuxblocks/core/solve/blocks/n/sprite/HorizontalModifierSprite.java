@@ -25,23 +25,31 @@ public abstract class HorizontalModifierSprite extends ModifierBlockSprite {
 	@Override
 	protected boolean canRelease(boolean openSpace) {
 		if (group == null) return false;
-		return openSpace || !group.isModifiedVertically();
+		return true;
 	}
 	
 	@Override
 	protected BlockSprite getDraggingSprite() {
 		if (group.isModifiedVertically()) {
-			NumberBlockSpriteProxy sprite = new NumberBlockSpriteProxy(getPlusValue(), this);
+			return getProxy(true);
+		} else {
+			return this;
+		}
+	}
+	
+	protected NumberBlockSpriteProxy getProxy(boolean snapToMySize) {
+		NumberBlockSpriteProxy sprite = new NumberBlockSpriteProxy(getPlusValue(), this);
+		if (snapToMySize) {
 			sprite.interpolateRect(layer.tx(), layer.ty(), width(), height(), 0, 1);
 			sprite.snapChildren();
+		}
+		if (group != null) {
 			ArrayList<VerticalModifierSprite> modifiers = new ArrayList<VerticalModifierSprite>();
 			group.addVerticalModifiers(modifiers);
 			for (VerticalModifierSprite mod : modifiers) {
 				sprite.addModifier(mod.copy(), true);
 			}
-			return sprite;
-		} else {
-			return this;
 		}
+		return sprite;
 	}
 }

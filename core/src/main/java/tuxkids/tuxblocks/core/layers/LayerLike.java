@@ -13,6 +13,7 @@ public interface LayerLike {
 	public void setVisible(boolean visible);
 	public void setTint(int tint);
 	public void setTint(int baseColor, int tintColor, float perc);
+	public void setInteractive(boolean interactive);
 	
 	public void addListener(Listener pointerListener);
 	

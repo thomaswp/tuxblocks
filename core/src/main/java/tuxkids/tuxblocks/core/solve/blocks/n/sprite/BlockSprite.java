@@ -25,6 +25,7 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 
 	protected ImageLayerLike layer;
 	protected BlockListener blockListener;
+	private boolean dragging;
 	
 	protected static TextFormat textFormat;
 	protected static Factory factory;
@@ -32,7 +33,7 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	protected abstract String text();
 	protected abstract float defaultWidth();
 	protected abstract float defaultHeight();
-	protected abstract boolean canRelease(boolean openSpace);
+	protected abstract boolean canRelease(boolean multiExpression);
 	
 	public BlockSprite() {
 		if (textFormat == null) {
@@ -75,36 +76,15 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	public float height() {
 		return layer.height();
 	}
-
-//	protected ImageLayerLike generateNinepatch(String text, int color) {
-//		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);
-//		int sides = 2;
-//		int width = sides * 4 + (int)layout.width();
-//		int height = sides * 4 + (int)layout.height();
-//		
-//		int[] widthDims = new int[] { sides, sides, width - sides * 4, sides, sides };
-//		int[] heightDims = new int[] { sides, sides, height - sides * 4, sides, sides };
-//		
-//		CanvasImage image = CanvasUtils.createRect(width, height, Color.withAlpha(color, 255), 1, Colors.DARK_GRAY);
-//		
-//		float textX = (image.width() - layout.width()) / 2;
-//		float textY = (image.height() - layout.height()) / 2;
-//		image.canvas().setFillColor(Colors.BLACK);
-//		image.canvas().fillText(layout, textX, textY);
-//		
-//		
-//		NinepatchLayer ninePatch = new NinepatchLayer(factory, image, widthDims, heightDims);
-//		return ninePatch;
-//	}
 	
 	protected ImageLayerLike generateNinepatch(String text, int color) {
 		return new BlockLayer(text, 10, 10);
 	}
 	
 	public void addBlockListener(BlockListener listener) {
+		if (blockListener != null) return;
 		blockListener = listener;
 		layer.addListener(new Listener() {
-			boolean dragging;
 			
 			@Override
 			public void onPointerStart(Event event) {
@@ -112,17 +92,6 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 					dragging = true;
 					blockListener.wasGrabbed(BlockSprite.this, event);
 				}
-//				if (canRelease) {
-//					dragging = getDragging();
-//					group = null;
-//					
-//					dragOffX = (event.x() - getGlobalTx(layer.layerAddable())) / width();
-//					dragOffY = (event.y() - getGlobalTy(layer.layerAddable())) / height();
-//					lastTouchX = event.x(); lastTouchY = event.y();
-//					
-//					
-//					blockListener.wasGrabbed(dragging, event.x(), event.y());
-//				}
 			}
 			
 			@Override
@@ -131,17 +100,6 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 					dragging = false;
 					blockListener.wasReleased(event);
 				}
-//				if (group == null) {
-//					Layer draggingLayer = dragging.layer();
-//					if (blockListener.wasReleased(dragging, dragging.centerX(), dragging.centerY())) {
-//						draggingLayer.setTranslation(draggingLayer.tx() - getGlobalTx(group.layer()), 
-//								draggingLayer.ty() - getGlobalTy(group.layer()));
-//					} else {
-//						draggingLayer.setTranslation(draggingLayer.tx() - getGlobalTx(group.layer()), 
-//								draggingLayer.ty() - getGlobalTy(group.layer()));
-//					}
-//					dragging = null;
-//				}
 			}
 			
 			@Override
@@ -149,11 +107,6 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 				if (dragging) {
 					blockListener.wasMoved(event);
 				}
-//				if (group == null) {
-//					lastTouchX = event.x(); lastTouchY = event.y();
-//					blockListener.wasMoved(dragging, dragging.centerX(), dragging.centerY());
-//					updateTranslation();
-//				}
 			}
 			
 			@Override

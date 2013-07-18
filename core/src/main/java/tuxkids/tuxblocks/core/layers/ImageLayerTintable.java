@@ -227,4 +227,9 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 	public void addListener(Listener pointerListener) {
 		base.addListener(pointerListener);
 	}
+
+	@Override
+	public void setInteractive(boolean interactive) {
+		base.setInteractive(interactive);
+	}
 }

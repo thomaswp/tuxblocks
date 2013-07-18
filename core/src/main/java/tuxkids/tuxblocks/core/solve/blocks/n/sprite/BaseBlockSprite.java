@@ -2,7 +2,11 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import playn.core.GroupLayer;
 import playn.core.Layer;
+import playn.core.Mouse.ButtonEvent;
+import playn.core.Mouse.MotionEvent;
+import playn.core.Mouse.WheelEvent;
 import playn.core.Pointer.Event;
+import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
 
@@ -33,15 +37,18 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	public BaseBlockSprite(String text) {
 		layer = generateNinepatch(text, Colors.WHITE);
 		layer.setSize(baseSize(), baseSize());
+		layer.setInteractive(true);
 		groupLayer = graphics().createGroupLayer();
 		groupLayer.add(layer.layerAddable());
 		
 		modifiers = new HorizontalModifierGroup(this);
 		groupLayer.add(modifiers.layer());
-		modifiers.layer().setDepth(-1);
+		modifiers.layer().setDepth(-Float.MAX_VALUE);
 	}
 
+	@Override
 	public void addBlockListener(BlockListener listener) {
+		super.addBlockListener(listener);
 		modifiers.addBlockListenerListener(listener);
 	}
 	
@@ -57,7 +64,7 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	
 	@Override
 	protected boolean canRelease(boolean openSpace) {
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -137,5 +144,17 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		} else if (sprite instanceof NumberBlockSprite) {
 			modifiers.addExpression((NumberBlockSprite) sprite, snap);
 		}
+	}
+	
+	public boolean equals(Object o) {
+		return this == o;
+	}
+
+	public float totalWidth() {
+		return modifiers.totalWidth();
+	}
+
+	public float offsetX() {
+		return modifiers.offsetX();
 	}
 }

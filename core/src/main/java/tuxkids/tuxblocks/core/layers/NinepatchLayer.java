@@ -235,4 +235,15 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 			}
 		}
 	}
+
+	@Override
+	public void setInteractive(boolean interactive) {
+		for (int i = 0; i < heightDims.length; i++) {
+			for (int j = 0; j < widthDims.length; j++) {
+				if (imageLayers[i][j] != null) {
+					imageLayers[i][j].setInteractive(interactive);
+				}
+			}
+		}
+	}
 }

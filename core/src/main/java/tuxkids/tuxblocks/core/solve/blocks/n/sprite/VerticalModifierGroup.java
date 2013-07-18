@@ -51,10 +51,22 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 	
 	@Override
-	protected void removeChild(ModifierBlockSprite child) {
-		super.removeChild(child);
-		timesBlocks.remove(child);
-		divBlocks.remove(child);
+	protected ModifierBlockSprite removeChild(ModifierBlockSprite child) {
+		ModifierBlockSprite mod = super.removeChild(child);
+		// Be careful to remove the actual item removed by super, not just one that .equal()
+		for (int i = 0; i < timesBlocks.size(); i++) {
+			if (timesBlocks.get(i) == mod) {
+				timesBlocks.remove(i); 
+				break;
+			}
+		}
+		for (int i = 0; i < divBlocks.size(); i++) {
+			if (divBlocks.get(i) == mod) {
+				divBlocks.remove(i); 
+				break;
+			}
+		}
+		return mod;
 	}
 	
 	@Override

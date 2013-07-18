@@ -17,11 +17,14 @@ public class NumberBlockSprite extends BaseBlockSprite {
 	}
 
 	public ModifierBlockSprite proxyFor() {
+		ModifierBlockSprite proxy;
 		if (value >= 0) {
-			return alignProxy(new PlusBlockSprite(value));
+			proxy = alignProxy(new PlusBlockSprite(value));
 		} else {
-			return alignProxy(new MinusBlockSprite(value));
+			proxy = alignProxy(new MinusBlockSprite(value));
 		}
+		proxy.addBlockListener(blockListener);
+		return proxy;
 	}
 	
 	protected ModifierBlockSprite alignProxy(ModifierBlockSprite proxy) {

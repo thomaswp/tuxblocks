@@ -28,9 +28,20 @@ public class BlockController extends PlayNObject {
 	}
 	
 	public void addExpression(BaseBlockSprite expression, float x, float y) {
+		addExpression(expression, x, y, baseBlocks.size());
+	}
+	
+	public void addExpression(BaseBlockSprite expression, float x, float y, int index) {
 		layer.addAt(expression.layerAddable(), x, y);
-		baseBlocks.add(expression);
+		expression.layer().setDepth(0);
+		baseBlocks.add(index, expression);
 		expression.addBlockListener(listener);
+	}
+	
+	protected void swapExpression(BaseBlockSprite original, BaseBlockSprite newExp) {
+		int index = baseBlocks.indexOf(original);
+		baseBlocks.remove(index);
+		addExpression(newExp, original.layer().tx(), original.layer().ty(), index);
 	}
 	
 	public void update(int delta) {
@@ -41,58 +52,35 @@ public class BlockController extends PlayNObject {
 	}
 	
 	public void paint(Clock clock) {
+		float totalWidth = 0;
 		for (BaseBlockSprite sprite : baseBlocks) {
 			sprite.paint(clock);
+			totalWidth += sprite.totalWidth();
 		}
+		
+		float dx = (graphics().width() - totalWidth) / (baseBlocks.size() + 1);
+		float x = dx;
+		int i = 1;
+		for (BaseBlockSprite sprite : baseBlocks) {
+			x = i++ * graphics().width() / (baseBlocks.size() + 1) - sprite.totalWidth() / 2 - sprite.offsetX();
+			sprite.layer().setTx(lerpTime(sprite.layer().tx(), x, 0.98f, clock.dt(), 1f));
+			x += sprite.totalWidth() + dx;
+		}
+		
 		if (dragging != null) dragging.paint(clock);
 		updatePosition();
 	}
 	
 	private void updatePosition() {
 		if (dragging != null) {
-			dragging.layer().setTranslation(lastTouchX - dragging.width() * blockAnchorPX, 
-					lastTouchY - dragging.height() * blockAnchorPY);
+			float x = lerpTime(dragging.layer().tx(), lastTouchX - dragging.width() * blockAnchorPX, 0, 1);
+			float y = lerpTime(dragging.layer().ty(), lastTouchY - dragging.height() * blockAnchorPY, 0, 1);
+			dragging.layer().setTranslation(x, y);
 		}
 	}
 	
 	private class Listener implements BlockListener {
 		
-//		@Override
-//		public void wasGrabbed(BlockSprite sprite, float gx, float gy) {
-//			for (BaseBlockSprite base : baseBlocks) {
-//				if (base.contains(gx, gy)) {
-//					draggingFrom = base;
-//				}
-//			}
-//			layer.add(sprite.layer());
-//			sprite.layer().setDepth(1);
-//			dragging = sprite;
-//		}
-//
-//		@Override
-//		public void wasMoved(BlockSprite sprite, float gx, float gy) {
-//			for (BaseBlockSprite base : baseBlocks) {
-//				base.setPreview(base.contains(gx, gy) && base.canAccept(sprite));
-//			}
-//		}
-//
-//		@Override
-//		public boolean wasReleased(BlockSprite sprite, float gx, float gy) {
-//			dragging = null;
-//			BaseBlockSprite r = null;
-//			for (BaseBlockSprite base : baseBlocks) {
-//				base.clearPreview();
-//				if (base.contains(gx, gy) && base.canAccept(sprite)) r = base;
-//			}
-//			if (r != null) {
-//				r.addBlock(sprite, false);
-//				return true;
-//			} else {
-//				draggingFrom.addBlock(sprite, false);
-//				return false;
-//			}
-//		}
-
 		@Override
 		public void wasGrabbed(BlockSprite sprite, Event event) {
 			for (BaseBlockSprite base : baseBlocks) {
@@ -102,10 +90,23 @@ public class BlockController extends PlayNObject {
 				}
 			}
 			
+			if (draggingFrom == null) {
+				debug("BIG PROBLEM!");
+			}
 			
-			dragging = sprite.getDraggingSprite();
 			blockAnchorPX = (event.x() - getGlobalTx(sprite.layer())) / sprite.width();
 			blockAnchorPY = (event.y() - getGlobalTy(sprite.layer())) / sprite.height();
+			
+			if (sprite == draggingFrom) {
+				debug("base");
+				BlockHolder holder = new BlockHolder();
+				swapExpression(draggingFrom, holder);
+				draggingFrom = holder;
+			}
+			debug("%s, %s", sprite, draggingFrom.hashCode());
+			
+			
+			dragging = sprite.getDraggingSprite();
 			layer.add(dragging.layer());
 			dragging.layer().setDepth(1);
 
@@ -117,38 +118,51 @@ public class BlockController extends PlayNObject {
 			lastTouchX = event.x();
 			lastTouchY = event.y();
 			updatePosition();
+			
+			
 		}
 
 		@Override
 		public void wasReleased(Event event) {
 			lastTouchX = event.x();
 			lastTouchY = event.y();
-			updatePosition();
 			
 			BaseBlockSprite target = null;
 			for (BaseBlockSprite base : baseBlocks) {
 				base.clearPreview();
 				if (base.contains(event.x(), event.y()) && base.canAccept(dragging)) {
 					target = base;
-					break;
 				}
 			}
 			
 			if (target == null) target = draggingFrom;
+			debug(target.hierarchy());
 			
-			dragging.layer().setTranslation(dragging.layer().tx() - getGlobalTx(target.layer()), 
-					dragging.layer().ty() - getGlobalTy(target.layer()));
-			target.addBlock(dragging, false);
+			if (target instanceof BlockHolder) {
+				if (dragging instanceof HorizontalModifierSprite) {
+					NumberBlockSpriteProxy proxy = ((HorizontalModifierSprite) dragging).getProxy(false);
+					dragging.layer().setVisible(false);
+					dragging = proxy;
+				}
+				
+				swapExpression(target, (BaseBlockSprite) dragging);
+				target.layer().destroy();
+			} else {
+				dragging.layer().setTranslation(dragging.layer().tx() - getGlobalTx(target.layer()), 
+						dragging.layer().ty() - getGlobalTy(target.layer()));
+				target.addBlock(dragging, false);
+			}
 			
 			dragging = null;
 			draggingFrom = null;
+			
+			debug(target.hierarchy());
 		}
 
 		@Override
 		public void wasMoved(Event event) {
 			lastTouchX = event.x();
 			lastTouchY = event.y();
-			updatePosition();
 			
 			for (BaseBlockSprite base : baseBlocks) {
 				if (base.contains(event.x(), event.y()) && base.canAccept(dragging)) {

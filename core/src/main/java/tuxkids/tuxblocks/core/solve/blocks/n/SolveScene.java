@@ -19,6 +19,7 @@ import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.MinusBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.ModifierBlockSprite;
@@ -59,7 +60,7 @@ public class SolveScene extends GameScreen {
 		BaseBlockSprite sprite2 = new NumberBlockSprite(5);
 		controller.addExpression(sprite2, 600, 200);
 		
-
+		controller.addExpression(new BlockHolder(), 450, 200);
 		
 //		int sideWidth = 6; int baseHeight = 50;
 //		int middle = 20;

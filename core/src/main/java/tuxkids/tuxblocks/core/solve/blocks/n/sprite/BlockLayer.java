@@ -24,6 +24,7 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 	protected ImageLayer[] borderLayers;
 	protected float width, height;
 	protected String text;
+	protected float borderWidth = 1;
 
 	@Override
 	public float width() {
@@ -79,45 +80,54 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 		}
 		
 		refreshTextLayer();
+		createBorderLayers();
 		
+		centerLayer = new ImageLayerTintable(CanvasUtils.createRect(1, 1, Colors.WHITE));
+		centerLayer.layerAddable().setDepth(-1);
+		layer.add(centerLayer.layerAddable());
+	}
+	
+	protected void createBorderLayers() {
 		Image borderImage = CanvasUtils.createRect(1, 1, Colors.BLACK);
 		borderLayers = new ImageLayer[4];
 		for (int i = 0; i < 4; i++) {
 			borderLayers[i] = graphics().createImageLayer(borderImage);
 			layer.add(borderLayers[i]);
 		}
-		
-		centerLayer = new ImageLayerTintable(CanvasUtils.createRect(1, 1, Colors.WHITE));
-		layer.add(centerLayer.layerAddable());
 	}
 	
-	private void refreshTextLayer() {
+	protected void refreshTextLayer() {
 		textLayer = graphics().createImageLayer(CanvasUtils.createString(textFormat, text, Colors.BLACK));
 		centerImageLayer(textLayer);
 		textLayer.setDepth(1);
 		layer.add(textLayer);
 	}
 	
-	private void updateSize() {
+	protected void updateSize() {
 		textLayer.setTranslation(width / 2, height / 2);
-		centerLayer.setTranslation(1, 1);
-		centerLayer.setSize(width - 2, height - 2);
+		centerLayer.setTranslation(0, 0);
+		centerLayer.setSize(width, height);
 		
 		borderLayers[0].setTranslation(0, 0);
-		borderLayers[0].setSize(width - 1, 1);
+		borderLayers[0].setSize(width - borderWidth, borderWidth);
 		
-		borderLayers[1].setTranslation(width - 1, 0);
-		borderLayers[1].setSize(1, height - 1);
+		borderLayers[1].setTranslation(width - borderWidth, 0);
+		borderLayers[1].setSize(borderWidth, height - borderWidth);
 		
-		borderLayers[2].setTranslation(1, height - 1);
-		borderLayers[2].setSize(width - 1, 1);
+		borderLayers[2].setTranslation(borderWidth, height - borderWidth);
+		borderLayers[2].setSize(width - borderWidth, borderWidth);
 		
-		borderLayers[3].setTranslation(0, 1);
-		borderLayers[3].setSize(1, height - 1);
+		borderLayers[3].setTranslation(0, borderWidth);
+		borderLayers[3].setSize(borderWidth, height - borderWidth);
 	}
 	
 	@Override
 	public void addListener(Listener pointerListener) {
 		centerLayer.addListener(pointerListener);
+	}
+	
+	@Override
+	public void setInteractive(boolean interactive) {
+		centerLayer.setInteractive(interactive);
 	}
 }

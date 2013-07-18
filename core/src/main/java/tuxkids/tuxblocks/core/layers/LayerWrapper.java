@@ -52,4 +52,9 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	public float ty() {
 		return layer.ty();
 	}
+
+	@Override
+	public void setInteractive(boolean interactive) {
+		setInteractive(interactive);
+	}
 }

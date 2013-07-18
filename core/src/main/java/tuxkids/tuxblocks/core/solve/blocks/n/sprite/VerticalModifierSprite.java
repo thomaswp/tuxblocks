@@ -18,14 +18,14 @@ public abstract class VerticalModifierSprite extends ModifierBlockSprite {
 	}
 	
 	@Override
-	protected boolean canRelease(boolean openSpace) {
+	protected boolean canRelease(boolean multiExpression) {
 		if (group == null) return false;
-		return !group.isModifiedHorizontally();
+		return !multiExpression && !group.isModifiedHorizontally();
 	}
 
 	public final ModifierBlockSprite copy() {
 		ModifierBlockSprite copy = copyChild();
-		copy.blockListener = blockListener;
+		copy.addBlockListener(blockListener);
 		return copy;
 	}
 	
