@@ -6,6 +6,8 @@ import java.util.List;
 import tuxkids.tuxblocks.core.solve.blocks.n.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.VerticalBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.VerticalGroup;
+import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
 public class VerticalModifierGroup extends ModifierGroup {
 
@@ -26,7 +28,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 			y -= modSize();
 		}
 
-//		y = parentRect.maxY() + modSize();
+//		y = parentRect.maxY() + modSize(); // for times-like wrap shape
 		y = parentRect.maxY();
 		for (ModifierBlockSprite block : divBlocks) {
 //			block.interpolateRect(rect.x, parentRect.centerY(), rect.width, y - parentRect.centerY(), base, dt);
@@ -36,9 +38,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	protected void updateRect(float base, float dt) {
-//		layer.setTy(lerpTime(layer.ty(), ty, base, dt, 1f));
-//		layer.setTy(ty);
+	protected void updateRect() {
 		rect.y = parentRect.y - timesBlocks.size() * modSize();
 		
 		rect.x = parentRect.x;
@@ -48,9 +48,6 @@ public class VerticalModifierGroup extends ModifierGroup {
 			rect.width += 2 * wrapSize();
 		}
 		rect.height = parentRect.height + children.size() * modSize();
-//		if (divBlocks.size() > 0) {
-//			height = divBlocks.get(divBlocks.size() - 1).bottom();
-//		}
 	}
 	
 	@Override
@@ -68,21 +65,6 @@ public class VerticalModifierGroup extends ModifierGroup {
 		} else {
 			divBlocks.add(child);
 		}
-	}
-
-	int time = 1500;
-	@Override
-	public void update(int delta) {
-		super.update(delta);
-//		time += delta;
-//		if (modifiers != null && time > 3000 && children.size() > 0 && modifiers.modifiers != null) {
-//			time = 0;
-//			ModifierBlockSprite mod = children.remove(0);
-//			mod.layer.destroy();
-//			timesBlocks.remove(mod);
-//			divBlocks.remove(mod);
-//			
-//		}
 	}
 
 	@Override

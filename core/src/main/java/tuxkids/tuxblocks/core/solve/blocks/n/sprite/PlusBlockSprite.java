@@ -11,4 +11,8 @@ public class PlusBlockSprite extends HorizontalModifierSprite {
 		return "+";
 	}
 
+	@Override
+	protected int getPlusValue() {
+		return value;
+	}
 }

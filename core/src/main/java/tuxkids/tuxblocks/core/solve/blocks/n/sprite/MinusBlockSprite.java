@@ -11,4 +11,9 @@ public class MinusBlockSprite extends HorizontalModifierSprite {
 		return "-";
 	}
 
+	@Override
+	protected int getPlusValue() {
+		return -value;
+	}
+
 }

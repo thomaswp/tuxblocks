@@ -11,4 +11,9 @@ public class OverBlockSprite extends VerticalModifierSprite {
 		return "\u00F7";
 	}
 
+	@Override
+	public ModifierBlockSprite copyChild() {
+		return new OverBlockSprite(value);
+	}
+
 }

@@ -145,6 +145,16 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 	public void setSize(float width, float height) {
 		layer.setScale(width / baseImage.width(), height / baseImage.height());
 	}
+
+	@Override
+	public void setWidth(float width) {
+		layer.setScaleX(width / baseImage.width());
+	}
+
+	@Override
+	public void setHeight(float height) {
+		layer.setScaleY(height / baseImage.height());
+	}
 	
 	public ImageLayerTintable() {
 		this(null);

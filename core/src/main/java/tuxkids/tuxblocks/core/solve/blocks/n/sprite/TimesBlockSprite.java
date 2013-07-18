@@ -24,7 +24,7 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);
 		int legs = wrapSize();
 		int sides = 2;
-		int width = legs * 2 + sides * 2 + (int)layout.width();
+		int width = legs * 2 + sides * 2 + (int)layout.width() + 2;
 		int height = modSize() + sides * 2;
 		
 		int[] widthDims = new int[] { legs + 1, sides - 1, width - legs * 2 - sides * 2, sides - 1, legs + 1 };
@@ -76,5 +76,10 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 		
 		NinepatchLayer ninePatch = new NinepatchLayer(factory, image, widthDims, heightDims);
 		return ninePatch;
+	}
+
+	@Override
+	public ModifierBlockSprite copyChild() {
+		return new TimesBlockSprite(value);
 	}
 }

@@ -152,8 +152,8 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 					float displayWidth = width, displayHeight = height;
 					if (graphics().ctx() == null) {
 						//HTML5 Canvas shows some seams, so stretch a little more
-						displayHeight += 1f;
-						displayWidth += 1f;
+						displayHeight += 0.5f;
+						displayWidth += 0.5f;
 					}
 					imageLayers[i][j].setSize(displayWidth, displayHeight);
 					imageLayers[i][j].setVisible(true);

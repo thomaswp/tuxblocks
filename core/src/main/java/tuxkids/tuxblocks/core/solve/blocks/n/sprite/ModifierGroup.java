@@ -16,11 +16,13 @@ import tuxkids.tuxblocks.core.solve.blocks.n.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.VerticalBlock;
 import tuxkids.tuxblocks.core.solve.blocks.n.VerticalGroup;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
+import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
-public abstract class ModifierGroup extends Sprite {
+public abstract class ModifierGroup extends Sprite implements Hashable {
 
 	protected abstract void updateChildren(float base, float dt);
-	protected abstract void updateRect(float base, float dt);
+	protected abstract void updateRect();
 	protected abstract ModifierGroup createModifiers();
 	protected abstract boolean canAdd(ModifierBlockSprite sprite);
 	
@@ -74,6 +76,19 @@ public abstract class ModifierGroup extends Sprite {
 		return modifiers.isModifiedVertically();
 	}
 	
+	protected void addVerticalModifiers(List<VerticalModifierSprite> mods) {
+		if (modifiers == null) return;
+		for (ModifierBlockSprite mod : modifiers.children) {
+			if (mod instanceof VerticalModifierSprite) {
+				mods.add((VerticalModifierSprite) mod);
+			} else {
+				break;
+			}
+		}
+		modifiers.addVerticalModifiers(mods);
+		
+	}
+	
 	protected void addModifiers() {
 		if (modifiers != null) return;
 		modifiers = createModifiers();
@@ -89,7 +104,20 @@ public abstract class ModifierGroup extends Sprite {
 	}
 	
 	protected void updateParentRect(Sprite parent) {
-		parentRect.setBounds(parent.x(), parent.y(), parent.width(), parent.height());
+		updateParentRect(parent.x(), parent.y(), parent.width(), parent.height());
+	}
+	
+	protected void updateParentRect(float x, float y, float width, float height) {
+		parentRect.setBounds(x, y, width, height);
+	}
+
+	public void snapChildren() {
+		updateRect();
+		updateChildren(0, 1);
+		if (modifiers != null) {
+			modifiers.updateParentRect(this);
+			modifiers.snapChildren();
+		}
 	}
 	
 	public void addBlockListenerListener(BlockListener listener) {
@@ -110,6 +138,7 @@ public abstract class ModifierGroup extends Sprite {
 		if (children.size() > 0) depth = children.get(children.size() - 1).layer().depth() - 1;
 		children.add(child);
 		layer.add(child.layer());
+		child.layer().setVisible(true);
 		child.layer().setDepth(depth);
 		child.group = this;
 		
@@ -157,13 +186,30 @@ public abstract class ModifierGroup extends Sprite {
 		if (modifiers == null && canAdd(sprite)) {
 			addChild(sprite);
 			if (snap) {
-				updateRect(0, 1);
+				updateRect();
 				updateChildren(0, 1);
 			}
 		} else {
 			if (modifiers == null) addModifiers();
+			if (snap) {
+				updateRect();
+			}
+			modifiers.updateParentRect(this);
 			modifiers.addModifier(sprite, snap);
 		}
+	}
+
+	public void addExpression(NumberBlockSprite sprite, boolean snap) {
+		if (modifiers != null) {
+			modifiers.addExpression(sprite, snap);
+		}
+	}
+	
+	public boolean canAddExpression(NumberBlockSprite sprite) {
+		if (modifiers != null) {
+			return modifiers.canAddExpression(sprite);
+		}
+		return false;
 	}
 	
 	@Override
@@ -196,7 +242,7 @@ public abstract class ModifierGroup extends Sprite {
 
 	@Override
 	public void paint(Clock clock) {
-		updateRect(lerpBase(), clock.dt());
+		updateRect();
 		updateChildren(lerpBase(), clock.dt());
 		for (ModifierBlockSprite sprite : children) {
 			sprite.paint(clock);
@@ -215,4 +261,9 @@ public abstract class ModifierGroup extends Sprite {
 		return out;
 	}
 
+	@Override
+	public void addFields(HashCode hashCode) {
+		hashCode.addField(children);
+		hashCode.addField(modifiers);
+	}
 }

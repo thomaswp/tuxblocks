@@ -1,6 +1,5 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
-import playn.core.util.Clock;
 
 public abstract class VerticalModifierSprite extends ModifierBlockSprite {
 
@@ -9,8 +8,13 @@ public abstract class VerticalModifierSprite extends ModifierBlockSprite {
 	}
 
 	@Override
-	protected void interpolateDefaultRect(Clock clock) {
-		interpolateRect(layer.tx(), layer.ty(), baseSize(), modSize(), lerpBase(), clock.dt());
+	protected float defaultWidth() {
+		return baseSize();
+	}
+	
+	@Override
+	protected float defaultHeight() {
+		return modSize();
 	}
 	
 	@Override
@@ -18,4 +22,12 @@ public abstract class VerticalModifierSprite extends ModifierBlockSprite {
 		if (group == null) return false;
 		return !group.isModifiedHorizontally();
 	}
+
+	public final ModifierBlockSprite copy() {
+		ModifierBlockSprite copy = copyChild();
+		copy.blockListener = blockListener;
+		return copy;
+	}
+	
+	protected abstract ModifierBlockSprite copyChild();
 }

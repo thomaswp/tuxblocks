@@ -1,13 +1,10 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import playn.core.GroupLayer;
-import playn.core.Image;
 import playn.core.Layer;
-import playn.core.Pointer.Listener;
+import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.solve.blocks.n.BaseBlock;
-import tuxkids.tuxblocks.core.solve.blocks.n.BlockGroup;
 
 public abstract class BaseBlockSprite extends BlockSprite {
 	
@@ -18,11 +15,26 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		return groupLayer;
 	}
 	
+	@Override
+	public Layer layer() {
+		return groupLayer;
+	}
+	
+	@Override
+	public float x() {
+		return layer.tx();
+	}
+	
+	@Override
+	public float y() {
+		return layer.ty();
+	}
+	
 	public BaseBlockSprite(String text) {
 		layer = generateNinepatch(text, Colors.WHITE);
 		layer.setSize(baseSize(), baseSize());
 		groupLayer = graphics().createGroupLayer();
-		groupLayer.add(layer());
+		groupLayer.add(layer.layerAddable());
 		
 		modifiers = new HorizontalModifierGroup(this);
 		groupLayer.add(modifiers.layer());
@@ -33,6 +45,22 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		modifiers.addBlockListenerListener(listener);
 	}
 	
+	@Override
+	protected float defaultWidth() {
+		return baseSize();
+	}
+	
+	@Override
+	protected float defaultHeight() {
+		return baseSize();
+	}
+	
+	@Override
+	protected boolean canRelease(boolean openSpace) {
+		return false;
+	}
+	
+	@Override
 	public boolean contains(float gx, float gy) {
 		float x = gx - getGlobalTx(groupLayer);
 		float y = gy - getGlobalTy(groupLayer);
@@ -62,8 +90,16 @@ public abstract class BaseBlockSprite extends BlockSprite {
 
 	@Override
 	public void paint(Clock clock) {
-		modifiers.updateParentRect(this);
+		interpolateDefaultRect(clock);
+		modifiers.updateParentRect(x(), y(), defaultWidth(), defaultHeight());
 		modifiers.paint(clock);
+	}
+	
+
+
+	public void snapChildren() {
+		modifiers.updateParentRect(this);
+		modifiers.snapChildren();
 	}
 	
 	public String hierarchy() {
@@ -72,9 +108,9 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	
 	public interface BlockListener {
 
-		void wasGrabbed(ModifierBlockSprite sprite, float gx, float gy);
-		boolean wasReleased(ModifierBlockSprite sprite, float gx, float gy);
-		void wasMoved(ModifierBlockSprite sprite, float gx, float gy);
+		void wasGrabbed(BlockSprite sprite, Event event);
+		void wasReleased(Event event);
+		void wasMoved(Event event);
 		
 	}
 
@@ -84,5 +120,22 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	
 	public void addModifier(ModifierBlockSprite sprite, boolean snap) {
 		modifiers.addModifier(sprite, snap);
+	}
+
+	public boolean canAccept(BlockSprite sprite) {
+		if (sprite instanceof ModifierBlockSprite) {
+			return true;
+		} else if (sprite instanceof NumberBlockSprite) {
+			return modifiers.canAddExpression((NumberBlockSprite) sprite);
+		}
+		return false;
+	}
+
+	public void addBlock(BlockSprite sprite, boolean snap) {
+		if (sprite instanceof ModifierBlockSprite) {
+			addModifier((ModifierBlockSprite) sprite, snap);
+		} else if (sprite instanceof NumberBlockSprite) {
+			modifiers.addExpression((NumberBlockSprite) sprite, snap);
+		}
 	}
 }

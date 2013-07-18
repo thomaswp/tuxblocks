@@ -5,22 +5,13 @@ import playn.core.Layer;
 import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;
 
-public class ImageLayerWrapper implements ImageLayerLike {
+public class ImageLayerWrapper extends LayerWrapper implements ImageLayerLike {
 
 	private ImageLayer layer;
 	
 	public ImageLayerWrapper(ImageLayer layer) {
+		super(layer);
 		this.layer = layer;
-	}
-	
-	@Override
-	public Layer layerAddable() {
-		return layer;
-	}
-
-	@Override
-	public void setTranslation(float x, float y) {
-		layer.setTranslation(x, y);
 	}
 
 	@Override
@@ -29,33 +20,23 @@ public class ImageLayerWrapper implements ImageLayerLike {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
-		layer.setVisible(visible);
+	public void setWidth(float width) {
+		layer.setWidth(width);
 	}
 
 	@Override
-	public void setTint(int tint) {
-		layer.setTint(tint);
+	public void setHeight(float height) {
+		layer.setHeight(height);
 	}
 
 	@Override
-	public void setTint(int baseColor, int tintColor, float perc) {
-		setTint(Colors.blend(baseColor, tintColor, perc));
+	public float width() {
+		return layer.width();
 	}
 
 	@Override
-	public void addListener(Listener pointerListener) {
-		layer.addListener(pointerListener);
-	}
-
-	@Override
-	public float tx() {
-		return layer.tx();
-	}
-
-	@Override
-	public float ty() {
-		return layer.ty();
+	public float height() {
+		return layer.height();
 	}
 
 }

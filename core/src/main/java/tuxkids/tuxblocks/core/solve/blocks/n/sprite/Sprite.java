@@ -7,11 +7,11 @@ import tuxkids.tuxblocks.core.PlayNObject;
 public abstract class Sprite extends PlayNObject {
 	
 	protected static int baseSize() {
-		return 150;
+		return 100;
 	}
 	
 	protected static int modSize() {
-		return 50;
+		return 40;
 	}
 	
 	protected static int wrapSize() {
@@ -19,7 +19,7 @@ public abstract class Sprite extends PlayNObject {
 	}
 	
 	protected static float lerpBase() {
-		return 0.99f;
+		return 0.992f;
 	}
 	
 	public abstract Layer layer();
@@ -48,6 +48,14 @@ public abstract class Sprite extends PlayNObject {
 	
 	public float bottom() {
 		return y() + height();
+	}
+	
+	public float centerX() {
+		return x() + width() / 2;
+	}
+	
+	public float centerY() {
+		return y() + height() / 2;
 	}
 	
 	public boolean contains(float x, float y) {
