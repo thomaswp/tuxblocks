@@ -17,21 +17,45 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 	protected boolean canRelease;
 	protected ModifierGroup group;
 	protected int value;
+	protected ModifierBlockSprite inverse;
 	
 	protected abstract String operator();
+	protected abstract ModifierBlockSprite inverseChild();
+	protected abstract ModifierBlockSprite copyChild();
 	
 	public ModifierGroup group() {
 		return group;
 	}
 	
+	public final ModifierBlockSprite inverse() {
+		return inverse;
+	}
+	
 	public ModifierBlockSprite(int value) {
 		this.value = value;
+		inverse = inverseChild();
 		layer = generateNinepatch(text(), Colors.WHITE);
+	}
+	
+	protected ModifierBlockSprite(ModifierBlockSprite inverse) {
+		this.value = inverse.value;
+		this.inverse = inverse;
+		layer = generateNinepatch(text(), Colors.WHITE);
+		if (inverse.blockListener != null) {
+			addBlockListener(inverse.blockListener);
+		}
+	}
+	
+	public final ModifierBlockSprite copy() {
+		ModifierBlockSprite copy = copyChild();
+		copy.addBlockListener(blockListener);
+		return copy;
 	}
 	
 	@Override
 	public void update(int delta) {
-		if (canRelease != canRelease(true)) {
+		super.update(delta);
+		if (canRelease != canRelease(multiExpression)) {
 			canRelease = !canRelease;
 			if (!canRelease) {
 				layer.setTint(Colors.WHITE);
@@ -50,24 +74,40 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 		}
 	}
 	
-//	private void updateTranslation() {
-//		dragging.layer().setTranslation(lastTouchX - dragOffX * dragging.width(), 
-//				lastTouchY - dragOffY * height());
-//		blockListener.wasMoved(dragging, dragging.centerX(), dragging.centerY());
-//	}
+	@Override
+	public void addBlockListener(BlockListener listener) {
+		super.addBlockListener(listener);
+		if (listener != null && inverse.blockListener == null) {
+			inverse.addBlockListener(listener);
+		}
+	}
 	
 	@Override
 	public void remove() {
 		group = null;
 	}
 
-	
+	@Override
 	public String text() {
 		return operator() + value;
+	}
+	
+	public boolean canSimplify() {
+		if (group == null) return false;
+		return group.children.contains(inverse);
+	}
+
+	public boolean canAddInverse() {
+		if (group == null) return false;
+		return !canSimplify() && group.modifiers == null;
 	}
 	
 	@Override
 	public void addFields(HashCode hashCode) {
 		hashCode.addField(value);
+	}
+	
+	public void destroy() {
+		layer().destroy();
 	}
 }

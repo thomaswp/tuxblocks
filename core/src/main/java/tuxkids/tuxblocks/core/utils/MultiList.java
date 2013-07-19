@@ -1,9 +1,10 @@
 package tuxkids.tuxblocks.core.utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class MultiList<T> {
+public class MultiList<T> implements Iterable<T> {
 	private List<List<? extends T>> lists = new ArrayList<List<? extends T>>();
 
 	public MultiList(List<? extends T>... lists) {
@@ -51,5 +52,31 @@ public class MultiList<T> {
 			index -= list.size();
 		}
 		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new MultiIterator();
+	}
+	
+	private class MultiIterator implements Iterator<T> {
+
+		int index;
+		
+		@Override
+		public boolean hasNext() {
+			return index < size();
+		}
+
+		@Override
+		public T next() {
+			return get(index++);
+		}
+
+		@Override
+		public void remove() {
+			MultiList.this.remove(get(index));
+		}
+		
 	}
 }

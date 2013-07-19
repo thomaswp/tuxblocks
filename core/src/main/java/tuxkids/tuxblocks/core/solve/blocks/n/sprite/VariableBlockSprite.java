@@ -20,5 +20,15 @@ public class VariableBlockSprite extends BaseBlockSprite {
 	public void addFields(HashCode hashCode) {
 		hashCode.addField(symbol);
 	}
+	
+	@Override
+	public boolean canRelease(boolean multiExpression) {
+		return false;
+	}
+
+	@Override
+	public BlockSprite inverse() {
+		return null;
+	}
 
 }

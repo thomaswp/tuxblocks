@@ -3,9 +3,6 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 import java.util.ArrayList;
 import java.util.List;
 
-import tuxkids.tuxblocks.core.solve.blocks.n.BlockGroup;
-import tuxkids.tuxblocks.core.solve.blocks.n.HorizontalGroup;
-
 public class HorizontalModifierGroup extends ModifierGroup {
 
 	
@@ -138,5 +135,36 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			return sharedMods; // return the mods shared by the two sprites
 		}
 		return null;
+	}
+
+	@Override
+	protected void updateSimplify() {
+		for (int i = 1; i < children.size(); i++) {
+			ModifierBlockSprite sprite = children.get(i);
+			ModifierBlockSprite before = children.get(i - 1);
+			if (sprite.inverse().equals(before)) {
+				getSimplifyButton(sprite).setTranslation(sprite.x(), sprite.centerY());
+			}
+		}
+	}
+
+	@Override
+	protected void simplify(ModifierBlockSprite sprite) {
+		for (int i = 1; i < children.size(); i++) {
+			if (sprite != children.get(i)) continue;
+			ModifierBlockSprite before = children.get(i - 1);
+			removeChild(sprite, true);
+			removeChild(before, true);
+		}
+	}
+	
+	@Override
+	public void addNegative() {
+		if (modifiers != null) {
+			modifiers.addNegative();
+		} else {
+			addNewModifiers();
+			modifiers.addNegative();
+		}
 	}
 }

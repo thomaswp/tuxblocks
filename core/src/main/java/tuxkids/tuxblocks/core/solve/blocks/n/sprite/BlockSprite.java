@@ -19,13 +19,19 @@ import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
 public abstract class BlockSprite extends Sprite implements Hashable {
 
+	private final static int DOUBLE_CLICK = 500;
+	
 	protected ImageLayerLike layer;
 	protected BlockListener blockListener;
+	protected boolean multiExpression = true;
+	
 	private boolean dragging;
+	private int doubleClickTime;
 	
 	protected static TextFormat textFormat;
 	protected static Factory factory;
@@ -34,6 +40,7 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	protected abstract float defaultWidth();
 	protected abstract float defaultHeight();
 	protected abstract boolean canRelease(boolean multiExpression);
+	public abstract BlockSprite inverse();
 	
 	public BlockSprite() {
 		if (textFormat == null) {
@@ -81,16 +88,31 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 		return new BlockLayer(text, 10, 10);
 	}
 	
+	public void update(int delta) {
+		if (doubleClickTime > 0) {
+			doubleClickTime = Math.max(0, doubleClickTime - delta);
+		}
+	}
+	
+	public void update(int delta, boolean multiExpression) {
+		this.multiExpression = multiExpression;
+		update(delta);
+	}
+	
 	public void addBlockListener(BlockListener listener) {
-		if (blockListener != null) return;
+		if (listener == null || blockListener != null) return;
 		blockListener = listener;
 		layer.addListener(new Listener() {
 			
 			@Override
 			public void onPointerStart(Event event) {
-				if (canRelease(true)) {
+				if (canRelease(multiExpression)) {
 					dragging = true;
 					blockListener.wasGrabbed(BlockSprite.this, event);
+				} else if (doubleClickTime == 0) {
+					doubleClickTime = DOUBLE_CLICK;
+				} else {
+					blockListener.wasDoubleClicked(BlockSprite.this, event);
 				}
 			}
 			
@@ -126,5 +148,13 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	}
 	
 	public void remove() {
+	}
+	
+	public void showInverse() {
+		layer.setVisible(false);
+		BlockSprite inverse = inverse();
+		inverse.layer.setVisible(true);
+		inverse.interpolateRect(x(), y(), width(), height(), 0, 1);
+		inverse.layer().setTranslation(layer().tx(), layer().ty());
 	}
 }

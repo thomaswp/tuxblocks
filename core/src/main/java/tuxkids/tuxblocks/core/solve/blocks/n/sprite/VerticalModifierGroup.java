@@ -3,12 +3,6 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 import java.util.ArrayList;
 import java.util.List;
 
-import tuxkids.tuxblocks.core.solve.blocks.n.TimesBlock;
-import tuxkids.tuxblocks.core.solve.blocks.n.VerticalBlock;
-import tuxkids.tuxblocks.core.solve.blocks.n.VerticalGroup;
-import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
-
 public class VerticalModifierGroup extends ModifierGroup {
 
 	protected List<ModifierBlockSprite> timesBlocks;
@@ -87,5 +81,58 @@ public class VerticalModifierGroup extends ModifierGroup {
 	@Override
 	protected boolean canAdd(ModifierBlockSprite sprite) {
 		return sprite instanceof VerticalModifierSprite;
+	}
+
+	@Override
+	protected void updateSimplify() {
+		for (int i = 0; i < timesBlocks.size(); i++) {
+			ModifierBlockSprite sprite = timesBlocks.get(i);
+			if (divBlocks.contains(sprite.inverse())) {
+				getSimplifyButton(sprite).setTranslation(sprite.x() + wrapSize() / 2, sprite.bottom());
+			}
+			// cancel *-1's
+			if (i > 0) {
+				if (timesBlocks.get(i - 1).equals(sprite.inverse())) {
+					getSimplifyButton(sprite).setTranslation(sprite.centerX(), sprite.y() + modSize());
+				}
+			}
+		}
+	}
+
+	@Override
+	protected void simplify(ModifierBlockSprite sprite) {
+		for (int i = 0; i < timesBlocks.size(); i++) {
+			if (timesBlocks.get(i) != sprite) continue;
+			int index = divBlocks.lastIndexOf(sprite.inverse());
+			ModifierBlockSprite pair;
+			if (index < 0) {
+				// doing some funky stuff here so that *-1 cancels out *-1
+				index = timesBlocks.indexOf(sprite.inverse());
+				if (index == i) index = timesBlocks.lastIndexOf(sprite.inverse());
+				if (index == i || index < 0) return;
+				pair = timesBlocks.get(index);
+			} else {
+				pair = divBlocks.get(index);
+			}
+			removeChild(sprite, true);
+			removeChild(pair, true);
+		}
+	}
+
+	@Override
+	public void addNegative() {
+		if (modifiers != null) {
+			modifiers.addNegative();
+		} else {
+			for (int i = 0; i < timesBlocks.size(); i++) {
+				ModifierBlockSprite mod = timesBlocks.get(i);
+				if (mod.value == -1) {
+					removeChild(mod, true);
+					return;
+				}
+			}
+			TimesBlockSprite neg = new TimesBlockSprite(-1);
+			addChild(neg);
+		}
 	}
 }

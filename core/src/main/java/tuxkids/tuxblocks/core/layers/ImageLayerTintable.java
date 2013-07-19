@@ -21,8 +21,6 @@ import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
-
-	private static final boolean DISABLE_GL = !GLStatus.enabled();
 	
 	private GroupLayer layer;
 	
@@ -34,7 +32,7 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 	private HashMap<Integer, Image> tintMap = new HashMap<Integer, Image>();
 
 	private boolean useGL() {
-		return !DISABLE_GL && graphics().ctx() != null;
+		return GLStatus.enabled();
 	}
 	
 	public float width() {

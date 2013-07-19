@@ -12,10 +12,35 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 	public TimesBlockSprite(int value) {
 		super(value);
 	}
+	
+	protected TimesBlockSprite(OverBlockSprite inverse) {
+		super(inverse);
+	}
+	
+	protected TimesBlockSprite(TimesBlockSprite inverse) {
+		super(inverse);
+	}
 
 	@Override
 	protected String operator() {
 		return "\u00D7";
+	}
+	
+	@Override
+	public String text() {
+		if (value == -1) {
+			return "-";
+		} else {
+			return super.text();
+		}
+	}
+	
+	public boolean canSimplify() {
+		if (value == -1) {
+			if (group == null) return false;
+			return group.children.lastIndexOf(inverse) != group.children.indexOf(inverse);
+		}
+		return super.canSimplify();
 	}
 
 	protected NinepatchLayer generateNinepatch(String text, int color) {
@@ -23,11 +48,11 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 		
 		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);
 		int legs = wrapSize();
-		int sides = 2;
+		int sides = 3;
 		int width = legs * 2 + sides * 2 + (int)layout.width() + 2;
 		int height = modSize() + sides * 2;
 		
-		int[] widthDims = new int[] { legs + 1, sides - 1, width - legs * 2 - sides * 2, sides - 1, legs + 1 };
+		int[] widthDims = new int[] { legs + 2, sides - 2, width - legs * 2 - sides * 2, sides - 2, legs + 2 };
 		int[] heightDims;
 		if (times) {
 			heightDims = new int[] { modSize() + 1, sides - 1, sides };
@@ -75,11 +100,22 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 		image.canvas().fillText(layout, textX, textY);
 		
 		NinepatchLayer ninePatch = new NinepatchLayer(factory, image, widthDims, heightDims);
+		for (int i = 1; i < 3; i++) {
+			for (int j = 1; j < 4; j++) {
+				ninePatch.setTouchEnabled(i, j, false);
+			}
+		}
 		return ninePatch;
 	}
 
 	@Override
 	public ModifierBlockSprite copyChild() {
 		return new TimesBlockSprite(value);
+	}
+
+	@Override
+	protected ModifierBlockSprite inverseChild() {
+		if (value == -1) return new TimesBlockSprite(this);
+		return new OverBlockSprite(this);
 	}
 }

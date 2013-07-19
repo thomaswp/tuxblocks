@@ -6,6 +6,10 @@ public abstract class VerticalModifierSprite extends ModifierBlockSprite {
 	public VerticalModifierSprite(int value) {
 		super(value);
 	}
+	
+	public VerticalModifierSprite(VerticalModifierSprite inverse) {
+		super(inverse);
+	}
 
 	@Override
 	protected float defaultWidth() {
@@ -22,12 +26,4 @@ public abstract class VerticalModifierSprite extends ModifierBlockSprite {
 		if (group == null) return false;
 		return !multiExpression && !group.isModifiedHorizontally();
 	}
-
-	public final ModifierBlockSprite copy() {
-		ModifierBlockSprite copy = copyChild();
-		copy.addBlockListener(blockListener);
-		return copy;
-	}
-	
-	protected abstract ModifierBlockSprite copyChild();
 }

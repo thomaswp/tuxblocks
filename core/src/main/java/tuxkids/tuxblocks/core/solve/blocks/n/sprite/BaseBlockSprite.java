@@ -40,10 +40,11 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		layer.setInteractive(true);
 		groupLayer = graphics().createGroupLayer();
 		groupLayer.add(layer.layerAddable());
+		layer.layerAddable().setDepth(ModifierGroup.CHILD_START_DEPTH);
 		
 		modifiers = new HorizontalModifierGroup(this);
 		groupLayer.add(modifiers.layer());
-		modifiers.layer().setDepth(-Float.MAX_VALUE);
+		modifiers.layer().setDepth(ModifierGroup.MODIFIERS_DEPTH);
 	}
 
 	@Override
@@ -81,14 +82,14 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		groupLayer.setAlpha(preview ? 1f : 0.5f);
 	}
 	
-	@Override
 	public void update(int delta) {
-		modifiers.update(delta);
+		super.update(delta);
+		modifiers.update(delta, multiExpression);
 		ModifierGroup newMods = modifiers.updateParentModifiers();
 		if (newMods != modifiers) {
 			if (newMods != null) {
 				groupLayer.add(newMods.layer());
-				newMods.layer().setDepth(modifiers.layer().depth());
+				newMods.layer().setDepth(ModifierGroup.MODIFIERS_DEPTH);
 				modifiers.layer().destroy();
 				modifiers = (HorizontalModifierGroup)newMods;
 			}
@@ -118,6 +119,7 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		void wasGrabbed(BlockSprite sprite, Event event);
 		void wasReleased(Event event);
 		void wasMoved(Event event);
+		void wasDoubleClicked(BlockSprite sprite, Event event);
 		
 	}
 
@@ -147,7 +149,7 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	}
 	
 	public boolean equals(Object o) {
-		return this == o;
+		return this == o; //For the sake of lists of these, it's important to use object equality
 	}
 
 	public float totalWidth() {
@@ -156,5 +158,13 @@ public abstract class BaseBlockSprite extends BlockSprite {
 
 	public float offsetX() {
 		return modifiers.offsetX();
+	}
+	
+	@Override
+	public void showInverse() {
+		super.showInverse();
+		BaseBlockSprite inverse = (BaseBlockSprite) inverse();
+		inverse.modifiers = modifiers;
+		inverse.groupLayer.add(modifiers.layer());
 	}
 }

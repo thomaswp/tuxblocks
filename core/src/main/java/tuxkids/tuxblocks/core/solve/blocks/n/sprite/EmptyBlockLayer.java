@@ -8,7 +8,7 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
 public class EmptyBlockLayer extends BlockLayer {
 
 	public EmptyBlockLayer(float width, float height) {
-		super("", width, height);
+		super(" ", width, height);
 		borderWidth = 3;
 		updateSize();
 	}

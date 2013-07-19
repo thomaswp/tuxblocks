@@ -6,6 +6,11 @@ public class NumberBlockSprite extends BaseBlockSprite {
 
 	protected int value;
 	
+	@Override
+	public NumberBlockSprite inverse() {
+		return this;
+	}
+	
 	public NumberBlockSprite(int value) {
 		super("" + value);
 		this.value = value;
@@ -21,7 +26,7 @@ public class NumberBlockSprite extends BaseBlockSprite {
 		if (value >= 0) {
 			proxy = alignProxy(new PlusBlockSprite(value));
 		} else {
-			proxy = alignProxy(new MinusBlockSprite(value));
+			proxy = alignProxy(new MinusBlockSprite(-value));
 		}
 		proxy.addBlockListener(blockListener);
 		return proxy;
@@ -37,4 +42,13 @@ public class NumberBlockSprite extends BaseBlockSprite {
 		hashCode.addField(value);
 	}
 
+	@Override
+	public void showInverse() {
+		if ((modifiers.modifiers == null || modifiers.modifiers.modifiers == null) && modifiers.children.size() == 0) {
+			value = -value;
+			((BlockLayer) layer).setText("" + value);
+		} else {
+			modifiers.addNegative();
+		}
+	}
 }

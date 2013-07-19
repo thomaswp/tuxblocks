@@ -6,12 +6,18 @@ import tuxkids.tuxblocks.core.utils.HashCode;
 public class BlockHolder extends BaseBlockSprite {
 
 	public BlockHolder() {
-		super("");
+		super(" ");
+		clearPreview();
+	}
+	
+	@Override
+	public void clearPreview() {
+		groupLayer.setAlpha(0.5f);
 	}
 
 	@Override
 	protected String text() {
-		return "";
+		return " ";
 	}
 
 	@Override
@@ -22,6 +28,7 @@ public class BlockHolder extends BaseBlockSprite {
 	@Override
 	public void addFields(HashCode hashCode) { }
 	
+	@Override
 	protected ImageLayerLike generateNinepatch(String text, int color) {
 		return new EmptyBlockLayer(10, 10);
 	}
@@ -39,5 +46,10 @@ public class BlockHolder extends BaseBlockSprite {
 	@Override
 	public void addBlockListener(BlockListener listener) {
 		
+	}
+
+	@Override
+	public BlockSprite inverse() {
+		return null;
 	}
 }

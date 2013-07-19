@@ -15,6 +15,7 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	private Factory factory;
 	private GroupLayer layer;
 	private ImageLayerLike[][] imageLayers;
+	private boolean[][] touchDisabled;
 	private int[] widthDims, heightDims;
 	private int imageWidth, imageHeight;
 	private float width, height;
@@ -66,6 +67,13 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	public void setVisible(boolean visible) {
 		layer.setVisible(visible);
 	}
+	
+	public void setTouchEnabled(int row, int col, boolean enabled) {
+		if (imageLayers[row][col] != null) {
+			imageLayers[row][col].setInteractive(enabled);
+		}
+		touchDisabled[row][col] = !enabled;
+	}
 
 	public NinepatchLayer(Factory factory, Image image) {
 		this(factory, image, null, null);
@@ -116,6 +124,7 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 		this.heightDims = heightDims;
 		
 		imageLayers = new ImageLayerLike[heightDims.length][widthDims.length];
+		touchDisabled = new boolean[heightDims.length][widthDims.length];
 		int y = 0;
 		for (int i = 0; i < heightDims.length; i++) {
 			int x = 0;
@@ -229,7 +238,7 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	public void addListener(Listener pointerListener) {
 		for (int i = 0; i < heightDims.length; i++) {
 			for (int j = 0; j < widthDims.length; j++) {
-				if (imageLayers[i][j] != null) {
+				if (imageLayers[i][j] != null && !touchDisabled[i][j]) {
 					imageLayers[i][j].addListener(pointerListener);
 				}
 			}

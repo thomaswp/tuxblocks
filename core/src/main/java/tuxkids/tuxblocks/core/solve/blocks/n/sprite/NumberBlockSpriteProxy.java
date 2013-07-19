@@ -14,4 +14,9 @@ public class NumberBlockSpriteProxy extends NumberBlockSprite {
 		this.proxyFor = proxyFor;
 	}
 
+	@Override
+	public void showInverse() {
+		super.showInverse();
+		proxyFor = (HorizontalModifierSprite) proxyFor.inverse();
+	}
 }

@@ -5,6 +5,10 @@ public class OverBlockSprite extends VerticalModifierSprite {
 	public OverBlockSprite(int value) {
 		super(value);
 	}
+	
+	public OverBlockSprite(TimesBlockSprite inverse) {
+		super(inverse);
+	}
 
 	@Override
 	protected String operator() {
@@ -14,6 +18,11 @@ public class OverBlockSprite extends VerticalModifierSprite {
 	@Override
 	public ModifierBlockSprite copyChild() {
 		return new OverBlockSprite(value);
+	}
+
+	@Override
+	protected ModifierBlockSprite inverseChild() {
+		return new TimesBlockSprite(this);
 	}
 
 }

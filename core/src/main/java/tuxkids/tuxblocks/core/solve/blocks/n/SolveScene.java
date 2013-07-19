@@ -18,6 +18,7 @@ import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController.Side;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockSprite;
@@ -45,7 +46,7 @@ public class SolveScene extends GameScreen {
 		
 		BaseBlockSprite sprite = new VariableBlockSprite("x");
 		sprite.addModifier(new PlusBlockSprite(3));
-		sprite.addModifier(new MinusBlockSprite(4));
+		sprite.addModifier(new MinusBlockSprite(3));
 		sprite.addModifier(new TimesBlockSprite(5));
 		sprite.addModifier(new OverBlockSprite(6));
 		sprite.addModifier(new PlusBlockSprite(7));
@@ -55,12 +56,12 @@ public class SolveScene extends GameScreen {
 		
 		
 		BaseBlockSprite sprite1 = sprite;
-		controller.addExpression(sprite1, 100, 200);
+		controller.addExpression(Side.Left, sprite1);
 		
 		BaseBlockSprite sprite2 = new NumberBlockSprite(5);
-		controller.addExpression(sprite2, 600, 200);
+		controller.addExpression(Side.Right, sprite2);
 		
-		controller.addExpression(new BlockHolder(), 450, 200);
+		controller.addExpression(Side.Left, new BlockHolder());
 		
 //		int sideWidth = 6; int baseHeight = 50;
 //		int middle = 20;

@@ -10,6 +10,10 @@ public abstract class HorizontalModifierSprite extends ModifierBlockSprite {
 		super(value);
 	}
 	
+	protected HorizontalModifierSprite (HorizontalModifierSprite inverse) {
+		super(inverse);
+	}
+	
 	protected abstract int getPlusValue();
 
 	@Override

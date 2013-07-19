@@ -65,6 +65,12 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 		centerLayer.setTint(baseColor, tintColor, perc);
 	}
 	
+
+	public void setText(String text) {
+		this.text = text;
+		refreshTextLayer();
+	}
+	
 	public BlockLayer(String text, float width, float height) {
 		super(graphics().createGroupLayer());
 		layer = (GroupLayer) super.layerAddable();
@@ -97,6 +103,7 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 	}
 	
 	protected void refreshTextLayer() {
+		if (textLayer != null) textLayer.destroy();
 		textLayer = graphics().createImageLayer(CanvasUtils.createString(textFormat, text, Colors.BLACK));
 		centerImageLayer(textLayer);
 		textLayer.setDepth(1);
