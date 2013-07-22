@@ -9,6 +9,8 @@ import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 
 public abstract class BaseBlockSprite extends BlockSprite {
 	
@@ -113,22 +115,13 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	public String hierarchy() {
 		return toString() + "\n" + modifiers.hierarchy(1);
 	}
-	
-	public interface BlockListener {
 
-		void wasGrabbed(BlockSprite sprite, Event event);
-		void wasReleased(Event event);
-		void wasMoved(Event event);
-		void wasDoubleClicked(BlockSprite sprite, Event event);
-		
-	}
-
-	public void addModifier(ModifierBlockSprite sprite) {
-		addModifier(sprite, true);
+	public ModifierBlockSprite addModifier(ModifierBlockSprite sprite) {
+		return addModifier(sprite, true);
 	}
 	
-	public void addModifier(ModifierBlockSprite sprite, boolean snap) {
-		modifiers.addModifier(sprite, snap);
+	public ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap) {
+		return modifiers.addModifier(sprite, snap);
 	}
 
 	public boolean canAccept(BlockSprite sprite) {
@@ -140,16 +133,23 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		return false;
 	}
 
-	public void addBlock(BlockSprite sprite, boolean snap) {
+	public ModifierBlockSprite addBlock(BlockSprite sprite, boolean snap) {
 		if (sprite instanceof ModifierBlockSprite) {
-			addModifier((ModifierBlockSprite) sprite, snap);
+			return addModifier((ModifierBlockSprite) sprite, snap);
 		} else if (sprite instanceof NumberBlockSprite) {
-			modifiers.addExpression((NumberBlockSprite) sprite, snap);
+			return modifiers.addExpression((NumberBlockSprite) sprite, snap);
 		}
+		return null;
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		return this == o; //For the sake of lists of these, it's important to use object equality
+	}
+	
+	@Override
+	public int hashCode() {
+		return nativeHashCode(); //For the sake of lists of these, it's important to use object equality
 	}
 
 	public float totalWidth() {
@@ -166,5 +166,31 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		BaseBlockSprite inverse = (BaseBlockSprite) inverse();
 		inverse.modifiers = modifiers;
 		inverse.groupLayer.add(modifiers.layer());
+	}
+	
+	public Renderer createRenderer() {
+		return modifiers.createRenderer(new BaseRenderer(text()));
+	}
+	
+	public Renderer createRendererWith(BlockSprite sprite) {
+		GroupLayer parent = sprite.layer().parent();
+		ModifierBlockSprite toRemove = addBlock(sprite, false);
+		Renderer renderer = modifiers.createRenderer(new BaseRenderer(text()));
+		toRemove.group.removeChild(toRemove);
+		if (toRemove == sprite) {
+			if (parent != null) parent.add(sprite.layer());
+		} else {
+			toRemove.destroy();	
+		}
+		return renderer;
+	}
+	
+	public interface BlockListener {
+
+		void wasGrabbed(BlockSprite sprite, Event event);
+		void wasReleased(Event event);
+		void wasMoved(Event event);
+		void wasDoubleClicked(BlockSprite sprite, Event event);
+		
 	}
 }

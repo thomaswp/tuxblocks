@@ -117,8 +117,12 @@ public class CanvasUtils extends PlayNObject {
 	}
 
 	public static Image createString(TextFormat format, String text, int color) {
+		if (text == null) return null;
+		if (text.isEmpty()) PlayN.log().warn("Creating image with empty String.");
 		TextLayout layout =  graphics().layoutText(text, format);
-		CanvasImage image = graphics().createImage(layout.width(), layout.height());
+		float width = Math.max(layout.width(), 1);
+		float height = Math.max(layout.height(), 1);
+		CanvasImage image = graphics().createImage(width, height);
 		image.canvas().setFillColor(color);
 		image.canvas().fillText(layout, 0, 0);
 		return image;

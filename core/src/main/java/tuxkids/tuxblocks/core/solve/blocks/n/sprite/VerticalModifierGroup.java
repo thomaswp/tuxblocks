@@ -3,6 +3,10 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.OverGroupRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.TimesGroupRenderer;
+
 public class VerticalModifierGroup extends ModifierGroup {
 
 	protected List<ModifierBlockSprite> timesBlocks;
@@ -88,7 +92,8 @@ public class VerticalModifierGroup extends ModifierGroup {
 		for (int i = 0; i < timesBlocks.size(); i++) {
 			ModifierBlockSprite sprite = timesBlocks.get(i);
 			if (divBlocks.contains(sprite.inverse())) {
-				getSimplifyButton(sprite).setTranslation(sprite.x() + wrapSize() / 2, sprite.bottom());
+				//getSimplifyButton(sprite).setTranslation(sprite.x() + wrapSize() / 2, sprite.bottom());
+				getSimplifyButton(sprite).setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
 			}
 			// cancel *-1's
 			if (i > 0) {
@@ -133,6 +138,31 @@ public class VerticalModifierGroup extends ModifierGroup {
 			}
 			TimesBlockSprite neg = new TimesBlockSprite(-1);
 			addChild(neg);
+		}
+	}
+
+	@Override
+	protected Renderer createRenderer(Renderer base) {
+		if (children.size() > 0) {
+			if (timesBlocks.size() > 0) {
+				int[] operands = new int[timesBlocks.size()];
+				for (int i = 0; i < operands.length; i++) {
+					operands[i] = timesBlocks.get(i).value;
+				}
+				base = new TimesGroupRenderer(base, operands);
+			}
+			if (divBlocks.size() > 0) {
+				int[] operands = new int[divBlocks.size()];
+				for (int i = 0; i < operands.length; i++) {
+					operands[i] = divBlocks.get(i).value;
+				}
+				base = new OverGroupRenderer(base, operands);
+			}
+		}
+		if (modifiers == null) {
+			return base;
+		} else {
+			return modifiers.createRenderer(base);
 		}
 	}
 }

@@ -3,6 +3,10 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.AddGroupRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
+
 public class HorizontalModifierGroup extends ModifierGroup {
 
 	
@@ -15,7 +19,6 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		float x = parentRect.maxX();
 		for (ModifierBlockSprite child : children) {
 			child.interpolateRect(x, parentRect.y, modSize(), parentRect.height, base, dt);
-			//x = child.right();
 			x += modSize();
 		}
 	}
@@ -39,7 +42,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	public boolean addExpression(NumberBlockSprite sprite, boolean snap) {	
+	public ModifierBlockSprite addExpression(NumberBlockSprite sprite, boolean snap) {	
 		List<VerticalModifierSprite> sharedMods = getSharedModifiersForAdd(sprite);
 		if (sharedMods == null) {
 			return super.addExpression(sprite, snap);
@@ -51,17 +54,21 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			outsideModifiers = sprite.modifiers.modifiers.modifiers.children;
 		}
 		
+		ModifierBlockSprite proxy;
 		if (modifiers == null || sharedMods.size() == modifiers.children.size()) {
-			addChild(sprite.proxyFor());
+			addChild(proxy = sprite.proxyFor());
 			for (ModifierBlockSprite mod : sprite.modifiers.children) addChild(mod);
+			return proxy;
+			
 		} else {
-			if (super.addExpression(sprite, snap)) {
-				return true;
+			ModifierBlockSprite superMod;
+			if ((superMod = super.addExpression(sprite, snap)) != null) {
+				return superMod;
 			}
 			
 			ModifierGroup modMods = modifiers.removeModifiers();
 			modifiers.addNewModifiers();
-			modifiers.modifiers.addChild(sprite.proxyFor());
+			modifiers.modifiers.addChild(proxy = sprite.proxyFor());
 			for (ModifierBlockSprite mod : sprite.modifiers.children) {
 				modifiers.modifiers.addChild(mod);
 			}
@@ -82,7 +89,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		if (snap) snapChildren(); //TODO: maybe better implementation, if I ever use this option
 		sprite.layer().destroy();
 		
-		return true;
+		return proxy;
 	}
 
 	public boolean canAddExpression(NumberBlockSprite sprite) {
@@ -165,6 +172,22 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		} else {
 			addNewModifiers();
 			modifiers.addNegative();
+		}
+	}
+
+	@Override
+	protected Renderer createRenderer(Renderer base) {
+		if (children.size() != 0) {
+			int[] operands = new int[children.size()];
+			for (int i = 0; i < operands.length; i++) {
+				operands[i] = ((HorizontalModifierSprite) children.get(i)).getPlusValue();
+			}
+			base = new AddGroupRenderer(base, operands);
+		}
+		if (modifiers == null) {
+			return base;
+		} else {
+			return modifiers.createRenderer(base);
 		}
 	}
 }

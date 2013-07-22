@@ -13,6 +13,7 @@ import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import pythagoras.f.Rectangle;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.HashCode;
@@ -30,6 +31,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 	protected abstract boolean canAdd(ModifierBlockSprite sprite);
 	protected abstract void updateSimplify();
 	protected abstract void simplify(ModifierBlockSprite sprite);
+	protected abstract Renderer createRenderer(Renderer base);
 	public abstract void addNegative();
 	
 	protected GroupLayer layer;
@@ -288,7 +290,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		layer.remove(modifiers.layer());
 	}
 	
-	public void addModifier(ModifierBlockSprite sprite, boolean snap) {
+	public ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap) {
 		if (modifiers == null && canAdd(sprite)) {
 			addChild(sprite);
 			if (snap) {
@@ -303,13 +305,14 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 			modifiers.updateParentRect(this);
 			modifiers.addModifier(sprite, snap);
 		}
+		return sprite;
 	}
 
-	public boolean addExpression(NumberBlockSprite sprite, boolean snap) {
+	public ModifierBlockSprite addExpression(NumberBlockSprite sprite, boolean snap) {
 		if (modifiers != null) {
 			return modifiers.addExpression(sprite, snap);
 		}
-		return false;
+		return null;
 	}
 	
 	public boolean canAddExpression(NumberBlockSprite sprite) {

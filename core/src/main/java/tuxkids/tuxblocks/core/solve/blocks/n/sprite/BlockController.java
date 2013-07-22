@@ -3,7 +3,9 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 import java.util.ArrayList;
 import java.util.List;
 
+import playn.core.CanvasImage;
 import playn.core.GroupLayer;
+import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.Font.Style;
@@ -13,6 +15,10 @@ import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.ExpressionWriter;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.JoinRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
@@ -71,6 +77,37 @@ public class BlockController extends PlayNObject {
 		int index = side.indexOf(original);
 		side.remove(index);
 		addExpression(side, newExp, original.layer().tx(), original.layer().ty(), index);
+	}
+	
+	public Image getEquationImage() {
+		Renderer lhs = getRenderer(leftSide);
+		Renderer rhs = getRenderer(rightSide);
+		Renderer equation = new JoinRenderer(lhs, rhs, "=");
+		
+		TextFormat format = new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20));
+		ExpressionWriter writer = equation.getExpressionWriter(format);
+		
+		CanvasImage image = graphics().createImage(writer.width(), writer.height());
+		image.canvas().setFillColor(Colors.WHITE);
+		image.canvas().setStrokeColor(Colors.WHITE);
+		writer.drawExpression(image.canvas());
+		
+		return image;
+	}
+	
+	private Renderer getRenderer(List<BaseBlockSprite> side) {
+		Renderer renderer = null;
+		for (BaseBlockSprite base : side) {
+			if (base instanceof BlockHolder) continue;
+//			Renderer toAdd = (dragging == null || !base.canAccept(dragging)) ? base.createRenderer() : base.createRendererWith(dragging);
+			Renderer toAdd = base.createRenderer();
+			if (renderer == null) renderer = toAdd;
+			else {
+				renderer = new JoinRenderer(renderer, toAdd, "+");
+			}
+		}
+		if (renderer == null) renderer = new BaseRenderer("0");
+		return renderer;
 	}
 	
 	private List<BaseBlockSprite> getBlocks(Side side) {

@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
+import java.util.ArrayList;
+
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public class NumberBlockSprite extends BaseBlockSprite {
@@ -45,8 +47,15 @@ public class NumberBlockSprite extends BaseBlockSprite {
 	@Override
 	public void showInverse() {
 		if ((modifiers.modifiers == null || modifiers.modifiers.modifiers == null) && modifiers.children.size() == 0) {
-			value = -value;
-			((BlockLayer) layer).setText("" + value);
+			ArrayList<VerticalModifierSprite> vMods = new ArrayList<VerticalModifierSprite>();
+			modifiers.addVerticalModifiers(vMods);
+			VerticalModifierSprite last = vMods.size() > 0 ? vMods.get(vMods.size() - 1) : null;
+			if (last != null && last instanceof TimesBlockSprite && last.value == -1) {
+				modifiers.addNegative();
+			} else {
+				value = -value;
+				((BlockLayer) layer).setText("" + value);
+			}
 		} else {
 			modifiers.addNegative();
 		}

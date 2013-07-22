@@ -6,7 +6,7 @@ public class NumberBlockSpriteProxy extends NumberBlockSprite {
 	
 	@Override
 	public ModifierBlockSprite proxyFor() {
-		return alignProxy(proxyFor);
+		return proxyFor == null ? super.proxyFor() : alignProxy(proxyFor);
 	}
 	
 	public NumberBlockSpriteProxy(int value, HorizontalModifierSprite proxyFor) {
@@ -17,6 +17,6 @@ public class NumberBlockSpriteProxy extends NumberBlockSprite {
 	@Override
 	public void showInverse() {
 		super.showInverse();
-		proxyFor = (HorizontalModifierSprite) proxyFor.inverse();
+		proxyFor = null;
 	}
 }

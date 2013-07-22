@@ -225,6 +225,10 @@ public abstract class PlayNObject {
 		return hashCode.hashCode();
 	}
 	
+	protected int nativeHashCode() {
+		return super.hashCode();
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (hashCode == null) return super.equals(obj);

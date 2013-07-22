@@ -34,6 +34,7 @@ import tuxkids.tuxblocks.core.utils.Debug;
 public class SolveScene extends GameScreen {
 
 	private BlockController controller;
+	private ImageLayer eqLayer;
 	
 	public SolveScene(ScreenStack screens, GameState state) {
 		super(screens, state);
@@ -63,38 +64,22 @@ public class SolveScene extends GameScreen {
 		
 		controller.addExpression(Side.Left, new BlockHolder());
 		
-//		int sideWidth = 6; int baseHeight = 50;
-//		int middle = 20;
-//		CanvasImage image = graphics().createImage(sideWidth * 2 + middle, baseHeight + middle);
-//		Path p = image.canvas().createPath();
-//		p.moveTo(0, 0);
-//		float width = image.width() - 1;
-//		float height = image.height() - 1;
-//		p.lineTo(width, 0);
-//		p.lineTo(width, height);
-//		p.lineTo(width - sideWidth, height);
-//		p.lineTo(width - sideWidth, height - middle);
-//		p.lineTo(sideWidth, height - middle);
-//		p.lineTo(sideWidth, height);
-//		p.lineTo(0, height);
-//		p.close();
-//		image.canvas().setFillColor(Colors.RED);
-//		image.canvas().fillPath(p);
-//		image.canvas().setStrokeColor(Colors.BLACK);
-//		image.canvas().strokePath(p);
-//		
-//		int[] widthDims = new int[] { sideWidth + 2, middle - 5, sideWidth + 3};
-//		int[] heightDims = new int[] { baseHeight + 2, middle - 5, 3 };
-
-		
-//		final NinepatchLayer np = new NinepatchLayer(PlayN.assets().getImage("test.9.png"));
-//		layer.addAt(np.layerAddable(), 50, 50);
+		eqLayer = graphics().createImageLayer();
+		layer.add(eqLayer);
+		eqLayer.setImage(controller.getEquationImage());
+		eqLayer.setTranslation(20, 20);
 
 	}
 	
+	int u = 0;
 	@Override
 	public void update(int delta) {
 		controller.update(delta);
+		u += delta;
+		if (u > 500) {
+			u = 0;
+			eqLayer.setImage(controller.getEquationImage());
+		}
 	}
 	
 	@Override
