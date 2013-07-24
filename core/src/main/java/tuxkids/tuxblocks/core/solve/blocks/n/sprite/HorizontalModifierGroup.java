@@ -4,15 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.AddGroupRenderer;
-import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 
 public class HorizontalModifierGroup extends ModifierGroup {
-
-	
-	public HorizontalModifierGroup(Sprite parent) {
-		super(parent);
-	}
 
 	@Override
 	protected void updateChildren(float base, float dt) {
@@ -33,7 +27,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 
 	@Override
 	protected ModifierGroup createModifiers() {
-		return new VerticalModifierGroup(this);
+		return new VerticalModifierGroup();
 	}
 
 	@Override
@@ -42,10 +36,10 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	public ModifierBlockSprite addExpression(NumberBlockSprite sprite, boolean snap) {	
+	public ModifierBlockSprite addExpression(NumberBlockSprite sprite, boolean snap, boolean addSprite) {	
 		List<VerticalModifierSprite> sharedMods = getSharedModifiersForAdd(sprite);
 		if (sharedMods == null) {
-			return super.addExpression(sprite, snap);
+			return super.addExpression(sprite, snap, addSprite);
 		}
 		
 		List<ModifierBlockSprite> outsideModifiers = null;
@@ -56,16 +50,17 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		
 		ModifierBlockSprite proxy;
 		if (modifiers == null || sharedMods.size() == modifiers.children.size()) {
+			if (!addSprite) setPreviewAdd(true);
 			addChild(proxy = sprite.proxyFor());
 			for (ModifierBlockSprite mod : sprite.modifiers.children) addChild(mod);
-			return proxy;
-			
+			setPreviewAdd(false);
 		} else {
-			ModifierBlockSprite superMod;
-			if ((superMod = super.addExpression(sprite, snap)) != null) {
+			ModifierBlockSprite superMod = super.addExpression(sprite, snap, addSprite);
+			if (superMod != null) {
 				return superMod;
 			}
 			
+			if (!addSprite) setPreviewAdd(true);
 			ModifierGroup modMods = modifiers.removeModifiers();
 			modifiers.addNewModifiers();
 			modifiers.modifiers.addChild(proxy = sprite.proxyFor());
@@ -78,16 +73,17 @@ public class HorizontalModifierGroup extends ModifierGroup {
 				modifiers.modifiers.modifiers.addChild(m);
 			}
 			modifiers.modifiers.modifiers.setModifiers(modMods);
+			setPreviewAdd(false);
 		}
 		
 		if (outsideModifiers != null) {
 			for (ModifierBlockSprite mod : outsideModifiers) {
-				addModifier(mod, false);
+				addModifier(mod, false, addSprite);
 			}
 		}
 		
 		if (snap) snapChildren(); //TODO: maybe better implementation, if I ever use this option
-		sprite.layer().destroy();
+		if (addSprite) sprite.layer().destroy();
 		
 		return proxy;
 	}
@@ -156,7 +152,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	protected void simplify(ModifierBlockSprite sprite) {
+	protected void cancelOut(ModifierBlockSprite sprite) {
 		for (int i = 1; i < children.size(); i++) {
 			if (sprite != children.get(i)) continue;
 			ModifierBlockSprite before = children.get(i - 1);
@@ -179,15 +175,23 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	protected Renderer createRenderer(Renderer base) {
 		if (children.size() != 0) {
 			int[] operands = new int[children.size()];
+			boolean[] highlights = new boolean[operands.length];
 			for (int i = 0; i < operands.length; i++) {
 				operands[i] = ((HorizontalModifierSprite) children.get(i)).getPlusValue();
+				highlights[i] = !children.get(i).hasSprite();
 			}
-			base = new AddGroupRenderer(base, operands);
+			base = new AddGroupRenderer(base, operands, highlights);
 		}
 		if (modifiers == null) {
 			return base;
 		} else {
 			return modifiers.createRenderer(base);
+			
 		}
+	}
+
+	@Override
+	protected Sprite copyChild() {
+		return new HorizontalModifierGroup();
 	}
 }

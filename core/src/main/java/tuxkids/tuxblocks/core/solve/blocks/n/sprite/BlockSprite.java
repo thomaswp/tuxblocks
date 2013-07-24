@@ -1,7 +1,5 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
-import playn.core.CanvasImage;
-import playn.core.Color;
 import playn.core.Font;
 import playn.core.Image;
 import playn.core.Layer;
@@ -9,17 +7,11 @@ import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.TextFormat;
-import playn.core.TextLayout;
 import playn.core.util.Clock;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike.Factory;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
-import tuxkids.tuxblocks.core.layers.NinepatchLayer;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
-import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
 public abstract class BlockSprite extends Sprite implements Hashable {
@@ -27,7 +19,6 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	private final static int DOUBLE_CLICK = 500;
 	
 	protected ImageLayerLike layer;
-	protected BlockListener blockListener;
 	protected boolean multiExpression = true;
 	
 	private boolean dragging;
@@ -54,6 +45,14 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 					return new ImageLayerTintable(image);
 				}
 			};
+		}
+	}
+	
+	protected void initSprite() {
+		if (hasSprite()) return;
+		super.initSprite();
+		if (blockListener != null) {
+			attachBlockListener();
 		}
 	}
 	
@@ -102,6 +101,10 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	public void addBlockListener(BlockListener listener) {
 		if (listener == null || blockListener != null) return;
 		blockListener = listener;
+		if (hasSprite()) attachBlockListener();
+	}
+	
+	private void attachBlockListener() {
 		layer.addListener(new Listener() {
 			
 			@Override
@@ -142,11 +145,6 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 		return this;
 	}
 	
-	@Override
-	public String toString() {
-		return text();
-	}
-	
 	public void remove() {
 	}
 	
@@ -156,5 +154,10 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 		inverse.layer.setVisible(true);
 		inverse.interpolateRect(x(), y(), width(), height(), 0, 1);
 		inverse.layer().setTranslation(layer().tx(), layer().ty());
+	}
+	
+	@Override
+	public String toString() {
+		return text();
 	}
 }

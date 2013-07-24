@@ -7,11 +7,12 @@ import pythagoras.f.Vector;
 
 public class AddGroupRenderer extends ModifierRenderer {
 	
-	int[] operands;
-	
 	public AddGroupRenderer(Renderer base, int... operands) {
-		super(base);
-		this.operands = operands;
+		super(base, operands);
+	}
+	
+	public AddGroupRenderer(Renderer base, int[] operands, boolean[] highlights) {
+		super(base, operands, highlights);
 	}
 
 	@Override
@@ -20,24 +21,33 @@ public class AddGroupRenderer extends ModifierRenderer {
 		
 		return new ExpressionWriter(textFormat) {
 			
-			TextLayout layout;
+			TextLayout[] layouts;
+			float myHeight;
 			
 			@Override
 			protected Vector formatExpression(TextFormat textFormat) {
-				String s = "";
+				float width = 0, height = 0;
+				layouts = new TextLayout[operands.length];
 				for (int i = 0; i < operands.length; i++) {
-					s += " " + (operands[i] < 0 ? "- " : "+ ") + Math.abs(operands[i]);
+					String s = " " + (operands[i] < 0 ? "- " : "+ ") + Math.abs(operands[i]);
+					layouts[i] = graphics().layoutText(s, textFormat);
+					width += layouts[i].width();
+					height = Math.max(layouts[i].height(), height);
 				}
-				layout = graphics().layoutText(s, textFormat);
-				return new Vector(childWriter.width() + layout.width(), Math.max(childWriter.height(), layout.height()));
+				myHeight = height;
+				return new Vector(childWriter.width() + width, Math.max(childWriter.height(), myHeight));
 			}
 			
 			@Override
 			public void drawExpression(Canvas canvas) {
 				childWriter.drawExpression(canvas);
 				
-				canvas.fillText(layout, width() - layout.width(), 
-						(height() - layout.height()) / 2);
+				float x = childWriter.width();
+				for (int i = 0; i < operands.length; i++) {
+					setColor(canvas, highlights[i]);
+					canvas.fillText(layouts[i], x, (height() - myHeight) / 2);
+					x += layouts[i].width();
+				}
 			}
 		};
 	}

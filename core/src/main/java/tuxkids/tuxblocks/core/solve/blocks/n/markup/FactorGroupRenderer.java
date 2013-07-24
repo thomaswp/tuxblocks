@@ -6,36 +6,53 @@ import playn.core.TextLayout;
 import pythagoras.f.Vector;
 
 public abstract class FactorGroupRenderer extends ModifierRenderer {
-	int[] operands;
+	
+	protected abstract boolean useNegatives();
 	
 	public FactorGroupRenderer(Renderer base, int... operands) {
-		super(base);
-		this.operands = operands;
+		super(base, operands);
+	}
+	
+	public FactorGroupRenderer(Renderer base, int[] operands, boolean[] highlights) {
+		super(base, operands, highlights);
 	}
 
 	public ExpressionWriter getFactorWriter(TextFormat textFormat) {
 		
 		return new ExpressionWriter(textFormat) {
 			
-			TextLayout layout;
+			TextLayout[] layouts;
 			
 			@Override
 			protected Vector formatExpression(TextFormat textFormat) {
-				String s = "";
+				layouts = new TextLayout[operands.length];
+				float width = 0, height = 0;
 				for (int i = 0; i < operands.length; i++) {
-					if (i == 0) {
-						s += operands[i];
+					String s;
+					if (useNegatives() && operands.length == 1 && operands[i] == -1) {
+						s = "-";
 					} else {
-						s += " * " + operands[i];
+						if (i == 0) {
+							s = "" + operands[i];
+						} else {
+							s = " * " + operands[i];
+						}	
 					}
+					layouts[i] = graphics().layoutText(s, textFormat);
+					width += layouts[i].width();
+					height = Math.max(height, layouts[i].height());
 				}
-				layout = graphics().layoutText(s, textFormat);
-				return new Vector(layout.width(), layout.height());
+				return new Vector(width, height);
 			}
 			
 			@Override
 			public void drawExpression(Canvas canvas) {
-				canvas.fillText(layout, 0, 0);
+				float x = 0;
+				for (int i = 0; i < operands.length; i++) {
+					setColor(canvas, highlights[i]);
+					canvas.fillText(layouts[i], x, 0);
+					x += layouts[i].width();
+				}
 			}
 		};
 	}

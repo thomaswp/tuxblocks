@@ -14,7 +14,6 @@ public class NumberBlockSprite extends BaseBlockSprite {
 	}
 	
 	public NumberBlockSprite(int value) {
-		super("" + value);
 		this.value = value;
 	}
 	
@@ -35,6 +34,7 @@ public class NumberBlockSprite extends BaseBlockSprite {
 	}
 	
 	protected ModifierBlockSprite alignProxy(ModifierBlockSprite proxy) {
+		if (hasSprite()) proxy.initSprite();
 		proxy.interpolateRect(groupLayer.tx(), groupLayer.ty(), width(), height(), 0, 1);
 		return proxy;
 	}
@@ -59,5 +59,10 @@ public class NumberBlockSprite extends BaseBlockSprite {
 		} else {
 			modifiers.addNegative();
 		}
+	}
+
+	@Override
+	protected Sprite copyChild() {
+		return new NumberBlockSprite(value);
 	}
 }

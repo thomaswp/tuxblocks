@@ -12,6 +12,10 @@ public class OverGroupRenderer extends FactorGroupRenderer {
 	public OverGroupRenderer(Renderer base, int[] operands) {
 		super(base, operands);
 	}
+	
+	public OverGroupRenderer(Renderer base, int[] operands, boolean[] highlights) {
+		super(base, operands, highlights);
+	}
 
 	@Override
 	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
@@ -33,6 +37,7 @@ public class OverGroupRenderer extends FactorGroupRenderer {
 				childWriter.drawExpression(canvas);
 				canvas.restore();
 				
+				setColor(canvas, highlights.length == 1 && highlights[0]);
 				canvas.setStrokeWidth(textFormat.font.size() / 10);
 				canvas.setLineCap(LineCap.ROUND);
 				float y = childWriter.height() + SPACING;
@@ -44,6 +49,11 @@ public class OverGroupRenderer extends FactorGroupRenderer {
 				canvas.restore();
 			}
 		};
+	}
+
+	@Override
+	protected boolean useNegatives() {
+		return false;
 	}
 
 }

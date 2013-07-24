@@ -12,8 +12,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 	protected List<ModifierBlockSprite> timesBlocks;
 	protected List<ModifierBlockSprite> divBlocks;
 	
-	public VerticalModifierGroup(Sprite parent) {
-		super(parent);
+	public VerticalModifierGroup() {
 		timesBlocks = new ArrayList<ModifierBlockSprite>();
 		divBlocks = new ArrayList<ModifierBlockSprite>();
 	}
@@ -79,7 +78,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 
 	@Override
 	protected ModifierGroup createModifiers() {
-		return new HorizontalModifierGroup(this);
+		return new HorizontalModifierGroup();
 	}
 
 	@Override
@@ -105,7 +104,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	protected void simplify(ModifierBlockSprite sprite) {
+	protected void cancelOut(ModifierBlockSprite sprite) {
 		for (int i = 0; i < timesBlocks.size(); i++) {
 			if (timesBlocks.get(i) != sprite) continue;
 			int index = divBlocks.lastIndexOf(sprite.inverse());
@@ -146,17 +145,21 @@ public class VerticalModifierGroup extends ModifierGroup {
 		if (children.size() > 0) {
 			if (timesBlocks.size() > 0) {
 				int[] operands = new int[timesBlocks.size()];
+				boolean[] highlights = new boolean[operands.length];
 				for (int i = 0; i < operands.length; i++) {
 					operands[i] = timesBlocks.get(i).value;
+					highlights[i] = !timesBlocks.get(i).hasSprite();
 				}
-				base = new TimesGroupRenderer(base, operands);
+				base = new TimesGroupRenderer(base, operands, highlights);
 			}
 			if (divBlocks.size() > 0) {
 				int[] operands = new int[divBlocks.size()];
+				boolean[] highlights = new boolean[operands.length];
 				for (int i = 0; i < operands.length; i++) {
 					operands[i] = divBlocks.get(i).value;
+					highlights[i] = !divBlocks.get(i).hasSprite();
 				}
-				base = new OverGroupRenderer(base, operands);
+				base = new OverGroupRenderer(base, operands, highlights);
 			}
 		}
 		if (modifiers == null) {
@@ -164,5 +167,10 @@ public class VerticalModifierGroup extends ModifierGroup {
 		} else {
 			return modifiers.createRenderer(base);
 		}
+	}
+
+	@Override
+	protected Sprite copyChild() {
+		return new VerticalModifierGroup();
 	}
 }

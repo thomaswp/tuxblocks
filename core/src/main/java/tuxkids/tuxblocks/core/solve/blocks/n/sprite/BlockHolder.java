@@ -1,12 +1,13 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public class BlockHolder extends BaseBlockSprite {
 
-	public BlockHolder() {
-		super(" ");
+	protected void initSpriteImpl() {
+		super.initSpriteImpl();
 		clearPreview();
 	}
 	
@@ -51,5 +52,24 @@ public class BlockHolder extends BaseBlockSprite {
 	@Override
 	public BlockSprite inverse() {
 		return null;
+	}
+	
+	public Renderer createRendererWith(BlockSprite sprite) {
+		sprite.setPreviewAdd(true);
+		try {
+			if (sprite instanceof HorizontalModifierSprite) {
+				return ((HorizontalModifierSprite) sprite).getProxy(false).createRenderer();
+			} else if (sprite instanceof BaseBlockSprite) {
+				return ((BaseBlockSprite) sprite).createRenderer();
+			}
+		} finally {
+			sprite.setPreviewAdd(false);
+		}
+		return null;
+	}
+
+	@Override
+	protected Sprite copyChild() {
+		return new BlockHolder();
 	}
 }

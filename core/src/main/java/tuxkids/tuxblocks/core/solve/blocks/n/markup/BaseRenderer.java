@@ -7,6 +7,12 @@ import pythagoras.f.Vector;
 
 public class BaseRenderer extends Renderer {
 	private String text;
+	private boolean highlight;
+	
+	public BaseRenderer setHighlight(boolean highlight) {
+		this.highlight = highlight;
+		return this;
+	}
 	
 	public BaseRenderer(String text) {
 		this.text = text;
@@ -26,7 +32,7 @@ public class BaseRenderer extends Renderer {
 			
 			@Override
 			public void drawExpression(Canvas canvas) {
-//				canvas.setFillColor(DEFAULT_COLOR);
+				setColor(canvas, highlight);
 				canvas.fillText(layout, 0, 0);
 			}
 		};

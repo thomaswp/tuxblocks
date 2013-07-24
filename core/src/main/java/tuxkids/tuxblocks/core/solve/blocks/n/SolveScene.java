@@ -1,29 +1,17 @@
 package tuxkids.tuxblocks.core.solve.blocks.n;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import playn.core.CanvasImage;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.PlayN;
-import playn.core.Pointer.Event;
-import playn.core.Pointer.Listener;
-import playn.core.Path;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.layers.NinepatchLayer;
+import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController.Side;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController.Side;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockHolder;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.MinusBlockSprite;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.ModifierBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.NumberBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.OverBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.PlusBlockSprite;
@@ -34,7 +22,8 @@ import tuxkids.tuxblocks.core.utils.Debug;
 public class SolveScene extends GameScreen {
 
 	private BlockController controller;
-	private ImageLayer eqLayer;
+	private ImageLayer eqLayer, eqLayerOld;
+	private Image lastEqImage;
 	
 	public SolveScene(ScreenStack screens, GameState state) {
 		super(screens, state);
@@ -55,6 +44,9 @@ public class SolveScene extends GameScreen {
 		sprite.addModifier(new TimesBlockSprite(5));
 		sprite.addModifier(new OverBlockSprite(6));
 		
+		Debug.write(sprite.hierarchy());
+		Debug.write(((BaseBlockSprite) sprite.copy()).hierarchy());
+		
 		
 		BaseBlockSprite sprite1 = sprite;
 		controller.addExpression(Side.Left, sprite1);
@@ -66,24 +58,33 @@ public class SolveScene extends GameScreen {
 		
 		eqLayer = graphics().createImageLayer();
 		layer.add(eqLayer);
-		eqLayer.setImage(controller.getEquationImage());
+		eqLayer.setImage(controller.equationImage());
 		eqLayer.setTranslation(20, 20);
+		
+		eqLayerOld = graphics().createImageLayer();
+		layer.add(eqLayerOld);
+		eqLayerOld.setImage(controller.equationImage());
+		eqLayerOld.setTranslation(20, 20);
+		eqLayerOld.setAlpha(0);
 
 	}
 	
-	int u = 0;
 	@Override
 	public void update(int delta) {
 		controller.update(delta);
-		u += delta;
-		if (u > 500) {
-			u = 0;
-			eqLayer.setImage(controller.getEquationImage());
+		eqLayer.setImage(controller.equationImage());
+		if (lastEqImage != controller.equationImage()) {
+			eqLayer.setAlpha(0);
+			eqLayerOld.setImage(lastEqImage);
+			eqLayerOld.setAlpha(1);
+			lastEqImage = controller.equationImage();
 		}
 	}
 	
 	@Override
 	public void paint(Clock clock) {
 		controller.paint(clock);
+		eqLayer.setAlpha(PlayNObject.lerpTime(eqLayer.alpha(), 1, 0.99f, clock.dt(), 0.01f));
+		eqLayerOld.setAlpha(PlayNObject.lerpTime(eqLayerOld.alpha(), 0, 0.99f, clock.dt(), 0.01f));
 	}
 }

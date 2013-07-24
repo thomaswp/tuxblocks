@@ -19,7 +19,7 @@ import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
@@ -48,8 +48,16 @@ public class BlockController extends PlayNObject {
 	private float equalsX;
 	private ImageLayer equals;
 	
+	private Image equationImage;
+	private BaseBlockSprite hoverSprite;
+	private boolean refreshEquation;
+	
 	public Layer layer() {
 		return layer;
+	}
+	
+	public Image equationImage() {
+		return equationImage;
 	}
 	
 	public BlockController() {
@@ -62,11 +70,13 @@ public class BlockController extends PlayNObject {
 	public void addExpression(Side side, BaseBlockSprite expression) {
 		List<BaseBlockSprite> blocks = getBlocks(side);
 		addExpression(blocks, expression, 0, 0, blocks.size());
-		equalsX = (leftSide.size() + 0.5f) / (baseBlocks.size() + 1) * graphics().width();// - EQ_BUFFER / 2;
+		equalsX = (leftSide.size() + 0.5f) / (baseBlocks.size() + 1) * graphics().width();
 		equals.setTranslation(equalsX, graphics().height() / 2);
+		refreshEquationImage();
 	}
 	
 	private void addExpression(List<BaseBlockSprite> side, BaseBlockSprite expression, float x, float y, int index) {
+		expression.initSprite();
 		layer.addAt(expression.layerAddable(), x, y);
 		expression.layer().setDepth(0);
 		side.add(index, expression);
@@ -79,7 +89,7 @@ public class BlockController extends PlayNObject {
 		addExpression(side, newExp, original.layer().tx(), original.layer().ty(), index);
 	}
 	
-	public Image getEquationImage() {
+	private void refreshEquationImage() {
 		Renderer lhs = getRenderer(leftSide);
 		Renderer rhs = getRenderer(rightSide);
 		Renderer equation = new JoinRenderer(lhs, rhs, "=");
@@ -92,15 +102,20 @@ public class BlockController extends PlayNObject {
 		image.canvas().setStrokeColor(Colors.WHITE);
 		writer.drawExpression(image.canvas());
 		
-		return image;
+		equationImage = image;
+		refreshEquation = false;
 	}
 	
 	private Renderer getRenderer(List<BaseBlockSprite> side) {
 		Renderer renderer = null;
 		for (BaseBlockSprite base : side) {
-			if (base instanceof BlockHolder) continue;
-//			Renderer toAdd = (dragging == null || !base.canAccept(dragging)) ? base.createRenderer() : base.createRendererWith(dragging);
-			Renderer toAdd = base.createRenderer();
+			Renderer toAdd;
+			if (base == hoverSprite) {
+				toAdd = base.createRendererWith(dragging);
+			} else {
+				if (base instanceof BlockHolder) continue;
+				toAdd = base.createRenderer();
+			}
 			if (renderer == null) renderer = toAdd;
 			else {
 				renderer = new JoinRenderer(renderer, toAdd, "+");
@@ -131,6 +146,7 @@ public class BlockController extends PlayNObject {
 		updateSide(delta, leftSide, bb);
 		updateSide(delta, rightSide, bb);
 		if (dragging != null) dragging.update(delta);
+		if (refreshEquation) refreshEquationImage();
 	}
 	
 	private void updateSide(int delta, List<BaseBlockSprite> side, int totalBlocks) {
@@ -166,8 +182,8 @@ public class BlockController extends PlayNObject {
 	
 	private void updatePosition() {
 		if (dragging != null) {
-			float x = lerpTime(dragging.layer().tx(), lastTouchX - dragging.width() * blockAnchorPX, 0, 1);
-			float y = lerpTime(dragging.layer().ty(), lastTouchY - dragging.height() * blockAnchorPY, 0, 1);
+			float x = lastTouchX - dragging.width() * blockAnchorPX;
+			float y = lastTouchY - dragging.height() * blockAnchorPY;
 			dragging.layer().setTranslation(x, y);
 		}
 	}
@@ -176,12 +192,14 @@ public class BlockController extends PlayNObject {
 		return base.contains(x, y) && base.canAccept(dragging);
 	}
 	
-	private void invertDragging() {
+	private void invertDragging(boolean refresh) {
 		BlockSprite block = dragging.inverse();
 		dragging.showInverse();
-		layer.remove(dragging.layer());
-		layer.add(block.layer());
-		block.layer().setDepth(DRAGGING_DEPTH);
+		if (refresh) {
+			layer.remove(dragging.layer());
+			layer.add(block.layer());
+			block.layer().setDepth(DRAGGING_DEPTH);
+		}
 		dragging = block;
 	}
 	
@@ -245,7 +263,7 @@ public class BlockController extends PlayNObject {
 			if (target == null) {
 				target = draggingFrom;
 				if (inverted) {
-					invertDragging();
+					invertDragging(true);
 				}
 			}
 			debug(target.hierarchy());
@@ -267,6 +285,9 @@ public class BlockController extends PlayNObject {
 			
 			dragging = null;
 			draggingFrom = null;
+			hoverSprite = null;
+			
+			refreshEquation = true;
 			
 			debug(target.hierarchy());
 		}
@@ -276,11 +297,26 @@ public class BlockController extends PlayNObject {
 			lastTouchX = event.x();
 			lastTouchY = event.y();
 			
+			BaseBlockSprite lastHover = hoverSprite;
+			hoverSprite = null;
 			for (BaseBlockSprite base : baseBlocks) {
 				if (canDropOn(base, event.x(), event.y())) {
 					base.setPreview(true);
+					hoverSprite = base;
 				} else {
 					base.setPreview(false);
+				}
+			}
+			if (hoverSprite == null) {
+				hoverSprite = draggingFrom;
+			}
+			if (hoverSprite != lastHover) {
+				if (inverted && hoverSprite == draggingFrom) {
+					invertDragging(false);
+					refreshEquationImage();
+					invertDragging(false);
+				} else {
+					refreshEquationImage();
 				}
 			}
 			
@@ -295,7 +331,7 @@ public class BlockController extends PlayNObject {
 			
 			if (invert) {
 				inverted = !inverted;
-				invertDragging();
+				invertDragging(true);
 			}
 		}
 
@@ -316,12 +352,17 @@ public class BlockController extends PlayNObject {
 				}
 				for (BaseBlockSprite base : baseBlocks) {
 					if (!(base instanceof BlockHolder)) {
-						ModifierBlockSprite inverse = ((VerticalModifierSprite) sprite).inverse().copy();
+						ModifierBlockSprite inverse = (ModifierBlockSprite) ((VerticalModifierSprite) sprite).inverse().copy(true);
 						inverse.interpolateRect(base.offsetX(), y, base.totalWidth(), inverse.height(), 0, 1);
-						base.addModifier(inverse, false);
+						base.addModifier(inverse, false, true);
 					}
 				}
 			}
+		}
+
+		@Override
+		public void wasSimplified() {
+			refreshEquation = true;
 		}
 	}
 }

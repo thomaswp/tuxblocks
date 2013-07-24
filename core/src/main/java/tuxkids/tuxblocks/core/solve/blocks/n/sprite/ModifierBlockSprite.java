@@ -1,15 +1,10 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import playn.core.Color;
-import playn.core.Layer;
-import playn.core.Pointer.Event;
-import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite.BlockListener;
 import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
 public abstract class ModifierBlockSprite extends BlockSprite {
 	
@@ -21,7 +16,6 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 	
 	protected abstract String operator();
 	protected abstract ModifierBlockSprite inverseChild();
-	protected abstract ModifierBlockSprite copyChild();
 	
 	public ModifierGroup group() {
 		return group;
@@ -34,22 +28,22 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 	public ModifierBlockSprite(int value) {
 		this.value = value;
 		inverse = inverseChild();
-		layer = generateNinepatch(text(), Colors.WHITE);
 	}
 	
 	protected ModifierBlockSprite(ModifierBlockSprite inverse) {
 		this.value = inverse.value;
 		this.inverse = inverse;
-		layer = generateNinepatch(text(), Colors.WHITE);
 		if (inverse.blockListener != null) {
 			addBlockListener(inverse.blockListener);
 		}
 	}
 	
-	public final ModifierBlockSprite copy() {
-		ModifierBlockSprite copy = copyChild();
-		copy.addBlockListener(blockListener);
-		return copy;
+	@Override
+	protected void initSpriteImpl() {
+		super.initSpriteImpl();
+		
+		layer = generateNinepatch(text(), Colors.WHITE);
+		if (inverse.layer == null) inverse.initSprite();
 	}
 	
 	@Override
@@ -84,6 +78,7 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 	
 	@Override
 	public void remove() {
+		if (group != null) group.removeChild(this);
 		group = null;
 	}
 

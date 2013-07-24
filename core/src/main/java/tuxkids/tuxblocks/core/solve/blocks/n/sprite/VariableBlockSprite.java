@@ -7,7 +7,6 @@ public class VariableBlockSprite extends BaseBlockSprite {
 	protected String symbol;
 	
 	public VariableBlockSprite(String symbol) {
-		super(symbol);
 		this.symbol = symbol;
 	}
 	
@@ -29,6 +28,11 @@ public class VariableBlockSprite extends BaseBlockSprite {
 	@Override
 	public BlockSprite inverse() {
 		return null;
+	}
+
+	@Override
+	protected Sprite copyChild() {
+		return new VariableBlockSprite(symbol);
 	}
 
 }

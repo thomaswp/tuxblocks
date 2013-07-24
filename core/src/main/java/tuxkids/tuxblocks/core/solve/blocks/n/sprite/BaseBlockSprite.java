@@ -36,15 +36,23 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		return layer.ty();
 	}
 	
-	public BaseBlockSprite(String text) {
-		layer = generateNinepatch(text, Colors.WHITE);
+	public BaseBlockSprite() {
+		modifiers = new HorizontalModifierGroup();
+	}
+	
+	@Override
+	protected void initSpriteImpl() {
+		super.initSpriteImpl();
+		
+		layer = generateNinepatch(text(), Colors.WHITE);
 		layer.setSize(baseSize(), baseSize());
 		layer.setInteractive(true);
 		groupLayer = graphics().createGroupLayer();
 		groupLayer.add(layer.layerAddable());
 		layer.layerAddable().setDepth(ModifierGroup.CHILD_START_DEPTH);
-		
-		modifiers = new HorizontalModifierGroup(this);
+
+		modifiers.updateParentRect(this);
+		modifiers.initSprite();
 		groupLayer.add(modifiers.layer());
 		modifiers.layer().setDepth(ModifierGroup.MODIFIERS_DEPTH);
 	}
@@ -52,7 +60,7 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	@Override
 	public void addBlockListener(BlockListener listener) {
 		super.addBlockListener(listener);
-		modifiers.addBlockListenerListener(listener);
+		modifiers.addBlockListener(listener);
 	}
 	
 	@Override
@@ -117,11 +125,11 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	}
 
 	public ModifierBlockSprite addModifier(ModifierBlockSprite sprite) {
-		return addModifier(sprite, true);
+		return addModifier(sprite, false, true);
 	}
 	
-	public ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap) {
-		return modifiers.addModifier(sprite, snap);
+	protected ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap, boolean addSprite) {
+		return modifiers.addModifier(sprite, snap, addSprite);
 	}
 
 	public boolean canAccept(BlockSprite sprite) {
@@ -134,10 +142,14 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	}
 
 	public ModifierBlockSprite addBlock(BlockSprite sprite, boolean snap) {
+		return addBlock(sprite, snap, true);
+	}
+	
+	protected ModifierBlockSprite addBlock(BlockSprite sprite, boolean snap, boolean addSprite) {
 		if (sprite instanceof ModifierBlockSprite) {
-			return addModifier((ModifierBlockSprite) sprite, snap);
+			return addModifier((ModifierBlockSprite) sprite, snap, addSprite);
 		} else if (sprite instanceof NumberBlockSprite) {
-			return modifiers.addExpression((NumberBlockSprite) sprite, snap);
+			return modifiers.addExpression((NumberBlockSprite) sprite, snap, addSprite);
 		}
 		return null;
 	}
@@ -169,28 +181,32 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	}
 	
 	public Renderer createRenderer() {
-		return modifiers.createRenderer(new BaseRenderer(text()));
+		return modifiers.createRenderer(new BaseRenderer(text()).setHighlight(!hasSprite()));
 	}
 	
 	public Renderer createRendererWith(BlockSprite sprite) {
+		debug("Before: " + hierarchy());
 		GroupLayer parent = sprite.layer().parent();
-		ModifierBlockSprite toRemove = addBlock(sprite, false);
+		float depth = sprite.layer().depth();
+		
+		ModifierBlockSprite toRemove = addBlock(sprite, false, false);
+		toRemove.setPreviewAdd(true);
 		Renderer renderer = modifiers.createRenderer(new BaseRenderer(text()));
+		toRemove.setPreviewAdd(false);
+		
 		toRemove.group.removeChild(toRemove);
 		if (toRemove == sprite) {
+			sprite.layer().setDepth(depth);
 			if (parent != null) parent.add(sprite.layer());
-		} else {
-			toRemove.destroy();	
 		}
+		debug("After: " + hierarchy());
+		
 		return renderer;
 	}
 	
-	public interface BlockListener {
-
-		void wasGrabbed(BlockSprite sprite, Event event);
-		void wasReleased(Event event);
-		void wasMoved(Event event);
-		void wasDoubleClicked(BlockSprite sprite, Event event);
-		
+	@Override 
+	protected void copyFields(Sprite castMe) {
+		BaseBlockSprite copy = (BaseBlockSprite) castMe;
+		copy.modifiers = (HorizontalModifierGroup) modifiers.copy();
 	}
 }

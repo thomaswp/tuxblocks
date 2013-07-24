@@ -14,6 +14,10 @@ public class TimesGroupRenderer extends FactorGroupRenderer {
 	public TimesGroupRenderer(Renderer base, int[] operands) {
 		super(base, operands);
 	}
+	
+	public TimesGroupRenderer(Renderer base, int[] operands, boolean[] highlights) {
+		super(base, operands, highlights);
+	}
 
 	@Override
 	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
@@ -49,17 +53,11 @@ public class TimesGroupRenderer extends FactorGroupRenderer {
 				canvas.translate(0, (height() - factorWriter.height()) / 2);
 				factorWriter.drawExpression(canvas);
 				canvas.restore();
-
-//				float ph = leftParenLayout.height();
-//				//canvas.strokeRect(factorLayout.width(), (height() - ph) / 2, leftParenLayout.width(), ph);
-//				canvas.fillText(leftParenLayout, factorWriter.width(), 
-//						(height() - ph) / 2);
-//				canvas.fillText(rightParenLayout, width() - rightParenLayout.width(),
-//						(height() - ph) / 2);
 				
 				canvas.setStrokeWidth(textFormat.font.size() / 10);
 				canvas.setLineCap(LineCap.ROUND);
 				
+				setColor(canvas, highlights.length == 1 && highlights[0]);
 				Path path = canvas.createPath();
 				float x = factorWriter.width() + w * 0.5f, h = height() * 0.9f;
 				path.moveTo(x + w, (h + height()) / 2);
@@ -76,6 +74,11 @@ public class TimesGroupRenderer extends FactorGroupRenderer {
 //				canvas.strokeRect(0, 0, width(), height());
 			}
 		};
+	}
+
+	@Override
+	protected boolean useNegatives() {
+		return true;
 	}
 
 }
