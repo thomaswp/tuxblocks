@@ -2,6 +2,7 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.Action;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public class BlockHolder extends BaseBlockSprite {
@@ -54,16 +55,18 @@ public class BlockHolder extends BaseBlockSprite {
 		return null;
 	}
 	
-	public Renderer createRendererWith(BlockSprite sprite) {
-		sprite.setPreviewAdd(true);
-		try {
-			if (sprite instanceof HorizontalModifierSprite) {
-				return ((HorizontalModifierSprite) sprite).getProxy(false).createRenderer();
-			} else if (sprite instanceof BaseBlockSprite) {
-				return ((BaseBlockSprite) sprite).createRenderer();
+	@Override
+	protected Renderer createRendererWith(BaseBlockSprite myCopy, BlockSprite spriteCopy) {
+		spriteCopy.performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				sprite.setPreviewAdd(true);
 			}
-		} finally {
-			sprite.setPreviewAdd(false);
+		});
+		if (spriteCopy instanceof HorizontalModifierSprite) {
+			return ((HorizontalModifierSprite) spriteCopy).getProxy(false).createRenderer();
+		} else if (spriteCopy instanceof BaseBlockSprite) {
+			return ((BaseBlockSprite) spriteCopy).createRenderer();
 		}
 		return null;
 	}

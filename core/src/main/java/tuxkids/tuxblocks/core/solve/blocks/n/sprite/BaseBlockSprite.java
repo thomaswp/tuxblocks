@@ -11,6 +11,7 @@ import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.Action;
 
 public abstract class BaseBlockSprite extends BlockSprite {
 	
@@ -125,11 +126,11 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	}
 
 	public ModifierBlockSprite addModifier(ModifierBlockSprite sprite) {
-		return addModifier(sprite, false, true);
+		return addModifier(sprite, false);
 	}
 	
-	protected ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap, boolean addSprite) {
-		return modifiers.addModifier(sprite, snap, addSprite);
+	protected ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap) {
+		return modifiers.addModifier(sprite, snap);
 	}
 
 	public boolean canAccept(BlockSprite sprite) {
@@ -140,16 +141,12 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		}
 		return false;
 	}
-
-	public ModifierBlockSprite addBlock(BlockSprite sprite, boolean snap) {
-		return addBlock(sprite, snap, true);
-	}
 	
-	protected ModifierBlockSprite addBlock(BlockSprite sprite, boolean snap, boolean addSprite) {
+	protected ModifierBlockSprite addBlock(BlockSprite sprite, boolean snap) {
 		if (sprite instanceof ModifierBlockSprite) {
-			return addModifier((ModifierBlockSprite) sprite, snap, addSprite);
+			return addModifier((ModifierBlockSprite) sprite, snap);
 		} else if (sprite instanceof NumberBlockSprite) {
-			return modifiers.addExpression((NumberBlockSprite) sprite, snap, addSprite);
+			return modifiers.addExpression((NumberBlockSprite) sprite, snap);
 		}
 		return null;
 	}
@@ -181,27 +178,40 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	}
 	
 	public Renderer createRenderer() {
-		return modifiers.createRenderer(new BaseRenderer(text()).setHighlight(!hasSprite()));
+		return modifiers.createRenderer(new BaseRenderer(text()).setHighlight(previewAdd()));
 	}
 	
-	public Renderer createRendererWith(BlockSprite sprite) {
-		debug("Before: " + hierarchy());
-		GroupLayer parent = sprite.layer().parent();
-		float depth = sprite.layer().depth();
-		
-		ModifierBlockSprite toRemove = addBlock(sprite, false, false);
-		toRemove.setPreviewAdd(true);
-		Renderer renderer = modifiers.createRenderer(new BaseRenderer(text()));
-		toRemove.setPreviewAdd(false);
-		
-		toRemove.group.removeChild(toRemove);
-		if (toRemove == sprite) {
-			sprite.layer().setDepth(depth);
-			if (parent != null) parent.add(sprite.layer());
+	protected Renderer createRendererWith(BaseBlockSprite myCopy, BlockSprite spriteCopy) {
+		myCopy.performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				sprite.setPreviewAdd(true);
+			}
+		});
+		myCopy.addBlock(spriteCopy, false);
+		myCopy.performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				sprite.setPreviewAdd(!sprite.previewAdd());
+			}
+		});
+		return myCopy.createRenderer();
+	}
+	
+	public Renderer createRendererWith(BlockSprite sprite, boolean invertFirst) {		
+		BaseBlockSprite copy = (BaseBlockSprite) copy();
+		sprite = (BlockSprite) sprite.copy();
+		if (invertFirst) {
+			sprite.showInverse();
+			sprite = (BaseBlockSprite) sprite.inverse();
 		}
-		debug("After: " + hierarchy());
-		
-		return renderer;
+		return createRendererWith(copy, sprite);
+	}
+	
+	@Override
+	protected void performAction(Action action) {
+		super.performAction(action);
+		modifiers.performAction(action);
 	}
 	
 	@Override 

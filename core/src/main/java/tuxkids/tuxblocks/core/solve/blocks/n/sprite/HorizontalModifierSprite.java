@@ -54,7 +54,7 @@ public abstract class HorizontalModifierSprite extends ModifierBlockSprite {
 			ArrayList<VerticalModifierSprite> modifiers = new ArrayList<VerticalModifierSprite>();
 			group.addVerticalModifiers(modifiers);
 			for (VerticalModifierSprite mod : modifiers) {
-				sprite.addModifier((ModifierBlockSprite) mod.copy(true), true, true);
+				sprite.addModifier((ModifierBlockSprite) mod.copy(true), true);
 			}
 		}
 		return sprite;

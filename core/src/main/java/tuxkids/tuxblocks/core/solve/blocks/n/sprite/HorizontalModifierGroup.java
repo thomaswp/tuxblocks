@@ -36,10 +36,10 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	public ModifierBlockSprite addExpression(NumberBlockSprite sprite, boolean snap, boolean addSprite) {	
+	public ModifierBlockSprite addExpression(NumberBlockSprite sprite, boolean snap) {	
 		List<VerticalModifierSprite> sharedMods = getSharedModifiersForAdd(sprite);
 		if (sharedMods == null) {
-			return super.addExpression(sprite, snap, addSprite);
+			return super.addExpression(sprite, snap);
 		}
 		
 		List<ModifierBlockSprite> outsideModifiers = null;
@@ -50,17 +50,14 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		
 		ModifierBlockSprite proxy;
 		if (modifiers == null || sharedMods.size() == modifiers.children.size()) {
-			if (!addSprite) setPreviewAdd(true);
 			addChild(proxy = sprite.proxyFor());
 			for (ModifierBlockSprite mod : sprite.modifiers.children) addChild(mod);
-			setPreviewAdd(false);
 		} else {
-			ModifierBlockSprite superMod = super.addExpression(sprite, snap, addSprite);
+			ModifierBlockSprite superMod = super.addExpression(sprite, snap);
 			if (superMod != null) {
 				return superMod;
 			}
 			
-			if (!addSprite) setPreviewAdd(true);
 			ModifierGroup modMods = modifiers.removeModifiers();
 			modifiers.addNewModifiers();
 			modifiers.modifiers.addChild(proxy = sprite.proxyFor());
@@ -73,17 +70,16 @@ public class HorizontalModifierGroup extends ModifierGroup {
 				modifiers.modifiers.modifiers.addChild(m);
 			}
 			modifiers.modifiers.modifiers.setModifiers(modMods);
-			setPreviewAdd(false);
 		}
 		
 		if (outsideModifiers != null) {
 			for (ModifierBlockSprite mod : outsideModifiers) {
-				addModifier(mod, false, addSprite);
+				addModifier(mod, false);
 			}
 		}
 		
 		if (snap) snapChildren(); //TODO: maybe better implementation, if I ever use this option
-		if (addSprite) sprite.layer().destroy();
+		if (sprite.hasSprite()) sprite.layer().destroy();
 		
 		return proxy;
 	}
@@ -178,7 +174,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			boolean[] highlights = new boolean[operands.length];
 			for (int i = 0; i < operands.length; i++) {
 				operands[i] = ((HorizontalModifierSprite) children.get(i)).getPlusValue();
-				highlights[i] = !children.get(i).hasSprite();
+				highlights[i] = children.get(i).previewAdd();
 			}
 			base = new AddGroupRenderer(base, operands, highlights);
 		}

@@ -107,11 +107,12 @@ public class BlockController extends PlayNObject {
 	}
 	
 	private Renderer getRenderer(List<BaseBlockSprite> side) {
+		if (hoverSprite == null) hoverSprite = draggingFrom;
 		Renderer renderer = null;
 		for (BaseBlockSprite base : side) {
 			Renderer toAdd;
-			if (base == hoverSprite) {
-				toAdd = base.createRendererWith(dragging);
+			if (dragging != null && base == hoverSprite) {
+				toAdd = base.createRendererWith(dragging, hoverSprite == draggingFrom && inverted);
 			} else {
 				if (base instanceof BlockHolder) continue;
 				toAdd = base.createRenderer();
@@ -242,6 +243,7 @@ public class BlockController extends PlayNObject {
 			lastTouchX = event.x();
 			lastTouchY = event.y();
 			inverted = false;
+			refreshEquation = true;
 			updatePosition();
 			
 			
@@ -311,13 +313,7 @@ public class BlockController extends PlayNObject {
 				hoverSprite = draggingFrom;
 			}
 			if (hoverSprite != lastHover) {
-				if (inverted && hoverSprite == draggingFrom) {
-					invertDragging(false);
-					refreshEquationImage();
-					invertDragging(false);
-				} else {
-					refreshEquationImage();
-				}
+				refreshEquation = true;
 			}
 			
 			boolean invert;
@@ -354,9 +350,10 @@ public class BlockController extends PlayNObject {
 					if (!(base instanceof BlockHolder)) {
 						ModifierBlockSprite inverse = (ModifierBlockSprite) ((VerticalModifierSprite) sprite).inverse().copy(true);
 						inverse.interpolateRect(base.offsetX(), y, base.totalWidth(), inverse.height(), 0, 1);
-						base.addModifier(inverse, false, true);
+						base.addModifier(inverse, false);
 					}
 				}
+				refreshEquation = true;
 			}
 		}
 

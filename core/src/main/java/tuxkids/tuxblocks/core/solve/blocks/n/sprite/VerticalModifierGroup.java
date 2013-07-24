@@ -148,7 +148,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 				boolean[] highlights = new boolean[operands.length];
 				for (int i = 0; i < operands.length; i++) {
 					operands[i] = timesBlocks.get(i).value;
-					highlights[i] = !timesBlocks.get(i).hasSprite();
+					highlights[i] = timesBlocks.get(i).previewAdd();
 				}
 				base = new TimesGroupRenderer(base, operands, highlights);
 			}
@@ -157,7 +157,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 				boolean[] highlights = new boolean[operands.length];
 				for (int i = 0; i < operands.length; i++) {
 					operands[i] = divBlocks.get(i).value;
-					highlights[i] = !divBlocks.get(i).hasSprite();
+					highlights[i] = divBlocks.get(i).previewAdd();
 				}
 				base = new OverGroupRenderer(base, operands, highlights);
 			}

@@ -34,8 +34,10 @@ public class NumberBlockSprite extends BaseBlockSprite {
 	}
 	
 	protected ModifierBlockSprite alignProxy(ModifierBlockSprite proxy) {
-		if (hasSprite()) proxy.initSprite();
-		proxy.interpolateRect(groupLayer.tx(), groupLayer.ty(), width(), height(), 0, 1);
+		if (hasSprite()) {
+			proxy.initSprite();
+			proxy.interpolateRect(groupLayer.tx(), groupLayer.ty(), width(), height(), 0, 1);
+		}
 		return proxy;
 	}
 
@@ -54,7 +56,7 @@ public class NumberBlockSprite extends BaseBlockSprite {
 				modifiers.addNegative();
 			} else {
 				value = -value;
-				((BlockLayer) layer).setText("" + value);
+				if (hasSprite()) ((BlockLayer) layer).setText("" + value);
 			}
 		} else {
 			modifiers.addNegative();

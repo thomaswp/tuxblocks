@@ -149,6 +149,7 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	}
 	
 	public void showInverse() {
+		if (!hasSprite()) return;
 		layer.setVisible(false);
 		BlockSprite inverse = inverse();
 		inverse.layer.setVisible(true);

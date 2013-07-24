@@ -8,13 +8,17 @@ import tuxkids.tuxblocks.core.PlayNObject;
 
 public abstract class Sprite extends PlayNObject {
 	
-	private boolean hasSprite, previewAdd;
+	private boolean hasSprite, previewAdd, tagged;
 	protected BlockListener blockListener;
 
 	protected abstract Sprite copyChild();
 	protected abstract void addBlockListener(BlockListener blockListener);
 	public abstract void update(int delta);
 	public abstract void paint(Clock clock);
+	
+	protected void performAction(Action action) {
+		action.run(this);
+	}
 	
 	protected void setPreviewAdd(boolean previewAdd) {
 		this.previewAdd = previewAdd;
@@ -25,7 +29,7 @@ public abstract class Sprite extends PlayNObject {
 	}
 	
 	public boolean hasSprite() {
-		return hasSprite && !previewAdd;
+		return hasSprite;
 	}
 	
 	protected static int baseSize() {
@@ -119,5 +123,9 @@ public abstract class Sprite extends PlayNObject {
 		void wasDoubleClicked(BlockSprite sprite, Event event);
 		void wasSimplified();
 		
+	}
+	
+	protected interface Action {
+		void run(Sprite sprite);
 	}
 }

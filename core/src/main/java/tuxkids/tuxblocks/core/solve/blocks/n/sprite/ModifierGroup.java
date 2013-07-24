@@ -317,7 +317,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		layer.remove(modifiers.layer());
 	}
 	
-	protected ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap, boolean addSprite) {
+	protected ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap) {
 		if (modifiers == null && canAdd(sprite)) {
 			addChild(sprite);
 			if (snap) {
@@ -330,14 +330,14 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 				updateRect();
 			}
 			modifiers.updateParentRect(this);
-			modifiers.addModifier(sprite, snap, addSprite);
+			modifiers.addModifier(sprite, snap);
 		}
 		return sprite;
 	}
 
-	public ModifierBlockSprite addExpression(NumberBlockSprite sprite, boolean snap, boolean addSprite) {
+	public ModifierBlockSprite addExpression(NumberBlockSprite sprite, boolean snap) {
 		if (modifiers != null) {
-			return modifiers.addExpression(sprite, snap, addSprite);
+			return modifiers.addExpression(sprite, snap);
 		}
 		return null;
 	}
@@ -405,6 +405,13 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 			modifiers.updateParentRect(this);
 			modifiers.paint(clock);
 		}
+	}
+	
+	@Override
+	protected void performAction(Action action) {
+		super.performAction(action);
+		for (ModifierBlockSprite child : children) child.performAction(action);;
+		if (modifiers != null) modifiers.performAction(action);
 	}
 	
 	public String hierarchy(int tab) {
