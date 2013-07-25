@@ -5,24 +5,22 @@ import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
 
-public class AddGroupRenderer extends ModifierRenderer {
+class AddGroupRenderer extends ModifierGroupRenderer {
 	
-	public AddGroupRenderer(Renderer base, int... operands) {
-		super(base, operands);
+	public AddGroupRenderer(int... operands) {
+		super(operands);
 	}
 	
-	public AddGroupRenderer(Renderer base, int[] operands, boolean[] highlights) {
-		super(base, operands, highlights);
+	public AddGroupRenderer(int[] operands, boolean[] highlights) {
+		super(operands, highlights);
 	}
 
 	@Override
 	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
-		final ExpressionWriter childWriter = base.getExpressionWriter(textFormat);
 		
 		return new ExpressionWriter(textFormat) {
 			
 			TextLayout[] layouts;
-			float myHeight;
 			
 			@Override
 			protected Vector formatExpression(TextFormat textFormat) {
@@ -34,18 +32,15 @@ public class AddGroupRenderer extends ModifierRenderer {
 					width += layouts[i].width();
 					height = Math.max(layouts[i].height(), height);
 				}
-				myHeight = height;
-				return new Vector(childWriter.width() + width, Math.max(childWriter.height(), myHeight));
+				return new Vector(width, height);
 			}
 			
 			@Override
 			public void drawExpression(Canvas canvas) {
-				childWriter.drawExpression(canvas);
-				
-				float x = childWriter.width();
+				float x = 0;
 				for (int i = 0; i < operands.length; i++) {
 					setColor(canvas, highlights[i]);
-					canvas.fillText(layouts[i], x, (height() - myHeight) / 2);
+					canvas.fillText(layouts[i], x, 0);
 					x += layouts[i].width();
 				}
 			}

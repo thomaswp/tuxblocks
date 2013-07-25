@@ -16,35 +16,38 @@ public class JoinRenderer extends Renderer {
 		this.symbol = symbol;
 	}
 	
+	public int lines() {
+		return Math.max(a.lines(), b.lines());
+	}
+	
 	@Override
 	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
 		final ExpressionWriter aWriter = a.getExpressionWriter(textFormat);
 		final ExpressionWriter bWriter = b.getExpressionWriter(textFormat);
 		
-		return new ExpressionWriter(textFormat) {
+		return new ParentExpressionWriter(textFormat) {
 			
 			TextLayout layout;
 			
 			@Override
 			protected Vector formatExpression(TextFormat textFormat) {
 				layout = graphics().layoutText(symbol, textFormat);
-				return new Vector(aWriter.width() + SPACING + layout.width() + SPACING +  bWriter.width(), 
+				return new Vector(aWriter.width() + spacing() + layout.width() + spacing() +  bWriter.width(), 
 						Math.max(aWriter.height(), bWriter.height()));
+			}
+
+			@Override
+			protected void addChildren() {
+				addChild(aWriter, 0, (height() - aWriter.height()) / 2);
+				addChild(bWriter, width() - bWriter.width(), (height() - bWriter.height()) / 2);
 			}
 			
 			@Override
-			public void drawExpression(Canvas canvas) {
-				canvas.save();
-				canvas.translate(0, (height() - aWriter.height()) / 2);
-				aWriter.drawExpression(canvas);
-				canvas.restore();
+			public void drawExpression(Canvas canvas) {			
+				super.drawExpression(canvas);
 				
-				canvas.fillText(layout, aWriter.width() + SPACING, (height() - layout.height()) / 2);
-				
-				canvas.save();
-				canvas.translate(width() - bWriter.width(), (height() - bWriter.height()) / 2);
-				bWriter.drawExpression(canvas);
-				canvas.restore();
+				setColor(canvas, false);
+				canvas.fillText(layout, aWriter.width() + spacing(), (height() - layout.height()) / 2);
 			}
 		};
 	}

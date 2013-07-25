@@ -1,22 +1,14 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.markup;
 
-public abstract class ModifierRenderer extends Renderer {
-	protected Renderer base;
-	protected int[] operands;
-	protected boolean[] highlights;
+abstract class ModifierRenderer extends Renderer {
+	protected Renderer base, modifier;
 	
-	public ModifierRenderer setHighlight(int index, boolean highlight) {
-		highlights[index] = highlight;
-		return this;
-	}
-	
-	public ModifierRenderer(Renderer base, int... operands) {
-		this(base, operands, new boolean[operands.length]);
-	}
-	
-	public ModifierRenderer(Renderer base, int[] operands, boolean[] highlights) {
+	public ModifierRenderer(Renderer base, Renderer modifier) {
 		this.base = base;
-		this.operands = operands;
-		this.highlights = highlights;
+		this.modifier = modifier;
+	}
+	
+	public int lines() {
+		return Math.max(base.lines(), modifier.lines());
 	}
 }

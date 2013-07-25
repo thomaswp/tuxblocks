@@ -21,6 +21,11 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	private float width, height;
 
 	@Override
+	public GroupLayer parent() {
+		return layer.parent();
+	}
+	
+	@Override
 	public float tx() {
 		return layer.tx();
 	}
@@ -38,9 +43,18 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 		return height;
 	}
 	
+	public float depth() {
+		return layer.depth();
+	}
+	
 	@Override
 	public Layer layerAddable() {
 		return layer;
+	}
+	
+	@Override
+	public void setDepth(float depth) {
+		layer.setDepth(depth);
 	}
 	
 	@Override

@@ -12,4 +12,8 @@ public class Constant {
 	public final static String BUTTON_PLUS = IMAGE_PATH + "plus.png";
 	
 	public static final String FONT_NAME = "Arial";
+	
+	public static final String TIMES_SYMBOL = "\u00D7";
+	public static final String DIVIDE_SYMBOL = "\u00F7";
+	public static final String DOT_SYMBOL = "\u00B7";
 }

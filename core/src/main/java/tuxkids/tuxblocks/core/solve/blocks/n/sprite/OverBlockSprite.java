@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
+import tuxkids.tuxblocks.core.Constant;
+
 public class OverBlockSprite extends VerticalModifierSprite {
 
 	public OverBlockSprite(int value) {
@@ -12,7 +14,7 @@ public class OverBlockSprite extends VerticalModifierSprite {
 
 	@Override
 	protected String operator() {
-		return "\u00F7";
+		return Constant.DIVIDE_SYMBOL;
 	}
 
 	@Override

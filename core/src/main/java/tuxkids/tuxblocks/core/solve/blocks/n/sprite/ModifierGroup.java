@@ -1,63 +1,41 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import playn.core.GroupLayer;
-import playn.core.Image;
-import playn.core.ImageLayer;
 import playn.core.Layer;
-import playn.core.Pointer.Event;
-import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import pythagoras.f.Rectangle;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
-import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
-public abstract class ModifierGroup extends Sprite implements Hashable {
+public abstract class ModifierGroup extends Sprite implements Hashable, Simplifiable {
 
 	protected final static int MODIFIERS_DEPTH = 0;
 	protected static final int CHILD_START_DEPTH = -1;
-	protected static final int SIMPLIFY_DEPTH = 1;
 	
 	protected abstract void updateChildren(float base, float dt);
 	protected abstract void updateRect();
 	protected abstract ModifierGroup createModifiers();
 	protected abstract boolean canAdd(ModifierBlockSprite sprite);
-	protected abstract void updateSimplify();
-	protected abstract void cancelOut(ModifierBlockSprite sprite);
 	protected abstract Renderer createRenderer(Renderer base);
 	
 	public abstract void addNegative();
 	
 	protected GroupLayer layer;
 	protected Rectangle rect = new Rectangle();
-	protected Rectangle parentRect = new Rectangle();
+	protected Rectangle parentRect = new Rectangle(); 
 	protected boolean multiExpression;
+	protected SimplifyLayer simplifyLayer;
 
 	private List<ModifierBlockSprite> toRemove = new ArrayList<ModifierBlockSprite>();
 	
 	protected List<ModifierBlockSprite> children = new ArrayList<ModifierBlockSprite>(),
 			destroying = new ArrayList<ModifierBlockSprite>();
 	protected ModifierGroup modifiers;
-	
-	private static Image simplifyImage;
-	private List<ImageLayer> simplifyButtons = new ArrayList<ImageLayer>();
-	private HashMap<ImageLayer, ModifierBlockSprite> simplifyMap = new HashMap<ImageLayer, ModifierBlockSprite>();
-	private Listener simplifyListener = new Listener() {
-		@Override
-		public void onPointerStart(Event event) { onCancelOut(event.hit()); }
-		@Override
-		public void onPointerEnd(Event event) { }
-		@Override
-		public void onPointerDrag(Event event) { }
-		@Override
-		public void onPointerCancel(Event event) { }
-	}; 
 	
 	@Override
 	public Layer layer() {
@@ -115,6 +93,10 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 			modifiers.initSprite();
 			addModifiersSprite();
 		}
+		
+		simplifyLayer = new SimplifyLayer(this);
+		layer.add(simplifyLayer.layerAddable());
+		simplifyLayer.setDepth(SIMPLIFY_DEPTH);
 	}
 	
 	protected void addNewModifiers() {
@@ -142,6 +124,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		if (modifiers != null) {
 			layer.add(modifiers.layer());
 			modifiers.layer().setDepth(MODIFIERS_DEPTH);
+			modifiers.addBlockListener(blockListener);
 		}
 		
 	}
@@ -180,46 +163,6 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		child.layer().setDepth(depth);
 	}
 	
-	protected ImageLayer getSimplifyButton(ModifierBlockSprite sprite) {
-		while (simplifyButtons.size() <= simplifyMap.size()) { 
-			addSimplifyButton();
-		}
-		ImageLayer layer = simplifyButtons.get(simplifyMap.size());
-		simplifyMap.put(layer, sprite);
-		layer.setVisible(true);
-		return layer;
-	}
-	
-	private void addSimplifyButton() {
-		if (simplifyImage == null) {
-			simplifyImage = CanvasUtils.createCircle(modSize() / 3, Colors.GRAY, 1, Colors.BLACK);
-		}
-		ImageLayer simplifyButton = graphics().createImageLayer(simplifyImage);
-		simplifyButton.setAlpha(0.5f);
-		simplifyButton.setDepth(SIMPLIFY_DEPTH);
-		simplifyButton.setVisible(false);
-		simplifyButton.addListener(simplifyListener );
-		centerImageLayer(simplifyButton);
-		simplifyButtons.add(simplifyButton);
-		layer.add(simplifyButton);
-	}
-	
-	private void onCancelOut(Layer hit) {
-		ModifierBlockSprite sprite = simplifyMap.get(hit);
-		if (sprite != null) {
-			cancelOut(sprite);
-			blockListener.wasSimplified();
-		}
-	}
-	
-	private void updateSimplifyAbstract() {
-		for (ImageLayer button : simplifyButtons) {
-			button.setVisible(false);
-		}
-		simplifyMap.clear();
-		updateSimplify();
-	}
-	
 	public boolean isModifiedHorizontally() {
 		if (modifiers == null) return false;
 		if (modifiers.children.size() > 0 && modifiers instanceof HorizontalModifierGroup) return true;
@@ -232,7 +175,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		return modifiers.isModifiedVertically();
 	}
 	
-	protected void addVerticalModifiers(List<VerticalModifierSprite> mods) {
+	protected void addVerticalModifiersTo(List<VerticalModifierSprite> mods) {
 		if (modifiers == null) return;
 		for (ModifierBlockSprite mod : modifiers.children) {
 			if (mod instanceof VerticalModifierSprite) {
@@ -241,7 +184,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 				break;
 			}
 		}
-		modifiers.addVerticalModifiers(mods);
+		modifiers.addVerticalModifiersTo(mods);
 		
 	}
 	
@@ -322,7 +265,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 			addChild(sprite);
 			if (snap) {
 				updateRect();
-				updateChildren(0, 1);
+				if (hasSprite()) updateChildren(0, 1);
 			}
 		} else {
 			if (modifiers == null) addNewModifiers();
@@ -382,7 +325,9 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 			}
 		}
 		updateModifiers();
-		updateSimplifyAbstract();
+		if (simplifyLayer != null) {
+			simplifyLayer.update();
+		}
 	}
 	
 	public void update(int delta, boolean multiExpression) {
@@ -399,7 +344,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable {
 		}
 		for (ModifierBlockSprite sprite : destroying) {
 			sprite.layer().setAlpha(lerpTime(sprite.layer().alpha(), 0, 0.995f, clock.dt(), 0.01f));
-			sprite.paint(clock);
+//			sprite.paint(clock);
 		}
 		if (modifiers != null) {
 			modifiers.updateParentRect(this);

@@ -5,10 +5,13 @@ import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 
 public abstract class Sprite extends PlayNObject {
+
+	protected static final int SIMPLIFY_DEPTH = 1;
 	
-	private boolean hasSprite, previewAdd, tagged;
+	private boolean hasSprite, previewAdd;
 	protected BlockListener blockListener;
 
 	protected abstract Sprite copyChild();
@@ -122,10 +125,16 @@ public abstract class Sprite extends PlayNObject {
 		void wasMoved(Event event);
 		void wasDoubleClicked(BlockSprite sprite, Event event);
 		void wasSimplified();
+		void wasReduced(Renderer problem, int answer, int startNumber, SimplifyListener callback);
+		void wasCanceled();
 		
 	}
 	
 	protected interface Action {
 		void run(Sprite sprite);
+	}
+	
+	public interface SimplifyListener {
+		void wasSimplified(boolean success);
 	}
 }

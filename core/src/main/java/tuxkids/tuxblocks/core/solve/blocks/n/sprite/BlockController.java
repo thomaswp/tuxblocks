@@ -15,11 +15,14 @@ import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.Button.OnDragListener;
+import tuxkids.tuxblocks.core.solve.blocks.n.NumberSelectScreen;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.BlockListener;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
@@ -33,14 +36,15 @@ public class BlockController extends PlayNObject {
 	public final static float EQ_BUFFER = 50;
 	public final static float EQ_THRESH = 5; // how far past the equals line you drag to cause a flip
 	private static final float DRAGGING_DEPTH = 1;
-	
+
+	private Parent parent;
 	private GroupLayer layer;
 	private List<BaseBlockSprite> leftSide = new ArrayList<BaseBlockSprite>(), rightSide = new ArrayList<BaseBlockSprite>();
 	@SuppressWarnings("unchecked")
 	private MultiList<BaseBlockSprite> baseBlocks = new MultiList<BaseBlockSprite>(leftSide, rightSide);
-	private BaseBlockSprite draggingFrom;
+	private BaseBlockSprite draggingFrom, tempDraggingFrom;
 	private List<BaseBlockSprite> draggingFromSide;
-	private BlockSprite dragging;
+	private BlockSprite dragging, tempDragging;
 	private Listener listener = new Listener();
 	private float blockAnchorPX, blockAnchorPY;
 	private float lastTouchX, lastTouchY;
@@ -60,7 +64,8 @@ public class BlockController extends PlayNObject {
 		return equationImage;
 	}
 	
-	public BlockController() {
+	public BlockController(Parent parent) {
+		this.parent = parent;
 		layer = graphics().createGroupLayer();
 		equals = graphics().createImageLayer(CanvasUtils.createText("=", new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20)), Colors.WHITE));
 		centerImageLayer(equals);
@@ -251,13 +256,14 @@ public class BlockController extends PlayNObject {
 
 		@Override
 		public void wasReleased(Event event) {
-			lastTouchX = event.x();
-			lastTouchY = event.y();
+			float x = event.x(), y = event.y();
+			lastTouchX = x;
+			lastTouchY = y;
 			
 			BaseBlockSprite target = null;
 			for (BaseBlockSprite base : baseBlocks) {
 				base.clearPreview();
-				if (canDropOn(base, event.x(), event.y())) {
+				if (canDropOn(base, x, y)) {
 					target = base;
 				}
 			}
@@ -268,8 +274,12 @@ public class BlockController extends PlayNObject {
 					invertDragging(true);
 				}
 			}
-			debug(target.hierarchy());
+			dropOn(target);
+		}
+		
+		private void dropOn(BaseBlockSprite target) {
 			
+			debug(target.hierarchy());
 			if (target instanceof BlockHolder) {
 				if (dragging instanceof HorizontalModifierSprite) {
 					NumberBlockSpriteProxy proxy = ((HorizontalModifierSprite) dragging).getProxy(false);
@@ -280,9 +290,14 @@ public class BlockController extends PlayNObject {
 				swapExpression(getContaining(target), target, (BaseBlockSprite) dragging);
 				target.layer().destroy();
 			} else {
-				dragging.layer().setTranslation(dragging.layer().tx() - getGlobalTx(target.layer()), 
-						dragging.layer().ty() - getGlobalTy(target.layer()));
-				target.addBlock(dragging, false);
+				ModifierBlockSprite added = target.addBlock(dragging, false);
+				if (added == null) {
+					tempDragging = dragging;
+					tempDraggingFrom = draggingFrom;
+				} else {
+					added.layer().setTranslation(added.layer().tx() - getGlobalTx(target.layer()), 
+							added.layer().ty() - getGlobalTy(target.layer()));
+				}
 			}
 			
 			dragging = null;
@@ -290,7 +305,6 @@ public class BlockController extends PlayNObject {
 			hoverSprite = null;
 			
 			refreshEquation = true;
-			
 			debug(target.hierarchy());
 		}
 
@@ -361,5 +375,24 @@ public class BlockController extends PlayNObject {
 		public void wasSimplified() {
 			refreshEquation = true;
 		}
+
+		@Override
+		public void wasReduced(Renderer problem, int answer, int startNumber,
+				SimplifyListener callback) {
+			parent.showNumberSelectScreen(problem, answer, startNumber, callback);
+		}
+		
+		@Override
+		public void wasCanceled() {
+			dragging = tempDragging;
+			draggingFrom = tempDraggingFrom;
+			tempDragging = tempDraggingFrom = null;
+			dropOn(draggingFrom);
+		}
+	}
+	
+	public interface Parent {
+		void showNumberSelectScreen(Renderer problem, int answer, int startNumber,
+				SimplifyListener callback);
 	}
 }

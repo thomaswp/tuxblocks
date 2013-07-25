@@ -31,6 +31,8 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	protected abstract float defaultWidth();
 	protected abstract float defaultHeight();
 	protected abstract boolean canRelease(boolean multiExpression);
+	
+	public abstract void showInverse();
 	public abstract BlockSprite inverse();
 	
 	public BlockSprite() {
@@ -146,15 +148,6 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	}
 	
 	public void remove() {
-	}
-	
-	public void showInverse() {
-		if (!hasSprite()) return;
-		layer.setVisible(false);
-		BlockSprite inverse = inverse();
-		inverse.layer.setVisible(true);
-		inverse.interpolateRect(x(), y(), width(), height(), 0, 1);
-		inverse.layer().setTranslation(layer().tx(), layer().ty());
 	}
 	
 	@Override

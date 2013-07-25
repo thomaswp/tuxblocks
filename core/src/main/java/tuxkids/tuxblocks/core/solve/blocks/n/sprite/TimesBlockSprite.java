@@ -5,6 +5,7 @@ import playn.core.Path;
 import playn.core.PlayN;
 import playn.core.TextLayout;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 
 public class TimesBlockSprite extends VerticalModifierSprite{
@@ -23,7 +24,7 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 
 	@Override
 	protected String operator() {
-		return "\u00D7";
+		return Constant.TIMES_SYMBOL;
 	}
 	
 	@Override

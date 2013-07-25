@@ -125,10 +125,13 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		return toString() + "\n" + modifiers.hierarchy(1);
 	}
 
-	public ModifierBlockSprite addModifier(ModifierBlockSprite sprite) {
-		return addModifier(sprite, false);
+	//The public method is for chaining
+	public BaseBlockSprite addModifier(ModifierBlockSprite sprite) {
+		addModifier(sprite, false);
+		return this;
 	}
 	
+	//While the protected returns the block that was actually added
 	protected ModifierBlockSprite addModifier(ModifierBlockSprite sprite, boolean snap) {
 		return modifiers.addModifier(sprite, snap);
 	}
@@ -171,10 +174,10 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	
 	@Override
 	public void showInverse() {
-		super.showInverse();
-		BaseBlockSprite inverse = (BaseBlockSprite) inverse();
-		inverse.modifiers = modifiers;
-		inverse.groupLayer.add(modifiers.layer());
+//		BaseBlockSprite inverse = (BaseBlockSprite) inverse();
+//		inverse.modifiers = modifiers;
+//		inverse.groupLayer.add(modifiers.layer());
+		modifiers.addNegative();
 	}
 	
 	public Renderer createRenderer() {
@@ -203,7 +206,7 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		sprite = (BlockSprite) sprite.copy();
 		if (invertFirst) {
 			sprite.showInverse();
-			sprite = (BaseBlockSprite) sprite.inverse();
+			sprite = (BlockSprite) sprite.inverse();
 		}
 		return createRendererWith(copy, sprite);
 	}

@@ -3,7 +3,10 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 import java.util.ArrayList;
 import java.util.List;
 
-import tuxkids.tuxblocks.core.solve.blocks.n.markup.AddGroupRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.AddRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.BlankRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 
 public class HorizontalModifierGroup extends ModifierGroup {
@@ -104,9 +107,9 @@ public class HorizontalModifierGroup extends ModifierGroup {
 					myIndirectMods = new ArrayList<VerticalModifierSprite>(),
 					spriteMods = new ArrayList<VerticalModifierSprite>();
 	
-			addVerticalModifiers(myMods);
-			if (modifiers != null) modifiers.addVerticalModifiers(myIndirectMods);
-			sprite.modifiers.addVerticalModifiers(spriteMods);
+			addVerticalModifiersTo(myMods);
+			if (modifiers != null) modifiers.addVerticalModifiersTo(myIndirectMods);
+			sprite.modifiers.addVerticalModifiersTo(spriteMods);
 			
 			for (VerticalModifierSprite mod : myIndirectMods) {
 				int index = myMods.lastIndexOf(mod); // the last one will be the outermost
@@ -137,23 +140,39 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	protected void updateSimplify() {
+	public void updateSimplify() {
 		for (int i = 1; i < children.size(); i++) {
 			ModifierBlockSprite sprite = children.get(i);
-			ModifierBlockSprite before = children.get(i - 1);
-			if (sprite.inverse().equals(before)) {
-				getSimplifyButton(sprite).setTranslation(sprite.x(), sprite.centerY());
-			}
+			simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.x(), sprite.centerY());
 		}
 	}
 
 	@Override
-	protected void cancelOut(ModifierBlockSprite sprite) {
+	public void simplify(final ModifierBlockSprite sprite) {
+		HorizontalModifierSprite hSprite = (HorizontalModifierSprite) sprite;
 		for (int i = 1; i < children.size(); i++) {
 			if (sprite != children.get(i)) continue;
-			ModifierBlockSprite before = children.get(i - 1);
-			removeChild(sprite, true);
-			removeChild(before, true);
+			final HorizontalModifierSprite before = (HorizontalModifierSprite) children.get(i - 1);
+			if (sprite.inverse().equals(before)) {
+				removeChild(sprite, true);
+				removeChild(before, true);
+				blockListener.wasSimplified();
+			} else {
+				Renderer problem = new JoinRenderer(
+						new JoinRenderer(new BaseRenderer("" + before.plusValue()), 
+								new BaseRenderer("" + hSprite.value), hSprite instanceof PlusBlockSprite ? "+" : "-"), 
+						new BlankRenderer(), "=");
+				final int answer = before.plusValue() + hSprite.plusValue();
+				blockListener.wasReduced(problem, answer, before.plusValue(), new SimplifyListener() {
+					@Override
+					public void wasSimplified(boolean success) {
+						if (success) {
+							before.setPlusValue(answer);
+							removeChild(sprite, true);
+						}
+					}
+				});
+			}
 		}
 	}
 	
@@ -173,10 +192,10 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			int[] operands = new int[children.size()];
 			boolean[] highlights = new boolean[operands.length];
 			for (int i = 0; i < operands.length; i++) {
-				operands[i] = ((HorizontalModifierSprite) children.get(i)).getPlusValue();
+				operands[i] = ((HorizontalModifierSprite) children.get(i)).plusValue();
 				highlights[i] = children.get(i).previewAdd();
 			}
-			base = new AddGroupRenderer(base, operands, highlights);
+			base = new AddRenderer(base, operands, highlights);
 		}
 		if (modifiers == null) {
 			return base;

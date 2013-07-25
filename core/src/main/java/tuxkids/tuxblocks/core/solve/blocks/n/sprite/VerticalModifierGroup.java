@@ -3,9 +3,12 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 import java.util.ArrayList;
 import java.util.List;
 
-import tuxkids.tuxblocks.core.solve.blocks.n.markup.OverGroupRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.BlankRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.JoinRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.OverRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
-import tuxkids.tuxblocks.core.solve.blocks.n.markup.TimesGroupRenderer;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.TimesRenderer;
 
 public class VerticalModifierGroup extends ModifierGroup {
 
@@ -87,39 +90,95 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	protected void updateSimplify() {
+	public void updateSimplify() {
 		for (int i = 0; i < timesBlocks.size(); i++) {
 			ModifierBlockSprite sprite = timesBlocks.get(i);
 			if (divBlocks.contains(sprite.inverse())) {
-				//getSimplifyButton(sprite).setTranslation(sprite.x() + wrapSize() / 2, sprite.bottom());
-				getSimplifyButton(sprite).setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
+				simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
+				continue;
 			}
-			// cancel *-1's
+			// reduce/cancel out -1s
 			if (i > 0) {
-				if (timesBlocks.get(i - 1).equals(sprite.inverse())) {
-					getSimplifyButton(sprite).setTranslation(sprite.centerX(), sprite.y() + modSize());
-				}
+				simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.centerX(), sprite.y() + modSize());
+				continue;
+			} else {
+				
+			}
+		}
+		for (int i = 0; i < divBlocks.size(); i++) {
+			ModifierBlockSprite sprite = divBlocks.get(i);
+			if (i > 0) {
+				simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.centerX(), sprite.y());
+				continue;
+			} else {
+				
 			}
 		}
 	}
 
 	@Override
-	protected void cancelOut(ModifierBlockSprite sprite) {
+	public void simplify(ModifierBlockSprite sprite) {
 		for (int i = 0; i < timesBlocks.size(); i++) {
 			if (timesBlocks.get(i) != sprite) continue;
+			
 			int index = divBlocks.lastIndexOf(sprite.inverse());
 			ModifierBlockSprite pair;
 			if (index < 0) {
-				// doing some funky stuff here so that *-1 cancels out *-1
-				index = timesBlocks.indexOf(sprite.inverse());
-				if (index == i) index = timesBlocks.lastIndexOf(sprite.inverse());
-				if (index == i || index < 0) return;
-				pair = timesBlocks.get(index);
+				if (i > 0) {
+					pair = timesBlocks.get(i - 1);
+					if (!pair.equals(sprite.inverse())) {
+						reduce(sprite, pair, true); //TODO: don't allow -1's to reduce
+						return;
+					}
+				} else {
+					return;
+				}
 			} else {
 				pair = divBlocks.get(index);
 			}
 			removeChild(sprite, true);
 			removeChild(pair, true);
+			blockListener.wasSimplified();
+			return;
+		}
+		for (int i = 0; i < divBlocks.size(); i++) {
+			if (divBlocks.get(i) != sprite) continue;
+			if (i > 0) {
+				ModifierBlockSprite pair = divBlocks.get(i - 1);
+				if (!pair.equals(sprite.inverse())) {
+					reduce(sprite, pair, false);
+					return;
+				}
+			} else {
+				return;
+			}
+		}
+	}
+	
+	protected void reduce(final ModifierBlockSprite a, final ModifierBlockSprite b, boolean times) {
+		if (blockListener != null) {
+			Renderer lhs = new BaseRenderer("x"), rhs = new BaseRenderer("x");
+			int[] operands = new int[] { b.value, a.value };
+			if (times) {
+				lhs = new TimesRenderer(lhs, operands);
+				rhs = new TimesRenderer(rhs, new BlankRenderer());
+			} else {
+				lhs = new OverRenderer(lhs, operands);
+				rhs = new OverRenderer(rhs, new BlankRenderer());
+			}
+			Renderer problem = new JoinRenderer(lhs, rhs, "=");
+			
+			final int answer = a.value * b.value;
+			blockListener.wasReduced(problem, answer, b.value, new SimplifyListener() {
+				@Override
+				public void wasSimplified(boolean success) {
+					if (success) {
+						b.setValue(answer);
+						removeChild(a, true);
+						blockListener.wasSimplified();
+					}
+				}
+			});
 		}
 	}
 
@@ -150,7 +209,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 					operands[i] = timesBlocks.get(i).value;
 					highlights[i] = timesBlocks.get(i).previewAdd();
 				}
-				base = new TimesGroupRenderer(base, operands, highlights);
+				base = new TimesRenderer(base, operands, highlights);
 			}
 			if (divBlocks.size() > 0) {
 				int[] operands = new int[divBlocks.size()];
@@ -159,7 +218,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 					operands[i] = divBlocks.get(i).value;
 					highlights[i] = divBlocks.get(i).previewAdd();
 				}
-				base = new OverGroupRenderer(base, operands, highlights);
+				base = new OverRenderer(base, operands, highlights);
 			}
 		}
 		if (modifiers == null) {

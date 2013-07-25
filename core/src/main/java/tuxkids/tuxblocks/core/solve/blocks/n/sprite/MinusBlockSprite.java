@@ -16,7 +16,7 @@ public class MinusBlockSprite extends HorizontalModifierSprite {
 	}
 
 	@Override
-	protected int getPlusValue() {
+	protected int plusValue() {
 		return -value;
 	}
 
@@ -28,6 +28,11 @@ public class MinusBlockSprite extends HorizontalModifierSprite {
 	@Override
 	protected ModifierBlockSprite copyChild() {
 		return new MinusBlockSprite(value);
+	}
+
+	@Override
+	protected void setPlusValue(int value) {
+		setValue(-value);
 	}
 
 }

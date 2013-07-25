@@ -4,20 +4,22 @@ import playn.core.Canvas;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
+import tuxkids.tuxblocks.core.Constant;
 
-public abstract class FactorGroupRenderer extends ModifierRenderer {
+class FactorGroupRenderer extends ModifierGroupRenderer {
 	
-	protected abstract boolean useNegatives();
+	protected boolean useNegatives;
+
 	
-	public FactorGroupRenderer(Renderer base, int... operands) {
-		super(base, operands);
+	public FactorGroupRenderer(int... operands) {
+		super(operands);
 	}
 	
-	public FactorGroupRenderer(Renderer base, int[] operands, boolean[] highlights) {
-		super(base, operands, highlights);
+	public FactorGroupRenderer(int[] operands, boolean[] highlights) {
+		super(operands, highlights);
 	}
 
-	public ExpressionWriter getFactorWriter(TextFormat textFormat) {
+	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
 		
 		return new ExpressionWriter(textFormat) {
 			
@@ -28,15 +30,11 @@ public abstract class FactorGroupRenderer extends ModifierRenderer {
 				layouts = new TextLayout[operands.length];
 				float width = 0, height = 0;
 				for (int i = 0; i < operands.length; i++) {
-					String s;
-					if (useNegatives() && operands.length == 1 && operands[i] == -1) {
+					String s = operands[i] == TimesRenderer.UNKNOWN_NUMBER ? "?" : "" + operands[i];
+					if (useNegatives && operands.length == 1 && operands[i] == -1) {
 						s = "-";
-					} else {
-						if (i == 0) {
-							s = "" + operands[i];
-						} else {
-							s = " * " + operands[i];
-						}	
+					} else if (i != 0) {
+						s = Constant.DOT_SYMBOL + s;	
 					}
 					layouts[i] = graphics().layoutText(s, textFormat);
 					width += layouts[i].width();

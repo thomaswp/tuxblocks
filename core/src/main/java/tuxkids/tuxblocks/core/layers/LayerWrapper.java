@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.layers;
 
+import playn.core.GroupLayer;
 import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.Pointer.Listener;
@@ -16,6 +17,11 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	@Override
 	public Layer layerAddable() {
 		return layer;
+	}
+	
+	@Override
+	public void setDepth(float depth) {
+		layer.setDepth(depth);
 	}
 
 	@Override
@@ -56,5 +62,15 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	@Override
 	public void setInteractive(boolean interactive) {
 		setInteractive(interactive);
+	}
+
+	@Override
+	public GroupLayer parent() {
+		return layer.parent();
+	}
+
+	@Override
+	public float depth() {
+		return layer.depth();
 	}
 }

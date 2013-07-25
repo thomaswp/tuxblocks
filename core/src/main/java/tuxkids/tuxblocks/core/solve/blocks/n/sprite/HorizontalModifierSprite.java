@@ -6,6 +6,9 @@ import playn.core.util.Clock;
 
 public abstract class HorizontalModifierSprite extends ModifierBlockSprite {
 
+	protected abstract void setPlusValue(int value);
+	protected abstract int plusValue();
+	
 	public HorizontalModifierSprite(int value) {
 		super(value);
 	}
@@ -13,8 +16,6 @@ public abstract class HorizontalModifierSprite extends ModifierBlockSprite {
 	protected HorizontalModifierSprite (HorizontalModifierSprite inverse) {
 		super(inverse);
 	}
-	
-	protected abstract int getPlusValue();
 
 	@Override
 	protected float defaultWidth() {
@@ -42,7 +43,7 @@ public abstract class HorizontalModifierSprite extends ModifierBlockSprite {
 	}
 	
 	protected NumberBlockSpriteProxy getProxy(boolean snapToMySize) {
-		NumberBlockSpriteProxy sprite = new NumberBlockSpriteProxy(getPlusValue(), this);
+		NumberBlockSpriteProxy sprite = new NumberBlockSpriteProxy(plusValue(), this);
 		if (hasSprite()) {
 			sprite.initSprite();
 			if (snapToMySize) {
@@ -52,7 +53,7 @@ public abstract class HorizontalModifierSprite extends ModifierBlockSprite {
 		}
 		if (group != null) {
 			ArrayList<VerticalModifierSprite> modifiers = new ArrayList<VerticalModifierSprite>();
-			group.addVerticalModifiers(modifiers);
+			group.addVerticalModifiersTo(modifiers);
 			for (VerticalModifierSprite mod : modifiers) {
 				sprite.addModifier((ModifierBlockSprite) mod.copy(true), true);
 			}

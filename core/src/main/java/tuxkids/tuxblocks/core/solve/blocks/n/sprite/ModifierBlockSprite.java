@@ -1,9 +1,12 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import playn.core.Color;
+import playn.core.GroupLayer;
 import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.layers.ImageLayerLike;
+import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public abstract class ModifierBlockSprite extends BlockSprite {
@@ -77,6 +80,16 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 	}
 	
 	@Override
+	public void showInverse() {
+		if (!hasSprite()) return;
+		layer.setVisible(false);
+		BlockSprite inverse = inverse();
+		inverse.layer.setVisible(true);
+		inverse.interpolateRect(x(), y(), width(), height(), 0, 1);
+		inverse.layer().setTranslation(layer().tx(), layer().ty());
+	}
+	
+	@Override
 	public void remove() {
 		if (group != null) group.removeChild(this);
 		group = null;
@@ -103,6 +116,29 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 	}
 	
 	public void destroy() {
-		layer().destroy();
+		if (hasSprite()) layer().destroy();
+	}
+	
+	public void setValue(int value) {
+		this.value = value;
+		inverse.destroy();
+		inverse = inverseChild();
+		if (hasSprite()) {
+			if (layer instanceof BlockLayer) {
+				((BlockLayer) layer).setText(text());
+			} else {
+				ImageLayerLike oldLayer = layer;
+				layer = generateNinepatch(text(), Colors.WHITE);
+				layer.setDepth(oldLayer.depth());
+				layer.setTranslation(oldLayer.tx(), oldLayer.ty());
+				layer.setSize(oldLayer.width(), oldLayer.height());
+				BlockListener listener = blockListener;
+				blockListener = null;
+				addBlockListener(listener);
+				if (oldLayer.parent() != null) oldLayer.parent().add(layer.layerAddable());
+				oldLayer.layerAddable().destroy();
+			}
+			inverse.initSprite();
+		}
 	}
 }

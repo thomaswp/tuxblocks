@@ -35,6 +35,11 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		return GLStatus.enabled();
 	}
 	
+	@Override
+	public GroupLayer parent() {
+		return layer.parent();
+	}
+	
 	public float width() {
 		return base.width();
 	}
