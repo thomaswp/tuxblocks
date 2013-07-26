@@ -10,6 +10,7 @@ import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Equation.Builder;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.MinusBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.NumberBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.OverBlockSprite;
@@ -63,6 +64,8 @@ public class GameState {
 		addItem(TowerType.PeaShooter, 2);
 		addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
 		addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
+		addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
+		addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
 	}
 
 	public void solveProblem(Problem problem) {
@@ -77,25 +80,41 @@ public class GameState {
 		}
 	}
 	
-	public void addProblemWithReward(Reward reward) {
-		Builder builder = new Builder();
-		
-		BaseBlockSprite sprite1 = new VariableBlockSprite("x")
-		.addModifier(new TimesBlockSprite(3));
-		builder.addLeft(sprite1);
-		
-		BaseBlockSprite sprite2 = new VariableBlockSprite("x")
-		.addModifier(new MinusBlockSprite(7))
-		.addModifier(new OverBlockSprite(4));
-		builder.addLeft(sprite2);
-		
-		builder.addRight(new NumberBlockSprite(8));
-		
-		Equation eq = builder.createEquation();//EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps);
+	int index;
+	public void addProblemWithReward(Reward reward) {		
+		Equation eq = eqs[index++ % eqs.length]; //EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps);
 		Problem problem = new Problem(eq, reward);
 		problems.add(problem);
 		if (problemAddedListener != null) problemAddedListener.onProblemAdded(problem);
 	}
+	
+	private Equation[] eqs = new Equation[] {
+			
+			new Builder()
+			.addLeft(new VariableBlockSprite("x").plus(2).times(3))
+			.addRight(new NumberBlockSprite(9))
+			.createEquation(),
+			
+			new Builder()
+			.addLeft(new VariableBlockSprite("x").plus(2).times(3).minus(3).over(5))
+			.addLeft(new BlockHolder())
+			.addRight(new NumberBlockSprite(3))
+			.createEquation(),
+			
+			new Builder()
+			.addLeft(new VariableBlockSprite("x").times(3))
+			.addLeft(new VariableBlockSprite("x").minus(7).over(4))
+			.addRight(new NumberBlockSprite(8))
+			.createEquation(),
+			
+			new Builder()
+			.addLeft(new VariableBlockSprite("x").plus(12).over(3))
+			.addLeft(new VariableBlockSprite("x").times(25).over(6))
+			.addRight(new NumberBlockSprite(8))
+			.addRight(new VariableBlockSprite("x").over(2))
+			.createEquation(),
+					
+	};
 
 	public void addItem(TowerType type, int count) {
 		int index = type.index();

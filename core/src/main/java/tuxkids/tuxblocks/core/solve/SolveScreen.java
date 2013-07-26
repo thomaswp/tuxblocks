@@ -27,6 +27,7 @@ import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.SimplifyListener;
 
 public class SolveScreen extends GameScreen implements Parent {
 	
+	private Equation originalEquation;
 	private BlockController controller;
 	private Button buttonBack;
 	private Image buttonImageOk, buttonImageBack;
@@ -37,7 +38,8 @@ public class SolveScreen extends GameScreen implements Parent {
 	private boolean solveCorrect;
 	
 	public void setEquation(Equation equation) {
-		controller.addEquation(equation);
+		this.originalEquation = equation;
+		controller.addEquation(equation.copy());
 	}
 	
 	public boolean solved() {
@@ -46,6 +48,11 @@ public class SolveScreen extends GameScreen implements Parent {
 
 	public Equation equation() {
 		return controller.equation();
+	}
+	
+	public void reset() {
+		controller.clear();
+		controller.addEquation(originalEquation.copy());
 	}
 	
 	public SolveScreen(final ScreenStack screens, GameState gameState) {
@@ -62,12 +69,10 @@ public class SolveScreen extends GameScreen implements Parent {
 		eqLayer = graphics().createImageLayer();
 		layer.add(eqLayer);
 		eqLayer.setImage(controller.equationImage());
-		eqLayer.setTranslation(20, 20);
 		
 		eqLayerOld = graphics().createImageLayer();
 		layer.add(eqLayerOld);
 		eqLayerOld.setImage(controller.equationImage());
-		eqLayerOld.setTranslation(20, 20);
 		eqLayerOld.setAlpha(0);
 
 		buttonImageBack = PlayN.assets().getImage(Constant.BUTTON_DOWN);
@@ -82,6 +87,16 @@ public class SolveScreen extends GameScreen implements Parent {
 			}
 		});
 		layer.add(buttonBack.layerAddable());
+		
+		Button buttonReset = createMenuButton(Constant.BUTTON_RESET);
+		buttonReset.setPosition(width() - buttonReset.width() * 0.6f, menu.height() / 2);
+		buttonReset.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) reset();
+			}
+		});
+		layer.add(buttonReset.layerAddable());
 	}
 	
 	@Override
@@ -108,9 +123,11 @@ public class SolveScreen extends GameScreen implements Parent {
 		if (lastEqImage != controller.equationImage()) {
 			eqLayer.setAlpha(0);
 			eqLayerOld.setImage(lastEqImage);
+			eqLayerOld.setTranslation(eqLayer.tx(), eqLayer.ty());
 			eqLayerOld.setAlpha(1);
 			lastEqImage = controller.equationImage();
 		}
+		eqLayer.setTranslation((width() - eqLayer.width()) / 2 , (menu.height() - eqLayer.height()) / 2);
 		if (solveCorrect && !entering()) {
 			solveCallback.wasSimplified(true);
 			solveCorrect = false;

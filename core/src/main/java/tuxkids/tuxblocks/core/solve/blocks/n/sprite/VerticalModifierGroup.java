@@ -93,68 +93,120 @@ public class VerticalModifierGroup extends ModifierGroup {
 	public void updateSimplify() {
 		for (int i = 0; i < timesBlocks.size(); i++) {
 			ModifierBlockSprite sprite = timesBlocks.get(i);
-			if (divBlocks.contains(sprite.inverse())) {
-				simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
-				continue;
+			for (ModifierBlockSprite div : divBlocks) {
+				if (div.equals(sprite.inverse())) {
+					simplifyLayer.getSimplifyButton(sprite, div).setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
+					continue;
+				} else if (areDivisible(sprite.value, div.value)) {
+					simplifyLayer.getSimplifyButton(sprite, div, -1).setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
+					continue;
+				}
 			}
 			// reduce/cancel out -1s
 			if (i > 0) {
-				if ((sprite.value == -1) != (timesBlocks.get(i - 1).value == -1)) continue; //-1 can only simplify with another -1
-				simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.centerX(), sprite.y() + modSize());
+//				if ((sprite.value == -1) != (timesBlocks.get(i - 1).value == -1)) continue; //-1 can only simplify with another -1
+				simplifyLayer.getSimplifyButton(sprite, timesBlocks.get(i - 1)).setTranslation(sprite.centerX(), sprite.y() + modSize());
 				continue;
 			}
 		}
 		for (int i = 0; i < divBlocks.size(); i++) {
 			ModifierBlockSprite sprite = divBlocks.get(i);
 			if (i > 0) {
-				simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.centerX(), sprite.y());
+				simplifyLayer.getSimplifyButton(sprite, divBlocks.get(i - 1)).setTranslation(sprite.centerX(), sprite.y());
 				continue;
 			}
 		}
 	}
+	
+	private boolean areDivisible(int a, int b) {
+		if (a != 0 && b % a == 0) return true;
+		if (b != 0 && a % b == 0) return true;
+		return false;
+	}
 
 	@Override
-	public void simplify(ModifierBlockSprite sprite) {
-		for (int i = 0; i < timesBlocks.size(); i++) {
-			if (timesBlocks.get(i) != sprite) continue;
-			
-			int index = divBlocks.lastIndexOf(sprite.inverse());
-			ModifierBlockSprite pair;
-			if (index < 0) {
-				if (i > 0) {
-					pair = timesBlocks.get(i - 1);
-					//-1's simplify
-					if (sprite.value != -1) {
-						//others reduce
-						reduce(sprite, pair, true); 
-						return;
-					}
-				} else {
-					return;
-				}
-			} else {
-				pair = divBlocks.get(index);
-			}
+	public void simplify(ModifierBlockSprite sprite, ModifierBlockSprite pair) {
+		if (sprite.inverse().equals(pair)) {
 			removeChild(sprite, true);
 			removeChild(pair, true);
 			blockListener.wasSimplified();
-			return;
-		}
-		for (int i = 0; i < divBlocks.size(); i++) {
-			if (divBlocks.get(i) != sprite) continue;
-			if (i > 0) {
-				ModifierBlockSprite pair = divBlocks.get(i - 1);
-				if (!pair.equals(sprite.inverse())) {
-					reduce(sprite, pair, false);
-					return;
-				}
+		} else {
+			boolean spriteTimes = sprite instanceof TimesBlockSprite;
+			boolean pairTimes = pair instanceof TimesBlockSprite;
+			if (spriteTimes == pairTimes) {
+				reduceSame(sprite, pair, spriteTimes);
 			} else {
-				return;
+				reduceDif(sprite, pair, spriteTimes);
 			}
 		}
+//		for (int i = 0; i < timesBlocks.size(); i++) {
+//			if (timesBlocks.get(i) != sprite) continue;
+//			
+//			int index = divBlocks.lastIndexOf(sprite.inverse());
+//			ModifierBlockSprite pair;
+//			if (index < 0) {
+//				if (i > 0) {
+//					pair = timesBlocks.get(i - 1);
+//					//-1's simplify
+//					if (sprite.value != -1 || pair.value != -1) {
+//						//others reduce
+//						reduce(sprite, pair, true); 
+//						return;
+//					}
+//				} else {
+//					return;
+//				}
+//			} else {
+//				pair = divBlocks.get(index);
+//			}
+//			return;
+//		}
+//		for (int i = 0; i < divBlocks.size(); i++) {
+//			if (divBlocks.get(i) != sprite) continue;
+//			if (i > 0) {
+//				ModifierBlockSprite pair = divBlocks.get(i - 1);
+//				if (!pair.equals(sprite.inverse())) {
+//					reduce(sprite, pair, false);
+//					return;
+//				}
+//			} else {
+//				return;
+//			}
+//		}
 	}
 	
-	protected void reduce(final ModifierBlockSprite a, final ModifierBlockSprite b, boolean times) {
+	private void reduceDif(final ModifierBlockSprite a, final ModifierBlockSprite b, boolean aTimes) {
+		if (a.value < b.value) {
+			reduceDif(b, a, !aTimes);
+			return;
+		}
+		
+		Renderer lhs = new BaseRenderer("x"), rhs;
+		if (aTimes) {
+			lhs = new OverRenderer(new TimesRenderer(lhs, new int[] { a.value }), new int[] { b.value });
+			rhs = new TimesRenderer(new BaseRenderer("x"), new BlankRenderer());
+		} else {
+			lhs = new OverRenderer(new TimesRenderer(lhs, new int[] { b.value }), new int[] { a.value });
+			rhs = new OverRenderer(new BaseRenderer("x"), new BlankRenderer());
+		}
+		
+		Renderer problem = new JoinRenderer(lhs, rhs, "=");
+		final int answer = a.value / b.value;
+		
+		blockListener.wasReduced(problem, answer, a.value, new SimplifyListener() {
+			@Override
+			public void wasSimplified(boolean success) {
+				if (success) {
+					a.setValue(answer);
+					removeChild(b, true);
+					blockListener.wasSimplified();
+				}
+			}
+		});
+		
+	}
+
+	protected void reduceSame(final ModifierBlockSprite a, final ModifierBlockSprite b, boolean times) {
 		if (blockListener != null) {
 			Renderer lhs = new BaseRenderer("x"), rhs = new BaseRenderer("x");
 			int[] operands = new int[] { b.value, a.value };

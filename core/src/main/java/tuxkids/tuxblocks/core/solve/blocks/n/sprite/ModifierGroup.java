@@ -99,6 +99,15 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		simplifyLayer.setDepth(SIMPLIFY_DEPTH);
 	}
 	
+	@Override
+	public void destroy() {
+		if (hasSprite()) layer().destroy();
+		for (ModifierBlockSprite child : children) {
+			child.destroy();
+		}
+		if (modifiers != null) modifiers.destroy();
+	}
+	
 	protected void addNewModifiers() {
 		if (modifiers != null) return;
 		setModifiers(createModifiers());

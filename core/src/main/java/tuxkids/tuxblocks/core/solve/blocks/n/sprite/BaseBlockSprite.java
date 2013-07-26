@@ -18,6 +18,7 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	
 	protected HorizontalModifierGroup modifiers;
 	protected GroupLayer groupLayer;
+	protected boolean canMoveBase;
 	
 	public Layer layerAddable() {
 		return groupLayer;
@@ -39,7 +40,9 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	}
 	
 	public boolean simplified() {
-		return !modifiers.isModifiedHorizontally() && !modifiers.isModifiedVertically();
+		return !modifiers.isModifiedHorizontally() && 
+				!modifiers.isModifiedVertically() &&
+				modifiers.children.size() == 0;
 	}
 	
 	@Override
@@ -47,6 +50,14 @@ public abstract class BaseBlockSprite extends BlockSprite {
 //		return getColor(300);
 		return Colors.WHITE;
 //		return Color.rgb(200, 0, 200);
+	}
+
+	public float totalWidth() {
+		return modifiers.totalWidth();
+	}
+
+	public float offsetX() {
+		return modifiers.offsetX();
 	}
 	
 	public BaseBlockSprite() {
@@ -70,6 +81,11 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		modifiers.layer().setDepth(ModifierGroup.MODIFIERS_DEPTH);
 	}
 
+	public void destroy() {
+		super.destroy();
+		modifiers.destroy();
+	}
+	
 	@Override
 	public void addBlockListener(BlockListener listener) {
 		super.addBlockListener(listener);
@@ -92,6 +108,11 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	}
 	
 	@Override
+	protected boolean shouldShowPreview(boolean openSpace) {
+		return canMoveBase;
+	}
+	
+	@Override
 	public boolean contains(float gx, float gy) {
 		float x = gx - layer().tx();// - getGlobalTx(groupLayer);
 		float y = gy - layer().ty();// - getGlobalTy(groupLayer);
@@ -104,9 +125,18 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	public void setPreview(boolean preview) {
 		groupLayer.setAlpha(preview ? 1f : 0.5f);
 	}
+
+	
+	public void update(int delta, boolean multiExpression, boolean moveBase) {
+		this.canMoveBase = moveBase;
+		super.update(delta, multiExpression);
+	}
 	
 	public void update(int delta) {
 		super.update(delta);
+//		if (blockListener == null && !(this instanceof BlockHolder)) {
+//			debug("problem: " + this);
+//		}
 		modifiers.update(delta, multiExpression);
 		ModifierGroup newMods = modifiers.updateParentModifiers();
 		if (newMods != modifiers) {
@@ -176,13 +206,21 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	public int hashCode() {
 		return nativeHashCode(); //For the sake of lists of these, it's important to use object equality
 	}
-
-	public float totalWidth() {
-		return modifiers.totalWidth();
+	
+	public BaseBlockSprite plus(int x) {
+		return addModifier(new PlusBlockSprite(x));
 	}
-
-	public float offsetX() {
-		return modifiers.offsetX();
+	
+	public BaseBlockSprite minus(int x) {
+		return addModifier(new MinusBlockSprite(x));
+	}
+	
+	public BaseBlockSprite times(int x) {
+		return addModifier(new TimesBlockSprite(x));
+	}
+	
+	public BaseBlockSprite over(int x) {
+		return addModifier(new OverBlockSprite(x));
 	}
 	
 	@Override

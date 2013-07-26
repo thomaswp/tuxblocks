@@ -119,7 +119,7 @@ public class NumberBlockSprite extends BaseBlockSprite implements Simplifiable {
 	}
 
 	@Override
-	public void simplify(final ModifierBlockSprite sprite) {
+	public void simplify(final ModifierBlockSprite sprite, ModifierBlockSprite pair) { //ignore pair
 		if (blockListener != null) {
 			final int answer;
 			Renderer renderer = new BaseRenderer("" + value);
@@ -129,12 +129,13 @@ public class NumberBlockSprite extends BaseBlockSprite implements Simplifiable {
 				answer = value * times.value;
 				renderer = new TimesRenderer(renderer, operands);
 			} else if (sprite instanceof OverBlockSprite) {
-				OverBlockSprite times = (OverBlockSprite) sprite;
-				answer = value / times.value;
+				OverBlockSprite over = (OverBlockSprite) sprite;
+				answer = value / over.value;
 				renderer = new OverRenderer(renderer, operands);
 			} else if (sprite instanceof HorizontalModifierSprite) {
-				HorizontalModifierSprite times = (HorizontalModifierSprite) sprite;
-				answer = value + times.plusValue();
+				HorizontalModifierSprite plus = (HorizontalModifierSprite) sprite;
+				answer = value + plus.plusValue();
+				operands[0] = plus.plusValue();
 				renderer = new AddRenderer(renderer, operands);
 			} else {
 				return;

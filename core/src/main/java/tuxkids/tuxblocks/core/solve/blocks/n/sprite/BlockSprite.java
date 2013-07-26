@@ -62,6 +62,7 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 		}
 	}
 	
+	@Override
 	protected void initSprite() {
 		if (hasSprite()) return;
 		super.initSprite();
@@ -100,27 +101,36 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	protected ImageLayerLike generateNinepatch(String text) {
 		return new BlockLayer(text, 10, 10);
 	}
+
+	
+	public void update(int delta, boolean multiExpression) {
+		this.multiExpression = multiExpression;
+		update(delta);
+	}
 	
 	@Override
 	public void update(int delta) {
 		if (doubleClickTime > 0) {
 			doubleClickTime = Math.max(0, doubleClickTime - delta);
 		}
-		if (canRelease != canRelease(multiExpression)) {
+		if (canRelease != shouldShowPreview(multiExpression)) {
 			canRelease = !canRelease;
 		}
-//		offset += 1;
+	}
+	
+	protected boolean shouldShowPreview(boolean multiExpression) {
+		return canRelease(multiExpression);
 	}
 	
 	@Override
 	public void paint(Clock clock) {
-//		timeElapsed += clock.dt();
 		timeElapsed = PlayN.tick();
 		int color = color();
 		if (canRelease) {
+			//TODO: clean this up... don't allocate
 			float[] hsv = new float[3];
 			CanvasUtils.rgbToHsv(color, hsv);
-			color = CanvasUtils.hsvToRgb(hsv[0], hsv[1], 0.8f);
+			color = CanvasUtils.hsvToRgb(hsv[0], hsv[1], 0.7f);
 			int flashColor = CanvasUtils.hsvToRgb(hsv[0], hsv[1], 1f);
 			layer.setTint(flashColor, color, FloatMath.pow(FloatMath.sin(timeElapsed / 1250f * 2 * FloatMath.PI) / 2 + 0.5f, 0.7f));
 		} else {
@@ -145,11 +155,6 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 			colorMap.put(degree, color);
 		}
 		return color;
-	}
-	
-	public void update(int delta, boolean multiExpression) {
-		this.multiExpression = multiExpression;
-		update(delta);
 	}
 	
 	public void addBlockListener(BlockListener listener) {

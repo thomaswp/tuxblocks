@@ -56,6 +56,17 @@ public class Equation extends PlayNObject implements Hashable {
 	public void addFields(HashCode hashCode) {
 		//TODO: should BaseBlockSprites == or equal...
 	}
+
+	public Equation copy() {
+		Builder builder = new Builder();
+		for (BaseBlockSprite block : leftSide) {
+			builder.addLeft((BaseBlockSprite) block.copy());
+		}
+		for (BaseBlockSprite block : rightSide) {
+			builder.addRight((BaseBlockSprite) block.copy());
+		}
+		return builder.createEquation();
+	}
 	
 	
 	public static class Builder {

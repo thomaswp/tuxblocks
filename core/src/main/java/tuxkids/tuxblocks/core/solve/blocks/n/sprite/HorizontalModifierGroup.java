@@ -143,36 +143,34 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	public void updateSimplify() {
 		for (int i = 1; i < children.size(); i++) {
 			ModifierBlockSprite sprite = children.get(i);
-			simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.x(), sprite.centerY());
+			simplifyLayer.getSimplifyButton(sprite, children.get(i - 1)).setTranslation(sprite.x(), sprite.centerY());
 		}
 	}
 
 	@Override
-	public void simplify(final ModifierBlockSprite sprite) {
+	public void simplify(final ModifierBlockSprite sprite, ModifierBlockSprite pair) {
 		HorizontalModifierSprite hSprite = (HorizontalModifierSprite) sprite;
-		for (int i = 1; i < children.size(); i++) {
-			if (sprite != children.get(i)) continue;
-			final HorizontalModifierSprite before = (HorizontalModifierSprite) children.get(i - 1);
-			if (sprite.inverse().equals(before)) {
-				removeChild(sprite, true);
-				removeChild(before, true);
-				blockListener.wasSimplified();
-			} else {
-				Renderer problem = new JoinRenderer(
-						new JoinRenderer(new BaseRenderer("" + before.plusValue()), 
-								new BaseRenderer("" + hSprite.value), hSprite instanceof PlusBlockSprite ? "+" : "-"), 
-						new BlankRenderer(), "=");
-				final int answer = before.plusValue() + hSprite.plusValue();
-				blockListener.wasReduced(problem, answer, before.plusValue(), new SimplifyListener() {
-					@Override
-					public void wasSimplified(boolean success) {
-						if (success) {
-							before.setPlusValue(answer);
-							removeChild(sprite, true);
-						}
+		final HorizontalModifierSprite before = (HorizontalModifierSprite) pair;
+		if (sprite.inverse().equals(before)) {
+			removeChild(sprite, true);
+			removeChild(before, true);
+			blockListener.wasSimplified();
+		} else {
+			Renderer problem = new JoinRenderer(
+					new JoinRenderer(new BaseRenderer("" + before.plusValue()), 
+							new BaseRenderer("" + hSprite.value), hSprite instanceof PlusBlockSprite ? "+" : "-"), 
+					new BlankRenderer(), "=");
+			final int answer = before.plusValue() + hSprite.plusValue();
+			blockListener.wasReduced(problem, answer, before.plusValue(), new SimplifyListener() {
+				@Override
+				public void wasSimplified(boolean success) {
+					if (success) {
+						before.setPlusValue(answer);
+						removeChild(sprite, true);
+						blockListener.wasSimplified();
 					}
-				});
-			}
+				}
+			});
 		}
 	}
 	

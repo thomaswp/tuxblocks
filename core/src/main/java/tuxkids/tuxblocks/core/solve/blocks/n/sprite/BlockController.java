@@ -102,7 +102,11 @@ public class BlockController extends PlayNObject {
 	}
 	
 	public void clear() {
-		baseBlocks.clear();
+		for (BaseBlockSprite sprite : baseBlocks) {
+			sprite.destroy();
+		}
+		leftSide.clear();
+		rightSide.clear();
 		solved = false;
 		dragging = draggingFrom = null;
 	}
@@ -139,6 +143,7 @@ public class BlockController extends PlayNObject {
 	}
 	
 	private boolean refreshSolved() {
+		if (dragging != null) return false;
 		int numbers = 0, variables = 0;
 		for (BaseBlockSprite sprite : baseBlocks) {
 			if (!sprite.simplified()) return false;
@@ -193,7 +198,6 @@ public class BlockController extends PlayNObject {
 		return side == Side.Left ? leftSide : rightSide;
 	}
 	
-	@SuppressWarnings("unused")
 	private List<BaseBlockSprite> getOpposite(List<BaseBlockSprite> side) {
 		return side == rightSide ? leftSide : rightSide;
 	}
@@ -226,7 +230,20 @@ public class BlockController extends PlayNObject {
 			if (bb > 1) multiExpression = true; // or if there is >1 expression on any given side
 		}
 		for (BaseBlockSprite sprite : side) {
-			sprite.update(delta, multiExpression);
+			boolean moveBase = false;
+			for (BaseBlockSprite other : side) {
+				if (other != sprite && other.canAccept(sprite)) {
+					moveBase = true;
+				}
+			}
+			if (!moveBase) {
+				for (BaseBlockSprite other : getOpposite(side)) {
+					if (other.canAccept(sprite)) {
+						moveBase = true;
+					}
+				}
+			}
+			sprite.update(delta, multiExpression, moveBase);
 		}
 	}
 	

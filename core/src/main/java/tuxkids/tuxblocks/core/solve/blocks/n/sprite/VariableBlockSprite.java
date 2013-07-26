@@ -27,11 +27,6 @@ public class VariableBlockSprite extends BaseBlockSprite {
 	public void addFields(HashCode hashCode) {
 		hashCode.addField(symbol);
 	}
-	
-	@Override
-	public boolean canRelease(boolean multiExpression) {
-		return true;
-	}
 
 	@Override
 	public BlockSprite inverse() {
@@ -110,10 +105,11 @@ public class VariableBlockSprite extends BaseBlockSprite {
 			Renderer rhs = new TimesRenderer(new BaseRenderer(text()), new BlankRenderer());
 			Renderer problem = new JoinRenderer(lhs, rhs, "=");
 			
-			boolean showAnswer = myFactor == null || spriteFactor == null;
+			boolean mustSolve = myFactor != null && spriteFactor != null;
+			boolean calcAnswer = !mustSolve || hasSprite();
 			
 			//Don't say what the answer is if this is a preview
-			final int answer = showAnswer ? myValue + spriteValue : TimesRenderer.UNKNOWN_NUMBER;
+			final int answer = calcAnswer ? myValue + spriteValue : TimesRenderer.UNKNOWN_NUMBER;
 			
 			SimplifyListener r = new SimplifyListener() {
 				@Override
@@ -143,7 +139,7 @@ public class VariableBlockSprite extends BaseBlockSprite {
 			};
 			 
 			//if it's not just a +1, make them solve it
-			if (!showAnswer) {
+			if (mustSolve) {
 				if (!hasSprite()) {
 					r.wasSimplified(true); //show preview
 				} else {

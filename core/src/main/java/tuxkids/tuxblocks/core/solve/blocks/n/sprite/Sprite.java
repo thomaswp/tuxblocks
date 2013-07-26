@@ -11,13 +11,25 @@ public abstract class Sprite extends PlayNObject {
 
 	protected static final int SIMPLIFY_DEPTH = 1;
 	
-	private boolean hasSprite, previewAdd;
+	private boolean hasSprite, previewAdd, destoryed;
 	protected BlockListener blockListener;
 
 	protected abstract Sprite copyChild();
 	protected abstract void addBlockListener(BlockListener blockListener);
 	public abstract void update(int delta);
 	public abstract void paint(Clock clock);
+	public abstract Layer layer();
+	public abstract float width();
+	public abstract float height();
+	
+	public void destroy() {
+		if (hasSprite()) layer().destroy();
+		destoryed = true;
+	}
+	
+	public boolean destroyed() {
+		return destoryed;
+	}
 	
 	protected void performAction(Action action) {
 		action.run(this);
@@ -50,10 +62,6 @@ public abstract class Sprite extends PlayNObject {
 	protected static float lerpBase() {
 		return 0.992f;
 	}
-	
-	public abstract Layer layer();
-	public abstract float width();
-	public abstract float height();
 	
 	public float x() {
 		return layer().tx();

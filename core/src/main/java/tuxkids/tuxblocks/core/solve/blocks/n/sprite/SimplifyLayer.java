@@ -28,6 +28,7 @@ class SimplifyLayer extends LayerWrapper {
 	private static Image simplifyImage;
 	private List<ImageLayer> simplifyButtons = new ArrayList<ImageLayer>();
 	private HashMap<ImageLayer, ModifierBlockSprite> simplifyMap = new HashMap<ImageLayer, ModifierBlockSprite>();
+	private HashMap<ImageLayer, ModifierBlockSprite> pairMap = new HashMap<ImageLayer, ModifierBlockSprite>();
 	private Listener simplifyListener = new Listener() {
 		@Override
 		public void onPointerStart(Event event) { onSimplify(event.hit()); }
@@ -40,12 +41,22 @@ class SimplifyLayer extends LayerWrapper {
 	};
 	
 	protected ImageLayer getSimplifyButton(ModifierBlockSprite sprite) {
+		return getSimplifyButton(sprite, null, 0);
+	}
+	
+	protected ImageLayer getSimplifyButton(ModifierBlockSprite sprite, ModifierBlockSprite pair) {
+		return getSimplifyButton(sprite, pair, 0);
+	}
+	
+	protected ImageLayer getSimplifyButton(ModifierBlockSprite sprite, ModifierBlockSprite pair, int depth) {
 		while (simplifyButtons.size() <= simplifyMap.size()) { 
 			addSimplifyButton();
 		}
 		ImageLayer layer = simplifyButtons.get(simplifyMap.size());
 		simplifyMap.put(layer, sprite);
+		pairMap.put(layer, pair);
 		layer.setVisible(true);
+		layer.setDepth(depth);
 		return layer;
 	}
 	
@@ -65,7 +76,8 @@ class SimplifyLayer extends LayerWrapper {
 	private void onSimplify(Layer hit) {
 		ModifierBlockSprite sprite = simplifyMap.get(hit);
 		if (sprite != null) {
-			parent.simplify(sprite);
+			ModifierBlockSprite pair = pairMap.get(hit);
+			parent.simplify(sprite, pair);
 		}
 	}
 	
@@ -79,6 +91,6 @@ class SimplifyLayer extends LayerWrapper {
 	
 	protected interface Simplifiable {
 		void updateSimplify();
-		void simplify(ModifierBlockSprite sprite);
+		void simplify(ModifierBlockSprite sprite, ModifierBlockSprite pair);
 	}
 }

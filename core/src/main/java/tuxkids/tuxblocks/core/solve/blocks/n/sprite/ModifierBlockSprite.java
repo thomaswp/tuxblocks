@@ -100,13 +100,20 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 		hashCode.addField(value);
 	}
 	
+	protected void destroy(boolean destroyInverse) {
+		super.destroy();
+		if (destroyInverse && inverse != null && !inverse.destroyed()) {
+			inverse.destroy();
+		}
+	}
+	
 	public void destroy() {
-		if (hasSprite()) layer().destroy();
+		destroy(true);
 	}
 	
 	public void setValue(int value) {
 		this.value = value;
-		inverse.destroy();
+		inverse.destroy(false);
 		inverse = inverseChild();
 		if (hasSprite()) {
 			if (layer instanceof BlockLayer) {
