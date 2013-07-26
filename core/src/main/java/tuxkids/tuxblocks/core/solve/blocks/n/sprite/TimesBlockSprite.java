@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import playn.core.CanvasImage;
+import playn.core.Color;
 import playn.core.Path;
 import playn.core.PlayN;
 import playn.core.TextLayout;
@@ -28,6 +29,16 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 	}
 	
 	@Override
+	public int color() {
+		if (value == -1) {
+			return Color.rgb(150, 150, 150);
+		} else {
+//			return getColor(30);
+			return Color.rgb(0xF7, 0x9D, 0x04);
+		}
+	}
+	
+	@Override
 	public String text() {
 		if (value == -1) {
 			return "-";
@@ -36,6 +47,7 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 		}
 	}
 	
+	@Override
 	public boolean canSimplify() {
 		if (value == -1) {
 			if (group == null) return false;
@@ -44,7 +56,8 @@ public class TimesBlockSprite extends VerticalModifierSprite{
 		return super.canSimplify();
 	}
 
-	protected NinepatchLayer generateNinepatch(String text, int color) {
+	@Override
+	protected NinepatchLayer generateNinepatch(String text) {
 		boolean times = true;
 		
 		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);

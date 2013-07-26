@@ -7,12 +7,11 @@ import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.LayerLike;
+import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public abstract class ModifierBlockSprite extends BlockSprite {
 	
-	protected int timeElapsed;
-	protected boolean canRelease;
 	protected ModifierGroup group;
 	protected int value;
 	protected ModifierBlockSprite inverse;
@@ -45,27 +44,13 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 	protected void initSpriteImpl() {
 		super.initSpriteImpl();
 		
-		layer = generateNinepatch(text(), Colors.WHITE);
+		layer = generateNinepatch(text());
 		if (inverse.layer == null) inverse.initSprite();
 	}
 	
 	@Override
-	public void update(int delta) {
-		super.update(delta);
-		if (canRelease != canRelease(multiExpression)) {
-			canRelease = !canRelease;
-			if (!canRelease) {
-				layer.setTint(Colors.WHITE);
-			}
-		}
-	}
-	
-	@Override
 	public void paint(Clock clock) {
-		timeElapsed += clock.dt();
-		if (canRelease) {
-			layer.setTint(Color.rgb(200, 200, 255), Colors.WHITE, FloatMath.pow(FloatMath.sin(timeElapsed / 1250f * 2 * FloatMath.PI) / 2 + 0.5f, 0.7f));
-		}
+		super.paint(clock);
 		if (group == null) {
 			interpolateDefaultRect(clock);
 		}
@@ -128,7 +113,7 @@ public abstract class ModifierBlockSprite extends BlockSprite {
 				((BlockLayer) layer).setText(text());
 			} else {
 				ImageLayerLike oldLayer = layer;
-				layer = generateNinepatch(text(), Colors.WHITE);
+				layer = generateNinepatch(text());
 				layer.setDepth(oldLayer.depth());
 				layer.setTranslation(oldLayer.tx(), oldLayer.ty());
 				layer.setSize(oldLayer.width(), oldLayer.height());

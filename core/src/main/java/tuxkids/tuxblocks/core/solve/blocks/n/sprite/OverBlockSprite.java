@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
+import playn.core.Color;
 import tuxkids.tuxblocks.core.Constant;
 
 public class OverBlockSprite extends VerticalModifierSprite {
@@ -25,6 +26,12 @@ public class OverBlockSprite extends VerticalModifierSprite {
 	@Override
 	protected ModifierBlockSprite inverseChild() {
 		return new TimesBlockSprite(this);
+	}
+
+	@Override
+	protected int color() {
+//		return getColor(210);
+		return Color.rgb(0x03, 0xC6, 0x03);
 	}
 
 }

@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
+import playn.core.Color;
 import playn.core.GroupLayer;
 import playn.core.Layer;
 import playn.core.Mouse.ButtonEvent;
@@ -37,6 +38,13 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		return layer.ty();
 	}
 	
+	@Override
+	public int color() {
+//		return getColor(300);
+		return Colors.WHITE;
+//		return Color.rgb(200, 0, 200);
+	}
+	
 	public BaseBlockSprite() {
 		modifiers = new HorizontalModifierGroup();
 	}
@@ -45,7 +53,7 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	protected void initSpriteImpl() {
 		super.initSpriteImpl();
 		
-		layer = generateNinepatch(text(), Colors.WHITE);
+		layer = generateNinepatch(text());
 		layer.setSize(baseSize(), baseSize());
 		layer.setInteractive(true);
 		groupLayer = graphics().createGroupLayer();
@@ -109,6 +117,7 @@ public abstract class BaseBlockSprite extends BlockSprite {
 
 	@Override
 	public void paint(Clock clock) {
+		super.paint(clock);
 		interpolateDefaultRect(clock);
 		modifiers.updateParentRect(x(), y(), defaultWidth(), defaultHeight());
 		modifiers.paint(clock);

@@ -1,7 +1,14 @@
 package tuxkids.tuxblocks.core.solve.blocks.n;
 
+import playn.core.Color;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Mouse.Listener;
+import playn.core.PlayN;
+import playn.core.Mouse.ButtonEvent;
+import playn.core.Mouse.MotionEvent;
+import playn.core.Mouse.WheelEvent;
+import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.GameState;
@@ -15,9 +22,12 @@ import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController.Side;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.MinusBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.NumberBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.OverBlockSprite;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.PlusBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.TimesBlockSprite;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.VariableBlockSprite;
+import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 public class SolveScene extends GameScreen implements Parent {
 
@@ -58,10 +68,49 @@ public class SolveScene extends GameScreen implements Parent {
 		eqLayerOld.setTranslation(20, 20);
 		eqLayerOld.setAlpha(0);
 
+		
+//		float w = graphics().width() / 360f, x = 0;
+//		for (int i = 0; i < 360; i++) {
+//			ImageLayer l = graphics().createImageLayer();
+//			l.setImage(CanvasUtils.createRect(w + 1, 100, getColor(i)));
+//			l.setDepth(100);
+//			l.setTx(x);
+//			x += w;
+//			layer.add(l);
+//		}
+//		PlayN.mouse().setListener(new Listener() {
+//			
+//			@Override
+//			public void onMouseWheelScroll(WheelEvent event) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//			@Override
+//			public void onMouseUp(ButtonEvent event) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//			@Override
+//			public void onMouseMove(MotionEvent event) {
+//				int d = (int)(event.x() / graphics().width() * 360);
+//				int c = getColor(d);
+//				int r = Color.red(c), g = Color.green(c), b = Color.blue(c);
+//				Debug.write("%d: [%d, %d, %d]", d, r, g, b);
+//			}
+//			
+//			@Override
+//			public void onMouseDown(ButtonEvent event) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
 	}
 	
 	@Override
 	public void update(int delta) {
+		super.update(delta);
 		controller.update(delta);
 		eqLayer.setImage(controller.equationImage());
 		if (lastEqImage != controller.equationImage()) {
@@ -104,5 +153,18 @@ public class SolveScene extends GameScreen implements Parent {
 				solveCallback.wasSimplified(false);
 			}
 		}
+	}
+	
+	protected int getColor(int degree) {
+		degree = degree % 360;
+		if (degree <= 120) {
+			degree /= 2;
+		} else if (degree <= 180) {
+			degree -= 60;
+		} else if (degree < 240) {
+			degree = (degree - 180) * 2 + 120;
+		}
+		int color = CanvasUtils.hsvToRgb((degree%360) / 360f, 0.9f, 0.9f);
+		return color;
 	}
 }

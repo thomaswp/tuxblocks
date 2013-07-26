@@ -2,7 +2,6 @@ package tuxkids.tuxblocks.core.screen;
 
 import playn.core.Graphics;
 import playn.core.Key;
-import playn.core.Keyboard;
 import playn.core.Keyboard.Event;
 import playn.core.Keyboard.Listener;
 import playn.core.Keyboard.TypedEvent;
@@ -14,7 +13,6 @@ import tripleplay.game.ScreenStack.Transition;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
-import tuxkids.tuxblocks.core.solve.expression.Equation;
 
 public class GameScreen extends Screen implements Listener {
 	

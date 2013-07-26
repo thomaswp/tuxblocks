@@ -6,6 +6,7 @@ import playn.core.Image;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 
 public class CanvasUtils extends PlayNObject {
@@ -57,16 +58,16 @@ public class CanvasUtils extends PlayNObject {
 	public static Image tintImage(Image image, int tint) {
 		return tintImage(image, tint, 1);
 	}
-	
+
 	public static Image tintImage(Image image, int tint, float perc) {
 		if (!image.isReady()) return null;
-		
+
 		int width = (int)image.width(), height = (int)image.height();
 		CanvasImage shifted = graphics().createImage(width, height);
 		int[] rgb = new int[width * height];
 		image.getRgb(0, 0, width, height, rgb, 0, width);
 		for (int i = 0; i < rgb.length; i++) {
-			rgb[i] = blendAdditive(rgb[i], tint, perc);
+			rgb[i] = blendTint(rgb[i], tint, perc);
 		}
 		if (pixelSetter != null) {
 			pixelSetter.set(shifted, 0, 0, width, height, rgb, 0, width);
@@ -75,43 +76,91 @@ public class CanvasUtils extends PlayNObject {
 		}
 		return shifted;
 	}
-	
+
 	public static PixelSetter pixelSetter;
-	
+
 	public interface PixelSetter {
 		public void set(CanvasImage o, int x, int y, int width, int height, int[] rgb, int offset, int scanSize);
 	}
-	
+
 	public static String colorToString(int c) {
 		return Formatter.format("[%d,%d,%d,%d]", Color.alpha(c), Color.red(c), Color.green(c), Color.blue(c));
 	}
 
-	public static int blendAdditive(int c1, int c2, float perc) {
+	public static int blendTint(int c1, int c2, float perc) {
 		return Color.argb(Math.min(Color.alpha(c1), Color.alpha(c2)),
 				255 - Math.min((int)(255 - Color.red(c1) + (255 - Color.red(c2)) * perc), 255),
 				255 - Math.min((int)(255 - Color.green(c1) + (255 - Color.green(c2)) * perc), 255),
 				255 - Math.min((int)(255 - Color.blue(c1) + (255 - Color.blue(c2)) * perc), 255));
 	}
-	
-	public static int hsvToRgb(float hue, float saturation, float value) {
 
-	    int h = (int)(hue * 6) % 6;
-	    float f = hue * 6 - h;
-	    float p = value * (1 - saturation);
-	    float q = value * (1 - f * saturation);
-	    float t = value * (1 - (1 - f) * saturation);
-
-	    switch (h) {
-	      case 0: return rgbFloatToInt(value, t, p);
-	      case 1: return rgbFloatToInt(q, value, p);
-	      case 2: return rgbFloatToInt(p, value, t);
-	      case 3: return rgbFloatToInt(p, q, value);
-	      case 4: return rgbFloatToInt(t, p, value);
-	      case 5: return rgbFloatToInt(value, p, q);
-	      default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
-	    }
+	public static int blendAddative(int c1, int c2, float perc) {
+		return Color.argb(Math.max(Color.alpha(c1), Color.alpha(c2)),
+				Math.min((int)(Color.red(c1) + Color.red(c2) * perc), 255),
+				Math.min((int)(Color.green(c1) + Color.green(c2) * perc), 255),
+				Math.min((int)(Color.blue(c1) +  Color.blue(c2) * perc), 255));
 	}
-	
+
+	public static int hsvToRgb(float hue, float saturation, float value) {
+		while (hue < 0) hue++;
+		int h = (int)(hue * 6) % 6;
+		float f = hue * 6 - h;
+		float p = value * (1 - saturation);
+		float q = value * (1 - f * saturation);
+		float t = value * (1 - (1 - f) * saturation);
+
+		switch (h) {
+		case 0: return rgbFloatToInt(value, t, p);
+		case 1: return rgbFloatToInt(q, value, p);
+		case 2: return rgbFloatToInt(p, value, t);
+		case 3: return rgbFloatToInt(p, q, value);
+		case 4: return rgbFloatToInt(t, p, value);
+		case 5: return rgbFloatToInt(value, p, q);
+		default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
+		}
+	}
+
+	public static void rgbToHsv(int color, float[] hsv){
+
+		int r = Color.red(color), g = Color.green(color), b = Color.blue(color);
+		float h, s, v;
+		float min, max, delta;
+
+		min = Math.min(Math.min(r, g), b);
+		max = Math.max(Math.max(r, g), b);
+		
+		// V
+		v = max / 255f;
+		delta = max - min;
+
+		// S
+		if( max != 0 )
+			s = delta / max;
+		else {
+			hsv[0] = 0; hsv[1] = 0; hsv[2] = 0;
+			return;
+		}
+		
+		if (delta == 0) {
+			hsv[0] = 0; hsv[1] = 0; hsv[2] = max / 255f;
+			return;
+		}
+
+		// H
+		if( r == max )
+			h = (g - b) / delta; // between yellow & magenta
+		else if( g == max )
+			h = 2 + (b - r) / delta; // between cyan & yellow
+		else
+			h = 4 + (r - g) / delta; // between magenta & cyan
+
+		h /= 6;    // degrees
+
+		while (h < 0) h += 1;
+
+		hsv[0] = h; hsv[1] = s; hsv[2] = v;
+	}
+
 	private static int rgbFloatToInt(float r, float g, float b) {
 		return Color.rgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
 	}

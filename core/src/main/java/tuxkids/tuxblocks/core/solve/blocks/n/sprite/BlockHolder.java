@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.Action;
@@ -21,6 +22,11 @@ public class BlockHolder extends BaseBlockSprite {
 	protected String text() {
 		return " ";
 	}
+	
+	@Override
+	public int color() {
+		return Colors.WHITE;
+	}
 
 	@Override
 	public boolean canRelease(boolean open) {
@@ -31,7 +37,7 @@ public class BlockHolder extends BaseBlockSprite {
 	public void addFields(HashCode hashCode) { }
 	
 	@Override
-	protected ImageLayerLike generateNinepatch(String text, int color) {
+	protected ImageLayerLike generateNinepatch(String text) {
 		return new EmptyBlockLayer(10, 10);
 	}
 	

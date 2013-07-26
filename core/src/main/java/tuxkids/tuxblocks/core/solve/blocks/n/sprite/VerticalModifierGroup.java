@@ -99,10 +99,9 @@ public class VerticalModifierGroup extends ModifierGroup {
 			}
 			// reduce/cancel out -1s
 			if (i > 0) {
+				if ((sprite.value == -1) != (timesBlocks.get(i - 1).value == -1)) continue; //-1 can only simplify with another -1
 				simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.centerX(), sprite.y() + modSize());
 				continue;
-			} else {
-				
 			}
 		}
 		for (int i = 0; i < divBlocks.size(); i++) {
@@ -110,8 +109,6 @@ public class VerticalModifierGroup extends ModifierGroup {
 			if (i > 0) {
 				simplifyLayer.getSimplifyButton(sprite).setTranslation(sprite.centerX(), sprite.y());
 				continue;
-			} else {
-				
 			}
 		}
 	}
@@ -126,8 +123,10 @@ public class VerticalModifierGroup extends ModifierGroup {
 			if (index < 0) {
 				if (i > 0) {
 					pair = timesBlocks.get(i - 1);
-					if (!pair.equals(sprite.inverse())) {
-						reduce(sprite, pair, true); //TODO: don't allow -1's to reduce
+					//-1's simplify
+					if (sprite.value != -1) {
+						//others reduce
+						reduce(sprite, pair, true); 
 						return;
 					}
 				} else {
@@ -206,8 +205,10 @@ public class VerticalModifierGroup extends ModifierGroup {
 				int[] operands = new int[timesBlocks.size()];
 				boolean[] highlights = new boolean[operands.length];
 				for (int i = 0; i < operands.length; i++) {
-					operands[i] = timesBlocks.get(i).value;
-					highlights[i] = timesBlocks.get(i).previewAdd();
+					//invert the times block order
+					ModifierBlockSprite times = timesBlocks.get(operands.length - 1 - i);
+					operands[i] = times.value;
+					highlights[i] = times.previewAdd();
 				}
 				base = new TimesRenderer(base, operands, highlights);
 			}

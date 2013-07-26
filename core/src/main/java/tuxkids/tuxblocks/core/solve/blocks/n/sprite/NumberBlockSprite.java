@@ -2,6 +2,8 @@ package tuxkids.tuxblocks.core.solve.blocks.n.sprite;
 
 import java.util.ArrayList;
 
+import playn.core.Color;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.AddRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.blocks.n.markup.BlankRenderer;
@@ -32,6 +34,17 @@ public class NumberBlockSprite extends BaseBlockSprite implements Simplifiable {
 		simplifyLayer = new SimplifyLayer(this);
 		groupLayer.add(simplifyLayer.layerAddable());
 		simplifyLayer.setDepth(SIMPLIFY_DEPTH);
+	}
+	
+	@Override
+	public int color() {
+		if (value == 0) {
+			return Colors.GRAY;
+		} else if (value > 0) {
+			return Color.rgb(0xF7, 0x04, 0x04);
+		} else {
+			return Color.rgb(0x11, 0x4C, 0xA3);
+		}
 	}
 	
 	@Override
