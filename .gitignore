@@ -2,8 +2,9 @@
 *.dll
 *.so
 *.gwt-log
-*.DS_Store
+.DS_Store
 */target/
+objc/*
 html/gwt-unitCache/*
 html/war/WEB-INF/deploy/*
 android/assets/*
