@@ -38,6 +38,10 @@ public abstract class BaseBlockSprite extends BlockSprite {
 		return layer.ty();
 	}
 	
+	public boolean simplified() {
+		return !modifiers.isModifiedHorizontally() && !modifiers.isModifiedVertically();
+	}
+	
 	@Override
 	public int color() {
 //		return getColor(300);
@@ -89,8 +93,8 @@ public abstract class BaseBlockSprite extends BlockSprite {
 	
 	@Override
 	public boolean contains(float gx, float gy) {
-		float x = gx - getGlobalTx(groupLayer);
-		float y = gy - getGlobalTy(groupLayer);
+		float x = gx - layer().tx();// - getGlobalTx(groupLayer);
+		float y = gy - layer().ty();// - getGlobalTy(groupLayer);
 		return super.contains(x, y) || modifiers.contains(x, y);
 	}
 

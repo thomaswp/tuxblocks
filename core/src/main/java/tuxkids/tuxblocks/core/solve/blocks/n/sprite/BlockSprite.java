@@ -129,13 +129,6 @@ public abstract class BlockSprite extends Sprite implements Hashable {
 	}
 	
 	static int offset = 0; //(int)(360 * Math.random());
-	static {
-		debug(offset);
-		float[] hsv = new float[3];
-		CanvasUtils.rgbToHsv(Colors.WHITE, hsv); debug(Arrays.toString(hsv));
-		CanvasUtils.rgbToHsv(CanvasUtils.hsvToRgb(1/3f, 1, 1), hsv); debug(Arrays.toString(hsv));
-		CanvasUtils.rgbToHsv(CanvasUtils.hsvToRgb(2/3f, 1, 1), hsv); debug(Arrays.toString(hsv));
-	}
 	protected int getColor(int degree) {
 		Integer color = colorMap.get(degree);
 		degree += offset;

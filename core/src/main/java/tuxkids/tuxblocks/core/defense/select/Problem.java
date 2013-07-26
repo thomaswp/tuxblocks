@@ -2,7 +2,7 @@ package tuxkids.tuxblocks.core.defense.select;
 
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
-import tuxkids.tuxblocks.core.solve.expression.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Equation;
 
 public class Problem {
 	private Equation equation;

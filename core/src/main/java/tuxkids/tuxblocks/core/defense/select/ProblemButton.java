@@ -14,8 +14,9 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
-import tuxkids.tuxblocks.core.solve.expression.Equation;
-import tuxkids.tuxblocks.core.solve.expression.ExpressionWriter;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.ExpressionWriter;
+import tuxkids.tuxblocks.core.solve.blocks.n.markup.ExpressionWriter.Config;
+import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Equation;
 
 public class ProblemButton extends Button {
 
@@ -74,13 +75,10 @@ public class ProblemButton extends Button {
 		float eqTextSize = (minHeight - padding * 2) * 0.25f;
 		
 		TextFormat textFormat = new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, eqTextSize));
-		ExpressionWriter leftEW = problem.equation().leftHandSide().getExpressionWriter(textFormat);
-		ExpressionWriter rightEW = problem.equation().rightHandSide().getExpressionWriter(textFormat);
-		TextLayout eqLayout = PlayN.graphics().layoutText("=", textFormat);
+		ExpressionWriter writer = problem.equation().renderer().getExpressionWriter(textFormat);
 		
-		float eqWidth = leftEW.width() + eqLayout.width() + 
-				rightEW.width() + ExpressionWriter.SPACING * 2; 
-		float eqHeight = Math.max(leftEW.height(), rightEW.height());
+		float eqWidth = writer.width(); 
+		float eqHeight = writer.height();
 		
 		float height = Math.max(eqHeight + padding * 2, minHeight);
 		
@@ -118,18 +116,8 @@ public class ProblemButton extends Button {
 		float eqStartX = (lineX - eqWidth) / 2;
 		
 		canvas.save();
-		canvas.translate(eqStartX, (height - leftEW.height()) / 2);
-		leftEW.drawExpression(canvas, Colors.BLACK);
-		canvas.restore();
-		
-		canvas.save();
-		canvas.translate(eqStartX + leftEW.width() + ExpressionWriter.SPACING, (height - eqLayout.height()) / 2);
-		canvas.fillText(eqLayout, 0, 0);
-		canvas.restore();
-		
-		canvas.save();
-		canvas.translate(eqStartX + eqLayout.width() + leftEW.width() + ExpressionWriter.SPACING * 2, (height - rightEW.height()) / 2);
-		rightEW.drawExpression(canvas, Colors.BLACK);
+		canvas.translate(eqStartX, (height - writer.height()) / 2);
+		writer.drawExpression(canvas, new Config(Colors.BLACK, Colors.BLACK, Colors.BLACK));
 		canvas.restore();
 		
 		

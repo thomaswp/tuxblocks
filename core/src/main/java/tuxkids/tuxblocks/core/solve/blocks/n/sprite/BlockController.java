@@ -38,6 +38,7 @@ public class BlockController extends PlayNObject {
 	private static final float DRAGGING_DEPTH = 1;
 
 	private Parent parent;
+	private float width, height;
 	private GroupLayer layer;
 	private List<BaseBlockSprite> leftSide = new ArrayList<BaseBlockSprite>(), rightSide = new ArrayList<BaseBlockSprite>();
 	@SuppressWarnings("unchecked")
@@ -51,6 +52,7 @@ public class BlockController extends PlayNObject {
 	private boolean inverted;
 	private float equalsX;
 	private ImageLayer equals;
+	private boolean solved;
 	
 	private Image equationImage;
 	private BaseBlockSprite hoverSprite;
@@ -64,19 +66,61 @@ public class BlockController extends PlayNObject {
 		return equationImage;
 	}
 	
-	public BlockController(Parent parent) {
+	private float offX() {
+		return getGlobalTx(layer);
+	}
+	
+	private float offY() {
+		return getGlobalTy(layer);
+	}
+	
+	public Equation equation() {
+		ArrayList<BaseBlockSprite> lhs = new ArrayList<BaseBlockSprite>(),
+				rhs = new ArrayList<BaseBlockSprite>();
+		for (BaseBlockSprite sprite : leftSide) {
+			lhs.add((BaseBlockSprite) sprite.copy());
+		}
+		for (BaseBlockSprite sprite : rightSide) {
+			rhs.add((BaseBlockSprite) sprite.copy());
+		}
+		return new Equation(lhs, rhs);
+	}
+	
+	public boolean solved() {
+		return solved;
+		
+	}
+	
+	public BlockController(Parent parent, float width, float height) {
 		this.parent = parent;
+		this.width = width;
+		this.height = height;
 		layer = graphics().createGroupLayer();
 		equals = graphics().createImageLayer(CanvasUtils.createText("=", new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20)), Colors.WHITE));
 		centerImageLayer(equals);
 		layer.add(equals);
 	}
 	
+	public void clear() {
+		baseBlocks.clear();
+		solved = false;
+		dragging = draggingFrom = null;
+	}
+	
+	public void addEquation(Equation equation) {
+		for (BaseBlockSprite sprite : equation.leftSide()) {
+			addExpression(Side.Left, sprite);
+		}
+		for (BaseBlockSprite sprite : equation.rightSide()) {
+			addExpression(Side.Right, sprite);
+		}
+	}
+	
 	public void addExpression(Side side, BaseBlockSprite expression) {
 		List<BaseBlockSprite> blocks = getBlocks(side);
 		addExpression(blocks, expression, 0, 0, blocks.size());
-		equalsX = (leftSide.size() + 0.5f) / (baseBlocks.size() + 1) * graphics().width();
-		equals.setTranslation(equalsX, graphics().height() / 2);
+		equalsX = (leftSide.size() + 0.5f) / (baseBlocks.size() + 1) * width;
+		equals.setTranslation(equalsX, height / 2);
 		refreshEquationImage();
 	}
 	
@@ -92,6 +136,20 @@ public class BlockController extends PlayNObject {
 		int index = side.indexOf(original);
 		side.remove(index);
 		addExpression(side, newExp, original.layer().tx(), original.layer().ty(), index);
+	}
+	
+	private boolean refreshSolved() {
+		int numbers = 0, variables = 0;
+		for (BaseBlockSprite sprite : baseBlocks) {
+			if (!sprite.simplified()) return false;
+			if (sprite instanceof NumberBlockSprite) {
+				numbers++;
+			}
+			if (sprite instanceof VariableBlockSprite) {
+				variables++;
+			}
+		}
+		return numbers == 1 && variables == 1;
 	}
 	
 	private void refreshEquationImage() {
@@ -152,7 +210,10 @@ public class BlockController extends PlayNObject {
 		updateSide(delta, leftSide, bb);
 		updateSide(delta, rightSide, bb);
 		if (dragging != null) dragging.update(delta);
-		if (refreshEquation) refreshEquationImage();
+		if (refreshEquation) {
+			refreshEquationImage();
+			solved = refreshSolved();
+		}
 	}
 	
 	private void updateSide(int delta, List<BaseBlockSprite> side, int totalBlocks) {
@@ -176,10 +237,10 @@ public class BlockController extends PlayNObject {
 		
 		int i = 1;
 		for (BaseBlockSprite sprite : baseBlocks) {
-			float x = i++ * (graphics().width() - EQ_BUFFER) / (baseBlocks.size() + 1) - sprite.totalWidth() / 2 - sprite.offsetX();
+			float x = i++ * (width - EQ_BUFFER) / (baseBlocks.size() + 1) - sprite.totalWidth() / 2 - sprite.offsetX();
 			if (i > leftSide.size() + 1) x += EQ_BUFFER;
 			sprite.layer().setTx(lerpTime(sprite.layer().tx(), x, 0.98f, clock.dt(), 1f));
-			sprite.layer().setTy(lerpTime(sprite.layer().ty(), (graphics().height() - sprite.height()) / 2, 0.98f, clock.dt(), 1f));
+			sprite.layer().setTy(lerpTime(sprite.layer().ty(), (height - sprite.height()) / 2, 0.98f, clock.dt(), 1f));
 		}
 		
 		if (dragging != null) dragging.paint(clock);
@@ -209,12 +270,29 @@ public class BlockController extends PlayNObject {
 		dragging = block;
 	}
 	
+	private float getTouchX(Event event) {
+		return event.x() - offX();
+	}
+	
+	private float getTouchY(Event event) {
+		return event.y() - offY();
+	}
+	
+	private float spriteX(Sprite sprite) {
+		return getGlobalTx(sprite.layer()) - offX();
+	}
+	
+	private float spriteY(Sprite sprite) {
+		return getGlobalTy(sprite.layer()) - offY();
+	}
+	
 	private class Listener implements BlockListener {
 
 		@Override
 		public void wasGrabbed(BlockSprite sprite, Event event) {
+			float x = getTouchX(event), y = getTouchY(event);
 			for (BaseBlockSprite base : baseBlocks) {
-				if (base.contains(event.x(), event.y())) {
+				if (base.contains(x, y)) {
 					draggingFrom = base;
 					break;
 				}
@@ -226,8 +304,8 @@ public class BlockController extends PlayNObject {
 			
 			draggingFromSide = getContaining(draggingFrom);
 			
-			blockAnchorPX = (event.x() - getGlobalTx(sprite.layer())) / sprite.width();
-			blockAnchorPY = (event.y() - getGlobalTy(sprite.layer())) / sprite.height();
+			blockAnchorPX = (x - spriteX(sprite)) / sprite.width();
+			blockAnchorPY = (y - spriteY(sprite)) / sprite.height();
 			
 			if (sprite == draggingFrom) {
 				BlockHolder holder = new BlockHolder();
@@ -245,8 +323,8 @@ public class BlockController extends PlayNObject {
 				sprite.layer().setVisible(false);
 			}
 			
-			lastTouchX = event.x();
-			lastTouchY = event.y();
+			lastTouchX = x;
+			lastTouchY = y;
 			inverted = false;
 			refreshEquation = true;
 			updatePosition();
@@ -256,9 +334,9 @@ public class BlockController extends PlayNObject {
 
 		@Override
 		public void wasReleased(Event event) {
-			float x = event.x(), y = event.y();
-			lastTouchX = x;
-			lastTouchY = y;
+			float x = getTouchX(event), y = getTouchY(event);
+			lastTouchX = x - layer.tx();
+			lastTouchY = y - layer.ty();
 			
 			BaseBlockSprite target = null;
 			for (BaseBlockSprite base : baseBlocks) {
@@ -295,8 +373,8 @@ public class BlockController extends PlayNObject {
 					tempDragging = dragging;
 					tempDraggingFrom = draggingFrom;
 				} else {
-					added.layer().setTranslation(added.layer().tx() - getGlobalTx(target.layer()), 
-							added.layer().ty() - getGlobalTy(target.layer()));
+					added.layer().setTranslation(added.layer().tx() - spriteX(target), 
+							added.layer().ty() - spriteY(target));
 				}
 			}
 			
@@ -310,13 +388,14 @@ public class BlockController extends PlayNObject {
 
 		@Override
 		public void wasMoved(Event event) {
-			lastTouchX = event.x();
-			lastTouchY = event.y();
+			float x = getTouchX(event), y = getTouchY(event);
+			lastTouchX = x;
+			lastTouchY = y;
 			
 			BaseBlockSprite lastHover = hoverSprite;
 			hoverSprite = null;
 			for (BaseBlockSprite base : baseBlocks) {
-				if (canDropOn(base, event.x(), event.y())) {
+				if (canDropOn(base, x, y)) {
 					base.setPreview(true);
 					hoverSprite = base;
 				} else {
@@ -334,9 +413,9 @@ public class BlockController extends PlayNObject {
 			boolean checkLeftDistance = draggingFromSide == leftSide;
 			if (inverted) checkLeftDistance = !checkLeftDistance;
 			if (checkLeftDistance) {
-				invert = event.x() > equalsX + 5;
+				invert = x > equalsX + 5;
 			} else {
-				invert = event.x() < equalsX - 5;
+				invert = x < equalsX - 5;
 			}
 			
 			if (invert) {

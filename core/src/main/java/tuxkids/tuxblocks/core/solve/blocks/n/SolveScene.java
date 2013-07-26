@@ -43,7 +43,7 @@ public class SolveScene extends GameScreen implements Parent {
 	
 	@Override
 	public void wasAdded() {
-		controller = new BlockController(this);
+		controller = new BlockController(this, graphics().width(), graphics().height());
 		layer.add(controller.layer());
 		
 		BaseBlockSprite sprite1 = new VariableBlockSprite("x")
