@@ -1,22 +1,9 @@
 package tuxkids.tuxblocks.core.defense;
 
-import static playn.core.PlayN.graphics;
-
-import java.util.List;
-
-import playn.core.CanvasImage;
-import playn.core.Color;
 import playn.core.GroupLayer;
-import playn.core.Image;
-import playn.core.ImageLayer;
-import playn.core.PlayN;
 import playn.core.Pointer.Event;
-import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
-import pythagoras.f.Transform;
-import pythagoras.i.Point;
 import tripleplay.game.ScreenStack;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
@@ -25,8 +12,6 @@ import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
-import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class DefenseScreen extends GameScreen {

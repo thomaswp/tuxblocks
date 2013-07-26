@@ -1,7 +1,6 @@
 package tuxkids.tuxblocks.core.solve.expression;
 
 import playn.core.Canvas;
-import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;

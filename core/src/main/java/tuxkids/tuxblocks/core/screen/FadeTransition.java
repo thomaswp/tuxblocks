@@ -5,7 +5,6 @@
 
 package tuxkids.tuxblocks.core.screen;
 
-import playn.core.PlayN;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.trans.InterpedTransition;

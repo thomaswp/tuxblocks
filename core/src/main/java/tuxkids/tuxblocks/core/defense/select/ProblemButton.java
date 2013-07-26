@@ -3,9 +3,7 @@ package tuxkids.tuxblocks.core.defense.select;
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Image;
-import playn.core.ImageLayer;
 import playn.core.Layer;
-import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import playn.core.Font.Style;
@@ -14,9 +12,9 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
-import tuxkids.tuxblocks.core.solve.blocks.n.markup.ExpressionWriter;
-import tuxkids.tuxblocks.core.solve.blocks.n.markup.ExpressionWriter.Config;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
+import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter.Config;
 
 public class ProblemButton extends Button {
 

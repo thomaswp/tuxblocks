@@ -1,11 +1,6 @@
 package tuxkids.tuxblocks.core.solve.expression;
 
-import playn.core.Canvas;
 import playn.core.Color;
-import playn.core.PlayN;
-import playn.core.TextFormat;
-import playn.core.TextLayout;
-import pythagoras.f.Vector;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class Plus extends ModificationOperation {

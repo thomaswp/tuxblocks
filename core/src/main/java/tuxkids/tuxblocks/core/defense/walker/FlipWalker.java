@@ -1,9 +1,6 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
 import pythagoras.f.FloatMath;
-import pythagoras.f.Vector;
-import pythagoras.i.Point;
-import tuxkids.tuxblocks.core.defense.Grid;
 
 public class FlipWalker extends BasicWalker {
 	

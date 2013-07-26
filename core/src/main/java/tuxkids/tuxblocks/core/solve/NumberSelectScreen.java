@@ -3,7 +3,6 @@ package tuxkids.tuxblocks.core.solve;
 import java.util.ArrayList;
 import java.util.List;
 
-import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Font.Style;
@@ -31,11 +30,11 @@ import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.GameScreen;
+import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
+import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class NumberSelectScreen extends GameScreen implements Listener {
-
-	public final static String PLACEHOLDER = "%";
 	
 	private int SPACING = 150;
 	private final static int MAX_NUMS = 70;
@@ -43,7 +42,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	private List<Point> numberPoints = new ArrayList<Point>();
 	private List<ImageLayer> numberImages = new ArrayList<ImageLayer>();
-	private TextFormat textFormat, equationFormat;
+	private TextFormat numberFormat, problemFormat;
 	private Point selectedPoint, possibleSelectedPoint;
 	private Vector velocity = new Vector();
 	private Vector position = new Vector(), lastPosition = new Vector();
@@ -54,10 +53,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private GroupLayer foregroundLayer, backgroundLayer, equationLayer;
 	private int createsSpritesThisFrame;
 	private int themeColor;
-	private float equationHeight, equationBlankX;
+	private Vector blankCenter;
 	private ImageLayer equationAnswer;
 	private Point equationAnswerPoint;
-	private String expression;
+	private Renderer problem;
 	private int answer;
 	private Button buttonBack, buttonCenter;
 	private Image backImageOk, backImageBack, backImageCancel;
@@ -80,9 +79,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		recenterPoint = getPoint(number);
 	}
 	
-	public NumberSelectScreen(ScreenStack screens, GameState gameState, String expression, int answer) {
+	public NumberSelectScreen(ScreenStack screens, GameState gameState, Renderer problem, int answer) {
 		super(screens, gameState);
-		this.expression = expression;
+		this.problem = problem;
 		this.answer = answer;
 	}
 
@@ -95,19 +94,19 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		SPACING = (int)(height() / 3.5f);
 		position.set(recenterPoint.x * SPACING, recenterPoint.y * SPACING);
 		lastPosition.set(position);
-		textFormat = new TextFormat().withFont(
+		numberFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3));
-		equationFormat = new TextFormat().withFont(
-				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3 * 0.8f)); //32));
+		problemFormat = new TextFormat().withFont(
+				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3 * 0.8f / problem.lines()));
 		backgroundLayer = graphics().createGroupLayer();
 		
 		foregroundLayer = graphics().createGroupLayer();
 		layer.add(foregroundLayer);
 		PlayN.pointer().setListener(this);
 		createBackground();
-		createEquation(expression);
-		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - equationHeight / 2);
-		backgroundLayer.setTranslation(0, equationHeight / 2);
+		createEquation(problem);
+		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - menu.height() / 2);
+		backgroundLayer.setTranslation(0, menu.height() / 2);
 		
 		selectedNumberLayer = new ImageLayerTintable();
 		selectedNumberLayer.setDepth(10);
@@ -117,57 +116,14 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		update(0);
 	}
 	
-	private void createEquation(String equation) {
+	private void createEquation(Renderer renderer) {
 		menu = new MenuSprite(width(), defaultButtonSize() * 1.2f);
 		
-		int index = equation.indexOf(PLACEHOLDER);
-		String before = equation.substring(0, index);
-		String after = equation.substring(index + 1);
-
-		TextLayout sampleNumber = graphics().layoutText("-999", equationFormat);
-
-		int boxSpace = 10;
-		float boxWidth = sampleNumber.width() + boxSpace;
-		float boxHeight = defaultButtonSize(); //(sampleNumber.height() + boxSpace);
-		//boxHeight = (boxHeight + boxWidth) / 2;
-		float width = 0, height = 0;
-		TextLayout beforeLayout = null, afterLayout = null;
-		
-		if (!before.isEmpty()) {
-			beforeLayout = graphics().layoutText(before, equationFormat);
-			width += beforeLayout.width() + boxSpace;
-			height = Math.max(beforeLayout.height(), height);
-		}
-		if (!after.isEmpty()) {
-			afterLayout = graphics().layoutText(after, equationFormat);
-			width += afterLayout.width() + boxSpace;
-			height = Math.max(afterLayout.height(), height);
-		}
-		width += boxWidth + boxSpace * 2;
-		height = Math.max(boxHeight, height);
-		
-		CanvasImage eqImage = graphics().createImage(width, height);
-		Canvas canvas = eqImage.canvas();
-		float x = 0;
-
-		canvas.setFillColor(Colors.BLACK);
-		if (beforeLayout != null) {
-			canvas.fillText(beforeLayout, x, (height - beforeLayout.height()) / 2);
-			x += beforeLayout.width() + boxSpace;
-		}
-		
-		canvas.setFillColor(Color.withAlpha(themeColor, 100));
-		canvas.setStrokeColor(themeColor);
-		canvas.fillRect(x, (height - boxHeight) / 2, boxWidth, boxHeight);
-		canvas.strokeRect(x, (height - boxHeight) / 2, 
-				boxWidth - 0.5f, boxHeight - 0.5f);
-		equationBlankX = x + boxWidth / 2;
-		x += boxWidth + boxSpace;
-
-		canvas.setFillColor(Colors.BLACK);
-		if (afterLayout != null) {
-			canvas.fillText(afterLayout, x, (height - afterLayout.height()) / 2);
-		}
+		ExpressionWriter equation = renderer.getExpressionWriter(problemFormat);
+		CanvasImage eqImage = graphics().createImage(equation.width(), equation.height());
+		ExpressionWriter.Config config = new ExpressionWriter.Config(Colors.BLACK, Colors.BLACK, themeColor);
+		equation.drawExpression(eqImage.canvas(), config);
+		blankCenter = equation.blankCenter();
 		
 		ImageLayer eqLayer = graphics().createImageLayer(eqImage);
 		eqLayer.setTranslation((width() - eqLayer.width()) / 2, (menu.height() - eqLayer.height()) / 2); 
@@ -209,8 +165,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		equationLayer.add(buttonBack.layerAddable());
 		equationLayer.add(buttonCenter.layerAddable());
 		
-		equationHeight = menu.height();
-		equationBlankX += eqLayer.tx(); 
+		blankCenter.x += eqLayer.tx();
+		blankCenter.y += eqLayer.ty();
 		
 		layer.add(equationLayer);
 	}
@@ -226,10 +182,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			if (equationAnswer != null) equationLayer.remove(equationAnswer);
 			
 			String text = "" + getNumber(selectedPoint);
-			CanvasImage image = CanvasUtils.createText(text, equationFormat, Colors.BLACK);
+			CanvasImage image = CanvasUtils.createText(text, problemFormat, Colors.BLACK);
 			equationAnswer = graphics().createImageLayer(image);
 			equationAnswer.setOrigin(equationAnswer.width() / 2, equationAnswer.height() / 2);
-			equationAnswer.setTranslation(equationBlankX, equationHeight / 2);
+			equationAnswer.setTranslation(blankCenter.x, blankCenter.y);
 			equationLayer.add(equationAnswer);
 			buttonBack.setImage(backImageOk);
 		}
@@ -331,7 +287,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		p = p.clone();
 		
 		int border = 0;
-		TextLayout layout = PlayN.graphics().layoutText("" + getNumber(p), textFormat);
+		TextLayout layout = PlayN.graphics().layoutText("" + getNumber(p), numberFormat);
 		final CanvasImage image = graphics().createImage(layout.width() + border * 2, 
 				layout.height() + border * 2);
 		image.canvas().setFillColor(Colors.WHITE);

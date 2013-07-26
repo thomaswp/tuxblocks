@@ -4,7 +4,6 @@ import playn.core.Color;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.util.Clock;
-import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;

@@ -1,15 +1,10 @@
 package tuxkids.tuxblocks.core.solve;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
-import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
-import pythagoras.f.Point;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
@@ -18,12 +13,11 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
-import tuxkids.tuxblocks.core.solve.blocks.n.NumberSelectScreen;
-import tuxkids.tuxblocks.core.solve.blocks.n.markup.Renderer;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Equation;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController.Parent;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Sprite.SimplifyListener;
+import tuxkids.tuxblocks.core.solve.blocks.BlockController;
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.BlockController.Parent;
+import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
+import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 public class SolveScreen extends GameScreen implements Parent {
 	

@@ -35,14 +35,17 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 		return layer.ty();
 	}
 	
+	@Override
 	public float width() {
 		return width;
 	}
 	
+	@Override
 	public float height() {
 		return height;
 	}
 	
+	@Override
 	public float depth() {
 		return layer.depth();
 	}
@@ -64,10 +67,12 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 		onSizeChanged();
 	}
 	
+	@Override
 	public void setWidth(float width) {
 		setSize(width, height);
 	}
 	
+	@Override
 	public void setHeight(float height) {
 		setSize(width, height);
 	}

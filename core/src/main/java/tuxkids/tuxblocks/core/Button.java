@@ -1,16 +1,13 @@
 package tuxkids.tuxblocks.core;
 
 import playn.core.Color;
-import playn.core.GroupLayer;
 import playn.core.Image;
-import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Positioned;
 
 public class Button extends PlayNObject implements Positioned {

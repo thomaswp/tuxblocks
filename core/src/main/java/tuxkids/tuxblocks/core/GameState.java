@@ -7,18 +7,11 @@ import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BaseBlockSprite;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Equation;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.Equation.Builder;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockHolder;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.MinusBlockSprite;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.NumberBlockSprite;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.OverBlockSprite;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.TimesBlockSprite;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.VariableBlockSprite;
-import tuxkids.tuxblocks.core.solve.blocks.n.sprite.BlockController.Side;
-import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
-import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
+import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
+import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 
 public class GameState {
 	private int[] towerCounts;
@@ -91,27 +84,27 @@ public class GameState {
 	private Equation[] eqs = new Equation[] {
 			
 			new Builder()
-			.addLeft(new VariableBlockSprite("x").plus(2).times(3))
-			.addRight(new NumberBlockSprite(9))
+			.addLeft(new VariableBlock("x").plus(2).times(3))
+			.addRight(new NumberBlock(9))
 			.createEquation(),
 			
 			new Builder()
-			.addLeft(new VariableBlockSprite("x").plus(2).times(3).minus(3).over(5))
+			.addLeft(new VariableBlock("x").plus(2).times(3).minus(3).over(5))
 			.addLeft(new BlockHolder())
-			.addRight(new NumberBlockSprite(3))
+			.addRight(new NumberBlock(3))
 			.createEquation(),
 			
 			new Builder()
-			.addLeft(new VariableBlockSprite("x").times(3))
-			.addLeft(new VariableBlockSprite("x").minus(7).over(4))
-			.addRight(new NumberBlockSprite(8))
+			.addLeft(new VariableBlock("x").times(3))
+			.addLeft(new VariableBlock("x").minus(7).over(4))
+			.addRight(new NumberBlock(8))
 			.createEquation(),
 			
 			new Builder()
-			.addLeft(new VariableBlockSprite("x").plus(12).over(3))
-			.addLeft(new VariableBlockSprite("x").times(25).over(6))
-			.addRight(new NumberBlockSprite(8))
-			.addRight(new VariableBlockSprite("x").over(2))
+			.addLeft(new VariableBlock("x").plus(12).over(3))
+			.addLeft(new VariableBlock("x").times(25).over(6))
+			.addRight(new NumberBlock(8))
+			.addRight(new VariableBlock("x").over(2))
 			.createEquation(),
 					
 	};

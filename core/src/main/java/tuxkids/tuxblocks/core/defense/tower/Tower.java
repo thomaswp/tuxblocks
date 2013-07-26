@@ -1,24 +1,19 @@
 package tuxkids.tuxblocks.core.defense.tower;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Image;
-import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.util.Clock;
-import pythagoras.f.FloatMath;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
-import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;

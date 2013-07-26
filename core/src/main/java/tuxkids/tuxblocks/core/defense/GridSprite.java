@@ -1,17 +1,6 @@
 package tuxkids.tuxblocks.core.defense;
 
-import playn.core.Canvas;
-import playn.core.CanvasImage;
-import playn.core.GroupLayer;
-import playn.core.ImageLayer;
-import playn.core.Layer;
-import playn.core.PlayN;
-import playn.core.util.Clock;
-import pythagoras.i.Point;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
-import tuxkids.tuxblocks.core.defense.tower.Tower;
-import tuxkids.tuxblocks.core.defense.walker.Walker;
 
 public class GridSprite extends PlayNObject {
 	

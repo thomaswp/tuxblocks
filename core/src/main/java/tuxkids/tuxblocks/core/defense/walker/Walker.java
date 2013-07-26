@@ -3,22 +3,17 @@ package tuxkids.tuxblocks.core.defense.walker;
 import java.util.ArrayList;
 import java.util.List;
 
-import playn.core.Canvas;
 import playn.core.CanvasImage;
-import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
-import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.Pathing;
 import tuxkids.tuxblocks.core.defense.walker.buff.Buff;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
-import tuxkids.tuxblocks.core.utils.Debug;
 
 public abstract class Walker extends DiscreteGridObject {
 	
@@ -141,7 +136,7 @@ public abstract class Walker extends DiscreteGridObject {
 				return true;
 			}
 		}
-		layer.setTint(Colors.WHITE, grid.towerColor(), (float)hp / getMaxHp());
+		layer.setTint(Colors.WHITE, grid.towerColor(), hp / getMaxHp());
 		layer.setAlpha(alpha);
 		
 		for (int i = 0; i < buffs.size(); i++) {

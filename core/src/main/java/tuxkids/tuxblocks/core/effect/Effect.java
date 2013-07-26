@@ -4,8 +4,6 @@ import playn.core.GroupLayer;
 import playn.core.Layer;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
-import tripleplay.particle.Particles;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.GridObject;
 
 public abstract class Effect extends GridObject {

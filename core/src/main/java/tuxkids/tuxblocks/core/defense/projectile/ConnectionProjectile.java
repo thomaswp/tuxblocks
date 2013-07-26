@@ -1,6 +1,5 @@
 package tuxkids.tuxblocks.core.defense.projectile;
 
-import playn.core.ImageLayer;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import tuxkids.tuxblocks.core.defense.Grid;

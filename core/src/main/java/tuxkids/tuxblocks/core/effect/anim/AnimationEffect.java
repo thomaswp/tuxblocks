@@ -1,6 +1,5 @@
 package tuxkids.tuxblocks.core.effect.anim;
 
-import playn.core.Image;
 import playn.core.ImageLayer;
 import tuxkids.tuxblocks.core.effect.Effect;
 

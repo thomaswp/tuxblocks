@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import tuxkids.tuxblocks.core.utils.Debug;
-
 
 public class EquationGenerator {
 
@@ -56,7 +54,6 @@ public class EquationGenerator {
 			lastTimes = null;
 			
 			double ds = difficulty;
-			int r = rhs;
 			int value;
 			if (operation == Operation.Plus) {
 				lastOperationInv = Operation.Minus;

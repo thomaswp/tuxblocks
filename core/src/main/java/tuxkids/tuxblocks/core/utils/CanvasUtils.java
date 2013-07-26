@@ -6,7 +6,6 @@ import playn.core.Image;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 
 public class CanvasUtils extends PlayNObject {

@@ -24,6 +24,7 @@ public abstract class DiscreteGridObject extends GridObject {
 		}
 	}
 	
+	@Override
 	public boolean update(int delta) {
 		updateDepth();
 		return false;

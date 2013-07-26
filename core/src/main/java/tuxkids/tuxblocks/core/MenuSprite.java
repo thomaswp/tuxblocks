@@ -1,6 +1,5 @@
 package tuxkids.tuxblocks.core;
 
-import playn.core.Color;
 import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;

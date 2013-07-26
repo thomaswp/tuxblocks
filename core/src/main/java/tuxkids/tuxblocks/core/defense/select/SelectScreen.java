@@ -5,10 +5,8 @@ import java.util.List;
 
 import playn.core.Color;
 import playn.core.GroupLayer;
-import playn.core.ImageLayer;
 import playn.core.ImmediateLayer;
 import playn.core.ImmediateLayer.Renderer;
-import playn.core.PlayN;
 import playn.core.Surface;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
@@ -20,16 +18,9 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.ProblemAddedListener;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.Grid;
-import tuxkids.tuxblocks.core.defense.Inventory;
-import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
-import tuxkids.tuxblocks.core.solve.expression.Equation;
-import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
-import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.Debug;
 
 public class SelectScreen extends GameScreen implements ProblemAddedListener {
 

@@ -1,7 +1,6 @@
 package tuxkids.tuxblocks.core.layers;
 
 import playn.core.GroupLayer;
-import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;

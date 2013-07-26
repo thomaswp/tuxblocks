@@ -1,7 +1,5 @@
 package tuxkids.tuxblocks.core.defense.walker.buff;
 
-import tuxkids.tuxblocks.core.utils.HashCode;
-
 public class Frozen extends Buff {
 
 	@Override

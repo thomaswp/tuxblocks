@@ -1,7 +1,6 @@
 package tuxkids.tuxblocks.core.defense.projectile;
 
 import playn.core.Image;
-import playn.core.ImageLayer;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 

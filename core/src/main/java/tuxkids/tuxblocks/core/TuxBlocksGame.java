@@ -9,7 +9,6 @@ import playn.core.Game;
 import playn.core.ImageLayer;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
-import tuxkids.tuxblocks.core.solve.blocks.n.SolveScene;
 
 public class TuxBlocksGame extends Game.Default {
 

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.defense.Inventory;
-import tuxkids.tuxblocks.core.defense.tower.Tower;
+import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 
 public abstract class Round {
@@ -56,7 +55,7 @@ public abstract class Round {
 		if (currentWave == null && waitTimes.size() > 0 && timer >= waitTimes.get(0)) {
 			currentWave = waves.remove(0);
 			waitTimes.remove(0);
-			nextDepth = Walker.MAX_BASE_DEPTH;
+			nextDepth = GridObject.MAX_BASE_DEPTH;
 			timer = 0;
 		}
 		return null;

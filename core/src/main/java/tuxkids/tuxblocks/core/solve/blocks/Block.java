@@ -1,83 +1,214 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-import playn.core.CanvasImage;
-import playn.core.Color;
 import playn.core.Font;
-import playn.core.GroupLayer;
-import playn.core.ImageLayer;
+import playn.core.Image;
 import playn.core.Layer;
 import playn.core.PlayN;
+import playn.core.Pointer.Event;
+import playn.core.Pointer.Listener;
 import playn.core.TextFormat;
-import playn.core.TextLayout;
+import playn.core.util.Clock;
+import pythagoras.f.FloatMath;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.PlayNObject;
-import tuxkids.tuxblocks.core.solve.expression.Expression;
-import tuxkids.tuxblocks.core.solve.expression.ModificationOperation;
-import tuxkids.tuxblocks.core.solve.expression.Number;
-import tuxkids.tuxblocks.core.solve.expression.Variable;
+import tuxkids.tuxblocks.core.layers.ImageLayerLike;
+import tuxkids.tuxblocks.core.layers.ImageLayerLike.Factory;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
+import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
+import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
-public abstract class Block extends PlayNObject{
-	
-	public final static int BASE_SIZE = 150;
-	public final static int MOD_SIZE = BASE_SIZE / 3;
-	
-	private static TextFormat textFormat;
-	
-	protected ImageLayer layer;
+public abstract class Block extends Sprite implements Hashable {
 
-	public float width() {
-		return layer.width();
-	}
+	private final static int DOUBLE_CLICK = 500;
 	
-	public float height() {
-		return layer.height();
-	}
+	protected ImageLayerLike layer;
+	protected boolean multiExpression = true;
 	
-	public Layer layer() {
-		return layer;
-	}
+	private boolean dragging;
+	private int doubleClickTime;
+//	private final int color = color();
+//	private final int flashColor = CanvasUtils.blendAddative(color, Colors.WHITE, 0.2f);
+	private HashMap<Integer, Integer> colorMap = new HashMap<Integer, Integer>();
+	private int timeElapsed;
+	private boolean canRelease;
 	
-	public abstract int getColor();
+	protected static TextFormat textFormat;
+	protected static Factory factory;
 	
-	public static BaseBlock createBlock(Expression exp) {
-		if (exp instanceof ModificationOperation) {
-			ModificationOperation modOp = (ModificationOperation) exp;
-			BaseBlock base = createBlock(modOp.getOperand());
-			base.addModifier(modOp);
-			return base;
-		} else if (exp instanceof Number) {
-			return new NumberBlock(((Number) exp));
-		} else if (exp instanceof Variable) {
-			return new VariableBlock(((Variable) exp));
-		}
-		return null;
-	}
+	protected abstract String text();
+	protected abstract float defaultWidth();
+	protected abstract float defaultHeight();
+	protected abstract boolean canRelease(boolean multiExpression);
+	protected abstract int color();
 	
-	protected ImageLayer generateSprite(int width, int height, String text, int color) {
+	public abstract void showInverse();
+	public abstract Block inverse();
+	
+	public Block() {
 		if (textFormat == null) {
 			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, 20);
 			textFormat = new TextFormat().withFont(font);
 		}
-		
-		CanvasImage image = PlayN.graphics().createImage(width, height);
-		//image.canvas().setAlpha(0.5f);
-		image.canvas().setFillColor(color);
-		image.canvas().fillRect(0, 0, width, height);
-		image.canvas().setStrokeColor(Color.rgb(0, 0, 0));
-		image.canvas().strokeRect(0, 0, width - 1, height - 1);
-		image.canvas().setFillColor(Color.rgb(0, 0, 0));
-		
-		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);
-		float textX = (image.width() - layout.width()) / 2;
-		float textY = (image.height() - layout.height()) / 2;
-		image.canvas().fillText(layout, textX, textY);
-		return PlayN.graphics().createImageLayer(image);
+		if (factory == null) {
+			factory = new Factory() {
+				@Override
+				public ImageLayerLike create(Image image) {
+					return new ImageLayerTintable(image);
+				}
+			};
+		}
 	}
 	
-	public void destroy() {
-		layer.destroy();
+	@Override
+	protected void initSprite() {
+		if (hasSprite()) return;
+		super.initSprite();
+		if (blockListener != null) {
+			attachBlockListener();
+		}
+	}
+	
+	public void interpolateDefaultRect(Clock clock) {
+		interpolateRect(layer().tx(), layer().ty(), defaultWidth(), defaultHeight(), lerpBase(), clock.dt());
+	}
+	
+	public void interpolateRect(float x, float y, float width, float height, float base, float dt) {
+		float snap = 1f;
+		layer().setTx(lerpTime(layer().tx(), x, base, dt, snap));
+		layer().setTy(lerpTime(layer().ty(), y, base, dt, snap));
+		layer.setWidth(lerpTime(width(), width, base, dt, snap));
+		layer.setHeight(lerpTime(height(), height, base, dt, snap));
+	}
+	
+	@Override
+	public Layer layer() {
+		return layer.layerAddable();
+	}
+
+	@Override
+	public float width() {
+		return layer.width();
+	}
+
+	@Override
+	public float height() {
+		return layer.height();
+	}
+	
+	protected ImageLayerLike generateNinepatch(String text) {
+		return new BlockLayer(text, 10, 10);
+	}
+
+	
+	public void update(int delta, boolean multiExpression) {
+		this.multiExpression = multiExpression;
+		update(delta);
+	}
+	
+	@Override
+	public void update(int delta) {
+		if (doubleClickTime > 0) {
+			doubleClickTime = Math.max(0, doubleClickTime - delta);
+		}
+		if (canRelease != shouldShowPreview(multiExpression)) {
+			canRelease = !canRelease;
+		}
+	}
+	
+	protected boolean shouldShowPreview(boolean multiExpression) {
+		return canRelease(multiExpression);
+	}
+	
+	@Override
+	public void paint(Clock clock) {
+		timeElapsed = PlayN.tick();
+		int color = color();
+		if (canRelease) {
+			//TODO: clean this up... don't allocate
+			float[] hsv = new float[3];
+			CanvasUtils.rgbToHsv(color, hsv);
+			color = CanvasUtils.hsvToRgb(hsv[0], hsv[1], 0.7f);
+			int flashColor = CanvasUtils.hsvToRgb(hsv[0], hsv[1], 1f);
+			layer.setTint(flashColor, color, FloatMath.pow(FloatMath.sin(timeElapsed / 1250f * 2 * FloatMath.PI) / 2 + 0.5f, 0.7f));
+		} else {
+			layer.setTint(color);
+		}
+	}
+	
+	static int offset = 0; //(int)(360 * Math.random());
+	protected int getColor(int degree) {
+		Integer color = colorMap.get(degree);
+		degree += offset;
+		degree = degree % 360;
+		if (degree <= 120) {
+			degree /= 2;
+		} else if (degree <= 180) {
+			degree -= 60;
+		} else if (degree < 240) {
+			degree = (degree - 180) * 2 + 120;
+		}
+		if (color == null) {
+			color = CanvasUtils.hsvToRgb((degree%360) / 360f, 0.9f, 0.9f);
+			colorMap.put(degree, color);
+		}
+		return color;
+	}
+	
+	@Override
+	public void addBlockListener(BlockListener listener) {
+		if (listener == null || blockListener != null) return;
+		blockListener = listener;
+		if (hasSprite()) attachBlockListener();
+	}
+	
+	private void attachBlockListener() {
+		layer.addListener(new Listener() {
+			
+			@Override
+			public void onPointerStart(Event event) {
+				if (canRelease(multiExpression)) {
+					dragging = true;
+					blockListener.wasGrabbed(Block.this, event);
+				} else if (doubleClickTime == 0) {
+					doubleClickTime = DOUBLE_CLICK;
+				} else {
+					blockListener.wasDoubleClicked(Block.this, event);
+				}
+			}
+			
+			@Override
+			public void onPointerEnd(Event event) {
+				if (dragging) {
+					dragging = false;
+					blockListener.wasReleased(event);
+				}
+			}
+			
+			@Override
+			public void onPointerDrag(Event event) {
+				if (dragging) {
+					blockListener.wasMoved(event);
+				}
+			}
+			
+			@Override
+			public void onPointerCancel(Event event) {
+				
+			}
+		});
+	}
+	
+	protected Block getDraggingSprite() {
+		return this;
+	}
+	
+	public void remove() {
+	}
+	
+	@Override
+	public String toString() {
+		return text();
 	}
 }

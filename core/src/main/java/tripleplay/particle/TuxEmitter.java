@@ -5,19 +5,13 @@
 
 package tripleplay.particle;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import react.Connection;
-import react.Signal;
-import react.UnitSlot;
 import playn.core.Image;
 import playn.core.ImmediateLayer;
 import playn.core.ImmediateLayer.Renderer;
 import playn.core.PlayN;
 import playn.core.Surface;
-import static playn.core.PlayN.graphics;
-import tripleplay.particle.Particles.Now;
 import tripleplay.util.Destroyable;
 
 /**

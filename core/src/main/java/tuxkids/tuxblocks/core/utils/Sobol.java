@@ -88,6 +88,7 @@ public class Sobol extends LowDiscrepancySequence {
 
 
 
+	@Override
 	public String getName(){ return "Sobol Sequence"; }    
 
 
@@ -478,6 +479,7 @@ for(k=0;k<50;k++)
 	 *******************************************************************************/   
 
 
+	@Override
 	public void restart()
 	{
 		index=1;
@@ -488,6 +490,7 @@ for(k=0;k<50;k++)
 
 	/** The next Sobol point in the unit cube [0,1]^dim.
 	 */
+	@Override
 	public double[] nextPoint()
 	{
 		// find the rightmost zero bit of index

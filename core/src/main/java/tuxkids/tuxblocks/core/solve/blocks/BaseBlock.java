@@ -1,268 +1,271 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import playn.core.CanvasImage;
 import playn.core.GroupLayer;
-import playn.core.ImageLayer;
 import playn.core.Layer;
-import playn.core.Layer.HitTester;
-import playn.core.PlayN;
-import playn.core.Pointer.Event;
-import playn.core.Pointer.Listener;
-import playn.core.TextFormat;
-import pythagoras.f.Point;
+import playn.core.util.Clock;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.solve.expression.Expression;
-import tuxkids.tuxblocks.core.solve.expression.ModificationOperation;
-import tuxkids.tuxblocks.core.solve.expression.NonevaluatableException;
-import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 public abstract class BaseBlock extends Block {
-
+	
+	protected HorizontalModifierGroup modifiers;
 	protected GroupLayer groupLayer;
-	protected List<ModifierBlock> modifiers = new ArrayList<ModifierBlock>();
-	protected Expression baseExpression;
-	protected ModifierBlock previewBlock;
-	protected ImageLayer simplifyCircle;
-	protected OnSimplifyListener simplifyListener;
+	protected boolean canMoveBase;
 	
-	public boolean isShowingPreview() {
-		return previewBlock != null;
-	}
-	
-	public void setSimplifyListener(OnSimplifyListener simplifyListener) {
-		this.simplifyListener = simplifyListener;
-	}
-	
-	public ModifierBlock lastModifier() {
-		if (modifiers.isEmpty()) return null;
-		return modifiers.get(modifiers.size() - 1);
-	}
-
-	public Expression topLevelExpression() {
-		if (modifiers.isEmpty()) return baseExpression;
-		return lastModifier().getModifier();
-	}
-	
-	public boolean hasModifier() {
-		return !modifiers.isEmpty();
-	}
-	
-	public float groupWidth() {
-		Block lastModifier = lastModifier();
-		if (lastModifier == null) return width();
-		return lastModifier.width() + lastModifier.layer.tx();
-	}
-	
-	public float groupHeight() {
-		Block lastModifier = lastModifier();
-		if (lastModifier == null) return height();
-		return -lastModifier.layer.ty();
-	}
-	
-	@Override
-	public GroupLayer layer() {
+	public Layer layerAddable() {
 		return groupLayer;
 	}
 	
-	public BaseBlock(Expression baseExpression) {
-		this.baseExpression = baseExpression;
-		groupLayer = PlayN.graphics().createGroupLayer();
-		
-		final int rad = MOD_SIZE / 4, padding = MOD_SIZE / 4;
-		CanvasImage simplifyImage = CanvasUtils.createCircle(rad, getColor(), 1, Colors.DARK_GRAY);
-		simplifyCircle = graphics().createImageLayer(simplifyImage);
-		simplifyCircle.setOrigin(simplifyImage.width() / 2, simplifyImage.height() / 2);
-		simplifyCircle.setDepth(5);
-		simplifyCircle.setTint(getColor());
-		simplifyCircle.setAlpha(0.8f);
-		simplifyCircle.addListener(new SimplifyListener());
-		simplifyCircle.setHitTester(new HitTester() {
-			@Override
-			public Layer hitTest(Layer layer, Point p) {
-				float r = rad;
-				//if (modifiers.size() > 1) r += padding;
-				r += padding;
-				float dx = p.x - rad;
-				float dy = p.y - rad;
-				if (dx * dx + dy * dy <  r * r) {
-					return layer;
-				}
-				return null;
-			}
-		});
-		groupLayer.add(simplifyCircle);
-		updateSimplify();
+	@Override
+	public Layer layer() {
+		return groupLayer;
 	}
 	
-	protected abstract boolean canSimplify();
-	protected abstract String getText();
+	@Override
+	public float x() {
+		return layer.tx();
+	}
 	
+	@Override
+	public float y() {
+		return layer.ty();
+	}
+	
+	public boolean simplified() {
+		return !modifiers.isModifiedHorizontally() && 
+				!modifiers.isModifiedVertically() &&
+				modifiers.children.size() == 0;
+	}
+	
+	@Override
+	public int color() {
+//		return getColor(300);
+		return Colors.WHITE;
+//		return Color.rgb(200, 0, 200);
+	}
+
+	public float totalWidth() {
+		return modifiers.totalWidth();
+	}
+
+	public float offsetX() {
+		return modifiers.offsetX();
+	}
+	
+	public BaseBlock() {
+		modifiers = new HorizontalModifierGroup();
+	}
+	
+	@Override
+	protected void initSpriteImpl() {
+		super.initSpriteImpl();
+		
+		layer = generateNinepatch(text());
+		layer.setSize(baseSize(), baseSize());
+		layer.setInteractive(true);
+		groupLayer = graphics().createGroupLayer();
+		groupLayer.add(layer.layerAddable());
+		layer.layerAddable().setDepth(ModifierGroup.CHILD_START_DEPTH);
+
+		modifiers.updateParentRect(this);
+		modifiers.initSprite();
+		groupLayer.add(modifiers.layer());
+		modifiers.layer().setDepth(ModifierGroup.MODIFIERS_DEPTH);
+	}
+
 	@Override
 	public void destroy() {
 		super.destroy();
-		groupLayer.destroy();
-	}
-	
-	private void updateSimplify() {
-		if (!canSimplify() || modifiers.isEmpty()) {
-			simplifyCircle.setVisible(false);
-		} else {
-			ModifierBlock block = modifiers.get(0);
-			if (block.getModifier().getPrecedence() == Expression.PREC_ADD) {
-				simplifyCircle.setTranslation(width(), -height() / 2);
-			} else {
-				simplifyCircle.setTranslation(width() / 2, -height());
-			}
-			simplifyCircle.setVisible(true);
-		}
+		modifiers.destroy();
 	}
 	
 	@Override
-	protected ImageLayer generateSprite(int width, int height, String text, int color) {
-		ImageLayer l = super.generateSprite(width, height, text, color);
-		l.setTy(-l.height());
-		groupLayer.add(l);
-		return l;
-	}
-
-	public void addModifier(ModificationOperation mod) {
-		addModifier(mod, false);
-	}
-	
-	public void addModifier(ModificationOperation mod, boolean isPreview) {
-		ModifierBlock modBlock;
-		if (mod.getPrecedence() == Expression.PREC_ADD) {
-			modBlock = new ModifierBlock(mod, MOD_SIZE, (int)groupHeight());
-			modBlock.layer.setTx(groupWidth());
-			modBlock.layer.setTy(-groupHeight());
-			groupLayer.add(modBlock.layer);
-		} else {
-			modBlock = new ModifierBlock(mod, (int)groupWidth(), MOD_SIZE);
-			modBlock.layer.setTy(-groupHeight() - modBlock.height());
-		}
-		mod.setOperand(topLevelExpression());
-		if (isPreview) {
-			if (previewBlock != null) {
-				groupLayer.remove(previewBlock.layer());
-			} 
-			previewBlock = modBlock;
-			previewBlock.layer.setAlpha(0.5f);
-		} else {
-			modifiers.add(modBlock);
-		}
-		groupLayer.add(modBlock.layer);
-		updateSimplify();
-	}
-
-	public ModifierBlock pop() {
-		if (modifiers.size() == 0) return null;
-		ModifierBlock modBlock = modifiers.remove(modifiers.size() - 1);
-		modBlock.getModifier().setOperand(null);
-		groupLayer.remove(modBlock.layer);
-		updateSimplify();
-		return modBlock;
-	}
-	
-	private Point nextBlockPos = new Point();
-	public Point getNextBlockPos(int precidence) {
-		if (precidence == Expression.PREC_ADD) {
-			return nextBlockPos.set(groupLayer.tx() + groupWidth() + MOD_SIZE / 2,
-					groupLayer.ty() - groupHeight() / 2);
-		} else {
-			return nextBlockPos.set(groupLayer.tx() + groupWidth() / 2,
-					groupLayer.ty() - groupHeight() - MOD_SIZE / 2);
-		}
-	}
-	
-	public void updateShowPreview(float cx, float cy, ModificationOperation mod) {
-		Point nextPos = getNextBlockPos(mod.getPrecedence());
-		boolean showPreview = nextPos.distance(cx, cy) < MOD_SIZE * 2;
-		if (!showPreview) {
-			stopShowingPreview();
-		} else if (previewBlock == null || previewBlock.getModifier() != mod) {
-			addModifier(mod, true);
-		}
-	}
-	
-	public void stopShowingPreview() {
-		if (previewBlock != null) groupLayer.remove(previewBlock.layer());
-		previewBlock = null;
+	public void addBlockListener(BlockListener listener) {
+		super.addBlockListener(listener);
+		modifiers.addBlockListener(listener);
 	}
 	
 	@Override
-	public String toString() {
-		return modifiers.toString();
-	}
-
-	public Object toMathString() {
-		return topLevelExpression().toMathString();
+	protected float defaultWidth() {
+		return baseSize();
 	}
 	
-	public interface OnSimplifyListener {
-		public void onSimplify(BaseBlock baseBlock, String expression, int answer, int start);
+	@Override
+	protected float defaultHeight() {
+		return baseSize();
 	}
 	
-	protected class SimplifyListener implements Listener {
-		@Override
-		public void onPointerStart(Event event) {
-			float dx = simplifyCircle.width() / 2 - event.localX();
-			float dy = simplifyCircle.height() / 2 - event.localY();
-			float rad = simplifyCircle.width() / 2;
-			if (dx * dx + dy * dy > rad * rad) {
-				//Propogate...
+	@Override
+	protected boolean canRelease(boolean openSpace) {
+		return true;
+	}
+	
+	@Override
+	protected boolean shouldShowPreview(boolean openSpace) {
+		return canMoveBase;
+	}
+	
+	@Override
+	public boolean contains(float gx, float gy) {
+		float x = gx - layer().tx();// - getGlobalTx(groupLayer);
+		float y = gy - layer().ty();// - getGlobalTy(groupLayer);
+		return super.contains(x, y) || modifiers.contains(x, y);
+	}
+
+	public void clearPreview() {
+		groupLayer.setAlpha(1f);
+	}
+	public void setPreview(boolean preview) {
+		groupLayer.setAlpha(preview ? 1f : 0.5f);
+	}
+
+	
+	public void update(int delta, boolean multiExpression, boolean moveBase) {
+		this.canMoveBase = moveBase;
+		super.update(delta, multiExpression);
+	}
+	
+	@Override
+	public void update(int delta) {
+		super.update(delta);
+//		if (blockListener == null && !(this instanceof BlockHolder)) {
+//			debug("problem: " + this);
+//		}
+		modifiers.update(delta, multiExpression);
+		ModifierGroup newMods = modifiers.updateParentModifiers();
+		if (newMods != modifiers) {
+			if (newMods != null) {
+				groupLayer.add(newMods.layer());
+				newMods.layer().setDepth(ModifierGroup.MODIFIERS_DEPTH);
+				modifiers.layer().destroy();
+				modifiers = (HorizontalModifierGroup)newMods;
 			}
-		}
-
-		@Override
-		public void onPointerEnd(Event event) {
-			float dx = simplifyCircle.width() / 2 - event.localX();
-			float dy = simplifyCircle.height() / 2 - event.localY();
-			float rad = simplifyCircle.width() * 2;
-			if (dx * dx + dy * dy < rad * rad) {
-				if (simplifyListener != null && !modifiers.isEmpty()) {
-					String exp = modifiers.get(0).getModifier().toMathString();
-					int answer = 0;
-					int start = 0;
-					try {
-						answer = modifiers.get(0).getModifier().evaluate();
-						start = baseExpression.evaluate();
-					} catch (NonevaluatableException e) {
-						e.printStackTrace();
-					}
-					simplifyListener.onSimplify(BaseBlock.this, exp + " = %", answer, start);
-				}
-			}
-		}
-
-		@Override
-		public void onPointerDrag(Event event) {
-		}
-
-		@Override
-		public void onPointerCancel(Event event) {
-			
 		}
 	}
 
-	public void simplfy(int to) {
-		ModifierBlock remove = modifiers.remove(0);
-		if (!modifiers.isEmpty()) {
-			modifiers.get(0).getModifier().setOperand(baseExpression);
+	@Override
+	public void paint(Clock clock) {
+		super.paint(clock);
+		interpolateDefaultRect(clock);
+		modifiers.updateParentRect(x(), y(), defaultWidth(), defaultHeight());
+		modifiers.paint(clock);
+	}
+	
+
+
+	public void snapChildren() {
+		modifiers.updateParentRect(this);
+		modifiers.snapChildren();
+	}
+	
+	public String hierarchy() {
+		return toString() + "\n" + modifiers.hierarchy(1);
+	}
+
+	//The public method is for chaining
+	public BaseBlock addModifier(ModifierBlock sprite) {
+		addModifier(sprite, false);
+		return this;
+	}
+	
+	//While the protected returns the block that was actually added
+	protected ModifierBlock addModifier(ModifierBlock sprite, boolean snap) {
+		return modifiers.addModifier(sprite, snap);
+	}
+
+	public boolean canAccept(Block sprite) {
+		if (sprite instanceof ModifierBlock) {
+			return true;
+		} else if (sprite instanceof NumberBlock) {
+			return modifiers.canAddExpression((NumberBlock) sprite);
 		}
-		float width = layer.width(), height = layer.height();
-		if (remove.getModifier().getPrecedence() == Expression.PREC_ADD) {
-			width += MOD_SIZE;
-		} else {
-			height += MOD_SIZE;
+		return false;
+	}
+	
+	protected ModifierBlock addBlock(Block sprite, boolean snap) {
+		if (sprite instanceof ModifierBlock) {
+			return addModifier((ModifierBlock) sprite, snap);
+		} else if (sprite instanceof NumberBlock) {
+			return modifiers.addExpression((NumberBlock) sprite, snap);
 		}
-		((NumberBlock)this).setValue(to);
-		layer.destroy();
-		remove.layer().destroy();
-		layer = generateSprite((int)width, (int)height, getText(), getColor());
-		updateSimplify();
+		return null;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		return this == o; //For the sake of lists of these, it's important to use object equality
+	}
+	
+	@Override
+	public int hashCode() {
+		return nativeHashCode(); //For the sake of lists of these, it's important to use object equality
+	}
+	
+	public BaseBlock plus(int x) {
+		return addModifier(new PlusBlock(x));
+	}
+	
+	public BaseBlock minus(int x) {
+		return addModifier(new MinusBlock(x));
+	}
+	
+	public BaseBlock times(int x) {
+		return addModifier(new TimesBlock(x));
+	}
+	
+	public BaseBlock over(int x) {
+		return addModifier(new OverBlock(x));
+	}
+	
+	@Override
+	public void showInverse() {
+//		BaseBlockSprite inverse = (BaseBlockSprite) inverse();
+//		inverse.modifiers = modifiers;
+//		inverse.groupLayer.add(modifiers.layer());
+		modifiers.addNegative();
+	}
+	
+	public Renderer createRenderer() {
+		return modifiers.createRenderer(new BaseRenderer(text()).setHighlight(previewAdd()));
+	}
+	
+	protected Renderer createRendererWith(BaseBlock myCopy, Block spriteCopy) {
+		myCopy.performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				sprite.setPreviewAdd(true);
+			}
+		});
+		myCopy.addBlock(spriteCopy, false);
+		myCopy.performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				sprite.setPreviewAdd(!sprite.previewAdd());
+			}
+		});
+		return myCopy.createRenderer();
+	}
+	
+	public Renderer createRendererWith(Block sprite, boolean invertFirst) {		
+		BaseBlock copy = (BaseBlock) copy();
+		sprite = (Block) sprite.copy();
+		if (invertFirst) {
+			sprite.showInverse();
+			sprite = sprite.inverse();
+		}
+		return createRendererWith(copy, sprite);
+	}
+	
+	@Override
+	protected void performAction(Action action) {
+		super.performAction(action);
+		modifiers.performAction(action);
+	}
+	
+	@Override 
+	protected void copyFields(Sprite castMe) {
+		BaseBlock copy = (BaseBlock) castMe;
+		copy.modifiers = (HorizontalModifierGroup) modifiers.copy();
 	}
 }

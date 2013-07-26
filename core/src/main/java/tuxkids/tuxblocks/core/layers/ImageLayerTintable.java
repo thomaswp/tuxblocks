@@ -2,19 +2,12 @@ package tuxkids.tuxblocks.core.layers;
 
 import java.util.HashMap;
 
-import playn.core.Canvas;
-import playn.core.Connection;
 import playn.core.GroupLayer;
 import playn.core.Image;
-import playn.core.Image.BitmapTransformer;
 import playn.core.ImageLayer;
 import playn.core.Layer;
-import playn.core.Mouse.LayerListener;
 import playn.core.Pointer.Listener;
-import playn.core.gl.GLShader;
 import playn.core.util.Callback;
-import pythagoras.f.Point;
-import pythagoras.f.Transform;
 import tripleplay.particle.GLStatus;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
@@ -40,10 +33,12 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		return layer.parent();
 	}
 	
+	@Override
 	public float width() {
 		return base.width();
 	}
 
+	@Override
 	public float height() {
 		return base.height();
 	}
@@ -57,10 +52,12 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		return baseImage;
 	}
 	
+	@Override
 	public float tx() {
 		return layer.tx();
 	}
 	
+	@Override
 	public float ty() {
 		return layer.ty();
 	}
@@ -69,6 +66,7 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		return tint;
 	}
 	
+	@Override
 	public float depth() {
 		return layer.depth();
 	}
@@ -127,6 +125,7 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		layer.setScale(scaleX, scaleY);
 	}
 
+	@Override
 	public void setDepth(float depth) {
 		layer.setDepth(depth);
 	}
@@ -174,6 +173,7 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		tint = Colors.WHITE;
 	}
 	
+	@Override
 	public void setTint(final int color) {
 		tint = color;
 		if (!useGL()) {
@@ -194,6 +194,7 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		}
 	}
 	
+	@Override
 	public void setTint(final int baseColor, final int tintColor, float perc) {
 		tint = Colors.blend(baseColor, tintColor, perc);
 		if (!useGL()) {
@@ -227,6 +228,7 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		layer.destroy();
 	}
 
+	@Override
 	public void addListener(Listener pointerListener) {
 		base.addListener(pointerListener);
 	}

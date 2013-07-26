@@ -3,11 +3,9 @@ package tripleplay.particle.init;
 import static playn.core.PlayN.graphics;
 import playn.core.InternalTransform;
 import playn.core.Layer;
-import pythagoras.f.FloatMath;
 import tripleplay.particle.GLStatus;
 import tripleplay.particle.Initializer;
 import tripleplay.particle.ParticleBuffer;
-import tripleplay.util.Randoms;
 
 public class TuxTransform extends Transform {
 

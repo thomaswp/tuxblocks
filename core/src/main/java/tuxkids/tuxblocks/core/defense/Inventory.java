@@ -1,17 +1,11 @@
 package tuxkids.tuxblocks.core.defense;
 
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.List;
-
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.Layer;
-import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
@@ -21,17 +15,9 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.InventoryChangedListener;
 import tuxkids.tuxblocks.core.MenuSprite;
-import tuxkids.tuxblocks.core.Button.OnDragListener;
-import tuxkids.tuxblocks.core.Button.OnPressedListener;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.PlayNObject;
-import tuxkids.tuxblocks.core.defense.tower.BigShooter;
-import tuxkids.tuxblocks.core.defense.tower.HorizontalWall;
-import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
-import tuxkids.tuxblocks.core.defense.tower.VerticalWall;
-import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class Inventory extends PlayNObject {

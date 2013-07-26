@@ -1,7 +1,5 @@
 package tuxkids.tuxblocks.core.solve.expression;
 
-import tuxkids.tuxblocks.core.utils.HashCode;
-
 public class Addition extends BinaryOperation {
 
 	public Addition(Expression operandA, Expression operandB) {

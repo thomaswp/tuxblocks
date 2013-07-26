@@ -1,12 +1,8 @@
 package tuxkids.tuxblocks.core.defense.projectile;
 
-import playn.core.ImageLayer;
-import playn.core.Layer;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.Grid;
-import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 
@@ -20,6 +16,7 @@ public abstract class BodyProjectile extends Projectile {
 	public abstract float maxSpeed();
 	public abstract float acceleration();
 	
+	@Override
 	public void place(Grid grid, Walker target, Tower source) {
 		super.place(grid, target, source);
 		centerImageLayer(layer);
@@ -58,6 +55,7 @@ public abstract class BodyProjectile extends Projectile {
 		layer.setTranslation(position.x, position.y);
 	}
 	
+	@Override
 	protected Vector getHitPosition() {
 		return position;
 	}

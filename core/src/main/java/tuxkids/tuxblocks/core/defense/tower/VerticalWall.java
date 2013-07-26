@@ -1,6 +1,5 @@
 package tuxkids.tuxblocks.core.defense.tower;
 
-import playn.core.Image;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 
 public class VerticalWall extends Tower {
