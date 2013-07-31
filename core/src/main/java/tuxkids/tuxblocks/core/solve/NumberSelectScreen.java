@@ -63,8 +63,6 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private Point recenterPoint = new Point();
 	private ImageLayerTintable selectedNumberLayer;
 	
-	private MenuSprite menu;
-	
 	public Integer selectedAnswer() {
 		if (selectedPoint == null) return null;
 		return getNumber(selectedPoint);
@@ -117,7 +115,6 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	}
 	
 	private void createEquation(Renderer renderer) {
-		menu = new MenuSprite(width(), defaultButtonSize() * 1.2f);
 		
 		ExpressionWriter equation = renderer.getExpressionWriter(problemFormat);
 		CanvasImage eqImage = graphics().createImage(equation.width(), equation.height());
@@ -128,14 +125,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		ImageLayer eqLayer = graphics().createImageLayer(eqImage);
 		eqLayer.setTranslation((width() - eqLayer.width()) / 2, (menu.height() - eqLayer.height()) / 2); 
 		
-		backImageOk = PlayN.assets().getImage("images/ok.png");
-		backImageBack = PlayN.assets().getImage("images/back.png");
-		backImageCancel = PlayN.assets().getImage("images/cancel.png");
-		float bgHeight = menu.height();
-		float buttonHeight =  defaultButtonSize();
-		buttonBack = new Button(backImageBack, buttonHeight, buttonHeight, true);
-		buttonBack.setPosition(buttonBack.width() / 2 + 10, bgHeight / 2);
-		buttonBack.setTint(themeColor, Button.UNPRESSED_ALPHA);
+		backImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
+		backImageBack = PlayN.assets().getImage(Constant.BUTTON_BACK);
+		backImageCancel = PlayN.assets().getImage(Constant.BUTTON_CANCEL);
+		buttonBack = menu.addLeftButton(backImageBack);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -149,9 +142,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			}
 		});
 		 
-		buttonCenter = new Button("images/center.png", buttonHeight, buttonHeight, true);
-		buttonCenter.setPosition(width() - buttonCenter.width() / 2 - 10, bgHeight / 2);
-		buttonCenter.setTint(themeColor, Button.UNPRESSED_ALPHA);
+		buttonCenter = menu.addRightButton(Constant.BUTTON_CENTER);
 		buttonCenter.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -160,7 +151,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		});
 		
 		equationLayer = graphics().createGroupLayer();
-		equationLayer.add(menu.layer());
+		equationLayer.add(menu.layerAddable());
 		equationLayer.add(eqLayer);
 		equationLayer.add(buttonBack.layerAddable());
 		equationLayer.add(buttonCenter.layerAddable());

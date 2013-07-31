@@ -5,6 +5,7 @@ import playn.core.Key;
 import playn.core.Keyboard.Event;
 import playn.core.Keyboard.Listener;
 import playn.core.Keyboard.TypedEvent;
+import playn.core.util.Clock;
 import playn.core.PlayN;
 import pythagoras.f.Vector;
 import tripleplay.game.Screen;
@@ -12,6 +13,7 @@ import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 
 public class GameScreen extends Screen implements Listener {
@@ -22,15 +24,10 @@ public class GameScreen extends Screen implements Listener {
 	private OnScreenFinishedListener onScreenFinishedListener;
 	protected int depth;
 	private boolean entering, exiting;
-	
-	public static float defaultButtonSize() {
-		return graphics().height() * 0.15f;
-	}
-	
-	public Button createMenuButton(String path) {
-		Button button = new Button(path, defaultButtonSize(), defaultButtonSize(), true);
-		button.setTint(state.themeColor());
-		return button;
+	protected MenuSprite menu;
+
+	protected MenuSprite createMenu() {
+		return new MenuSprite(state, width());
 	}
 	
 	public boolean exiting() {
@@ -70,11 +67,19 @@ public class GameScreen extends Screen implements Listener {
 	
 	@Override
 	public void update(int delta) {
+		super.update(delta);
 		if (exiting()) {
 			state.background().scroll(layer.tx() - lastTx, layer.ty() - lastTy);
 			lastTx = layer.tx();
 			lastTy = layer.ty();
 		}
+		menu.update(delta);
+	}
+	
+	@Override
+	public void paint(Clock clock) {
+		super.paint(clock);
+		menu.paint(clock);
 	}
 	
 	@Override
@@ -93,6 +98,8 @@ public class GameScreen extends Screen implements Listener {
 	public GameScreen(ScreenStack screens, GameState state) {
 		this.screens = screens;
 		this.state = state;
+		menu = createMenu();
+		layer.add(menu.layerAddable());
 	}
 	
 	protected static Graphics graphics() {

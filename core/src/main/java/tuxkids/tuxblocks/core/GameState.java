@@ -12,8 +12,23 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
+import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
 
 public class GameState {
+	
+	public enum Stat {
+		Plus("+"), 
+		Minus("-"), 
+		Times(Constant.TIMES_SYMBOL), 
+		Over(Constant.DIVIDE_SYMBOL);
+
+		private final String symbol;
+		Stat(String symbol) { this.symbol = symbol; }
+		public String symbol() {
+			return symbol;
+		}
+	}
+	
 	private int[] towerCounts;
 	private List<Problem> problems;
 	private GameBackgroundSprite background;
@@ -21,6 +36,12 @@ public class GameState {
 	private ProblemAddedListener problemAddedListener;
 	private int maxSteps = 1;
 	private int minSteps = 2;
+	private int[] statLevels = new int[Stat.values().length];
+	
+	
+	public int getStatLevel(Stat stat) {
+		return statLevels[stat.ordinal()];
+	}
 	
 	public int[] towerCounts() {
 		return towerCounts;
@@ -55,10 +76,9 @@ public class GameState {
 		towerCounts = new int[Tower.towerCount()];
 		problems = new ArrayList<Problem>();
 		addItem(TowerType.PeaShooter, 2);
-		addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
-		addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
-		addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
-		addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
+		for (int i = 0; i < 8; i++) {
+			addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
+		}
 	}
 
 	public void solveProblem(Problem problem) {
@@ -75,7 +95,9 @@ public class GameState {
 	
 	int index;
 	public void addProblemWithReward(Reward reward) {		
-		Equation eq = eqs[index++ % eqs.length]; //EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps);
+		//Equation eq = eqs[index++ % eqs.length]; 
+//		Equation eq = EquationGenerator.generateForm();
+		Equation eq = EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps).toBlocks();
 		Problem problem = new Problem(eq, reward);
 		problems.add(problem);
 		if (problemAddedListener != null) problemAddedListener.onProblemAdded(problem);

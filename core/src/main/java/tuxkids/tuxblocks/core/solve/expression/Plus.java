@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.solve.expression;
 
 import playn.core.Color;
+import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class Plus extends ModificationOperation {
@@ -42,5 +43,10 @@ public class Plus extends ModificationOperation {
 	@Override
 	public ModificationOperation getInverse() {
 		return new Minus(operand, value);
+	}
+
+	@Override
+	public BaseBlock toBaseBlock() {
+		return operand.toBaseBlock().plus(value);
 	}
 }

@@ -20,9 +20,6 @@ public class DefenseScreen extends GameScreen {
 	private Inventory inventory; 
 	private GroupLayer gridHolder;
 	private SelectScreen selectScreen;
-	private Button buttonPlus;
-	private Button buttonStart;
-	private MenuSprite menuSprite;
 	
 	public DefenseScreen(ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
@@ -31,7 +28,7 @@ public class DefenseScreen extends GameScreen {
 	@Override
 	public void wasAdded() {
 
-		float titleBarHeight = defaultButtonSize() * 1.2f;
+		float titleBarHeight = menu.height();
 		
 		float maxGridWidth = width() * 0.7f; 
 		Grid testGrid = new Grid(state, 15, 21, (int)maxGridWidth, (int)(height() - titleBarHeight));
@@ -50,9 +47,6 @@ public class DefenseScreen extends GameScreen {
 		inventory.layer().setTy(titleBarHeight);
 		layer.add(inventory.layer());
 		
-		menuSprite = new MenuSprite(width(), titleBarHeight);
-		layer.add(menuSprite.layer());
-		
 		selectScreen = new SelectScreen(screens, state, grid);
 		
 		createPlusButton();
@@ -60,27 +54,25 @@ public class DefenseScreen extends GameScreen {
 		
 	}
 	
+	@Override
+	protected MenuSprite createMenu() {
+		return new DefenseMenu(state, width());
+	}
+	
 	private void createPlusButton() {
-		float size = GameScreen.defaultButtonSize();
-		buttonPlus = createMenuButton(Constant.BUTTON_PLUS);
-		buttonPlus.setPosition(size * 0.6f, size * 0.6f);
-		buttonPlus.layerAddable().setDepth(1);
-		layer.add(buttonPlus.layerAddable());
-		
+		Button buttonPlus = menu.addLeftButton(Constant.BUTTON_PLUS);
 		buttonPlus.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
-				if (inButton) pushSelectScreen();
+				if (inButton) {
+					pushSelectScreen();
+				}
 			}
 		});
 	}
 	
 	private void createStartButton() {
-		float size = defaultButtonSize();
-		buttonStart = createMenuButton(Constant.BUTTON_OK);
-		buttonStart.setPosition(width() - size * 0.6f, size * 0.6f);
-		buttonStart.layerAddable().setDepth(1);
-		layer.add(buttonStart.layerAddable());
+		Button buttonStart = menu.addRightButton(Constant.BUTTON_OK);
 		buttonStart.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -107,15 +99,15 @@ public class DefenseScreen extends GameScreen {
 		super.update(delta);
 		grid.update(delta);
 		Level level = grid.level();
-		buttonStart.layerAddable().setVisible(false);
+		menu.rightButton().layerAddable().setVisible(false);
 		if (level.finished()) {
-			menuSprite.setText("Level Complete!");
+//			menuSprite.setText("Level Complete!");
 		} if (level.duringRound()) {
-			menuSprite.setText("Round " + level.round());
+//			menuSprite.setText("Round " + level.round());
 		} else {
-			int nextRoundIn = grid.level().timeUntilNextRound() / 1000 + 1;
-			menuSprite.setText(Formatter.format("Next round in %d...", nextRoundIn));
-			buttonStart.layerAddable().setVisible(true);
+//			int nextRoundIn = grid.level().timeUntilNextRound() / 1000 + 1;
+//			menuSprite.setText(Formatter.format("Next round in %d...", nextRoundIn));
+			menu.rightButton().layerAddable().setVisible(true);
 		}
 	}
 

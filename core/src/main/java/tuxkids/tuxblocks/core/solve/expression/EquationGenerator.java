@@ -87,6 +87,8 @@ public class EquationGenerator {
 		}
 		return new Equation(lhs, new Number(rhs), answer, (int)difficulty);
 	}
+	
+	
 	public static List<Integer> getFactors(int n) {
 		List<Integer> factors = new ArrayList<Integer>();
 		n = Math.abs(n);

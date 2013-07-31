@@ -5,6 +5,7 @@ import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
 public abstract class Expression extends PlayNObject implements Hashable {
@@ -58,4 +59,6 @@ public abstract class Expression extends PlayNObject implements Hashable {
 	public String toString() {
 		return toMathString();
 	}
+	
+	public abstract BaseBlock toBaseBlock();
 }

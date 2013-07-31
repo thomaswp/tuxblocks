@@ -7,6 +7,7 @@ import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
+import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class Times extends ModificationOperation {
@@ -94,6 +95,11 @@ public class Times extends ModificationOperation {
 						(height() - ph) / 2);
 			}
 		};
+	}
+
+	@Override
+	public BaseBlock toBaseBlock() {
+		return operand.toBaseBlock().times(value);
 	}
 
 }

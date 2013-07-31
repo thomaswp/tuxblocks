@@ -25,7 +25,6 @@ public class SolveScreen extends GameScreen implements Parent {
 	private BlockController controller;
 	private Button buttonBack;
 	private Image buttonImageOk, buttonImageBack;
-	private MenuSprite menu;
 	private ImageLayer eqLayer, eqLayerOld;
 	private Image lastEqImage;
 	private SimplifyListener solveCallback;
@@ -52,9 +51,7 @@ public class SolveScreen extends GameScreen implements Parent {
 	public SolveScreen(final ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
 		
-		menu = new MenuSprite(width(), defaultButtonSize() * 1.2f);
-		menu.layer().setDepth(-1);
-		layer.add(menu.layer());
+		menu.layerAddable().setDepth(-1);
 		
 		controller = new BlockController(this, graphics().width(), height() - menu.height());
 		layer.add(controller.layer());
@@ -71,9 +68,7 @@ public class SolveScreen extends GameScreen implements Parent {
 
 		buttonImageBack = PlayN.assets().getImage(Constant.BUTTON_DOWN);
 		buttonImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
-		buttonBack = createMenuButton(Constant.BUTTON_DOWN);
-		buttonBack.setPosition(buttonBack.width() * 0.6f, buttonBack.height() * 0.6f);
-		buttonBack.layerAddable().setDepth(10);
+		buttonBack = menu.addLeftButton(buttonImageBack);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -82,7 +77,7 @@ public class SolveScreen extends GameScreen implements Parent {
 		});
 		layer.add(buttonBack.layerAddable());
 		
-		Button buttonReset = createMenuButton(Constant.BUTTON_RESET);
+		Button buttonReset = menu.addRightButton(Constant.BUTTON_RESET);
 		buttonReset.setPosition(width() - buttonReset.width() * 0.6f, menu.height() / 2);
 		buttonReset.setOnReleasedListener(new OnReleasedListener() {
 			@Override

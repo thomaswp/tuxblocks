@@ -38,9 +38,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		super(screens, gameState);
 		this.grid = grid;
 		
-		Button button = createMenuButton(Constant.BUTTON_FORWARD);
-		button.layerAddable().setDepth(1);
-		button.setPosition(width() - button.width() * 0.6f, button.height() * 0.6f);
+		Button button = menu.addRightButton(Constant.BUTTON_FORWARD);
 		button.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -48,13 +46,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 					popThis();
 				}
 			}
-		});
-		layer.add(button.layerAddable());
-		
-		MenuSprite menu = new MenuSprite(width(), defaultButtonSize() * 1.2f);
-		menu.layer().setDepth(-1);
-		layer.add(menu.layer());
-		
+		});		
 		
 		gridHolder = graphics().createGroupLayer();
 		gridHolder.setScale(menu.height() / grid.height());

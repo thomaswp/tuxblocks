@@ -234,6 +234,41 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
+	public void simplifyModifiers() {
+		super.simplifyModifiers();
+		int times = 1, over = 1;
+		while (!timesBlocks.isEmpty()) {
+			ModifierBlock child = timesBlocks.get(0);
+			removeChild(child);
+			times *= child.value;
+		}
+		while (!divBlocks.isEmpty()) {
+			ModifierBlock child = divBlocks.get(0);
+			removeChild(child);
+			over *= child.value;
+		}
+		int gcd = gcd(times, over);
+		times /= gcd;
+		over /= gcd;
+		
+		if (times != 1) {
+			addChild(new TimesBlock(times));
+		}
+		if (over != 1) {
+			addChild(new OverBlock(over));
+		}
+	}
+	
+	private int gcd(int a, int b) {
+		while (b != 0) {
+			int t = b;
+			b = a % t;
+			a = t;
+		}
+		return a;
+	}
+	
+	@Override
 	public void addNegative() {
 		if (modifiers != null) {
 			modifiers.addNegative();

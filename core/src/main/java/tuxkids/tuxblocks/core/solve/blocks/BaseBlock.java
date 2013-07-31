@@ -210,12 +210,25 @@ public abstract class BaseBlock extends Block {
 		return addModifier(new MinusBlock(x));
 	}
 	
+	public BaseBlock add(int x) {
+		if (x > 0) {
+			return plus(x);
+		} else if (x < 0) {
+			return minus(x);
+		}
+		return this;
+	}
+	
 	public BaseBlock times(int x) {
 		return addModifier(new TimesBlock(x));
 	}
 	
 	public BaseBlock over(int x) {
 		return addModifier(new OverBlock(x));
+	}
+
+	public void simplifyModifiers() {
+		modifiers.simplifyModifiers();
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
+import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class Over extends ModificationOperation {
@@ -81,5 +82,10 @@ public class Over extends ModificationOperation {
 						(width() - divisorLayout.width()) / 2, y + SPACING);
 			}
 		};
+	}
+
+	@Override
+	public BaseBlock toBaseBlock() {
+		return operand.toBaseBlock().over(value);
 	}
 }

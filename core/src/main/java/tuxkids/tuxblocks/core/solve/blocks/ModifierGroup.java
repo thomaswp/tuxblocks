@@ -362,6 +362,10 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 	}
 	
+	public void simplifyModifiers() {
+		if (modifiers != null) modifiers.simplifyModifiers();
+	}
+	
 	@Override
 	protected void performAction(Action action) {
 		super.performAction(action);

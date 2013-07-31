@@ -9,6 +9,7 @@ import playn.core.Game;
 import playn.core.ImageLayer;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
+import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 
 public class TuxBlocksGame extends Game.Default {
 
@@ -57,6 +58,7 @@ public class TuxBlocksGame extends Game.Default {
 		GameState state = new GameState();
 		background = state.background();
 		background.layer().setDepth(-10);
+		
 		
 		graphics().rootLayer().add(background.layer());
 		screens.push(new DefenseScreen(screens, state));

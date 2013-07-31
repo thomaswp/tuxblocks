@@ -176,6 +176,21 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	}
 	
 	@Override
+	public void simplifyModifiers() {
+		super.simplifyModifiers();
+		int total = 0;
+		while (!children.isEmpty()) {
+			HorizontalModifierBlock child = (HorizontalModifierBlock) children.get(0);
+			total += child.plusValue();
+		}
+		if (total > 0) {
+			addChild(new PlusBlock(total));
+		} else if (total < 0) {
+			addChild(new MinusBlock(-total));
+		}
+	}
+	
+	@Override
 	public void addNegative() {
 		if (modifiers != null) {
 			modifiers.addNegative();

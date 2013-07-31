@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.solve.expression;
 
+import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
+import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public class Variable extends Expression {
@@ -42,6 +44,11 @@ public class Variable extends Expression {
 	@Override
 	public void addFields(HashCode hashCode) {
 		hashCode.addField(name);
+	}
+
+	@Override
+	public BaseBlock toBaseBlock() {
+		return new VariableBlock(name);
 	}
 
 }

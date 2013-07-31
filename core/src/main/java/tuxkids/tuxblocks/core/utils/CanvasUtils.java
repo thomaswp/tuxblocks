@@ -27,6 +27,26 @@ public class CanvasUtils extends PlayNObject {
 	public static CanvasImage createRect(float width, float height, int fillColor) {
 		return createRect(width, height, fillColor, 0, 0);
 	}
+	
+	public static CanvasImage createRoundRect(float width, float height, float rad, int fillColor) {
+		return createRoundRect(width, height, rad, fillColor, 0, 0);
+	}
+	
+	public static CanvasImage createRoundRect(float width, float height, float rad, int fillColor, 
+			float strokeWidth, int strokeColor) {
+		width = (int)width; height = (int)height;
+		CanvasImage image = PlayN.graphics().createImage(width, height);
+		image.canvas().setFillColor(fillColor);
+		image.canvas().fillRoundRect(strokeWidth / 2, strokeWidth / 2, 
+				image.width() - strokeWidth, image.height() - strokeWidth, rad);
+		if (strokeWidth > 0) {
+			image.canvas().setStrokeColor(strokeColor);
+			image.canvas().setStrokeWidth(strokeWidth);
+			image.canvas().strokeRoundRect(strokeWidth / 2, strokeWidth / 2, 
+					image.width() - strokeWidth, image.height() - strokeWidth, rad);
+		}
+		return image;
+	}
 
 	public static CanvasImage createCircle(float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
