@@ -3,6 +3,8 @@
 *.so
 *.gwt-log
 .DS_Store
+Thumbs.db
+ProgressLog.launch
 */target/
 objc/*
 html/gwt-unitCache/*

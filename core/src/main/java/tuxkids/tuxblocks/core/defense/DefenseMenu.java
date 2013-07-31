@@ -18,28 +18,50 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
 public class DefenseMenu extends MenuSprite {
 	
 	private static TextFormat barTextFormat = new TextFormat().withFont(
-			graphics().createFont(Constant.FONT_NAME, Style.BOLD, 16));
+			graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20));
 
-	Bar plus;
+	private Bar[] bars;
 	
 	public DefenseMenu(GameState state, float width) {
 		super(state, width);
+		createBars();
 		
-		plus = new Bar(Stat.Plus, 200, 20);
-		layer.add(plus.layerAddable());
-		plus.layer.setTranslation(200, 50);
+	}
+	
+	private void createBars() {
+		bars = new Bar[4];
+		int index = 0;
+		float barWidth = width / 4;
+		float barHeight = height / 6;
+		float barIndent = defaultButtonSize() * 1.2f;
+		for (Stat stat : Stat.values()) {
+			Bar bar = new Bar(stat, barWidth, barHeight);
+			int row = index;
+			int col = 0;
+			bar.setTranslation(barIndent + barWidth * col, height / 5 * (row + 0.5f));
+//			int row = index / 2;
+//			int col = index % 2;
+//			bar.setTranslation(barIndent + barWidth * col, height / 5 * (row + 0.5f) * 2);
+			layer.add(bar.layerAddable());
+			
+			bars[index++] = bar;
+		}
 	}
 	
 	@Override
 	public void update(int delta) {
 		super.update(delta);
-		plus.update(delta);
+		for (Bar bar : bars) {
+			bar.update(delta);
+		}
 	}
 	
 	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
-		plus.paint(clock);
+		for (Bar bar : bars) {
+			bar.paint(clock);
+		}
 	}
 
 	private class Bar extends LayerWrapper {
@@ -47,7 +69,7 @@ public class DefenseMenu extends MenuSprite {
 		private final static int TEXT_SPACE = 15;
 		
 		private GroupLayer layer;
-		private int width, height;
+		private float width, height;
 		private Stat stat;
 		private ImageLayer symbolLayer, levelLayer, barBG, barFill;
 		private int level = -1;
@@ -55,7 +77,7 @@ public class DefenseMenu extends MenuSprite {
 		private int strokWidth;
 		private float barPerc;
 		
-		public Bar(Stat stat, int width, int height) {
+		public Bar(Stat stat, float width, float height) {
 			super(graphics().createGroupLayer());
 			layer = (GroupLayer) layerAddable();
 			this.width = width;
@@ -102,7 +124,7 @@ public class DefenseMenu extends MenuSprite {
 			p += clock.dt() / 10000f;
 			p %= 1;
 			
-			barPerc = lerpTime(barPerc, (int)(p * 5) / 5f, 0.995f, clock.dt());
+			barPerc = lerpTime(barPerc, (int)(p * 5) / 5f, 0.995f, clock.dt(), 0.01f);
 			barFill.setWidth(barPerc * (barBG.width() - strokWidth * 2));
 			barFill.setAlpha(barPerc / 2 + 0.5f);
 //			barFill.set

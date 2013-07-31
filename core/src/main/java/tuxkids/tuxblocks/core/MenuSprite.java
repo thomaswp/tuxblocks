@@ -14,10 +14,10 @@ public class MenuSprite extends PlayNObject {
 	
 	public static float DEFAULT_ALPHA = 0.75f;
 	
-	protected GroupLayer layer;
-	private ImageLayer background;
-	private float width, height;
-	protected GameState state;
+	protected final GroupLayer layer;
+	protected final float width, height;
+	protected final GameState state;
+	private final ImageLayer background;
 	private Button leftButton, rightButton;
 	
 	public static float defaultButtonSize() {
