@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import playn.core.Canvas;
+import playn.core.CanvasImage;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Layer;
+import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;
@@ -62,7 +65,14 @@ class SimplifyLayer extends LayerWrapper {
 	
 	private void addSimplifyButton() {
 		if (simplifyImage == null) {
-			simplifyImage = CanvasUtils.createCircle(Sprite.modSize() / 3, Colors.GRAY, 1, Colors.BLACK);
+			if (PlayN.touch().hasTouch()) {
+				simplifyImage = graphics().createImage(Sprite.modSize(), Sprite.modSize());
+				Canvas canvas = ((CanvasImage) simplifyImage).canvas();
+				Image image = CanvasUtils.createCircle(Sprite.modSize() / 3, Colors.GRAY, 1, Colors.BLACK);
+				canvas.drawImage(image, (simplifyImage.width() - image.width()) / 2, (simplifyImage.height() - image.height()) / 2);
+			} else {
+				simplifyImage = CanvasUtils.createCircle(Sprite.modSize() / 3, Colors.GRAY, 1, Colors.BLACK);
+			}
 		}
 		ImageLayer simplifyButton = graphics().createImageLayer(simplifyImage);
 		simplifyButton.setAlpha(0.5f);
