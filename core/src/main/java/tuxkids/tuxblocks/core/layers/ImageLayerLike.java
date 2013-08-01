@@ -5,6 +5,7 @@ import playn.core.Image;
 public interface ImageLayerLike extends LayerLike {	
 	public float width();
 	public float height();
+	public Image image();
 	
 	public void setSize(float width, float height);
 	public void setWidth(float width);
@@ -13,4 +14,5 @@ public interface ImageLayerLike extends LayerLike {
 	public interface Factory {
 		public ImageLayerLike create(Image image);
 	}
+
 }

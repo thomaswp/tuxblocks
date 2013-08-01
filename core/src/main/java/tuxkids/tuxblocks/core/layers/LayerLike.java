@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.layers;
 
 import playn.core.GroupLayer;
+import playn.core.Image;
 import playn.core.Layer;
 import playn.core.Pointer.Listener;
 
@@ -17,6 +18,7 @@ public interface LayerLike {
 	public void setTint(int baseColor, int tintColor, float perc);
 	public void setInteractive(boolean interactive);
 	public void setDepth(float depth);
+	public void setOrigin(float x, float y);
 	
 	public void addListener(Listener pointerListener);
 	

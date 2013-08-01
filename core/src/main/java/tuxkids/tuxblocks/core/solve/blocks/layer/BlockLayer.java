@@ -136,4 +136,9 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 	public void setInteractive(boolean interactive) {
 		centerLayer.setInteractive(interactive);
 	}
+
+	@Override
+	public Image image() {
+		throw new UnsupportedOperationException();
+	}
 }

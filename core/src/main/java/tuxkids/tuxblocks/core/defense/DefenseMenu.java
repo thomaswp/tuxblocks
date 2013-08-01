@@ -7,11 +7,14 @@ import playn.core.GroupLayer;
 import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.TextFormat;
+import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
@@ -19,13 +22,32 @@ public class DefenseMenu extends MenuSprite {
 	
 	private static TextFormat barTextFormat = new TextFormat().withFont(
 			graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20));
+	private static TextFormat scoreTextFormat = new TextFormat().withFont(
+			graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 36));
 
 	private Bar[] bars;
+	private Heart heart;
+	private Score score;
 	
 	public DefenseMenu(GameState state, float width) {
 		super(state, width);
 		createBars();
-		
+		createHeart();
+		createScore();
+	}
+	
+	private void createScore() {
+		score = new Score(height);
+		score.setTranslation(width / 2, 0);
+		layer.add(score.layerAddable());
+	}
+	
+	private void createHeart() {
+		int heartSize = (int)(2 * height / 3);
+		heart = new Heart(heartSize, heartSize);
+		heart.setTranslation(width - defaultButtonSize() * 1.2f - heartSize * 2 / 3, 
+				height / 2);
+		layer.add(heart.layerAddable());
 	}
 	
 	private void createBars() {
@@ -54,6 +76,8 @@ public class DefenseMenu extends MenuSprite {
 		for (Bar bar : bars) {
 			bar.update(delta);
 		}
+		heart.update(delta);
+		score.update(delta);
 	}
 	
 	@Override
@@ -62,11 +86,104 @@ public class DefenseMenu extends MenuSprite {
 		for (Bar bar : bars) {
 			bar.paint(clock);
 		}
+		heart.paint(clock);
+	}
+	
+	private class Score extends LayerWrapper {
+
+		private final GroupLayer layer;
+		private final ImageLayer scoreLayer, levelLayer;
+		
+		private int score = -1, level = -1;
+		
+		public Score(float height) {
+			super(graphics().createGroupLayer());
+			layer = (GroupLayer) layerAddable();
+			
+			float h = scoreTextFormat.font.size();
+			float p = (height - h * 2) / 3;
+			
+			scoreLayer = graphics().createImageLayer();
+			scoreLayer.setTy(p + h/2);
+			layer.add(scoreLayer);
+			
+			levelLayer = graphics().createImageLayer();
+			levelLayer.setTy(height - p - h/2);
+			layer.add(levelLayer);
+		}
+		
+		public void update(int delta) {
+			if (score != state.score()) {
+				score = state.score();
+				scoreLayer.setImage(CanvasUtils.createString(
+						scoreTextFormat, "Score: " + score, Colors.BLACK));
+				centerImageLayer(scoreLayer);
+			}
+			
+			if (level != state.level()) {
+				level = state.level();
+				levelLayer.setImage(CanvasUtils.createString(
+						scoreTextFormat, "Level: " + level, Colors.BLACK));
+				centerImageLayer(levelLayer);
+			}
+		}
 	}
 
+	private class Heart extends LayerWrapper {
+		private final static int BEAT_TIME = 300;
+
+		private final GroupLayer layer;
+		private final ImageLayerTintable heartLayer;
+		private final ImageLayer numberLayer;
+		
+		private int lives = -1;
+		private float beatMS;
+		
+		public Heart(int width, int height) {
+			super(graphics().createGroupLayer());
+			layer = (GroupLayer) layerAddable();
+			
+			heartLayer = new ImageLayerTintable();
+			heartLayer.setImage(assets().getImage(Constant.IMAGE_HEART));
+			heartLayer.setTint(state.themeColor());
+			heartLayer.setSize(width, height);
+			centerImageLayer(heartLayer);
+			layer.add(heartLayer.layerAddable());
+			
+			numberLayer = graphics().createImageLayer();
+			numberLayer.setDepth(1);
+			layer.add(numberLayer);
+			
+			update(0);
+		}
+		
+		private void update(int delta) {
+			int l = state.lives();
+			if (l != lives) {
+				lives = l;
+				numberLayer.setImage(CanvasUtils.createString(
+						barTextFormat, "" + lives, Colors.WHITE));
+				centerImageLayer(numberLayer);
+				beatMS = BEAT_TIME;
+			}
+		}
+		
+		private void paint(Clock clock) {
+			if (beatMS > 0) {
+				float perc = (float)beatMS / BEAT_TIME;
+				float scale = 1 + 0.3f * FloatMath.sin(perc * FloatMath.PI);
+				layer.setScale(scale);
+				beatMS -= clock.dt();
+				heartLayer.setAlpha(lerp(Button.UNPRESSED_ALPHA, 1, perc));
+			} else {
+				layer.setScale(1f);
+			}
+		}
+	}
+	
 	private class Bar extends LayerWrapper {
 
-		private final static int TEXT_SPACE = 15;
+		final static int TEXT_SPACE = 15;
 		
 		private GroupLayer layer;
 		private float width, height;

@@ -37,10 +37,24 @@ public class GameState {
 	private int maxSteps = 1;
 	private int minSteps = 2;
 	private int[] statLevels = new int[Stat.values().length];
+	private int lives = 20;
+	private int score = 0;
+	private int level = 1;
 	
+	public int level() {
+		return level;
+	}
+	
+	public int score() {
+		return score;
+	}
 	
 	public int getStatLevel(Stat stat) {
 		return statLevels[stat.ordinal()];
+	}
+
+	public int lives() {
+		return lives;
 	}
 	
 	public int[] towerCounts() {
@@ -149,5 +163,13 @@ public class GameState {
 	
 	public interface ProblemAddedListener {
 		void onProblemAdded(Problem problem);
+	}
+
+	public void loseLife() {
+		lives--;
+	}
+
+	public void addPoints(int points) {
+		score += points;
 	}
 }

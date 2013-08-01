@@ -11,6 +11,7 @@ public class Constant {
 	public final static String BUTTON_CENTER = IMAGE_PATH + "center.png";
 	public final static String BUTTON_PLUS = IMAGE_PATH + "plus.png";
 	public final static String BUTTON_RESET = IMAGE_PATH + "reset.png";
+	public static final String IMAGE_HEART = IMAGE_PATH + "heart.png";
 	
 	public static final String FONT_NAME = "Arial";
 	

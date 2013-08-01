@@ -15,6 +15,7 @@ import pythagoras.f.FloatMath;
 import pythagoras.f.IVector;
 import pythagoras.f.Vector;
 import pythagoras.i.IPoint;
+import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.HashCode;
@@ -177,7 +178,7 @@ public abstract class PlayNObject {
 		}
 	}
 	
-	protected static void centerImageLayer(final ImageLayerTintable layer) {
+	protected static void centerImageLayer(final ImageLayerLike layer) {
 		if (layer.image() != null) {
 			layer.image().addCallback(new Callback<Image>() {
 				@Override

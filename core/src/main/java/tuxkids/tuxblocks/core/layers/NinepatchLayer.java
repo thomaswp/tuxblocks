@@ -54,6 +54,16 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	public Layer layerAddable() {
 		return layer;
 	}
+
+	@Override
+	public Image image() {
+		throw new UnsupportedOperationException("Cannot get ninepatch image");
+	}
+
+	@Override
+	public void setOrigin(float x, float y) {
+		layer.setOrigin(x, y);
+	}
 	
 	@Override
 	public void setDepth(float depth) {

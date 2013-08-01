@@ -72,4 +72,9 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	public float depth() {
 		return layer.depth();
 	}
+
+	@Override
+	public void setOrigin(float x, float y) {
+		layer.setOrigin(x, y);
+	}
 }

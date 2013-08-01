@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.layers;
 
+import playn.core.Image;
 import playn.core.ImageLayer;
 
 public class ImageLayerWrapper extends LayerWrapper implements ImageLayerLike {
@@ -36,4 +37,8 @@ public class ImageLayerWrapper extends LayerWrapper implements ImageLayerLike {
 		return layer.height();
 	}
 
+	@Override
+	public Image image() {
+		return layer.image();
+	}
 }
