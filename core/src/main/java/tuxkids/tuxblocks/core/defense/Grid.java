@@ -452,4 +452,12 @@ public class Grid extends PlayNObject implements RoundCompletedListener {
 	public void onRoundCompleted(Round round) {
 		round.winRound(state);
 	}
+
+	public void loseLife() {
+		state.loseLife();
+	}
+
+	public void addPoints(int points) {
+		state.addPoints(points);
+	}
 }

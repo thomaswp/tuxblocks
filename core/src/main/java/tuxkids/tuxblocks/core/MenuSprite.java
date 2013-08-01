@@ -1,13 +1,11 @@
 package tuxkids.tuxblocks.core;
 
-import playn.core.Font.Style;
-import playn.core.util.Clock;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.TextFormat;
-import tripleplay.util.Colors;
 import playn.core.Layer;
+import playn.core.util.Clock;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class MenuSprite extends PlayNObject {

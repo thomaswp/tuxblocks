@@ -132,6 +132,7 @@ public abstract class Walker extends DiscreteGridObject {
 				}
 				coordinates = nLoc;
 			} else {
+				grid.loseLife();
 				layer.destroy();
 				return true;
 			}
@@ -165,9 +166,14 @@ public abstract class Walker extends DiscreteGridObject {
 				(lerp(coordinates.x, lastCoordinates.x, 1 - perc) + 0.5f) * grid.cellSize());
 		updateMovement(perc);		
 	}
+	
 	public void damage(float damage) {
+		float oldHp = hp;
 		hp -= damage;
 		hp = Math.max(hp, 0);
+		if (hp == 0 && oldHp != 0) {
+			grid.addPoints(50);
+		}
 	}
 	
 	public void addBuff(Buff buff, boolean replaceIfPresent) {

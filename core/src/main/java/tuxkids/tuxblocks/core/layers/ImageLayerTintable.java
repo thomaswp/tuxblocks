@@ -143,9 +143,25 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		layer.setRotation(angle);
 	}
 
+	// to avoid object creation for setting size
+	private class SetSizeCallback implements Callback<Image> {
+		float width, height;
+		@Override
+		public void onSuccess(Image result) {
+			layer.setScale(width / baseImage.width(), height / baseImage.height());
+		}
+
+		@Override
+		public void onFailure(Throwable cause) {
+			cause.printStackTrace();
+		}
+	}
+	private SetSizeCallback setSizeCallback = new SetSizeCallback();
 	@Override
 	public void setSize(float width, float height) {
-		layer.setScale(width / baseImage.width(), height / baseImage.height());
+		setSizeCallback.width = width;
+		setSizeCallback.height = height;
+		baseImage.addCallback(setSizeCallback);
 	}
 
 	@Override
