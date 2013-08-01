@@ -109,7 +109,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		selectedNumberLayer = new ImageLayerTintable();
 		selectedNumberLayer.setDepth(15);
 		selectedNumberLayer.setTint(themeColor);
-		layer.add(selectedNumberLayer.layerAddable());
+		foregroundLayer.add(selectedNumberLayer.layerAddable());
 		
 		update(0);
 	}
@@ -177,6 +177,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			equationAnswer = graphics().createImageLayer(image);
 			equationAnswer.setOrigin(equationAnswer.width() / 2, equationAnswer.height() / 2);
 			equationAnswer.setTranslation(blankCenter.x, blankCenter.y);
+			equationAnswer.setDepth(1);
 			equationLayer.add(equationAnswer);
 			buttonBack.setImage(backImageOk);
 		}

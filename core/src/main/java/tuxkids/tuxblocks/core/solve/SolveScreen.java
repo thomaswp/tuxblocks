@@ -130,7 +130,7 @@ public class SolveScreen extends GameScreen implements Parent {
 		eqLayer.setTranslation((width() - eqLayer.width()) / 2 , (menu.height() - eqLayer.height()) / 2);
 		if (solveCorrect && !entering()) {
 			solveCallback.wasSimplified(true);
-			state.addExp(solveStat, 15 + solveLevel);
+			state.addExpForLevel(solveStat, solveLevel);
 			clearSolve();
 		}
 		buttonBack.setImage(controller.solved() ? buttonImageOk : buttonImageBack);
@@ -154,8 +154,8 @@ public class SolveScreen extends GameScreen implements Parent {
 	@Override
 	public void showNumberSelectScreen(Renderer problem, int answer, int startNumber, 
 			Stat stat, int level, SimplifyListener callback) {
-		Debug.write(level);
-		if (false && level > state.getStatLevel(stat)) {
+		Debug.write("problem level: " + level);
+		if (level > state.getStatLevel(stat)) {
 			NumberSelectScreen nss = new NumberSelectScreen(screens, state, problem, answer);
 			nss.setFocusedNumber(startNumber);
 			solveCallback = callback;

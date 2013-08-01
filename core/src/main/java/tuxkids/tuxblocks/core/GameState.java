@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
@@ -40,7 +41,7 @@ public class GameState {
 	private int[] statLevels = new int[Stat.values().length];
 	private int[] statExps = new int[Stat.values().length];
 	private int lives = 20;
-	private int score = 10000;
+	private int score = 0;
 	private int money = 0;
 	private int timeBetweenRounds = 31;
 	private Level level;
@@ -63,6 +64,11 @@ public class GameState {
 	
 	public float getStatPerc(Stat stat) {
 		return (float)statExps[stat.ordinal()] / getNextLevelExp(statLevels[stat.ordinal()]);
+	}
+
+
+	public void addExpForLevel(Stat stat, int level) {
+		addExp(stat, 15 + level * 2);
 	}
 	
 	public void addExp(Stat stat, int exp) {

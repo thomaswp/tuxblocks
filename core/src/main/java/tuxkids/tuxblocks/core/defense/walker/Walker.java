@@ -42,6 +42,10 @@ public abstract class Walker extends DiscreteGridObject {
 		return layer;
 	}
 	
+	public int exp() {
+		return (int)(50 * hp / 10 * 500 / walkingMs);
+	}
+	
 	public Vector position() {
 		return position;
 	}
