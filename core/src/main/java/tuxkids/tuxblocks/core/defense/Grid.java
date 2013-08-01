@@ -22,14 +22,13 @@ import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.projectile.ChainProjectile;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.round.Level;
-import tuxkids.tuxblocks.core.defense.round.Level.RoundCompletedListener;
 import tuxkids.tuxblocks.core.defense.round.Round;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.effect.Effect;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
-public class Grid extends PlayNObject implements RoundCompletedListener {
+public class Grid extends PlayNObject {
 
 	private final static boolean SHOW_GRID = false;
 
@@ -48,7 +47,6 @@ public class Grid extends PlayNObject implements RoundCompletedListener {
 	private Tower toPlace;
 	private ImageLayer toPlaceRadius;
 	private List<Point> currentPath;
-	private Level level;
 	private float targetAlpha = 1;
 	private int towerColor;
 	private Particles particles;
@@ -59,7 +57,7 @@ public class Grid extends PlayNObject implements RoundCompletedListener {
 	}
 	
 	public Level level() {
-		return level;
+		return state.level();
 	}
 
 	public int towerColor() {
@@ -139,9 +137,6 @@ public class Grid extends PlayNObject implements RoundCompletedListener {
 		createGridSprite();
 
 		particles = new TuxParticles();
-
-		level = Level.generate();
-		level.setRoundCompletedListener(this);
 	}
 
 	public Emitter createEmitter(int maxParticles, Image image) {
@@ -161,7 +156,11 @@ public class Grid extends PlayNObject implements RoundCompletedListener {
 			layer.setAlpha(targetAlpha);
 		}
 
-		Walker walker = level.update(delta);
+		if (level().waitingForFinish() && walkers.size() == 0) {
+			onRoundCompleted(level().currentRound());
+			level().finishRound();
+		}
+		Walker walker = level().update(delta);
 		if (walker != null) {
 			addWalker(walker.place(this, walkerStart, walkerDestination, 0));
 		}
@@ -448,7 +447,6 @@ public class Grid extends PlayNObject implements RoundCompletedListener {
 		gridLayer.add(effect.layer());
 	}
 
-	@Override
 	public void onRoundCompleted(Round round) {
 		round.winRound(state);
 	}

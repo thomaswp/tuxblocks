@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import playn.core.Color;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Difficulty;
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.blocks.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
 import tuxkids.tuxblocks.core.solve.markup.AddRenderer;
@@ -124,27 +126,35 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		if (blockListener != null) {
 			final int answer;
 			Renderer renderer = new BaseRenderer("" + value);
+			int level;
+			Stat stat;
 			int[] operands = new int[] { sprite.value };
 			if (sprite instanceof TimesBlock) {
 				TimesBlock times = (TimesBlock) sprite;
 				answer = value * times.value;
 				renderer = new TimesRenderer(renderer, operands);
+				stat = Stat.Times;
+				level = Difficulty.rankTimes(value, times.value);
 			} else if (sprite instanceof OverBlock) {
 				OverBlock over = (OverBlock) sprite;
 				answer = value / over.value;
 				renderer = new OverRenderer(renderer, operands);
+				stat = Stat.Over;
+				level = Difficulty.rankOver(value, over.value);
 			} else if (sprite instanceof HorizontalModifierBlock) {
 				HorizontalModifierBlock plus = (HorizontalModifierBlock) sprite;
 				answer = value + plus.plusValue();
 				operands[0] = plus.plusValue();
 				renderer = new AddRenderer(renderer, operands);
+				stat = plus.plusValue() >= 0 ? Stat.Plus : Stat.Minus;
+				level = Difficulty.rankPlus(value, plus.value);
 			} else {
 				return;
 			}
 			
 			renderer = new JoinRenderer(renderer, new BlankRenderer(), "=");
 			
-			blockListener.wasReduced(renderer, answer, value, new SimplifyListener()  {
+			blockListener.wasReduced(renderer, answer, value, stat, level, new SimplifyListener()  {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {

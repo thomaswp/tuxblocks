@@ -4,7 +4,9 @@ import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 public abstract class Sprite extends PlayNObject {
@@ -133,7 +135,8 @@ public abstract class Sprite extends PlayNObject {
 		void wasMoved(Event event);
 		void wasDoubleClicked(Block sprite, Event event);
 		void wasSimplified();
-		void wasReduced(Renderer problem, int answer, int startNumber, SimplifyListener callback);
+		void wasReduced(Renderer problem, int answer, int startNumber, 
+				Stat stat, int level, SimplifyListener callback);
 		void wasCanceled();
 		
 	}

@@ -18,6 +18,7 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.ProblemAddedListener;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.defense.DefenseMenu;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
@@ -27,7 +28,6 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 	private final static int COLS = 2;
 	
 	private Grid grid;
-	private GroupLayer gridHolder;
 	private GroupLayer problemLayer;
 	private ProblemButton selectedProblem;
 	private List<ProblemButton> problemButtons = new ArrayList<ProblemButton>();
@@ -48,12 +48,6 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 			}
 		});		
 		
-		gridHolder = graphics().createGroupLayer();
-		gridHolder.setScale(menu.height() / grid.height());
-		gridHolder.setTranslation(0, 0);
-		gridHolder.setAlpha(0.75f);
-		layer.add(gridHolder);
-		
 //		ImageLayer bg = graphics().createImageLayer(CanvasUtils.createRect(width(), height(), Colors.WHITE));
 //		bg.setDepth(-10);
 //		layer.add(bg);
@@ -66,16 +60,13 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		}
 		
 		solveScreen = new SolveScreen(screens, gameState);
-
-		ImmediateLayer il = graphics().createImmediateLayer(new Renderer() {
-			@Override
-			public void render(Surface surface) {
-				surface.drawLayer(SelectScreen.this.grid.layer());
-			}
-		});
-		gridHolder.add(il);
 		
 		state.setProblemAddedListener(this);
+	}
+	
+	@Override
+	public MenuSprite createMenu() {
+		return new DefenseMenu(state, width());
 	}
 	
 	@Override

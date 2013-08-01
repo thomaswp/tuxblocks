@@ -77,4 +77,53 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	public void setOrigin(float x, float y) {
 		layer.setOrigin(x, y);
 	}
+
+	@Override
+	public void setAlpha(float alpha) {
+		layer.setAlpha(alpha);
+	}
+	
+	public float alpha() {
+		return layer.alpha();
+	}
+	
+	public boolean visible() {
+		return layer.visible();
+	}
+
+	public float originX() {
+		return layer.originX();
+	}
+	
+	public float originY() {
+		return layer.originY();
+	}
+	
+	public float rotation() {
+		return layer.rotation();
+	}
+
+	public void setTx(float tx) {
+		layer.setTx(tx);
+	}
+	
+	public void setTy(float ty) {
+		layer.setTy(ty);
+	}
+	
+	public void setScale(float scale) {
+		setScale(scale, scale);
+	}
+	
+	public void setScale(float scaleX, float scaleY) {
+		layer.setScale(scaleX, scaleY);
+	}
+	
+	public void setRotation(float angle) {
+		layer.setRotation(angle);
+	}
+	
+	public void destroy() {
+		layer.destroy();
+	}
 }

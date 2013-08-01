@@ -14,6 +14,7 @@ import playn.core.TextFormat;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
@@ -377,7 +378,7 @@ public class BlockController extends PlayNObject {
 		
 		private void dropOn(BaseBlock target) {
 			
-			debug(target.hierarchy());
+//			debug(target.hierarchy());
 			if (target instanceof BlockHolder) {
 				if (dragging instanceof HorizontalModifierBlock) {
 					NumberBlockProxy proxy = ((HorizontalModifierBlock) dragging).getProxy(false);
@@ -403,7 +404,7 @@ public class BlockController extends PlayNObject {
 			hoverSprite = null;
 			
 			refreshEquation = true;
-			debug(target.hierarchy());
+//			debug(target.hierarchy());
 		}
 
 		@Override
@@ -476,9 +477,9 @@ public class BlockController extends PlayNObject {
 		}
 
 		@Override
-		public void wasReduced(Renderer problem, int answer, int startNumber,
-				SimplifyListener callback) {
-			parent.showNumberSelectScreen(problem, answer, startNumber, callback);
+		public void wasReduced(Renderer problem, int answer, int startNumber, 
+				Stat stat, int level, SimplifyListener callback) {
+			parent.showNumberSelectScreen(problem, answer, startNumber, stat, level, callback);
 		}
 		
 		@Override
@@ -491,7 +492,7 @@ public class BlockController extends PlayNObject {
 	}
 	
 	public interface Parent {
-		void showNumberSelectScreen(Renderer problem, int answer, int startNumber,
-				SimplifyListener callback);
+		void showNumberSelectScreen(Renderer problem, int answer, int startNumber, 
+				Stat stat, int level, SimplifyListener callback);
 	}
 }

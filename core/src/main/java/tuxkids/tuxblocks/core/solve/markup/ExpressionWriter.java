@@ -66,7 +66,7 @@ public abstract class ExpressionWriter {
 		public int defaultColor, highlightColor, blankColor;
 		
 		public Config() {
-			this(Colors.WHITE, Colors.RED, Colors.BLUE);
+			this(Colors.BLACK, Colors.RED, Colors.BLUE);
 		}
 		
 		public Config(int defaultColor, int highlightColor, int blankcolor) {

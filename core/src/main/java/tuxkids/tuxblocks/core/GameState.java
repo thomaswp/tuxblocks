@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
@@ -35,14 +36,21 @@ public class GameState {
 	private InventoryChangedListener inventoryChangedListener;
 	private ProblemAddedListener problemAddedListener;
 	private int maxSteps = 1;
-	private int minSteps = 2;
+	private int minSteps = 4;
 	private int[] statLevels = new int[Stat.values().length];
+	private int[] statExps = new int[Stat.values().length];
 	private int lives = 20;
-	private int score = 0;
-	private int level = 1;
+	private int score = 10000;
+	private int money = 0;
+	private int timeBetweenRounds = 31;
+	private Level level;
 	
-	public int level() {
+	public Level level() {
 		return level;
+	}
+	
+	public int money() {
+		return money;
 	}
 	
 	public int score() {
@@ -51,6 +59,24 @@ public class GameState {
 	
 	public int getStatLevel(Stat stat) {
 		return statLevels[stat.ordinal()];
+	}
+	
+	public float getStatPerc(Stat stat) {
+		return (float)statExps[stat.ordinal()] / getNextLevelExp(statLevels[stat.ordinal()]);
+	}
+	
+	public void addExp(Stat stat, int exp) {
+		int index = stat.ordinal();
+		statExps[index] += exp;
+		int nextLevelExp = getNextLevelExp(statLevels[index]);
+		if (statExps[index] >= nextLevelExp) {
+			statExps[index] -= nextLevelExp;
+			statLevels[index]++;
+		}
+	}
+
+	private int getNextLevelExp(int level) {
+		return 50;
 	}
 
 	public int lives() {
@@ -89,6 +115,7 @@ public class GameState {
 		background = new GameBackgroundSprite();
 		towerCounts = new int[Tower.towerCount()];
 		problems = new ArrayList<Problem>();
+		level = Level.generate(timeBetweenRounds);
 		addItem(TowerType.PeaShooter, 2);
 		for (int i = 0; i < 8; i++) {
 			addProblemWithReward(new Reward(TowerType.PeaShooter, 2));

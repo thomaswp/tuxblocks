@@ -3,6 +3,8 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.Difficulty;
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
@@ -193,7 +195,8 @@ public class VerticalModifierGroup extends ModifierGroup {
 		Renderer problem = new JoinRenderer(lhs, rhs, "=");
 		final int answer = a.value / b.value;
 		
-		blockListener.wasReduced(problem, answer, a.value, new SimplifyListener() {
+		blockListener.wasReduced(problem, answer, a.value, Stat.Over, 
+				Difficulty.rankOver(a.value, b.value), new SimplifyListener() {
 			@Override
 			public void wasSimplified(boolean success) {
 				if (success) {
@@ -220,7 +223,8 @@ public class VerticalModifierGroup extends ModifierGroup {
 			Renderer problem = new JoinRenderer(lhs, rhs, "=");
 			
 			final int answer = a.value * b.value;
-			blockListener.wasReduced(problem, answer, b.value, new SimplifyListener() {
+			blockListener.wasReduced(problem, answer, b.value, Stat.Times, 
+					Difficulty.rankTimes(a.value, b.value), new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {

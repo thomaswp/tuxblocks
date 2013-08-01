@@ -10,7 +10,7 @@ import playn.core.util.Callback;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 
-public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
+public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 
 	private Factory factory;
 	private GroupLayer layer;
@@ -21,21 +21,6 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	private float width, height;
 
 	@Override
-	public GroupLayer parent() {
-		return layer.parent();
-	}
-	
-	@Override
-	public float tx() {
-		return layer.tx();
-	}
-
-	@Override
-	public float ty() {
-		return layer.ty();
-	}
-	
-	@Override
 	public float width() {
 		return width;
 	}
@@ -44,30 +29,10 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	public float height() {
 		return height;
 	}
-	
-	@Override
-	public float depth() {
-		return layer.depth();
-	}
-	
-	@Override
-	public Layer layerAddable() {
-		return layer;
-	}
 
 	@Override
 	public Image image() {
 		throw new UnsupportedOperationException("Cannot get ninepatch image");
-	}
-
-	@Override
-	public void setOrigin(float x, float y) {
-		layer.setOrigin(x, y);
-	}
-	
-	@Override
-	public void setDepth(float depth) {
-		layer.setDepth(depth);
 	}
 	
 	@Override
@@ -86,16 +51,6 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	public void setHeight(float height) {
 		setSize(width, height);
 	}
-
-	@Override
-	public void setTranslation(float x, float y) {
-		layer.setTranslation(x, y);
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-		layer.setVisible(visible);
-	}
 	
 	public void setTouchEnabled(int row, int col, boolean enabled) {
 		if (imageLayers[row][col] != null) {
@@ -109,8 +64,9 @@ public class NinepatchLayer extends PlayNObject implements ImageLayerLike {
 	}
 	
 	public NinepatchLayer(Factory factory, Image image, final int[] widthDims, final int[] heightDims) {
+		super(graphics().createGroupLayer());
+		layer = (GroupLayer) layerAddable();
 		this.factory = factory;
-		layer = graphics().createGroupLayer();
 		image.addCallback(new Callback<Image>() {
 			@Override
 			public void onSuccess(Image result) {

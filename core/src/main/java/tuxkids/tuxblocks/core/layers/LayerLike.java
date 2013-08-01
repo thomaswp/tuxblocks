@@ -19,6 +19,7 @@ public interface LayerLike {
 	public void setInteractive(boolean interactive);
 	public void setDepth(float depth);
 	public void setOrigin(float x, float y);
+	public void setAlpha(float alpha);
 	
 	public void addListener(Listener pointerListener);
 	

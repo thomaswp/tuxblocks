@@ -14,15 +14,28 @@ import tuxkids.tuxblocks.core.defense.walker.Walker;
 public abstract class Level {
 	private List<Round> rounds = new ArrayList<Round>();
 	private List<Integer> waitTimes = new ArrayList<Integer>();
-	private RoundCompletedListener roundCompletedListener;
 	
 	private int timer;
 	private Round currentRound;
+	private boolean waitingForFinish;
 	
-	private int round = 0;
+	private int roundNumber = 0;
 	
-	public int round() {
-		return round;
+	public int roundNumber() {
+		return roundNumber;
+	}
+	
+	public Round currentRound() {
+		return currentRound;
+	}
+	
+	public void finishRound() {
+		waitingForFinish = false;
+		currentRound = null;
+	}
+	
+	public boolean waitingForFinish() {
+		return waitingForFinish;
 	}
 	
 	public int timeUntilNextRound() {
@@ -41,10 +54,6 @@ public abstract class Level {
 		return currentRound != null;
 	}
 	
-	public void setRoundCompletedListener(RoundCompletedListener roundCompletedListener) {
-		this.roundCompletedListener = roundCompletedListener;
-	}
-	
 	protected abstract void populateLevel();
 	
 	public Level() {
@@ -59,10 +68,10 @@ public abstract class Level {
 	public Walker update(int delta) {
 		if (finished()) return null;
 		if (currentRound != null) {
+			if (waitingForFinish) return null;
 			Walker walker = currentRound.update(delta);
 			if (currentRound.finished()) {
-				roundCompletedListener.onRoundCompleted(currentRound);
-				currentRound = null;
+				waitingForFinish = true;
 			}
 			return walker;
 		}
@@ -71,7 +80,7 @@ public abstract class Level {
 			currentRound = rounds.remove(0);
 			waitTimes.remove(0);
 			timer = 0;
-			round++;
+			roundNumber++;
 		}
 		return null;
 	}
@@ -80,11 +89,7 @@ public abstract class Level {
 		return rounds.size() == 0 && currentRound == null;
 	}
 	
-	public interface RoundCompletedListener {
-		void onRoundCompleted(Round round);
-	}
-	
-	public static Level generate() {
+	public static Level generate(final int timeBetween) {
 		
 		final Walker basic = new SlideWalker(10, 500);
 		final Walker medium = new FlipWalker(30, 750);
@@ -92,8 +97,6 @@ public abstract class Level {
 		
 		final Walker quick = new SpinWalker(15, 375);
 		final Walker quicker = new ShrinkWalker(20, 250);
-		
-		final int timeBetween = 30;
 		
 		return new Level() {
 			@Override

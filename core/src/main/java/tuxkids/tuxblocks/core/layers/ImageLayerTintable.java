@@ -13,7 +13,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
+public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 	
 	private GroupLayer layer;
 	
@@ -27,12 +27,7 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 	private boolean useGL() {
 		return GLStatus.enabled();
 	}
-	
-	@Override
-	public GroupLayer parent() {
-		return layer.parent();
-	}
-	
+
 	@Override
 	public float width() {
 		return base.width();
@@ -42,70 +37,13 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 	public float height() {
 		return base.height();
 	}
-	
-	@Override
-	public Layer layerAddable() {
-		return layer;
-	}
 
 	public Image image() {
 		return baseImage;
 	}
 	
-	@Override
-	public float tx() {
-		return layer.tx();
-	}
-	
-	@Override
-	public float ty() {
-		return layer.ty();
-	}
-	
 	public int tint() {
 		return tint;
-	}
-	
-	@Override
-	public float depth() {
-		return layer.depth();
-	}
-	
-	public float alpha() {
-		return layer.alpha();
-	}
-	
-	public boolean visible() {
-		return layer.visible();
-	}
-
-	public float originX() {
-		return layer.originX();
-	}
-	
-	public float originY() {
-		return layer.originY();
-	}
-	
-	public float rotation() {
-		return layer.rotation();
-	}
-
-	public void setTx(float tx) {
-		layer.setTx(tx);
-	}
-	
-	public void setTy(float ty) {
-		layer.setTy(ty);
-	}
-	
-	@Override
-	public void setTranslation(float x, float y) {
-		layer.setTranslation(x, y);
-	}
-	
-	public void setOrigin(float x, float y) {
-		layer.setOrigin(x, y);
 	}
 	
 	public void setImage(Image image) {
@@ -115,32 +53,6 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 		tintMap.clear();
 		tintMap.put(Colors.WHITE, image);
 		setTint(tint);
-	}
-
-	public void setScale(float scale) {
-		setScale(scale, scale);
-	}
-	
-	public void setScale(float scaleX, float scaleY) {
-		layer.setScale(scaleX, scaleY);
-	}
-
-	@Override
-	public void setDepth(float depth) {
-		layer.setDepth(depth);
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-		layer.setVisible(visible);
-	}
-
-	public void setAlpha(float alpha) {
-		layer.setAlpha(alpha);
-	}
-	
-	public void setRotation(float angle) {
-		layer.setRotation(angle);
 	}
 
 	// to avoid object creation for setting size
@@ -179,7 +91,8 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 	}
 	
 	public ImageLayerTintable(Image image) {
-		layer = graphics().createGroupLayer();
+		super(graphics().createGroupLayer());
+		layer = (GroupLayer) layerAddable();
 		base = graphics().createImageLayer(image);
 		top = graphics().createImageLayer();
 		top.setInteractive(false);
@@ -238,10 +151,6 @@ public class ImageLayerTintable extends PlayNObject implements ImageLayerLike {
 			tintMap.put(color, mapped);
 		}
 		return mapped;
-	}
-	
-	public void destroy() {
-		layer.destroy();
 	}
 
 	@Override

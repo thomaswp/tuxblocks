@@ -3,6 +3,8 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.Difficulty;
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.markup.AddRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
@@ -162,7 +164,9 @@ public class HorizontalModifierGroup extends ModifierGroup {
 							new BaseRenderer("" + hSprite.value), hSprite instanceof PlusBlock ? "+" : "-"), 
 					new BlankRenderer(), "=");
 			final int answer = before.plusValue() + hSprite.plusValue();
-			blockListener.wasReduced(problem, answer, before.plusValue(), new SimplifyListener() {
+			Stat stat = hSprite.plusValue() >= 0 ? Stat.Plus : Stat.Minus;
+			int level = Difficulty.rankPlus(before.plusValue(), hSprite.plusValue());
+			blockListener.wasReduced(problem, answer, before.plusValue(), stat, level, new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {

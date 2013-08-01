@@ -79,7 +79,9 @@ public class GameScreen extends Screen implements Listener {
 	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
-		menu.paint(clock);
+		if (!exiting()) {
+			menu.paint(clock);
+		}
 	}
 	
 	@Override

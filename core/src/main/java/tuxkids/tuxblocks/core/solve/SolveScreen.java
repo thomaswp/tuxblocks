@@ -11,13 +11,16 @@ import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.defense.DefenseMenu;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.BlockController;
-import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.BlockController.Parent;
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 public class SolveScreen extends GameScreen implements Parent {
 	
@@ -27,8 +30,11 @@ public class SolveScreen extends GameScreen implements Parent {
 	private Image buttonImageOk, buttonImageBack;
 	private ImageLayer eqLayer, eqLayerOld;
 	private Image lastEqImage;
+	
 	private SimplifyListener solveCallback;
 	private boolean solveCorrect;
+	private int solveLevel;
+	private Stat solveStat;
 	
 	public void setEquation(Equation equation) {
 		this.originalEquation = equation;
@@ -88,6 +94,11 @@ public class SolveScreen extends GameScreen implements Parent {
 		layer.add(buttonReset.layerAddable());
 	}
 	
+	@Override 
+	protected MenuSprite createMenu() {
+		return new DefenseMenu(state, width(), false); 
+	}
+	
 	@Override
 	protected void popThis() {
 		popThis(screens.slide().up());
@@ -119,27 +130,42 @@ public class SolveScreen extends GameScreen implements Parent {
 		eqLayer.setTranslation((width() - eqLayer.width()) / 2 , (menu.height() - eqLayer.height()) / 2);
 		if (solveCorrect && !entering()) {
 			solveCallback.wasSimplified(true);
-			solveCorrect = false;
-			solveCallback = null;
+			state.addExp(solveStat, 15 + solveLevel);
+			clearSolve();
 		}
 		buttonBack.setImage(controller.solved() ? buttonImageOk : buttonImageBack);
 	}
 	
+	private void clearSolve() {
+		solveCorrect = false;
+		solveCallback = null;
+		solveStat = null;
+		solveLevel = -1;
+	}
+	
 	@Override
 	public void paint(Clock clock) {
+		super.paint(clock);
 		controller.paint(clock);
 		eqLayer.setAlpha(PlayNObject.lerpTime(eqLayer.alpha(), 1, 0.99f, clock.dt(), 0.01f));
 		eqLayerOld.setAlpha(PlayNObject.lerpTime(eqLayerOld.alpha(), 0, 0.99f, clock.dt(), 0.01f));
 	}
 
 	@Override
-	public void showNumberSelectScreen(Renderer problem, int answer, int startNumber,
-			SimplifyListener callback) {
-		NumberSelectScreen nss = new NumberSelectScreen(screens, state, problem, answer);
-		nss.setFocusedNumber(startNumber);
-		solveCallback = callback;
-		solveCorrect = false;
-		pushScreen(nss, screens.slide().left());
+	public void showNumberSelectScreen(Renderer problem, int answer, int startNumber, 
+			Stat stat, int level, SimplifyListener callback) {
+		Debug.write(level);
+		if (false && level > state.getStatLevel(stat)) {
+			NumberSelectScreen nss = new NumberSelectScreen(screens, state, problem, answer);
+			nss.setFocusedNumber(startNumber);
+			solveCallback = callback;
+			solveCorrect = false;
+			solveStat = stat;
+			solveLevel = level;
+			pushScreen(nss, screens.slide().left());
+		} else {
+			callback.wasSimplified(true);
+		}
 	}
 
 	@Override
@@ -150,6 +176,7 @@ public class SolveScreen extends GameScreen implements Parent {
 				solveCorrect = true;
 			} else {
 				solveCallback.wasSimplified(false);
+				clearSolve();
 			}
 		}
 	}

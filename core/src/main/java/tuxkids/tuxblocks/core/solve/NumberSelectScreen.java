@@ -107,9 +107,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		backgroundLayer.setTranslation(0, menu.height() / 2);
 		
 		selectedNumberLayer = new ImageLayerTintable();
-		selectedNumberLayer.setDepth(10);
+		selectedNumberLayer.setDepth(15);
 		selectedNumberLayer.setTint(themeColor);
-		foregroundLayer.add(selectedNumberLayer.layerAddable());
+		layer.add(selectedNumberLayer.layerAddable());
 		
 		update(0);
 	}

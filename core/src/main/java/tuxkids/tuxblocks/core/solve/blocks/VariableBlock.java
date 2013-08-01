@@ -2,6 +2,8 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
 
+import tuxkids.tuxblocks.core.Difficulty;
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
@@ -143,7 +145,8 @@ public class VariableBlock extends BaseBlock {
 				if (!hasSprite()) {
 					r.wasSimplified(true); //show preview
 				} else {
-					blockListener.wasReduced(problem, answer, myValue, r);
+					blockListener.wasReduced(problem, answer, 
+							myValue, Stat.Plus, Difficulty.rankPlus(myValue, spriteValue), r);
 				}
 			} else {
 				r.wasSimplified(true);
