@@ -6,8 +6,9 @@ import playn.core.Color;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.solve.blocks.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.markup.AddRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
@@ -48,6 +49,11 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		} else {
 			return Color.rgb(0x11, 0x4C, 0xA3);
 		}
+	}
+	
+	@Override
+	public boolean showSimplify() {
+		return blockListener != null && !blockListener.inBuildMode();
 	}
 	
 	@Override

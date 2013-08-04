@@ -24,6 +24,7 @@ public abstract class VerticalModifierBlock extends ModifierBlock {
 	@Override
 	protected boolean canRelease(boolean multiExpression) {
 		if (group == null) return true;
+		if (blockListener != null && blockListener.inBuildMode()) return true;
 		return !multiExpression && !group.isModifiedHorizontally();
 	}
 	

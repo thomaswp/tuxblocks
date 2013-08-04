@@ -29,6 +29,11 @@ public class TimesBlock extends VerticalModifierBlock{
 	}
 	
 	@Override
+	protected float defaultHeight() {
+		return modSize() + 4;
+	}
+	
+	@Override
 	public int color() {
 		if (value == -1) {
 			return Color.rgb(150, 150, 150);
@@ -57,22 +62,17 @@ public class TimesBlock extends VerticalModifierBlock{
 	}
 
 	@Override
-	protected NinepatchLayer generateNinepatch(String text) {
-		boolean times = true;
+	protected NinepatchLayer generateImage(String text) {
 		
 		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);
 		int legs = wrapSize();
 		int sides = 3;
 		int width = legs * 2 + sides * 2 + (int)layout.width() + 2;
-		int height = modSize() + sides * 2;
+		int textHeight = modSize();
+		int height = textHeight + sides * 2;
 		
 		int[] widthDims = new int[] { legs + 2, sides - 2, width - legs * 2 - sides * 2, sides - 2, legs + 2 };
-		int[] heightDims;
-		if (times) {
-			heightDims = new int[] { modSize() + 1, sides - 1, sides };
-		} else {
-			heightDims = new int[] { sides, sides - 1, modSize() + 1 };
-		}
+		int[] heightDims = new int[] { textHeight + 1, sides - 1, sides };
 		
 		float hlw = 0;//0.5f;
 		float pWidth = width - 1;
@@ -80,12 +80,6 @@ public class TimesBlock extends VerticalModifierBlock{
 		float lx, ly;
 		
 		CanvasImage image = graphics().createImage(width, height);
-		if (!times) {
-			image.canvas().save();
-			image.canvas().translate(0, image.height() / 2);
-			image.canvas().scale(1, -1);
-			image.canvas().translate(0, -image.height() / 2 + 1);
-		}
 		
 		Path path = image.canvas().createPath();
 		path.moveTo(lx = hlw, ly = hlw);
@@ -103,13 +97,7 @@ public class TimesBlock extends VerticalModifierBlock{
 		image.canvas().strokePath(path);
 		
 		float textX = (image.width() - layout.width()) / 2;
-		float textY;
-		if (times) {
-			textY = (modSize() - layout.height()) / 2;
-		} else {
-			image.canvas().restore();
-			textY = image.height() - (modSize() + layout.height()) / 2;
-		}
+		float textY = (textHeight - layout.height()) / 2;
 		image.canvas().setFillColor(Colors.BLACK);
 		image.canvas().fillText(layout, textX, textY);
 		

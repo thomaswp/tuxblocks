@@ -7,7 +7,8 @@ import playn.core.GroupLayer;
 import playn.core.Layer;
 import playn.core.util.Clock;
 import pythagoras.f.Rectangle;
-import tuxkids.tuxblocks.core.solve.blocks.SimplifyLayer.Simplifiable;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
@@ -74,6 +75,11 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			return rect.x;
 		}
 		return modifiers.offsetX();
+	}
+	
+	@Override
+	public boolean showSimplify() {
+		return blockListener != null && !blockListener.inBuildMode();
 	}
 	
 	@Override

@@ -43,7 +43,7 @@ public class BlockHolder extends BaseBlock {
 	public void addFields(HashCode hashCode) { }
 	
 	@Override
-	protected ImageLayerLike generateNinepatch(String text) {
+	protected ImageLayerLike generateImage(String text) {
 		return new EmptyBlockLayer(10, 10);
 	}
 	

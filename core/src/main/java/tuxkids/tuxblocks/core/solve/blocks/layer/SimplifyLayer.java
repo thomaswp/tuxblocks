@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.solve.blocks;
+package tuxkids.tuxblocks.core.solve.blocks.layer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +15,11 @@ import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
+import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
+import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-class SimplifyLayer extends LayerWrapper {
+public class SimplifyLayer extends LayerWrapper {
 
 	private GroupLayer layer;
 	private Simplifiable parent;
@@ -43,15 +45,15 @@ class SimplifyLayer extends LayerWrapper {
 		public void onPointerCancel(Event event) { }
 	};
 	
-	protected ImageLayer getSimplifyButton(ModifierBlock sprite) {
+	public ImageLayer getSimplifyButton(ModifierBlock sprite) {
 		return getSimplifyButton(sprite, null, 0);
 	}
 	
-	protected ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair) {
+	public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair) {
 		return getSimplifyButton(sprite, pair, 0);
 	}
 	
-	protected ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair, int depth) {
+	public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair, int depth) {
 		while (simplifyButtons.size() <= simplifyMap.size()) { 
 			addSimplifyButton();
 		}
@@ -97,11 +99,14 @@ class SimplifyLayer extends LayerWrapper {
 			button.setVisible(false);
 		}
 		simplifyMap.clear();
-		parent.updateSimplify();
+		if (parent.showSimplify()) {
+			parent.updateSimplify();
+		}
 	}
 	
 	public interface Simplifiable {
 		void updateSimplify();
 		void simplify(ModifierBlock sprite, ModifierBlock pair);
+		boolean showSimplify();
 	}
 }

@@ -63,7 +63,7 @@ public abstract class BaseBlock extends Block {
 	protected void initSpriteImpl() {
 		super.initSpriteImpl();
 		
-		layer = generateNinepatch(text());
+		layer = generateImage(text());
 		layer.setSize(baseSize(), baseSize());
 		layer.setInteractive(true);
 		groupLayer = graphics().createGroupLayer();

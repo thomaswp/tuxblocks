@@ -142,6 +142,7 @@ public abstract class Sprite extends PlayNObject {
 		void wasReduced(Renderer problem, int answer, int startNumber, 
 				Stat stat, int level, SimplifyListener callback);
 		void wasCanceled();
+		boolean inBuildMode();
 		
 	}
 	

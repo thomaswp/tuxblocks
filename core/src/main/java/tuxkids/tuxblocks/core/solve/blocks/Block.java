@@ -104,7 +104,7 @@ public abstract class Block extends Sprite implements Hashable {
 		return layer.height();
 	}
 	
-	protected ImageLayerLike generateNinepatch(String text) {
+	protected ImageLayerLike generateImage(String text) {
 		return new BlockLayer(text, 10, 10);
 	}
 

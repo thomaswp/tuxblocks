@@ -334,6 +334,8 @@ public class BlockController extends PlayNObject {
 		return getGlobalTy(sprite.layer()) - offY();
 	}
 	
+	// TODO: should probably just pass the controller to the blocks,
+	// rather than trying to accomplish everything through a listener
 	private class Listener implements BlockListener {
 
 		@Override
@@ -539,6 +541,13 @@ public class BlockController extends PlayNObject {
 			tempDragging = tempDraggingFrom = null;
 			dropOn(draggingFrom);
 		}
+
+		@Override
+		public boolean inBuildMode() {
+			return inBuildMode;
+		}
+		
+		
 	}
 	
 	public interface Parent {

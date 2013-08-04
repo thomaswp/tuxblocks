@@ -40,7 +40,7 @@ public abstract class ModifierBlock extends Block {
 	protected void initSpriteImpl() {
 		super.initSpriteImpl();
 		
-		layer = generateNinepatch(text());
+		layer = generateImage(text());
 		if (inverse.layer == null) inverse.initSprite();
 	}
 	
@@ -117,7 +117,7 @@ public abstract class ModifierBlock extends Block {
 				((BlockLayer) layer).setText(text());
 			} else {
 				ImageLayerLike oldLayer = layer;
-				layer = generateNinepatch(text());
+				layer = generateImage(text());
 				layer.setDepth(oldLayer.depth());
 				layer.setTranslation(oldLayer.tx(), oldLayer.ty());
 				layer.setSize(oldLayer.width(), oldLayer.height());
