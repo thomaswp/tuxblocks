@@ -48,7 +48,7 @@ public abstract class Block extends Sprite implements Hashable {
 	
 	public Block() {
 		if (textFormat == null) {
-			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, 20);
+			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, textSize());
 			textFormat = new TextFormat().withFont(font);
 		}
 		if (factory == null) {
@@ -62,7 +62,7 @@ public abstract class Block extends Sprite implements Hashable {
 	}
 	
 	@Override
-	protected void initSprite() {
+	public void initSprite() {
 		if (hasSprite()) return;
 		super.initSprite();
 		if (blockListener != null) {
@@ -70,8 +70,15 @@ public abstract class Block extends Sprite implements Hashable {
 		}
 	}
 	
-	public void interpolateDefaultRect(Clock clock) {
-		interpolateRect(layer().tx(), layer().ty(), defaultWidth(), defaultHeight(), lerpBase(), clock.dt());
+	public final void interpolateDefaultRect(Clock clock) {
+		float base, dt;
+		if (clock == null) {
+			base = 0; dt = 1;
+		} else {
+			base = lerpBase();
+			dt = clock.dt();
+		}
+		interpolateRect(layer().tx(), layer().ty(), defaultWidth(), defaultHeight(), base, dt);
 	}
 	
 	public void interpolateRect(float x, float y, float width, float height, float base, float dt) {
@@ -121,13 +128,12 @@ public abstract class Block extends Sprite implements Hashable {
 		return canRelease(multiExpression);
 	}
 	
+	float[] hsv = new float[3];
 	@Override
 	public void paint(Clock clock) {
 		timeElapsed = PlayN.tick();
 		int color = color();
 		if (canRelease) {
-			//TODO: clean this up... don't allocate
-			float[] hsv = new float[3];
 			CanvasUtils.rgbToHsv(color, hsv);
 			color = CanvasUtils.hsvToRgb(hsv[0], hsv[1], 0.7f);
 			int flashColor = CanvasUtils.hsvToRgb(hsv[0], hsv[1], 1f);

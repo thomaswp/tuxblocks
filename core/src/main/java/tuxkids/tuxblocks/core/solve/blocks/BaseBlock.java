@@ -9,6 +9,8 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 public abstract class BaseBlock extends Block {
 	
+	public final static float PREVIEW_ALPHA = 0.5f;
+	
 	protected HorizontalModifierGroup modifiers;
 	protected GroupLayer groupLayer;
 	protected boolean canMoveBase;
@@ -117,7 +119,7 @@ public abstract class BaseBlock extends Block {
 		groupLayer.setAlpha(1f);
 	}
 	public void setPreview(boolean preview) {
-		groupLayer.setAlpha(preview ? 1f : 0.5f);
+		groupLayer.setAlpha(preview ? 1f : PREVIEW_ALPHA);
 	}
 
 	

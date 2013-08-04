@@ -65,13 +65,14 @@ class SimplifyLayer extends LayerWrapper {
 	
 	private void addSimplifyButton() {
 		if (simplifyImage == null) {
+			float radius = Sprite.modSize() * 0.35f;
 			if (PlayN.touch().hasTouch()) {
-				simplifyImage = graphics().createImage(Sprite.modSize(), Sprite.modSize());
+				simplifyImage = graphics().createImage(radius * 3f, radius * 3f);
 				Canvas canvas = ((CanvasImage) simplifyImage).canvas();
-				Image image = CanvasUtils.createCircle(Sprite.modSize() / 3, Colors.GRAY, 1, Colors.BLACK);
+				Image image = CanvasUtils.createCircle(radius, Colors.GRAY, 1, Colors.BLACK);
 				canvas.drawImage(image, (simplifyImage.width() - image.width()) / 2, (simplifyImage.height() - image.height()) / 2);
 			} else {
-				simplifyImage = CanvasUtils.createCircle(Sprite.modSize() / 3, Colors.GRAY, 1, Colors.BLACK);
+				simplifyImage = CanvasUtils.createCircle(radius, Colors.GRAY, 1, Colors.BLACK);
 			}
 		}
 		ImageLayer simplifyButton = graphics().createImageLayer(simplifyImage);

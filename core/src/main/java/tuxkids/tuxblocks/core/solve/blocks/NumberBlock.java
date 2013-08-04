@@ -158,11 +158,9 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {
-						value = answer;
-						((BlockLayer) layer).setText(text());
+						setValue(answer);
 						sprite.group.removeChild(sprite, true);
 						blockListener.wasSimplified();
-						//do we need to worry about proxies?
 					}
 				}
 			});
@@ -173,5 +171,10 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	public void update(int delta) {
 		super.update(delta);
 		simplifyLayer.update();
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+		((BlockLayer) layer).setText(text());
 	}
 }

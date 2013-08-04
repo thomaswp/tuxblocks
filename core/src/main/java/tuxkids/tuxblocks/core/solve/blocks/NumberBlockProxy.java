@@ -19,4 +19,10 @@ public class NumberBlockProxy extends NumberBlock {
 		super.showInverse();
 		proxyFor = null;
 	}
+	
+	@Override
+	public void setValue(int value) {
+		super.setValue(value);
+		proxyFor = null;
+	}
 }

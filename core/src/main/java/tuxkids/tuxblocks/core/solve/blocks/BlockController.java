@@ -52,17 +52,39 @@ public class BlockController extends PlayNObject {
 	private float equalsX;
 	private ImageLayer equals;
 	private boolean solved;
+	private float equationImageHeight = 120;
+	
+	private boolean inBuildMode;
+	private BuildToolbox buildToolbox;
 	
 	private Image equationImage;
 	private BaseBlock hoverSprite;
 	private boolean refreshEquation;
 	
+	public float equationImageHieght() {
+		return equationImageHeight;
+	}
+	
+	public void setEquationImageHeight(float equationImageHeight) { 
+		this.equationImageHeight = equationImageHeight;
+		refreshEquation = true;
+	}
+	
 	public Layer layer() {
 		return layer;
 	}
 	
+	public boolean inBuildMode() {
+		return inBuildMode;
+	}
+	
 	public Image equationImage() {
 		return equationImage;
+	}
+	
+	public void setBuildToolbox(BuildToolbox buildToolbox) {
+		this.buildToolbox = buildToolbox;
+		inBuildMode = buildToolbox != null;
 	}
 	
 	private float offX() {
@@ -87,7 +109,10 @@ public class BlockController extends PlayNObject {
 	
 	public boolean solved() {
 		return solved;
-		
+	}
+
+	public BlockListener blockListener() {
+		return listener;
 	}
 	
 	public BlockController(Parent parent, float width, float height) {
@@ -162,7 +187,9 @@ public class BlockController extends PlayNObject {
 		Renderer rhs = getRenderer(rightSide);
 		Renderer equation = new JoinRenderer(lhs, rhs, "=");
 		
-		TextFormat format = new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20));
+
+		float textSize = equationImageHeight * 0.6f / Math.max(3, equation.lines());
+		TextFormat format = new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, textSize));
 		ExpressionWriter writer = equation.getExpressionWriter(format);
 		
 		CanvasImage image = graphics().createImage(writer.width(), writer.height());
@@ -311,6 +338,8 @@ public class BlockController extends PlayNObject {
 
 		@Override
 		public void wasGrabbed(Block sprite, Event event) {
+			if (buildToolbox != null) buildToolbox.wasGrabbed(event);
+			
 			float x = getTouchX(event), y = getTouchY(event);
 			for (BaseBlock base : baseBlocks) {
 				if (base.contains(x, y)) {
@@ -320,7 +349,14 @@ public class BlockController extends PlayNObject {
 			}
 			
 			if (draggingFrom == null) {
-				debug("BIG PROBLEM!");
+				if (inBuildMode) {
+					Block nSprite = (Block) sprite.copy(true);
+					nSprite.layer().setTranslation(sprite.layer().tx(), sprite.layer().ty());
+					nSprite.interpolateDefaultRect(null);
+					sprite = nSprite;
+				} else {
+					debug("BIG PROBLEM!");
+				}
 			}
 			
 			draggingFromSide = getContaining(draggingFrom);
@@ -355,6 +391,10 @@ public class BlockController extends PlayNObject {
 
 		@Override
 		public void wasReleased(Event event) {
+			if (buildToolbox != null && buildToolbox.wasDropped(event)) {
+				draggingFrom = null;
+			}
+			
 			float x = getTouchX(event), y = getTouchY(event);
 			lastTouchX = x - layer.tx();
 			lastTouchY = y - layer.ty();
@@ -377,25 +417,31 @@ public class BlockController extends PlayNObject {
 		}
 		
 		private void dropOn(BaseBlock target) {
-			
 //			debug(target.hierarchy());
-			if (target instanceof BlockHolder) {
-				if (dragging instanceof HorizontalModifierBlock) {
-					NumberBlockProxy proxy = ((HorizontalModifierBlock) dragging).getProxy(false);
-					dragging.layer().setVisible(false);
-					dragging = proxy;
-				}
-				
-				swapExpression(getContaining(target), target, (BaseBlock) dragging);
-				target.layer().destroy();
+			
+			if (target == null) {
+				if (!inBuildMode) debug("BIG PROBLEM!");
+				dragging.destroy();
 			} else {
-				ModifierBlock added = target.addBlock(dragging, false);
-				if (added == null) {
-					tempDragging = dragging;
-					tempDraggingFrom = draggingFrom;
+			
+				if (target instanceof BlockHolder) {
+					if (dragging instanceof HorizontalModifierBlock) {
+						NumberBlockProxy proxy = ((HorizontalModifierBlock) dragging).getProxy(false);
+						dragging.layer().setVisible(false);
+						dragging = proxy;
+					}
+					
+					swapExpression(getContaining(target), target, (BaseBlock) dragging);
+					target.layer().destroy();
 				} else {
-					added.layer().setTranslation(added.layer().tx() - spriteX(target), 
-							added.layer().ty() - spriteY(target));
+					ModifierBlock added = target.addBlock(dragging, false);
+					if (added == null) {
+						tempDragging = dragging;
+						tempDraggingFrom = draggingFrom;
+					} else {
+						added.layer().setTranslation(added.layer().tx() - spriteX(target), 
+								added.layer().ty() - spriteY(target));
+					}
 				}
 			}
 			
@@ -409,6 +455,8 @@ public class BlockController extends PlayNObject {
 
 		@Override
 		public void wasMoved(Event event) {
+			if (buildToolbox != null) buildToolbox.wasMoved(event);
+			
 			float x = getTouchX(event), y = getTouchY(event);
 			lastTouchX = x;
 			lastTouchY = y;
@@ -430,18 +478,20 @@ public class BlockController extends PlayNObject {
 				refreshEquation = true;
 			}
 			
-			boolean invert;
-			boolean checkLeftDistance = draggingFromSide == leftSide;
-			if (inverted) checkLeftDistance = !checkLeftDistance;
-			if (checkLeftDistance) {
-				invert = x > equalsX + 5;
-			} else {
-				invert = x < equalsX - 5;
-			}
-			
-			if (invert) {
-				inverted = !inverted;
-				invertDragging(true);
+			if (!inBuildMode) {
+				boolean invert;
+				boolean checkLeftDistance = draggingFromSide == leftSide;
+				if (inverted) checkLeftDistance = !checkLeftDistance;
+				if (checkLeftDistance) {
+					invert = x > equalsX + 5;
+				} else {
+					invert = x < equalsX - 5;
+				}
+				
+				if (invert) {
+					inverted = !inverted;
+					invertDragging(true);
+				}
 			}
 		}
 
@@ -494,5 +544,11 @@ public class BlockController extends PlayNObject {
 	public interface Parent {
 		void showNumberSelectScreen(Renderer problem, int answer, int startNumber, 
 				Stat stat, int level, SimplifyListener callback);
+	}
+	
+	public interface BuildToolbox {
+		void wasGrabbed(Event event);
+		void wasMoved(Event event);
+		boolean wasDropped(Event event);
 	}
 }

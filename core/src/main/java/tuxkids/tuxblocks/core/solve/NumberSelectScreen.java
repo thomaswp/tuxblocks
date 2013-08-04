@@ -39,6 +39,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private int SPACING = 150;
 	private final static int MAX_NUMS = 70;
 	private final static int MAX_SPRITE_CREATE_PER_FRAME = 10;
+	public final static int ANY_ANSWER = Integer.MAX_VALUE;
 	
 	private List<Point> numberPoints = new ArrayList<Point>();
 	private List<ImageLayer> numberImages = new ArrayList<ImageLayer>();
@@ -70,7 +71,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	public boolean hasCorrectAnswer() {
 		Integer answer = selectedAnswer();
-		return answer != null && answer == this.answer;
+		return answer != null && (answer == this.answer || this.answer == ANY_ANSWER);
 	}
 	
 	public void setFocusedNumber(int number) {
@@ -133,7 +134,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					if (selectedPoint != null && getNumber(selectedPoint) != answer) {
+					if (selectedPoint != null && getNumber(selectedPoint) != answer && answer != ANY_ANSWER) {
 						buttonBack.setImage(backImageCancel);
 					} else {
 						popThis();

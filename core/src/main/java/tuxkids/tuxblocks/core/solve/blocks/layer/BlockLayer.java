@@ -11,6 +11,7 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
+import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class BlockLayer extends LayerWrapper implements ImageLayerLike {
@@ -80,7 +81,7 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 	
 	private void createLayers() {
 		if (textFormat == null) {
-			Font font = graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, 20);
+			Font font = graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, Sprite.textSize());
 			textFormat = new TextFormat().withFont(font);
 		}
 		

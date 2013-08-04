@@ -49,16 +49,20 @@ public abstract class Sprite extends PlayNObject {
 		return hasSprite;
 	}
 	
-	protected static int baseSize() {
-		return 100;
+	public final static int baseSize() {
+		return (int)(graphics().height() * 0.185f);
 	}
 	
-	protected static int modSize() {
-		return 40;
+	public final static int modSize() {
+		return (int)(baseSize() * 0.4f);
 	}
 	
-	protected static int wrapSize() {
-		return 8;
+	public final static int wrapSize() {
+		return Math.max(modSize() / 5, 6);
+	}
+	
+	public final static float textSize() {
+		return Math.max(12, baseSize() / 5f);
 	}
 	
 	protected static float lerpBase() {

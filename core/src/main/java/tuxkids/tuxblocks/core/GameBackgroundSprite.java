@@ -96,6 +96,14 @@ public class GameBackgroundSprite extends PlayNObject {
 		toRemove.clear();
 	}
 	
+	private float maxSize() {
+		return height() / 2;
+	}
+	
+	private float minSize() {
+		return maxSize() / 6;
+	}
+	
 	private Sobol sobolD5 = new Sobol(5);
 	private class BackgroundSprite {
 		private ImageLayer layer;
@@ -106,7 +114,7 @@ public class GameBackgroundSprite extends PlayNObject {
 		
 		public BackgroundSprite(float hue, float r) {
 			double[] point = sobolD5.nextPoint();
-			int size = (int)(point[0] * 250 + 50);
+			int size = (int)(point[0] * (maxSize() - minSize()) + minSize());
 			r = (float)point[4];
 			float h = hue;
 			if (r < 1f / 3) {
@@ -123,13 +131,13 @@ public class GameBackgroundSprite extends PlayNObject {
 			maxAlpha = (float)Math.random() * 0.4f + 0.4f;
 			layer.setAlpha(0);
 			
-			layer.setOrigin(image.width() / 2, image.height() / 2);
-			originalPos = new Vector(width() * ((float)point[1] * 1.6f - 0.3f), 
-					((float)point[2] * 1.6f - 0.3f) * height());
-			layer.setTranslation(originalPos.x, originalPos.y);
-			
 			depth = (float)point[3] * 15 + 5;
 			layer.setDepth(-depth);
+			
+			layer.setOrigin(image.width() / 2, image.height() / 2);
+			originalPos = new Vector(width() * ((float)point[1] * 1.6f - 0.3f) - offset.x / depth, 
+					((float)point[2] * 1.6f - 0.3f) * height() - offset.y / depth);
+			layer.setTranslation(originalPos.x, originalPos.y);
 		}
 		
 		public void update(int delta) {

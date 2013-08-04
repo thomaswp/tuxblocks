@@ -27,13 +27,18 @@ public abstract class HorizontalModifierBlock extends ModifierBlock {
 	
 	@Override
 	protected boolean canRelease(boolean openSpace) {
-		if (group == null) return false;
+		if (group == null) return true;
 		return true;
 	}
 	
 	@Override
+	protected boolean shouldShowPreview(boolean multiExpression) {
+		return group != null && super.shouldShowPreview(multiExpression);
+	}
+	
+	@Override
 	protected Block getDraggingSprite() {
-		if (group.isModifiedVertically()) {
+		if (group != null && group.isModifiedVertically()) {
 			return getProxy(true);
 		} else {
 			return this;

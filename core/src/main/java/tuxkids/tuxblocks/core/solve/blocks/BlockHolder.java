@@ -35,6 +35,11 @@ public class BlockHolder extends BaseBlock {
 	}
 	
 	@Override
+	protected boolean shouldShowPreview(boolean open) {
+		return false;
+	}
+	
+	@Override
 	public void addFields(HashCode hashCode) { }
 	
 	@Override

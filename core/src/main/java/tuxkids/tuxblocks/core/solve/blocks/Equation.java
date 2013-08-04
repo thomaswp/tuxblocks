@@ -68,6 +68,11 @@ public class Equation extends PlayNObject implements Hashable {
 		return builder.createEquation();
 	}
 	
+
+	public static final Equation NOOP = new Builder()
+	.addLeft(new BlockHolder())
+	.addRight(new BlockHolder())
+	.createEquation();
 	
 	public static class Builder {
 		private final List<BaseBlock> leftSide = new ArrayList<BaseBlock>(), 

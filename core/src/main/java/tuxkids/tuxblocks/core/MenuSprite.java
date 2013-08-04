@@ -3,12 +3,12 @@ package tuxkids.tuxblocks.core;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.Layer;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class MenuSprite extends PlayNObject {
+public class MenuSprite extends LayerWrapper {
 	
 	public static float DEFAULT_ALPHA = 0.75f;
 	
@@ -20,10 +20,6 @@ public class MenuSprite extends PlayNObject {
 	
 	public static float defaultButtonSize() {
 		return graphics().height() * 0.15f;
-	}
-	
-	public Layer layerAddable() {
-		return layer;
 	}
 	
 	public float width() {
@@ -70,43 +66,17 @@ public class MenuSprite extends PlayNObject {
 		return button;
 	}
 	
-//	public String text() {
-//		return text;
-//	}
-//	
-//	public int textColor() {
-//		return textColor;
-//	}
-//	
-//	public void setTextColor(int textColor) {
-//		this.textColor = textColor;
-//	}
-//	
-//	public void setText(String text) {
-//		if (text == null) {
-//			textLayer.setImage(null);
-//		} else if (!text.equals(this.text)) {
-//			textLayer.setImage(CanvasUtils.createString(textFormat, text, textColor));
-//			centerImageLayer(textLayer);
-//		}
-//		this.text = text;
-//	}
-	
 	public MenuSprite(GameState state, float width) {
+		super(graphics().createGroupLayer());
 		this.width = width;
 		this.height = defaultButtonSize() * 1.2f;
 		this.state = state;
-		layer = graphics().createGroupLayer();
+		layer = (GroupLayer) layerAddable();
 		background = graphics().createImageLayer(
 				CanvasUtils.createRect(width, height, Colors.LIGHT_GRAY, 1, Colors.DARK_GRAY));
 		background.setAlpha(DEFAULT_ALPHA);
 		background.setDepth(-1);
 		layer.add(background);
-		
-//		textFormat = new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, height / 2f));
-//		textLayer = graphics().createImageLayer();
-//		textLayer.setTranslation(width / 2, height / 2);
-//		layer.add(textLayer);
 	}
 	
 	public void update(int delta) {

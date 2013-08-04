@@ -9,6 +9,7 @@ import playn.core.Game;
 import playn.core.ImageLayer;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
+import tuxkids.tuxblocks.core.solve.BuildScreen;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 
 public class TuxBlocksGame extends Game.Default {
@@ -47,13 +48,7 @@ public class TuxBlocksGame extends Game.Default {
 	}
 
 	@Override
-	public void init() {	
-//		TextFormat format = new TextFormat().withFont(graphics().createFont("Arial", Style.PLAIN, 20));
-//		TextLayout layout = graphics().layoutText("(", format);
-//		Debug.write("%f %f %f %f", layout.ascent(), layout.descent(), layout.height(), layout.width());
-//		Equation eq = EquationGenerator.generate(4);
-//		Debug.write(eq.toMathString());
-//		screens.push(new SolveScene(screens, eq));
+	public void init() {
 		
 		GameState state = new GameState();
 		background = state.background();
@@ -61,8 +56,8 @@ public class TuxBlocksGame extends Game.Default {
 		
 		
 		graphics().rootLayer().add(background.layer());
-		screens.push(new DefenseScreen(screens, state));
-//		screens.push(new SolveScene(screens, state));
+//		screens.push(new DefenseScreen(screens, state));
+		screens.push(new BuildScreen(screens, state));
 		
 	}
 	
@@ -80,7 +75,7 @@ public class TuxBlocksGame extends Game.Default {
 			if (fpsLayer != null) 
 				graphics().rootLayer().remove(fpsLayer);
 			fpsLayer =  graphics().createImageLayer(image);
-			fpsLayer.setDepth(10000);
+			fpsLayer.setDepth(Float.MAX_VALUE);
 			graphics().rootLayer().add(fpsLayer);
 			frames = 0;
 		}
