@@ -46,6 +46,7 @@ public class TuxEmitter extends Emitter
     public void update(float now, float dt) {
     	super.update(now, dt);
     	myLayer.setTranslation(layer.tx(), layer.ty());
+    	myLayer.setDepth(layer.depth());
     	this.now = now;
     }
     

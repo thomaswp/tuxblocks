@@ -18,6 +18,7 @@ import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.BlockController;
+import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.MinusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
@@ -45,7 +46,8 @@ public class Toolbox extends LayerWrapper implements BuildToolbox {
 		return number;
 	}
 	
-	public Toolbox(BlockController controller, NumberSelectListener numberSelectListener, float width, float height) {
+	public Toolbox(BlockController controller, NumberSelectListener numberSelectListener, 
+			float width, float height, int themeColor) {
 		super(graphics().createGroupLayer());
 		this.layer = (GroupLayer) layerAddable();
 		this.width = width;
@@ -60,54 +62,16 @@ public class Toolbox extends LayerWrapper implements BuildToolbox {
 		layer.add(backgroundLayer);
 
 		float blockStart = 2 * width / 3;
-		float circleSize = width * 0.6f;
-		buttonNumber = new Button(Constant.BUTTON_CIRCLE, circleSize, circleSize, true);
-		buttonNumber.setPosition(width / 2, circleSize * 0.6f);
-		buttonNumber.setOnReleasedListener(new OnReleasedListener() {
-			@Override
-			public void onRelease(Event event, boolean inButton) {
-				if (inButton) listener.selectNumber(number);
-			}
-		});
-		layer.add(buttonNumber.layerAddable());
-		
-		float arrowX = width / 10;
-		buttonLess = new Button(Constant.BUTTON_LESS, width / 6, width / 3, false);
-		buttonLess.setPosition(arrowX, buttonNumber.y());
-		buttonLess.setOnReleasedListener(new OnReleasedListener() {
-			@Override
-			public void onRelease(Event event, boolean inButton) {
-				if (inButton) {
-					setNumber(number - 1);
-				}
-			}
-		});
-		layer.add(buttonLess.layerAddable());
-		
-		buttonMore = new Button(Constant.BUTTON_MORE, width / 6, width / 3, false);
-		buttonMore.setPosition(width - arrowX, buttonNumber.y());
-		buttonMore.setOnReleasedListener(new OnReleasedListener() {
-			@Override
-			public void onRelease(Event event, boolean inButton) {
-				if (inButton) {
-					setNumber(number + 1);
-				}
-			}
-		});
-		layer.add(buttonMore.layerAddable());
-		
-		textFormat = new TextFormat().withFont(graphics().createFont(
-				Constant.FONT_NAME, Style.PLAIN, buttonNumber.height() / 3));
-		numberLayer = graphics().createImageLayer();
-		numberLayer.setTranslation(buttonNumber.x(), buttonNumber.y());
-		layer.add(numberLayer);
-		refreshNumberSprite();
+		createButtons(blockStart, themeColor);
 		
 		VariableBlock variableBlock = new VariableBlock("x");
 		blocks.add(variableBlock);
 		
 		NumberBlock numberBlock = new NumberBlock(number);
 		blocks.add(numberBlock);
+		
+//		BlockHolder blockHolder = new BlockHolder();
+//		blocks.add(blockHolder);
 		
 		PlusBlock plusBlock = new PlusBlock(number);
 		blocks.add(plusBlock);
@@ -131,10 +95,59 @@ public class Toolbox extends LayerWrapper implements BuildToolbox {
 		float blockSeg = (height - blockStart) / 4;
 		variableBlock.layer().setTranslation((width - variableBlock.width()) / 2, blockStart + blockSeg * 0.5f - variableBlock.height() / 2);
 		numberBlock.layer().setTranslation((width - numberBlock.width()) / 2, blockStart + blockSeg * 1.5f - numberBlock.height() / 2);
+//		blockHolder.layer().setTranslation((width - blockHolder.width()) / 2, blockStart + blockSeg * 1.5f - blockHolder.height() / 2);
 		plusBlock.layer().setTranslation(width / 2 - plusBlock.width() * 5 / 4, blockStart + blockSeg * 2.5f - plusBlock.height() / 2);
 		minusBlock.layer().setTranslation(width / 2 + minusBlock.width() / 4, blockStart + blockSeg * 2.5f - minusBlock.height() / 2);
 		timesBlock.layer().setTranslation((width - timesBlock.width()) / 2 , blockStart + blockSeg * 3.5f - timesBlock.height() * 5 / 4);
 		overBlock.layer().setTranslation((width - overBlock.width()) / 2 , blockStart + blockSeg * 3.5f + overBlock.height() / 4);
+	}
+	
+	private void createButtons(float blockStart, int themeColor) {
+		float circleSize = width * 0.6f;
+		buttonNumber = new Button(Constant.BUTTON_CIRCLE, circleSize, circleSize, true);
+		buttonNumber.setPosition(width / 2, circleSize * 0.6f);
+		buttonNumber.setTint(themeColor);
+		buttonNumber.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) listener.selectNumber(number);
+			}
+		});
+		layer.add(buttonNumber.layerAddable());
+		
+		float arrowX = width / 10;
+		buttonLess = new Button(Constant.BUTTON_LESS, width / 6, width / 3, false);
+		buttonLess.setPosition(arrowX, buttonNumber.y());
+		buttonLess.setTint(themeColor);
+		buttonLess.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					setNumber(number - 1);
+				}
+			}
+		});
+		layer.add(buttonLess.layerAddable());
+		
+		buttonMore = new Button(Constant.BUTTON_MORE, width / 6, width / 3, false);
+		buttonMore.setPosition(width - arrowX, buttonNumber.y());
+		buttonMore.setTint(themeColor);
+		buttonMore.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					setNumber(number + 1);
+				}
+			}
+		});
+		layer.add(buttonMore.layerAddable());
+		
+		textFormat = new TextFormat().withFont(graphics().createFont(
+				Constant.FONT_NAME, Style.PLAIN, buttonNumber.height() / 3));
+		numberLayer = graphics().createImageLayer();
+		numberLayer.setTranslation(buttonNumber.x(), buttonNumber.y());
+		layer.add(numberLayer);
+		refreshNumberSprite();
 	}
 	
 	public void setNumber(int number) {

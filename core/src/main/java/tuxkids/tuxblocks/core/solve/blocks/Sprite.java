@@ -4,6 +4,7 @@ import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
+import pythagoras.f.Rectangle;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.GameState.Stat;
@@ -35,6 +36,56 @@ public abstract class Sprite extends PlayNObject {
 	
 	protected void performAction(Action action) {
 		action.run(this);
+	}
+	
+	//to avoid anonymous class allocation, we make one static instance
+	private static class Search implements Action {
+		private Sprite sprite;
+		private boolean contains;
+		
+		Search set(Sprite sprite) {
+			this.sprite = sprite;
+			contains = false;
+			return this;
+		}
+		
+		@Override
+		public void run(Sprite sprite) {
+			if (sprite == this.sprite) contains = true;
+		}
+	}
+	private static Search search = new Search();
+	protected boolean contains(Sprite sprite) {
+		performAction(search.set(sprite));
+		return search.contains;
+	}
+	
+	//to avoid anonymous class allocation, we make one static instance
+	private static class Intersect implements Action {
+		private Rectangle rect = new Rectangle(), compareRect = new Rectangle();
+		private boolean contains;
+		
+		Intersect set(Sprite sprite) {
+			set(rect, sprite);
+			contains = false;
+			return this;
+		}
+		
+		void set(Rectangle rect, Sprite sprite) {
+			rect.setBounds(getGlobalTx(sprite.layer()), getGlobalTy(sprite.layer()), 
+					sprite.width(), sprite.height());
+		}
+		
+		@Override
+		public void run(Sprite sprite) {
+			set(compareRect, sprite);
+			contains |= compareRect.intersects(rect);
+		}
+	}
+	private static Intersect intersect = new Intersect();
+	public boolean intersects(Sprite sprite) {
+		performAction(intersect.set(sprite));
+		return intersect.contains;
 	}
 	
 	protected void setPreviewAdd(boolean previewAdd) {

@@ -50,7 +50,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 		controller.layer().setDepth(1);
 		setEquation(Equation.NOOP);
 		
-		toolbox = new Toolbox(controller, this, toolboxWidth(), height());
+		toolbox = new Toolbox(controller, this, toolboxWidth(), height(), state.themeColor());
 		layer.add(toolbox.layerAddable());
 	}
 

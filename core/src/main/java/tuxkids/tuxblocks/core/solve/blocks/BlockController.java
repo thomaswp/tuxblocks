@@ -2,6 +2,7 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import playn.core.CanvasImage;
 import playn.core.GroupLayer;
@@ -12,10 +13,23 @@ import playn.core.Font.Style;
 import playn.core.Pointer.Event;
 import playn.core.TextFormat;
 import playn.core.util.Clock;
+import tripleplay.particle.Emitter;
+import tripleplay.particle.Generator;
+import tripleplay.particle.Particles;
+import tripleplay.particle.TuxParticles;
+import tripleplay.particle.effect.Alpha;
+import tripleplay.particle.effect.Move;
+import tripleplay.particle.init.Color;
+import tripleplay.particle.init.Lifespan;
+import tripleplay.particle.init.TuxTransform;
+import tripleplay.particle.init.TuxVelocity;
 import tripleplay.util.Colors;
+import tripleplay.util.Interpolator;
+import tripleplay.util.Randoms;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.effect.MissileExplosion;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
@@ -35,6 +49,7 @@ public class BlockController extends PlayNObject {
 	public final static float EQ_BUFFER = 50;
 	public final static float EQ_THRESH = 5; // how far past the equals line you drag to cause a flip
 	private static final float DRAGGING_DEPTH = 1;
+	private static final int MAX_BLOCKS = 4;
 
 	private Parent parent;
 	private float width, height;
@@ -148,8 +163,6 @@ public class BlockController extends PlayNObject {
 	public void addExpression(Side side, BaseBlock expression) {
 		List<BaseBlock> blocks = getBlocks(side);
 		addExpression(blocks, expression, 0, 0, blocks.size());
-		equalsX = (leftSide.size() + 0.5f) / (baseBlocks.size() + 1) * width;
-		equals.setTranslation(equalsX, height / 2);
 		refreshEquationImage();
 	}
 	
@@ -159,6 +172,20 @@ public class BlockController extends PlayNObject {
 		expression.layer().setDepth(0);
 		side.add(index, expression);
 		expression.addBlockListener(listener);
+		refreshEquation = true;
+		refreshEquals();
+	}
+	
+	private void removeExpression(List<BaseBlock> side, BaseBlock expression) {
+		side.remove(expression);
+		refreshEquation = true;
+		refreshEquals();
+		expression.destroy();
+	}
+	
+	private void refreshEquals() {
+		equalsX = (leftSide.size() + 0.5f) / (baseBlocks.size() + 1) * width;
+		equals.setTranslation(equalsX, height / 2);
 	}
 	
 	private void swapExpression(List<BaseBlock> side, BaseBlock original, BaseBlock newExp) {
@@ -283,6 +310,7 @@ public class BlockController extends PlayNObject {
 		
 		if (dragging != null) dragging.paint(clock);
 		updatePosition();
+		particles.paint(clock);
 	}
 	
 	private void updateExpressionPositions(float base, float dt) {
@@ -304,7 +332,7 @@ public class BlockController extends PlayNObject {
 	}
 	
 	private boolean canDropOn(BaseBlock base, float x, float y) {
-		return base.contains(x, y) && base.canAccept(dragging);
+		return base.canAccept(dragging) && base.intersects(dragging);
 	}
 	
 	private void invertDragging(boolean refresh) {
@@ -318,6 +346,48 @@ public class BlockController extends PlayNObject {
 		dragging = block;
 	}
 	
+	private TuxParticles particles = new TuxParticles();
+	private void showInvertAnimation(float x, float y) {
+		int p = 30;
+		Emitter emitter = particles.createEmitter(p, CanvasUtils.createCircle(10, Colors.WHITE), layer);
+		emitter.generator = Generator.impulse(p);
+        emitter.initters.add(Lifespan.constant(1));
+        emitter.initters.add(Color.constant(Colors.WHITE));
+        emitter.initters.add(TuxTransform.layer(emitter.layer));
+        Randoms rando = Randoms.with(new Random());
+        emitter.initters.add(TuxVelocity.randomCircle(rando, 50));
+        emitter.effectors.add(new Move());
+        emitter.effectors.add(Alpha.byAge(Interpolator.EASE_OUT, 1, 0));
+        emitter.destroyOnEmpty();
+        emitter.layer.setTranslation(x - offX(), y - offY());
+        emitter.layer.setDepth(100);
+	}
+	
+	private void updateBlockHolders() {
+		if (!inBuildMode) return;
+		updateBlockHolder(leftSide, Side.Left);
+		updateBlockHolder(rightSide, Side.Right);
+	}
+	
+	private void updateBlockHolder(List<BaseBlock> blocks, Side side) {
+		int holders = 0;
+		BaseBlock lastHolder = null;
+		for (BaseBlock block : blocks) {
+			if (block instanceof BlockHolder) {
+				holders++;
+				if (block != draggingFrom) lastHolder = block;
+			}
+		}
+		if (holders == 0 && baseBlocks.size() < MAX_BLOCKS) {
+			BlockHolder holder = new BlockHolder();
+			float x = side == Side.Left ? - width / 2 : width * 3 / 2;
+			float y = height / 2 - Sprite.baseSize() / 2;
+			addExpression(blocks, holder, x, y, side == Side.Left ? 0 : blocks.size());
+		} else if (holders > 1) {
+			removeExpression(blocks, lastHolder);
+		}
+	}
+
 	private float getTouchX(Event event) {
 		return event.x() - offX();
 	}
@@ -344,7 +414,7 @@ public class BlockController extends PlayNObject {
 			
 			float x = getTouchX(event), y = getTouchY(event);
 			for (BaseBlock base : baseBlocks) {
-				if (base.contains(x, y)) {
+				if (base.contains(sprite)) {
 					draggingFrom = base;
 					break;
 				}
@@ -370,6 +440,7 @@ public class BlockController extends PlayNObject {
 				BlockHolder holder = new BlockHolder();
 				swapExpression(draggingFromSide, draggingFrom, holder);
 				draggingFrom = holder;
+				updateBlockHolders();
 			}
 			
 			
@@ -435,6 +506,8 @@ public class BlockController extends PlayNObject {
 					
 					swapExpression(getContaining(target), target, (BaseBlock) dragging);
 					target.layer().destroy();
+					
+					updateBlockHolders();
 				} else {
 					ModifierBlock added = target.addBlock(dragging, false);
 					if (added == null) {
@@ -493,6 +566,8 @@ public class BlockController extends PlayNObject {
 				if (invert) {
 					inverted = !inverted;
 					invertDragging(true);
+					showInvertAnimation(event.x() - (blockAnchorPX - 0.5f) * dragging.width(), 
+							event.y() - (blockAnchorPY - 0.5f) * dragging.height());
 				}
 			}
 		}
