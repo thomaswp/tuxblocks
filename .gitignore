@@ -8,6 +8,6 @@ ProgressLog.launch
 */target/
 objc/*
 html/gwt-unitCache/*
-html/war/WEB-INF/deploy/*
+html/war/*
 android/assets/*
 ios/assets/*
