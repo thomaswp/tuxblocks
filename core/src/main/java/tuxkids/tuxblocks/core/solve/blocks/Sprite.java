@@ -113,7 +113,7 @@ public abstract class Sprite extends PlayNObject {
 	}
 	
 	public final static float textSize() {
-		return Math.max(12, baseSize() / 5f);
+		return Math.max(8, baseSize() / 5f);
 	}
 	
 	protected static float lerpBase() {

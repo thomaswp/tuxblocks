@@ -54,7 +54,8 @@ public class BlockController extends PlayNObject {
 	private Parent parent;
 	private float width, height;
 	private GroupLayer layer;
-	private List<BaseBlock> leftSide = new ArrayList<BaseBlock>(), rightSide = new ArrayList<BaseBlock>();
+	private List<BaseBlock> leftSide = new ArrayList<BaseBlock>(), rightSide = new ArrayList<BaseBlock>(),
+			removingLeft = new ArrayList<BaseBlock>(), removingRight = new ArrayList<BaseBlock>();
 	@SuppressWarnings("unchecked")
 	private MultiList<BaseBlock> baseBlocks = new MultiList<BaseBlock>(leftSide, rightSide);
 	private BaseBlock draggingFrom, tempDraggingFrom;
@@ -180,7 +181,7 @@ public class BlockController extends PlayNObject {
 		side.remove(expression);
 		refreshEquation = true;
 		refreshEquals();
-		expression.destroy();
+//		expression.destroy();
 	}
 	
 	private void refreshEquals() {
@@ -306,13 +307,31 @@ public class BlockController extends PlayNObject {
 			sprite.paint(clock);
 		}
 		
-		updateExpressionPositions(0.98f, clock.dt());
+		updateExpressionPositions(0.99f, clock.dt());
+		updateRemoving(0.99f, clock.dt());
 		
 		if (dragging != null) dragging.paint(clock);
 		updatePosition();
 		particles.paint(clock);
 	}
 	
+	private void updateRemoving(float base, float dt) {
+		updateRemovingSide(removingLeft, -width / 2, base, dt);
+		updateRemovingSide(removingRight, width * 3 / 2, base, dt);
+	}
+	
+	private void updateRemovingSide(List<BaseBlock> list, float off, float base, float dt) {
+		for (int i = 0; i < list.size(); i++) {
+			BaseBlock removing = list.get(i);
+			removing.layer().setTx(lerpTime(removing.layer().tx(), off, base, dt, 1f));
+			if (removing.layer().tx() == off) {
+				removing.destroy();
+				list.remove(i--);
+				debug("removed");
+			}
+		}
+	}
+
 	private void updateExpressionPositions(float base, float dt) {
 		int i = 1;
 		for (BaseBlock sprite : baseBlocks) {
@@ -367,6 +386,7 @@ public class BlockController extends PlayNObject {
 		if (!inBuildMode) return;
 		updateBlockHolder(leftSide, Side.Left);
 		updateBlockHolder(rightSide, Side.Right);
+		updateBlockHolder(leftSide, Side.Left);
 	}
 	
 	private void updateBlockHolder(List<BaseBlock> blocks, Side side) {
@@ -385,6 +405,12 @@ public class BlockController extends PlayNObject {
 			addExpression(blocks, holder, x, y, side == Side.Left ? 0 : blocks.size());
 		} else if (holders > 1) {
 			removeExpression(blocks, lastHolder);
+			if (side == Side.Left) {
+				removingLeft.add(lastHolder);
+			} else {
+				removingRight.add(lastHolder);
+			}
+			blocks.remove(lastHolder);
 		}
 	}
 
@@ -440,7 +466,7 @@ public class BlockController extends PlayNObject {
 				BlockHolder holder = new BlockHolder();
 				swapExpression(draggingFromSide, draggingFrom, holder);
 				draggingFrom = holder;
-				updateBlockHolders();
+//				updateBlockHolders();
 			}
 			
 			
@@ -477,6 +503,7 @@ public class BlockController extends PlayNObject {
 				base.clearPreview();
 				if (canDropOn(base, x, y)) {
 					target = base;
+					break;
 				}
 			}
 			
@@ -507,7 +534,6 @@ public class BlockController extends PlayNObject {
 					swapExpression(getContaining(target), target, (BaseBlock) dragging);
 					target.layer().destroy();
 					
-					updateBlockHolders();
 				} else {
 					ModifierBlock added = target.addBlock(dragging, false);
 					if (added == null) {
@@ -519,6 +545,7 @@ public class BlockController extends PlayNObject {
 					}
 				}
 			}
+			updateBlockHolders();
 			
 			dragging = null;
 			draggingFrom = null;
@@ -539,7 +566,7 @@ public class BlockController extends PlayNObject {
 			BaseBlock lastHover = hoverSprite;
 			hoverSprite = null;
 			for (BaseBlock base : baseBlocks) {
-				if (canDropOn(base, x, y)) {
+				if (hoverSprite == null && canDropOn(base, x, y)) {
 					base.setPreview(true);
 					hoverSprite = base;
 				} else {
@@ -566,7 +593,7 @@ public class BlockController extends PlayNObject {
 				if (invert) {
 					inverted = !inverted;
 					invertDragging(true);
-					showInvertAnimation(event.x() - (blockAnchorPX - 0.5f) * dragging.width(), 
+					showInvertAnimation(equalsX, 
 							event.y() - (blockAnchorPY - 0.5f) * dragging.height());
 				}
 			}
