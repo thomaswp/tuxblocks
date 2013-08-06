@@ -15,7 +15,12 @@ public class HorizontalWall extends Tower {
 	}
 
 	@Override
-	public float damage() {
+	protected float baseDamage() {
+		return 0;
+	}
+	
+	@Override
+	protected float damagePerLevel() {
 		return 0;
 	}
 
@@ -52,6 +57,16 @@ public class HorizontalWall extends Tower {
 	@Override
 	public int commonness() {
 		return 1;
+	}
+
+	@Override
+	public int upgradeCost() {
+		return 0;
+	}
+	
+	@Override
+	public boolean canUpgrade() {
+		return false;
 	}
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class MultiList<T> implements Iterable<T> {
 	private List<List<? extends T>> lists = new ArrayList<List<? extends T>>();
-
+	
 	public MultiList(List<? extends T>... lists) {
 		for (List<? extends T> list : lists) this.lists.add(list);
 	}

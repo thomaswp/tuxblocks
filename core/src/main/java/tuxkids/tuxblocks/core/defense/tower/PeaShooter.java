@@ -16,13 +16,18 @@ public class PeaShooter extends Tower {
 	}
 
 	@Override
-	public float damage() {
+	protected float baseDamage() {
 		return 1;
+	}
+	
+	@Override
+	protected float damagePerLevel() {
+		return 0;
 	}
 
 	@Override
 	public int fireRate() {
-		return 500;
+		return 650 - upgradeLevel * 150;
 	}
 
 	@Override
@@ -53,6 +58,11 @@ public class PeaShooter extends Tower {
 	@Override
 	public int commonness() {
 		return 5;
+	}
+
+	@Override
+	public int upgradeCost() {
+		return 1;
 	}
 
 }

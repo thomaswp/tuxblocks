@@ -18,12 +18,15 @@ public class GameBackgroundSprite extends PlayNObject {
 	private static final int REMOVE_RECT_INTERVAL = 1500;
 	private final static int MAX_RECTS = 30;
 	
+	private final static float HUE_OFFSET_1 = 0.3f;
+	private final static float HUE_OFFSET_2 = 0.7f;
+	
 	private GroupLayer groupLayer;
 	private List<BackgroundSprite> 
 		backgroundSprites = new ArrayList<BackgroundSprite>(),
 		toRemove = new ArrayList<BackgroundSprite>();
 	private int rectTimer;
-	private int primaryColor;
+	private int primaryColor, secondaryColor, ternaryColor;
 	private float primaryHue;
 	private Vector offset = new Vector();
 	
@@ -39,8 +42,20 @@ public class GameBackgroundSprite extends PlayNObject {
 		return groupLayer;
 	}
 	
+	public float primaryHue() {
+		return primaryHue;
+	}
+	
 	public int primaryColor() {
 		return primaryColor;
+	}
+	
+	public int secondaryColor() {
+		return secondaryColor;
+	}
+	
+	public int ternaryColor() {
+		return ternaryColor;
 	}
 	
 	public void scroll(float x, float y) {
@@ -71,6 +86,8 @@ public class GameBackgroundSprite extends PlayNObject {
 	public void newThemeColor() {
 		primaryHue = (float)Math.random();
 		primaryColor = CanvasUtils.hsvToRgb(primaryHue, 1, 1);
+		secondaryColor = CanvasUtils.hsvToRgb(primaryHue + HUE_OFFSET_1, 1, 1);
+		ternaryColor = CanvasUtils.hsvToRgb(primaryHue + HUE_OFFSET_2, 1, 1);
 	}
 	
 	public void update(int delta) {
@@ -119,9 +136,9 @@ public class GameBackgroundSprite extends PlayNObject {
 			r = (float)point[4];
 			float h = hue;
 			if (r < 1f / 3) {
-				h = h + 0.7f;
+				h = h + HUE_OFFSET_1;
 			} else if (r < 2f / 3) {
-				h = h + 0.3f;
+				h = h + HUE_OFFSET_2;
 			}
 
 			float s = (float)Math.random() * 0.5f + 0.5f;

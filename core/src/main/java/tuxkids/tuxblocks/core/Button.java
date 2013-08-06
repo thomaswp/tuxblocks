@@ -168,6 +168,7 @@ public class Button extends PlayNObject implements Positioned {
 	}
 	
 	public void setEnabled(boolean enabled) {
+		if (this.enabled == enabled) return;
 		this.enabled = enabled;
 		refreshTint();
 	}

@@ -154,7 +154,7 @@ public class DefenseMenu extends MenuSprite {
 		private final ImageLayerTintable plusLayer;
 		private final ImageLayer numberLayer;
 		
-		private int money = -1;
+		private int upgrades = -1;
 		private int beatMS;
 		
 		public Upgrade(int width, int height) {
@@ -177,10 +177,10 @@ public class DefenseMenu extends MenuSprite {
 		}
 		
 		private void update(int delta) {
-			int m = state.money();
-			if (m != money) {
-				money = m;
-				String text = "" + money;
+			int m = state.upgrades();
+			if (m != upgrades) {
+				upgrades = m;
+				String text = "" + upgrades;
 				numberLayer.setImage(CanvasUtils.createString(
 						barTextFormat, text, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
@@ -190,6 +190,11 @@ public class DefenseMenu extends MenuSprite {
 		
 		private void paint(Clock clock) {
 			updateBeat(beatMS, layer);
+			updateAlpha(beatMS, plusLayer);
+			if (beatMS > 0) beatMS -= clock.dt();
+			if (state.upgrades() == 0) {
+				plusLayer.setAlpha(plusLayer.alpha() * 0.5f);
+			}
 		}
 	}
 	
@@ -265,22 +270,15 @@ public class DefenseMenu extends MenuSprite {
 		private final ImageLayer scoreLayer;
 		
 		private int score = -1;
-		private int scoreBeatMS;
+		private int beatMS;
 		
 		public Score(float height) {
 			super(graphics().createGroupLayer());
 			layer = (GroupLayer) layerAddable();
 			
-//			float h = scoreTextFormat.font.size();
-//			float p = (height - h * 2) / 3;
-			
 			scoreLayer = graphics().createImageLayer();
 			scoreLayer.setTy(height / 2);
 			layer.add(scoreLayer);
-			
-//			levelLayer = graphics().createImageLayer();
-//			levelLayer.setTy(height - p - h/2);
-//			layer.add(levelLayer);
 		}
 		
 		public void update(int delta) {
@@ -289,23 +287,13 @@ public class DefenseMenu extends MenuSprite {
 				scoreLayer.setImage(CanvasUtils.createString(
 						scoreTextFormat, "" + score, Colors.BLACK));
 				centerImageLayer(scoreLayer);
-				scoreBeatMS = BEAT_TIME;
+				beatMS = BEAT_TIME;
 			}
-			
-//			if (level != state.money()) {
-//				level = state.money();
-//				levelLayer.setImage(CanvasUtils.createString(
-//						scoreTextFormat, "+" + level, Colors.BLACK));
-//				centerImageLayer(levelLayer);
-//				levelBeatMS = BEAT_TIME;
-//			}
 		}
 		
 		public void paint(Clock clock) {
-			updateBeat(scoreBeatMS, scoreLayer);
-			if (scoreBeatMS > 0) scoreBeatMS -= clock.dt();
-//			updateBeat(levelBeatMS, levelLayer);
-//			if (levelBeatMS > 0) levelBeatMS -= clock.dt();
+			updateBeat(beatMS, scoreLayer);
+			if (beatMS > 0) beatMS -= clock.dt();
 		}
 	}
 

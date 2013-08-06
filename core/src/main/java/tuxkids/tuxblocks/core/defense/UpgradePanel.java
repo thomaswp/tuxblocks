@@ -5,30 +5,38 @@ import playn.core.GroupLayer;
 import playn.core.ImageLayer;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
+import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class UpgradePanel extends LayerWrapper {
 	
+	private final static float BUTTON_ALPHA = 0.8f;
+	
+	protected final Grid grid;
 	protected final GroupLayer layer;
 	protected final float cellSize;
-	protected final ImageLayer circleLayer;
+	protected final ImageLayer circleLayer; 
+	protected final ImageLayerTintable confirmLayer;
 	protected final Button buttonDelete, buttonUpgrade;
 	protected final int color;
+	
 	
 	protected Tower tower;
 	protected float targetAlpha = 1;
 	
-	public UpgradePanel(float cellSize, int color) {
+	public UpgradePanel(Grid grid, float cellSize, int color) {
 		super(graphics().createGroupLayer());
 		layer = (GroupLayer) layerAddable();
 		layer.setAlpha(targetAlpha = 0);
 		
+		this.grid = grid;
 		this.cellSize = cellSize;
 		this.color = color;
 		
@@ -38,7 +46,6 @@ public class UpgradePanel extends LayerWrapper {
 		circleLayer.setImage(CanvasUtils.createCircleCached(circleRad + circleThickness / 2, 
 				Color.argb(0, 0, 0, 0), circleThickness, Colors.LIGHT_GRAY));
 		circleLayer.setAlpha(0.5f);
-//		circleLayer.setInteractive(true);
 		centerImageLayer(circleLayer);
 		layer.add(circleLayer);
 		
@@ -46,13 +53,12 @@ public class UpgradePanel extends LayerWrapper {
 		buttonDelete = new Button(Constant.BUTTON_CANCEL, buttonSize, buttonSize, true);
 		buttonDelete.setPosition(-circleRad, 0);
 		buttonDelete.setTint(Colors.darker(color), color);
-		buttonDelete.layerAddable().setAlpha(0.8f);
+		buttonDelete.layerAddable().setAlpha(BUTTON_ALPHA);
 		buttonDelete.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (tower != null && inButton) {
-					tower.destroy();
-					setTower(null);
+					delete();
 				}
 			}
 		});
@@ -61,8 +67,48 @@ public class UpgradePanel extends LayerWrapper {
 		buttonUpgrade = new Button(Constant.BUTTON_UP, buttonSize, buttonSize, true);
 		buttonUpgrade.setPosition(circleRad, 0);
 		buttonUpgrade.setTint(Colors.darker(color), color);
-		buttonUpgrade.layerAddable().setAlpha(0.8f);
+		buttonUpgrade.layerAddable().setAlpha(BUTTON_ALPHA);
+		buttonUpgrade.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) upgrade();
+			}
+		});
 		layer.add(buttonUpgrade.layerAddable());
+		
+		float confirmSize = buttonSize / 4;
+		confirmLayer = new ImageLayerTintable();
+		confirmLayer.setImage(assets().getImage(Constant.IMAGE_CONFIRM));
+		confirmLayer.setSize(confirmSize, confirmSize);
+		confirmLayer.setDepth(1);
+		confirmLayer.setVisible(false);
+		confirmLayer.setTint(Colors.darker(color));
+		float offset = (buttonSize + confirmSize) / 2 * FloatMath.sqrt(0.5f);
+		confirmLayer.setTranslation(buttonDelete.x() + offset, 
+				buttonDelete.y() - offset);
+		centerImageLayer(confirmLayer);
+		layer.add(confirmLayer.layerAddable());
+	}
+
+	private boolean canUpgrade() {
+		return tower != null && tower.canUpgrade() && grid.gameState().upgrades() >= tower.upgradeCost();
+	}
+	
+	private void upgrade() {
+		if (!canUpgrade()) return;
+		
+		tower.upgrade();
+		grid.gameState().useUpgrades(tower.upgradeCost());
+	}
+	
+	private void delete() {
+//		if (confirmLayer.visible()) {
+			tower.destroy();
+			setTower(null);
+//		} else {
+//			confirmLayer.setVisible(true);
+//			confirmLayer.setAlpha(0);
+//		}
 	}
 	
 	public void setTower(Tower tower) {
@@ -71,8 +117,10 @@ public class UpgradePanel extends LayerWrapper {
 			fadeOut();
 		} else {
 			fadeIn();
+			setTranslation(tower.position().x, tower.position().y);
 		}
 		this.tower = tower;
+		confirmLayer.setVisible(false);
 	}
 	
 	protected void fadeIn() {
@@ -85,7 +133,17 @@ public class UpgradePanel extends LayerWrapper {
 		targetAlpha = 0;
 	}
 	
+	public void update(int delta) {
+		boolean canUpgrade = canUpgrade();
+		buttonUpgrade.setEnabled(canUpgrade);
+		buttonUpgrade.layerAddable().setAlpha(canUpgrade ? BUTTON_ALPHA : 0.2f);
+	}
+	
 	public void paint(Clock clock) {
 		layer.setAlpha(lerpTime(layer.alpha(), targetAlpha, 0.99f, clock.dt(), 0.01f));
+		layer.setVisible(layer.alpha() != 0);
+		if (confirmLayer.visible()) {
+			confirmLayer.setAlpha(lerpTime(confirmLayer.alpha(), 1, 0.99f, clock.dt(), 0.01f));	
+		}
 	}
 }

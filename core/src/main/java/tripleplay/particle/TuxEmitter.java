@@ -13,6 +13,7 @@ import playn.core.ImmediateLayer.Renderer;
 import playn.core.PlayN;
 import playn.core.Surface;
 import tripleplay.util.Destroyable;
+import tuxkids.tuxblocks.core.GLStatus;
 
 /**
  * Emits and updates particles according to a particle system configuration.
@@ -34,12 +35,12 @@ public class TuxEmitter extends Emitter
 				if (renderer != null) renderer.render(surface, _buffer, image, effectors, now);
 			}
 		});
-    	if (!GLStatus.enabled()) {
+//    	if (!GLStatus.enabled()) {
         	layer.setVisible(false);
         	renderer = new CanvasParticleRenderer(image);
-    	} else {
-    		renderer = null;
-    	}
+//    	} else {
+//    		renderer = null;
+//    	}
     }
     
     @Override

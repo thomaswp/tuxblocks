@@ -16,6 +16,7 @@ public class Constant {
 	public final static String BUTTON_LESS = IMAGE_PATH + "less.png";
 	public final static String BUTTON_MORE = IMAGE_PATH + "more.png";
 	public static final String IMAGE_HEART = IMAGE_PATH + "heart.png";
+	public static final String IMAGE_CONFIRM = IMAGE_PATH + "confirm.png";
 	public static final String IMAGE_HOURGLASS = IMAGE_PATH + "hourglass.png";
 	public static final String IMAGE_UPGRADE = IMAGE_PATH + "upgrade.png";
 	

@@ -9,8 +9,8 @@ import playn.core.Layer;
 import playn.core.Layer.HitTester;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
-import tripleplay.particle.GLStatus;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.GLStatus;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 

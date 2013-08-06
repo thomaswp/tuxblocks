@@ -30,6 +30,11 @@ public class GameState {
 			return symbol;
 		}
 	}
+
+	private static final int POINTS_PER_UPGRADE = 500;
+	private static final int SOLVE_EXP_BASE = 10;
+	private static final int SOLVE_EXP_PER_LVL = 5;
+	private static final int EXP_TO_POINTS_FACTOR = 1;
 	
 	private int[] towerCounts;
 	private List<Problem> problems;
@@ -42,7 +47,8 @@ public class GameState {
 	private int[] statExps = new int[Stat.values().length];
 	private int lives = 20;
 	private int score = 0;
-	private int money = 0;
+	private int upgrades = 20;
+	private int earnedUpgrades = 0;
 	private int timeBetweenRounds = 31;
 	private Level level;
 	
@@ -50,8 +56,8 @@ public class GameState {
 		return level;
 	}
 	
-	public int money() {
-		return money;
+	public int upgrades() {
+		return upgrades;
 	}
 	
 	public int score() {
@@ -68,7 +74,7 @@ public class GameState {
 
 
 	public void addExpForLevel(Stat stat, int level) {
-		addExp(stat, 15 + level * 2);
+		addExp(stat, SOLVE_EXP_BASE + level * SOLVE_EXP_PER_LVL);
 	}
 	
 	public void addExp(Stat stat, int exp) {
@@ -79,6 +85,7 @@ public class GameState {
 			statExps[index] -= nextLevelExp;
 			statLevels[index]++;
 		}
+		addPoints(exp * EXP_TO_POINTS_FACTOR);
 	}
 
 	private int getNextLevelExp(int level) {
@@ -105,6 +112,18 @@ public class GameState {
 		return background().primaryColor();
 	}
 	
+	public float themeHue() {
+		return background().primaryHue();
+	}
+	
+	public int secondaryColor() {
+		return background().secondaryColor();
+	}
+	
+	public int ternaryColor() {
+		return background().ternaryColor();
+	}
+	
 	public void newThemeColor() {
 		background.newThemeColor();
 	}
@@ -122,8 +141,10 @@ public class GameState {
 		towerCounts = new int[Tower.towerCount()];
 		problems = new ArrayList<Problem>();
 		level = Level.generate(timeBetweenRounds);
-		addItem(TowerType.PeaShooter, 2);
-		addItem(TowerType.BigShooter, 2);
+		addItem(TowerType.PeaShooter, 4);
+		addItem(TowerType.BigShooter, 4);
+		addItem(TowerType.Zapper, 4);
+		addItem(TowerType.Freezer, 4);
 		for (int i = 0; i < 8; i++) {
 			addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
 		}
@@ -205,5 +226,14 @@ public class GameState {
 
 	public void addPoints(int points) {
 		score += points;
+		int earned = score / POINTS_PER_UPGRADE;
+		if (earned != earnedUpgrades) {
+			upgrades += earned - earnedUpgrades;
+			earnedUpgrades = earned;
+		}
+	}
+
+	public void useUpgrades(int cost) {
+		upgrades -= cost;
 	}
 }

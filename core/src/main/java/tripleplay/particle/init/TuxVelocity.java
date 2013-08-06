@@ -4,10 +4,10 @@ import static playn.core.PlayN.graphics;
 import pythagoras.f.FloatMath;
 import pythagoras.f.MathUtil;
 import pythagoras.f.Vector;
-import tripleplay.particle.GLStatus;
 import tripleplay.particle.Initializer;
 import tripleplay.particle.ParticleBuffer;
 import tripleplay.util.Randoms;
+import tuxkids.tuxblocks.core.GLStatus;
 
 public class TuxVelocity  {
 	/**
@@ -96,7 +96,8 @@ public class TuxVelocity  {
 	public static Initializer increment (final float dx, final float dy) {
         return new Initializer() {
             @Override public void init (int index, float[] data, int start) {
-                float scale = GLStatus.enabled() ? graphics().ctx().scale.factor : 1;
+//                float scale = GLStatus.enabled() ? graphics().ctx().scale.factor : 1;
+                float scale = 1;
                 data[start + ParticleBuffer.VEL_X] += dx * scale;
                 data[start + ParticleBuffer.VEL_Y] += dy * scale;
             }
@@ -106,7 +107,8 @@ public class TuxVelocity  {
     protected static abstract class VelocityInitializer extends Initializer {
         @Override public void init (int index, float[] data, int start) {
             initVelocity(_vel);
-            float scale = GLStatus.enabled() ? graphics().ctx().scale.factor : 1;
+//            float scale = GLStatus.enabled() ? graphics().ctx().scale.factor : 1;
+            float scale = 1;
             // TODO: account for device orientation
             data[start + ParticleBuffer.VEL_X] = _vel.x * scale;
             data[start + ParticleBuffer.VEL_Y] = _vel.y * scale;

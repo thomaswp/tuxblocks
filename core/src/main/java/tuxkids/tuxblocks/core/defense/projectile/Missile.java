@@ -6,6 +6,12 @@ import tuxkids.tuxblocks.core.effect.MissileExplosion;
 
 public class Missile extends BodyProjectile {
 
+	private int level;
+	
+	public Missile(int level) {
+		this.level = level;
+	}
+	
 	@Override
 	public float maxSpeed() {
 		return 0.1f;
@@ -25,6 +31,6 @@ public class Missile extends BodyProjectile {
 	@Override
 	public void onFinish() {
 		super.onFinish();
-		new MissileExplosion(grid, position);
+		new MissileExplosion(grid, position, level);
 	}
 }

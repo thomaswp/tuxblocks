@@ -1,4 +1,4 @@
-package tripleplay.particle;
+package tuxkids.tuxblocks.core;
 
 import playn.core.PlayN;
 

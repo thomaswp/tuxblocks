@@ -27,13 +27,18 @@ public class Zapper extends Tower {
 	}
 
 	@Override
-	public float damage() {
+	protected float baseDamage() {
 		return 8;
+	}
+	
+	@Override
+	protected float damagePerLevel() {
+		return 1;
 	}
 
 	@Override
 	public int fireRate() {
-		return 1500;
+		return 1700 - 200 * upgradeLevel;
 	}
 
 	@Override
@@ -43,7 +48,9 @@ public class Zapper extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		return new Lightning(4, 0.6f, 0.6f);
+		return new Lightning(3 + upgradeLevel, 
+				0.5f + 0.1f * upgradeLevel, 
+				0.5f + 0.1f * upgradeLevel);
 	}
 
 	@Override
@@ -129,5 +136,10 @@ public class Zapper extends Tower {
 			return new ImageKey().set(cellSize, color);
 		}
 		
+	}
+
+	@Override
+	public int upgradeCost() {
+		return 3;
 	}
 }

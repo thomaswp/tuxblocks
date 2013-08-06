@@ -16,13 +16,18 @@ public class BigShooter extends Tower {
 	}
 
 	@Override
-	public float damage() {
+	protected float baseDamage() {
 		return 5;
+	}
+	
+	@Override
+	protected float damagePerLevel() {
+		return 2;
 	}
 
 	@Override
 	public int fireRate() {
-		return 1500;
+		return 1500 - (upgradeLevel - 1) * 100;
 	}
 
 	@Override
@@ -32,7 +37,7 @@ public class BigShooter extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		return new Missile();
+		return new Missile(upgradeLevel - 1);
 	}
 
 	@Override
@@ -57,6 +62,11 @@ public class BigShooter extends Tower {
 	
 	@Override
 	public float splashRadius() {
-		return 1.4f;
+		return 1.1f + 0.5f * upgradeLevel;
+	}
+
+	@Override
+	public int upgradeCost() {
+		return 2;
 	}
 }

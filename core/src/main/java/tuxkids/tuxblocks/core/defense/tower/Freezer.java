@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core.defense.tower;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.projectile.Snow;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
+import tuxkids.tuxblocks.core.defense.walker.buff.Buff;
 import tuxkids.tuxblocks.core.defense.walker.buff.Frozen;
 
 public class Freezer extends Tower {
@@ -18,8 +19,13 @@ public class Freezer extends Tower {
 	}
 
 	@Override
-	public float damage() {
+	protected float baseDamage() {
 		return 0.2f;
+	}
+	
+	@Override
+	protected float damagePerLevel() {
+		return 0.1f;
 	}
 
 	@Override
@@ -59,11 +65,27 @@ public class Freezer extends Tower {
 	
 	@Override
 	public float splashRadius() {
-		return 0.7f;
+		return 0.5f + 0.2f * upgradeLevel;
 	}
 
 	@Override
 	public void addBuffs(Walker walker) {
-		walker.addBuff(new Frozen(), true);
+		final float mod = 0.5f - 0.1f * (upgradeLevel - 1);
+		walker.addBuff(new Buff() {
+			@Override
+			public float modifySpeed(float dt) {
+				return dt * mod;
+			}
+			
+			@Override
+			protected int lifespan() {
+				return 1000;
+			}
+		}, true);
+	}
+
+	@Override
+	public int upgradeCost() {
+		return 2;
 	}
 }

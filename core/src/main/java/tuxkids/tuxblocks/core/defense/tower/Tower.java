@@ -22,6 +22,8 @@ import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public abstract class Tower extends DiscreteGridObject {
+
+	private static final int SELL_MULTIPLIER = 100;
 	
 	protected ImageLayerTintable layer;
 	
@@ -30,19 +32,24 @@ public abstract class Tower extends DiscreteGridObject {
 	private int id;
 	private Walker lastTarget;
 	protected boolean destroyed;
+	protected int upgradeLevel = 1;
 	
 	public abstract int rows();
 	public abstract int cols();
-	public abstract float damage();
 	public abstract int fireRate();
 	public abstract float range();
 	public abstract Projectile createProjectile();
 	public abstract Tower copy();
 	public abstract String name();
 	public abstract int cost();
+	public abstract int upgradeCost();
 	public abstract int commonness();
+
+	protected abstract float baseDamage();
+	protected abstract float damagePerLevel();
 	
 	private final static List<TowerType> towerBag;
+
 	static {
 		towerBag = new ArrayList<TowerType>();
 		for (TowerType type : TowerType.values()) 
@@ -99,6 +106,14 @@ public abstract class Tower extends DiscreteGridObject {
 	public int id() {
 		return id;
 	}
+	
+	public boolean canUpgrade() {
+		return upgradeLevel < 3;
+	}
+	
+	public float damage() {
+		return baseDamage() + damagePerLevel() * (upgradeLevel - 1);
+	}
 
 	public static TowerType randomTower() {
 		return towerBag.get((int)(Math.random() * towerBag.size()));
@@ -141,6 +156,12 @@ public abstract class Tower extends DiscreteGridObject {
 	public void destroy() {
 		destroyed = true;
 		layer.destroy();
+		for (int i = 0; i < rows(); i++) {
+			for (int j = 0; j < cols(); j++) {
+				grid.getPassability()[i + coordinates.x][j + coordinates.y] = true;
+			}
+		}
+		grid.addPoints((this.cost() + this.upgradeCost() * (upgradeLevel - 1)) * SELL_MULTIPLIER);
 	}
 	
 	public Tower preview(Grid grid) {
@@ -149,7 +170,7 @@ public abstract class Tower extends DiscreteGridObject {
 		layer = new ImageLayerTintable(
 				createImage(grid.cellSize(), 
 						Colors.WHITE));
-		layer.setTint(grid.towerColor());
+		updateColor();
 		return this;
 	}
 	
@@ -202,6 +223,24 @@ public abstract class Tower extends DiscreteGridObject {
 	@Override
 	public void paint(Clock clock) {
 		fireTimer += clock.dt();
+	}
+	
+	public void upgrade() {
+		upgradeLevel++;
+		updateColor();
+	}
+	
+	protected void updateColor() {
+		float hue = grid.gameState().themeHue();
+		float satDif = 0.3f;
+		float valDif = 0.1f;
+		if (upgradeLevel == 1) {
+			layer.setTint(CanvasUtils.hsvToRgb(hue, 1 - 2 * satDif, 1));
+		} else if (upgradeLevel == 2) {
+			layer.setTint(CanvasUtils.hsvToRgb(hue, 1 - satDif, 1 - valDif));
+		} else {
+			layer.setTint(CanvasUtils.hsvToRgb(hue, 1, 1 - 2 * valDif));
+		}
 	}
 	
 	protected boolean fire() {

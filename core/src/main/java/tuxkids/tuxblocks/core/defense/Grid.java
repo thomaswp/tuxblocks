@@ -6,6 +6,7 @@ import java.util.List;
 
 import playn.core.Canvas;
 import playn.core.CanvasImage;
+import playn.core.Color;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
@@ -28,33 +29,40 @@ import tuxkids.tuxblocks.core.defense.round.Round;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.effect.Effect;
+import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
 public class Grid extends PlayNObject {
 
 	private final static boolean SHOW_GRID = false;
 	private final static int DOUBLE_CLICK = 300;
+	private final static int LONG_CLICK = 700;
 
 	private final int cellSize;
-	private int rows, cols;
-	private GroupLayer layer, gridLayer, overlayLayer;
-	private ImageLayer gridSprite;
-	private boolean[][] passability;
-	private List<Walker> walkers = new ArrayList<Walker>();
-	private List<Projectile> projectiles = new ArrayList<Projectile>();
-	private List<Tower> towers = new ArrayList<Tower>();
-	private List<Effect> effects = new ArrayList<Effect>();
+	private final int rows, cols;
+	private final GroupLayer layer, gridLayer, overlayLayer;
+	private final ImageLayer gridSprite, selectorLayer;
+	private final boolean[][] passability;
+	private final UpgradePanel upgradePanel;
+	private final List<Walker> walkers = new ArrayList<Walker>();
+	private final List<Projectile> projectiles = new ArrayList<Projectile>();
+	private final List<Tower> towers = new ArrayList<Tower>();
+	private final List<Effect> effects = new ArrayList<Effect>();
 	@SuppressWarnings("unchecked")
-	private MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers, effects);
-	private Point walkerStart, walkerDestination;
+	private final MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers, effects);
+	private final Point walkerStart, walkerDestination;
+	private final Particles particles;
+	private final GameState state;
+	
 	private Tower toPlace;
 	private ImageLayer toPlaceRadius;
 	private List<Point> currentPath;
 	private float targetAlpha = 1;
 	private int towerColor;
-	private Particles particles;
-	private GameState state;
 	private DoubleClickListener doubleClickListener;
+	private boolean holdingClick;
+	private int startLongClick;
+	private Point selectedPoint = new Point();
 	
 	public void setDoubleClickListener(DoubleClickListener doubleClickListener) {
 		this.doubleClickListener = doubleClickListener;
@@ -104,6 +112,10 @@ public class Grid extends PlayNObject {
 		return cellSize;
 	}
 
+	public GameState gameState() {
+		return state;
+	}
+
 	public void setTowerColor(int themeColor) {
 		this.towerColor = themeColor;
 	}
@@ -128,7 +140,7 @@ public class Grid extends PlayNObject {
 		overlayLayer.setDepth(1);
 		layer.add(overlayLayer);
 
-		upgradePanel = new UpgradePanel(cellSize, state.themeColor());
+		upgradePanel = new UpgradePanel(this, cellSize, state.themeColor());
 		upgradePanel.setDepth(10);
 		layer.add(upgradePanel.layerAddable());
 		
@@ -145,8 +157,16 @@ public class Grid extends PlayNObject {
 			passability[rows - 1][i] = false;
 		}
 		refreshPath();
-		createGridSprite();
+		gridSprite = createGridSprite();
 
+		selectorLayer = graphics().createImageLayer();
+		selectorLayer.setImage(CanvasUtils.createCircle(cellSize, Color.argb(0, 0, 0, 0), cellSize / 3, Colors.GRAY));
+		selectorLayer.setAlpha(0.75f);
+		selectorLayer.setVisible(false);
+		selectorLayer.setDepth(10);
+		centerImageLayer(selectorLayer);
+		layer.add(selectorLayer);
+		
 		particles = new TuxParticles();
 	}
 
@@ -187,6 +207,8 @@ public class Grid extends PlayNObject {
 		}
 
 		updateToPlace();
+		
+		upgradePanel.update(delta);
 	}
 
 	public void paint(Clock clock) {
@@ -197,6 +219,17 @@ public class Grid extends PlayNObject {
 		}
 		particles.paint(clock);
 		upgradePanel.paint(clock);
+		updateSelecting();
+	}
+	
+	private void updateSelecting() {
+		if (holdingClick && PlayN.tick() - startLongClick > LONG_CLICK) {
+			selectorLayer.setVisible(true);
+			selectorLayer.setTranslation((selectedPoint.y + 0.5f) * cellSize, 
+					(selectedPoint.x + 0.5f) * cellSize);
+		} else {
+			selectorLayer.setVisible(false);
+		}
 	}
 
 	private void refreshPath() {
@@ -208,7 +241,7 @@ public class Grid extends PlayNObject {
 		gridLayer.add(walker.layerAddable());
 	}
 
-	private void createGridSprite() {
+	private ImageLayer createGridSprite() {
 		if (gridSprite != null) {
 			gridLayer.remove(gridSprite);
 		}
@@ -235,7 +268,7 @@ public class Grid extends PlayNObject {
 				if (SHOW_GRID) canvas.strokeRect(x, y, cellSize, cellSize);
 			}
 		}
-		gridSprite = graphics().createImageLayer(image);
+		ImageLayer gridSprite = graphics().createImageLayer(image);
 		//gridSprite.setAlpha(0.2f);
 		gridLayer.add(gridSprite);
 		gridSprite.setDepth(-1);
@@ -246,6 +279,9 @@ public class Grid extends PlayNObject {
 			@Override
 			public void onPointerStart(Event event) { 
 				hideUpgradePanel();
+				startLongClick = PlayN.tick();
+				holdingClick = true;
+				updateDragPos(event);
 			}
 			
 			@Override
@@ -260,30 +296,58 @@ public class Grid extends PlayNObject {
 					lastClick = time;
 				}
 				hideUpgradePanel();
+				holdingClick = false;
+				
+				if (time - startLongClick > LONG_CLICK) {
+					for (Tower tower : towers) {
+						int rMin = tower.coordinates().x;
+						int rMax = rMin + tower.rows() - 1;
+						int cMin = tower.coordinates().y;
+						int cMax = cMin + tower.cols() - 1;
+						if (selectedPoint.x >= rMin && selectedPoint.x <= rMax &&
+								selectedPoint.y >= cMin && selectedPoint.y <= cMax) {
+							upgradePanel.setTower(tower);
+							break;
+						}
+					}
+				}
 			}
 			
 			@Override
-			public void onPointerDrag(Event event) { }
+			public void onPointerDrag(Event event) {
+				updateDragPos(event);
+			}
+			
+			private void updateDragPos(Event event) {
+				float placeX = getPlaceX(event.x());
+				float placeY = getPlaceY(event.y());
+				getCell(placeX, placeY, selectedPoint);
+			}
 			
 			@Override
 			public void onPointerCancel(Event event) { }
 		});
+		
+		return gridSprite;
 	}
 	
 	public void hideUpgradePanel() {
 		upgradePanel.setTower(null);
 	}
 	
-	private UpgradePanel upgradePanel;
 	public void towerClicked(Tower tower) {
-		upgradePanel.setTranslation(tower.position().x, tower.position().y);
 		upgradePanel.setTower(tower);
 	}
 
-	public Point getCell(float x, float y) {
+	public Point getCell(float x, float y, Point point) {
 		int r = Math.min(Math.max((int)y / cellSize, 0), rows - 1);
 		int c = Math.min(Math.max((int)x / cellSize, 0), cols - 1);
-		return new Point(r, c);
+		point.setLocation(r, c);
+		return point;
+	}
+	
+	public Point getCell(float x, float y) {
+		return getCell(x, y, new Point());
 	}
 
 	public Point getCell(float x, float y, float width, float height) {
@@ -292,13 +356,13 @@ public class Grid extends PlayNObject {
 
 	private float getPlaceX(float globalX) {
 		float placeX = (globalX - getGlobalTx(gridLayer)) / getGlobalScaleX(gridLayer);
-		if (PlayN.platform().touch().hasTouch()) placeX -= width() / 20;
+		if (PlayN.platform().touch().hasTouch()) placeX -= cellSize() * 1.5;
 		return  placeX;
 	}
 
 	private float getPlaceY(float globalY) {
 		float placeY = (globalY - getGlobalTy(gridLayer)) / getGlobalScaleY(gridLayer);
-		if (PlayN.platform().touch().hasTouch()) placeY -= width() / 20;
+		if (PlayN.platform().touch().hasTouch()) placeY -= cellSize() * 1.5;
 		return  placeY;
 	}
 
@@ -313,6 +377,8 @@ public class Grid extends PlayNObject {
 		centerImageLayer(toPlaceRadius);
 		gridLayer.add(toPlaceRadius);
 		updateToPlace();
+		
+		upgradePanel.setTower(null);
 	}
 
 	public void updatePlacement(float globalX, float globalY) {
