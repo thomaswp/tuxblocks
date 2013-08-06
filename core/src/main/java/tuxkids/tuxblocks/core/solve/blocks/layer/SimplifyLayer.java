@@ -14,6 +14,8 @@ import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Cache;
+import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite;
@@ -68,13 +70,18 @@ public class SimplifyLayer extends LayerWrapper {
 	private void addSimplifyButton() {
 		if (simplifyImage == null) {
 			float radius = Sprite.modSize() * 0.35f;
+			Image image = CanvasUtils.createCircleCached(radius, Colors.GRAY, 1, Colors.BLACK);
 			if (PlayN.touch().hasTouch()) {
-				simplifyImage = graphics().createImage(radius * 3f, radius * 3f);
-				Canvas canvas = ((CanvasImage) simplifyImage).canvas();
-				Image image = CanvasUtils.createCircle(radius, Colors.GRAY, 1, Colors.BLACK);
-				canvas.drawImage(image, (simplifyImage.width() - image.width()) / 2, (simplifyImage.height() - image.height()) / 2);
+				Key key = Key.fromClass(SimplifyLayer.class, radius);
+				simplifyImage = Cache.getImage(key);
+				if (simplifyImage == null) {
+					simplifyImage = graphics().createImage(radius * 3f, radius * 3f);
+					Canvas canvas = ((CanvasImage) simplifyImage).canvas();
+					canvas.drawImage(image, (simplifyImage.width() - image.width()) / 2, (simplifyImage.height() - image.height()) / 2);
+					Cache.putImage(key, simplifyImage);
+				}
 			} else {
-				simplifyImage = CanvasUtils.createCircle(radius, Colors.GRAY, 1, Colors.BLACK);
+				simplifyImage = image;
 			}
 		}
 		ImageLayer simplifyButton = graphics().createImageLayer(simplifyImage);

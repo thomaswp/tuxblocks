@@ -386,7 +386,7 @@ public class DefenseMenu extends MenuSprite {
 			layer.add(levelLayer);
 			
 			strokWidth = 3;
-			barBG = graphics().createImageLayer(CanvasUtils.createRoundRect(width - TEXT_SPACE * 2, 
+			barBG = graphics().createImageLayer(CanvasUtils.createRoundRectCached(width - TEXT_SPACE * 2, 
 					height, height * 0.2f, Color.argb(0, 0, 0, 0), strokWidth, Colors.BLACK));
 			barBG.setTranslation(TEXT_SPACE, (height - barBG.height()) / 2);
 			layer.add(barBG);

@@ -29,6 +29,8 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
+import tuxkids.tuxblocks.core.layers.NumberLayer;
+import tuxkids.tuxblocks.core.layers.NumberLayer.NumberBitmapFont;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
@@ -38,11 +40,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	private int SPACING = 150;
 	private final static int MAX_NUMS = 70;
-	private final static int MAX_SPRITE_CREATE_PER_FRAME = 10;
+	private final static int MAX_SPRITE_CREATE_PER_FRAME = 100;
 	public final static int ANY_ANSWER = Integer.MAX_VALUE;
 	
-	private List<Point> numberPoints = new ArrayList<Point>();
-	private List<ImageLayer> numberImages = new ArrayList<ImageLayer>();
 	private TextFormat numberFormat, problemFormat;
 	private Point selectedPoint, possibleSelectedPoint;
 	private Vector velocity = new Vector();
@@ -62,7 +62,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private Button buttonBack, buttonCenter;
 	private Image backImageOk, backImageBack, backImageCancel;
 	private Point recenterPoint = new Point();
-	private ImageLayerTintable selectedNumberLayer;
+
+	private List<Point> numberPoints = new ArrayList<Point>();
+	private List<NumberLayer> numberImages = new ArrayList<NumberLayer>();
+	private NumberLayer selectedNumberLayer;
+	private NumberBitmapFont bitmapFont, bitmapFontColored;
 	
 	public Integer selectedAnswer() {
 		if (selectedPoint == null) return null;
@@ -95,6 +99,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		lastPosition.set(position);
 		numberFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3));
+		bitmapFont = new NumberBitmapFont(numberFormat, Colors.WHITE);
+		bitmapFontColored = new NumberBitmapFont(numberFormat, themeColor);
+		
 		problemFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3 * 0.8f / problem.lines()));
 		backgroundLayer = graphics().createGroupLayer();
@@ -107,9 +114,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - menu.height() / 2);
 		backgroundLayer.setTranslation(0, menu.height() / 2);
 		
-		selectedNumberLayer = new ImageLayerTintable();
+		selectedNumberLayer = new NumberLayer(bitmapFontColored);
 		selectedNumberLayer.setDepth(15);
-		selectedNumberLayer.setTint(themeColor);
 		foregroundLayer.add(selectedNumberLayer.layerAddable());
 		
 		update(0);
@@ -231,15 +237,15 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		
 		selectedNumberLayer.setVisible(false);
 		for (int i = 0; i < numberImages.size(); i++) {
-			ImageLayer layer = numberImages.get(i);
+			NumberLayer layer = numberImages.get(i);
 			Point p = numberPoints.get(i);
 			float dx = position.x - p.x * SPACING;
 			float dy = position.y - p.y * SPACING;
 			float distance = FloatMath.sqrt(dx * dx + dy * dy);
-			float alpha = 1 - Math.min(distance / SPACING / 5, 1);
+			float alpha = 1 - Math.min(distance / SPACING / 3.5f, 1);
 			float preAlpha = layer.alpha();
 			if (p.equals(selectedPoint)) {
-				selectedNumberLayer.setImage(layer.image());
+				selectedNumberLayer.setNumber(layer.number());
 				selectedNumberLayer.setTranslation(layer.tx(), layer.ty());
 				selectedNumberLayer.setOrigin(layer.width() / 2, layer.height() / 2);
 				selectedNumberLayer.setVisible(true);
@@ -247,7 +253,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			} else {
 				layer.setVisible(true);
 			}
-			layer.setAlpha(PlayNObject.lerpTime(preAlpha, alpha, 0.995f, clock.dt()));
+//			layer.setAlpha(PlayNObject.lerpTime(preAlpha, alpha, 0.995f, clock.dt()));
+			layer.setAlpha(alpha);
 		}
 		
 		if (selectedPoint == null) {
@@ -262,10 +269,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		foregroundLayer.setTranslation(-position.x, -position.y);
 	}
 	
-	private ImageLayer createNumberSprite(Point p) {
+	private NumberLayer createNumberSprite(Point p) {
 		int index = numberPoints.indexOf(p);
 		if (index >= 0) {
-			ImageLayer layer = numberImages.remove(index);
+			NumberLayer layer = numberImages.remove(index);
 			numberImages.add(layer);
 			Point point = numberPoints.remove(index);
 			numberPoints.add(point);
@@ -278,31 +285,26 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		createsSpritesThisFrame++;
 
 		p = p.clone();
-		
-		int border = 0;
-		TextLayout layout = PlayN.graphics().layoutText("" + getNumber(p), numberFormat);
-		final CanvasImage image = graphics().createImage(layout.width() + border * 2, 
-				layout.height() + border * 2);
-		image.canvas().setFillColor(Colors.WHITE);
-		image.canvas().fillText(layout, border, border);
-		ImageLayer layer = graphics().createImageLayer(image);
-		layer.setOrigin(image.width() / 2, image.height() / 2);
+
+		final NumberLayer layer = new NumberLayer(bitmapFont);
+		layer.setNumber(getNumber(p));
+		layer.setOrigin(layer.width() / 2, layer.height() / 2);
 		layer.setTranslation(p.x * SPACING, p.y * SPACING);
 		layer.addListener(new NumberListener(p));
 		layer.setAlpha(0);
 		layer.setHitTester(new HitTester() {
 			@Override
-			public Layer hitTest(Layer layer, pythagoras.f.Point p) {
-				if (p.distance(image.width() / 2, image.height() / 2) < SPACING / 2.5f) return layer;
+			public Layer hitTest(Layer l, pythagoras.f.Point p) {
+				if (p.distance(layer.width() / 2, layer.height() / 2) < SPACING / 2.5f) return l;
 				return null;
 			}
 		});
-		foregroundLayer.add(layer);
+		foregroundLayer.add(layer.layerAddable());
 		numberImages.add(layer);
 		numberPoints.add(p);
 		
 		if (numberImages.size() > MAX_NUMS) {
-			ImageLayer rem = numberImages.remove(0);
+			NumberLayer rem = numberImages.remove(0);
 			numberPoints.remove(0);
 			rem.destroy();
 		}

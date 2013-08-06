@@ -197,6 +197,8 @@ public abstract class PlayNObject {
 		Layer parent = layer;
 		float tx = 0;
 		while (parent != null) {
+			tx -= parent.originX();
+			tx *= parent.scaleX();
 			tx += parent.tx();
 			parent = parent.parent();
 		}
@@ -207,10 +209,32 @@ public abstract class PlayNObject {
 		Layer parent = layer;
 		float ty = 0;
 		while (parent != null) {
+			ty -= parent.originY();
+			ty *= parent.scaleY();
 			ty += parent.ty();
 			parent = parent.parent();
 		}
 		return ty;
+	}
+	
+	public static float getGlobalScaleX(Layer layer) {
+		Layer parent = layer;
+		float scaleX = 1;
+		while (parent != null) {
+			scaleX *= parent.scaleX();
+			parent = parent.parent();
+		}
+		return scaleX;
+	}
+	
+	public static float getGlobalScaleY(Layer layer) {
+		Layer parent = layer;
+		float scaleY = 1;
+		while (parent != null) {
+			scaleY *= parent.scaleY();
+			parent = parent.parent();
+		}
+		return scaleY;
 	}
 	
 	private HashCode hashCode;

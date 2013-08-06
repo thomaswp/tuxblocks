@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import playn.core.CanvasImage;
+import playn.core.Image;
 import playn.core.Layer;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Cache;
+import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.Pathing;
@@ -87,14 +90,21 @@ public abstract class Walker extends DiscreteGridObject {
 	}
 	
 	private void createSprite() {
-		CanvasImage image = graphics().createImage(grid.cellSize(), grid.cellSize());
-		image.canvas().setFillColor(Colors.WHITE);
-		image.canvas().setStrokeColor(Colors.BLACK);
-		int border = (int)(grid.cellSize() * 0.1f);
-		image.canvas().fillRect(border, border, image.width() - border * 2, image.height() - border * 2);
-		image.canvas().strokeRect(border, border, image.width() - 1 - border * 2, 
-				image.height() - 1 - border * 2);
-		layer = new ImageLayerTintable(image);
+		Key key = Key.fromClass(Walker.class, grid.cellSize());
+		Image cached = Cache.getImage(key);
+		
+		if (cached == null) {
+			CanvasImage image = graphics().createImage(grid.cellSize(), grid.cellSize());
+			image.canvas().setFillColor(Colors.WHITE);
+			image.canvas().setStrokeColor(Colors.BLACK);
+			int border = (int)(grid.cellSize() * 0.1f);
+			image.canvas().fillRect(border, border, image.width() - border * 2, image.height() - border * 2);
+			image.canvas().strokeRect(border, border, image.width() - 1 - border * 2, 
+					image.height() - 1 - border * 2);
+			cached = Cache.putImage(key, image);
+		}
+		
+		layer = new ImageLayerTintable(cached);
 		update(0);
 	}
 	

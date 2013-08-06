@@ -1,16 +1,12 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
-import playn.core.CanvasImage;
 import playn.core.Color;
-import playn.core.Path;
-import playn.core.PlayN;
-import playn.core.TextLayout;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.layers.NinepatchLayer;
+import tuxkids.tuxblocks.core.layers.ImageLayerLike;
+import tuxkids.tuxblocks.core.solve.blocks.layer.TimesLayer;
 
 public class TimesBlock extends VerticalModifierBlock{
-
+	
 	public TimesBlock(int value) {
 		super(value);
 	}
@@ -28,17 +24,16 @@ public class TimesBlock extends VerticalModifierBlock{
 		return Constant.TIMES_SYMBOL;
 	}
 	
-	@Override
-	protected float defaultHeight() {
-		return modSize() + 4;
-	}
+//	@Override
+//	protected float defaultHeight() {
+//		return modSize();
+//	}
 	
 	@Override
 	public int color() {
 		if (value == -1) {
 			return Color.rgb(150, 150, 150);
 		} else {
-//			return getColor(30);
 			return Color.rgb(0xF7, 0x9D, 0x04);
 		}
 	}
@@ -62,52 +57,8 @@ public class TimesBlock extends VerticalModifierBlock{
 	}
 
 	@Override
-	protected NinepatchLayer generateImage(String text) {
-		
-		TextLayout layout = PlayN.graphics().layoutText(text, textFormat);
-		int legs = wrapSize();
-		int sides = 3;
-		int width = legs * 2 + sides * 2 + (int)layout.width() + 2;
-		int textHeight = modSize();
-		int height = textHeight + sides * 2;
-		
-		int[] widthDims = new int[] { legs + 2, sides - 2, width - legs * 2 - sides * 2, sides - 2, legs + 2 };
-		int[] heightDims = new int[] { textHeight + 1, sides - 1, sides };
-		
-		float hlw = 0;//0.5f;
-		float pWidth = width - 1;
-		float pHeight = height - 1;
-		float lx, ly;
-		
-		CanvasImage image = graphics().createImage(width, height);
-		
-		Path path = image.canvas().createPath();
-		path.moveTo(lx = hlw, ly = hlw);
-		path.lineTo(lx = pWidth - hlw, ly);
-		path.lineTo(lx, ly = pHeight - hlw);
-		path.lineTo(lx = pWidth - legs + hlw + 1, ly);
-		path.lineTo(lx, ly = pHeight - sides * 2 + hlw);
-		path.lineTo(lx = legs - hlw - 1, ly);
-		path.lineTo(lx, ly = pHeight - hlw);
-		path.lineTo(lx = hlw, ly);
-		path.lineTo(lx, hlw);
-		image.canvas().setFillColor(Colors.WHITE);
-		image.canvas().setStrokeColor(Colors.DARK_GRAY);
-		image.canvas().fillPath(path);
-		image.canvas().strokePath(path);
-		
-		float textX = (image.width() - layout.width()) / 2;
-		float textY = (textHeight - layout.height()) / 2;
-		image.canvas().setFillColor(Colors.BLACK);
-		image.canvas().fillText(layout, textX, textY);
-		
-		NinepatchLayer ninePatch = new NinepatchLayer(factory, image, widthDims, heightDims);
-		for (int i = 1; i < 3; i++) {
-			for (int j = 1; j < 4; j++) {
-				ninePatch.setTouchEnabled(i, j, false);
-			}
-		}
-		return ninePatch;
+	protected ImageLayerLike generateImage(String text) {
+		return new TimesLayer(textFormat, text());
 	}
 
 	@Override

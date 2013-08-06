@@ -4,6 +4,7 @@ import playn.core.Font;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Layer.HitTester;
 import playn.core.TextFormat;
 import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;
@@ -85,16 +86,20 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 			textFormat = new TextFormat().withFont(font);
 		}
 		
+		textLayer = graphics().createImageLayer();
+		textLayer.setDepth(1);
+		layer.add(textLayer);
 		refreshTextLayer();
+		
 		createBorderLayers();
 		
-		centerLayer = new ImageLayerTintable(CanvasUtils.createRect(1, 1, Colors.WHITE));
+		centerLayer = new ImageLayerTintable(CanvasUtils.createRectCached(1, 1, Colors.WHITE));
 		centerLayer.layerAddable().setDepth(-1);
 		layer.add(centerLayer.layerAddable());
 	}
 	
 	protected void createBorderLayers() {
-		Image borderImage = CanvasUtils.createRect(1, 1, Colors.BLACK);
+		Image borderImage = CanvasUtils.createRectCached(1, 1, Colors.BLACK);
 		borderLayers = new ImageLayer[4];
 		for (int i = 0; i < 4; i++) {
 			borderLayers[i] = graphics().createImageLayer(borderImage);
@@ -103,11 +108,8 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 	}
 	
 	protected void refreshTextLayer() {
-		if (textLayer != null) textLayer.destroy();
-		textLayer = graphics().createImageLayer(CanvasUtils.createString(textFormat, text, Colors.BLACK));
+		textLayer.setImage(CanvasUtils.createString(textFormat, text, Colors.BLACK));
 		centerImageLayer(textLayer);
-		textLayer.setDepth(1);
-		layer.add(textLayer);
 	}
 	
 	protected void updateSize() {
@@ -140,6 +142,11 @@ public class BlockLayer extends LayerWrapper implements ImageLayerLike {
 
 	@Override
 	public Image image() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setHitTester(HitTester hitTester) {
 		throw new UnsupportedOperationException();
 	}
 }

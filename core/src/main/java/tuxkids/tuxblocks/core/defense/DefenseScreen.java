@@ -8,7 +8,9 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.defense.Grid.DoubleClickListener;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
@@ -20,6 +22,9 @@ public class DefenseScreen extends GameScreen {
 	private Inventory inventory; 
 	private GroupLayer gridHolder;
 	private SelectScreen selectScreen;
+	private GroupLayer layer;
+	private boolean zoomed;
+	private float maxScale;
 	
 	public DefenseScreen(ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
@@ -27,7 +32,12 @@ public class DefenseScreen extends GameScreen {
 	
 	@Override
 	public void wasAdded() {
-
+		super.wasAdded();
+		
+		layer = graphics().createGroupLayer();
+		layer.add(menu.layerAddable());
+		super.layer.add(layer);
+		
 		float titleBarHeight = menu.height();
 		
 		float maxGridWidth = width() * 0.7f; 
@@ -41,6 +51,21 @@ public class DefenseScreen extends GameScreen {
 //		gridHolder.setScale((float)testGrid.width() / grid.width());
 		gridHolder.setDepth(1);
 		layer.add(gridHolder);
+		
+		grid.setDoubleClickListener(new DoubleClickListener() {
+			@Override
+			public void wasDoubleClicked() {
+				zoomed = !zoomed;
+			}
+		});
+		
+		maxScale = height() / grid.height();
+		float cornerX = gridHolder.tx() + grid.width();
+		float cornerY = gridHolder.ty() + grid.height();
+		cornerX += (width() - grid.width() * maxScale) / 2 / (maxScale - 1);
+		cornerY -= (height() - cornerY) / (maxScale - 1);
+		layer.setOrigin(cornerX, cornerY);
+		layer.setTranslation(cornerX, cornerY);
 		
 		inventory = new Inventory(this, grid, (int)(width() - testGrid.width()), (int)(height() - titleBarHeight));
 		inventory.layer().setDepth(1);
@@ -115,6 +140,9 @@ public class DefenseScreen extends GameScreen {
 	public void paint(Clock clock) {
 		super.paint(clock);
 		grid.paint(clock);
+		
+		float scale = zoomed ? maxScale : 1;
+		layer.setScale(PlayNObject.lerpTime(layer.scaleX(), scale, 0.99f, clock.dt(), 0.001f));
 	}
 	
 	public void pushSelectScreen() {

@@ -123,6 +123,7 @@ public class GameState {
 		problems = new ArrayList<Problem>();
 		level = Level.generate(timeBetweenRounds);
 		addItem(TowerType.PeaShooter, 2);
+		addItem(TowerType.BigShooter, 2);
 		for (int i = 0; i < 8; i++) {
 			addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
 		}

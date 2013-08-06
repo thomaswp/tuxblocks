@@ -22,7 +22,7 @@ public class MissileExplosion {
 	
 	public MissileExplosion(Grid grid, Vector position) {
 		int p = 30;
-		Emitter emitter = grid.createEmitter(p, CanvasUtils.createCircle(2, grid.towerColor()));
+		Emitter emitter = grid.createEmitter(p, CanvasUtils.createCircleCached(2, grid.towerColor()));
 		emitter.generator = Generator.impulse(p);
         emitter.initters.add(Lifespan.constant(1));
         emitter.initters.add(Color.constant(Colors.WHITE));
@@ -34,7 +34,7 @@ public class MissileExplosion {
         emitter.destroyOnEmpty();
         emitter.layer.setTranslation(position.x, position.y);
         
-        emitter = grid.createEmitter(10, CanvasUtils.createRect(5, 1, Colors.WHITE));
+        emitter = grid.createEmitter(10, CanvasUtils.createRectCached(5, 1, Colors.WHITE));
         emitter.generator = Generator.impulse(10);
         emitter.initters.add(Lifespan.constant(1));
         emitter.initters.add(Color.constant(Colors.BLACK));

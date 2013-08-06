@@ -73,7 +73,7 @@ public class MenuSprite extends LayerWrapper {
 		this.state = state;
 		layer = (GroupLayer) layerAddable();
 		background = graphics().createImageLayer(
-				CanvasUtils.createRect(width, height, Colors.LIGHT_GRAY, 1, Colors.DARK_GRAY));
+				CanvasUtils.createRectCached(width, height, Colors.LIGHT_GRAY, 1, Colors.DARK_GRAY));
 		background.setAlpha(DEFAULT_ALPHA);
 		background.setDepth(-1);
 		layer.add(background);

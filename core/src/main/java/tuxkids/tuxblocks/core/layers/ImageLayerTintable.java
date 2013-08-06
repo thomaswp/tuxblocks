@@ -6,6 +6,7 @@ import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Layer;
+import playn.core.Layer.HitTester;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
 import tripleplay.particle.GLStatus;
@@ -161,5 +162,10 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 	@Override
 	public void setInteractive(boolean interactive) {
 		base.setInteractive(interactive);
+	}
+
+	@Override
+	public void setHitTester(HitTester tester) {
+		base.setHitTester(tester);
 	}
 }

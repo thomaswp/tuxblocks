@@ -2,6 +2,7 @@ package tuxkids.tuxblocks.core.layers;
 
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Layer.HitTester;
 
 public class ImageLayerWrapper extends LayerWrapper implements ImageLayerLike {
 
@@ -40,5 +41,10 @@ public class ImageLayerWrapper extends LayerWrapper implements ImageLayerLike {
 	@Override
 	public Image image() {
 		return layer.image();
+	}
+
+	@Override
+	public void setHitTester(HitTester tester) {
+		layer.setHitTester(tester);
 	}
 }

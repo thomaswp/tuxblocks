@@ -63,6 +63,7 @@ public class GameBackgroundSprite extends PlayNObject {
 	}
 	
 	private void removeBackgroundSprite() {
+		if (backgroundSprites.size() == 0) return;
 		backgroundSprites.get((int)(Math.random() * backgroundSprites.size())).beginRemove();
 	}
 	

@@ -6,11 +6,52 @@ import playn.core.Image;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import playn.core.Font.Style;
+import tuxkids.tuxblocks.core.Cache.Key;
+import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.PlayNObject;
 
 public class CanvasUtils extends PlayNObject {
+	
+	private static class RectKey extends Key {
+
+		protected float width, height, strokeWidth;
+		protected int fillColor, strokeColor;
+		
+		public RectKey set(float width, float height, int fillColor, 
+				float strokeWidth, int strokeColor) {
+			this.width = width;
+			this.height = height;
+			this.fillColor = fillColor;
+			this.strokeWidth = strokeWidth;
+			this.strokeColor = strokeColor;
+			return this;
+		}
+		
+		@Override
+		public void addFields(HashCode hashCode) {
+			hashCode.addField(width);
+			hashCode.addField(height);
+			hashCode.addField(fillColor);
+			hashCode.addField(strokeWidth);
+			hashCode.addField(strokeColor);
+		}
+
+		@Override
+		public Key copy() {
+			return new RectKey().set(width, height, 
+					fillColor, strokeWidth, strokeColor);
+		}	
+	}
+	private static RectKey rectKey = new RectKey();
+	
+	public static CanvasImage createRect(float width, float height, int fillColor) {
+		return createRect(width, height, fillColor, 0, 0);
+	}
+	
 	public static CanvasImage createRect(float width, float height, int fillColor, 
 			float strokeWidth, int strokeColor) {
+//		debug("createRect");
 		width = (int)width; height = (int)height;
 		CanvasImage image = PlayN.graphics().createImage(width, height);
 		image.canvas().setFillColor(fillColor);
@@ -23,10 +64,43 @@ public class CanvasUtils extends PlayNObject {
 		}
 		return image;
 	}
-
-	public static CanvasImage createRect(float width, float height, int fillColor) {
-		return createRect(width, height, fillColor, 0, 0);
+	
+	public static Image createRectCached(float width, float height, int fillColor) {
+		return createRectCached(width, height, fillColor, 0, 0);
 	}
+	
+	public static Image createRectCached(float width, float height, int fillColor, 
+			float strokeWidth, int strokeColor) {
+		rectKey.set(width, height, fillColor, strokeWidth, strokeColor);
+		Image image = Cache.getImage(rectKey);
+		if (image != null) return image;
+		return Cache.putImage(rectKey, createRect(width, height, fillColor, strokeWidth, strokeColor));
+	}
+	
+	private static class RoundRectKey extends RectKey {
+		
+		protected float rad;
+		
+		public RoundRectKey set(float width, float height, float rad, int fillColor, 
+				float strokeWidth, int strokeColor) {
+			super.set(width, height, fillColor, strokeWidth, strokeColor);
+			this.rad = rad;
+			return this;
+		}
+		
+		@Override
+		public void addFields(HashCode hashCode) {
+			super.addFields(hashCode);
+			hashCode.addField(rad);
+		}
+
+		@Override
+		public Key copy() {
+			return new RoundRectKey().set(width, height, rad, 
+					fillColor, strokeWidth, strokeColor);
+		}
+	}
+	private static RoundRectKey roundRectKey = new RoundRectKey();
 	
 	public static CanvasImage createRoundRect(float width, float height, float rad, int fillColor) {
 		return createRoundRect(width, height, rad, fillColor, 0, 0);
@@ -34,6 +108,7 @@ public class CanvasUtils extends PlayNObject {
 	
 	public static CanvasImage createRoundRect(float width, float height, float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
+//		debug("createRoundRect");
 		width = (int)width; height = (int)height;
 		CanvasImage image = PlayN.graphics().createImage(width, height);
 		image.canvas().setFillColor(fillColor);
@@ -47,9 +122,56 @@ public class CanvasUtils extends PlayNObject {
 		}
 		return image;
 	}
+	
+	public static Image createRoundRectCached(float width, float height, float rad, int fillColor) {
+		return createRoundRectCached(width, height, rad, fillColor, 0, 0);
+	}
+	
+	public static Image createRoundRectCached(float width, float height, float rad, int fillColor, 
+			float strokeWidth, int strokeColor) {
+		roundRectKey.set(width, height, rad, fillColor, strokeWidth, strokeColor);
+		Image image = Cache.getImage(roundRectKey);
+		if (image != null) return image;
+		return Cache.putImage(roundRectKey, createRoundRect(width, height, rad, fillColor, strokeWidth, strokeColor));
+	}
 
+	private static class CircleKey extends Key {
+
+		protected float rad, strokeWidth;
+		protected int fillColor, strokeColor;
+		
+		public CircleKey set(float rad, int fillColor,
+				float strokeWidth, int strokeColor) {
+			this.rad = rad;
+			this.fillColor = fillColor;
+			this.strokeWidth = strokeWidth;
+			this.strokeColor = strokeColor;
+			return this;
+		}
+		
+		@Override
+		public void addFields(HashCode hashCode) {
+			hashCode.addField(rad);
+			hashCode.addField(fillColor);
+			hashCode.addField(strokeWidth);
+			hashCode.addField(strokeColor);
+		}
+
+		@Override
+		public Key copy() {
+			return new CircleKey().set(
+					rad, fillColor, strokeWidth, strokeColor);
+		}	
+	}
+	private static CircleKey circleKey = new CircleKey();
+
+	public static CanvasImage createCircle(float rad, int fillColor) {
+		return createCircle(rad, fillColor, 0, 0);
+	}
+	
 	public static CanvasImage createCircle(float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
+//		debug("createCircle");
 		CanvasImage image = PlayN.graphics().createImage(rad * 2, rad * 2);
 		image.canvas().setFillColor(fillColor);
 		image.canvas().fillCircle(rad, rad, rad);
@@ -61,17 +183,76 @@ public class CanvasUtils extends PlayNObject {
 		return image;
 	}
 
-	public static CanvasImage createCircle(float rad, int fillColor) {
-		return createCircle(rad, fillColor, 0, 0);
+	public static Image createCircleCached(float rad, int fillColor) {
+		return createCircleCached(rad, fillColor, 0, 0);
 	}
+	
+	public static Image createCircleCached(float rad, int fillColor, 
+			float strokeWidth, int strokeColor) {
+		circleKey.set(rad, fillColor, strokeWidth, strokeColor);
+		Image image = Cache.getImage(circleKey);
+		if (image != null) return image;
+		return Cache.putImage(circleKey, createCircle(rad, fillColor, strokeWidth, strokeColor));
+	}
+	
+	private static class TextKey extends Key {
 
+		protected String text, font;
+		protected float size;
+		protected Style style;
+		protected int color;
+		
+		public TextKey set(String text,	TextFormat format, int color) {
+			this.text = text;
+			this.color = color;
+			this.size = format.font.size();
+			this.font = format.font.name();
+			this.style = format.font.style();
+			return this;
+		}
+		
+		private TextKey set(String text, int color, float size, 
+				String font, Style style) {
+			this.text = text;
+			this.color = color;
+			this.size = size;
+			this.font = font;
+			this.style = style;
+			return this;
+		}
+		
+		@Override
+		public void addFields(HashCode hashCode) {
+			hashCode.addField(text);
+			hashCode.addField(font);
+			hashCode.addField(size);
+			hashCode.addField(style);
+			hashCode.addField(color);
+		}
+
+		@Override
+		public Key copy() {
+			return new TextKey().set(text, color, size, font, style);
+		}	
+	}
+	private static TextKey textKey = new TextKey();
+	
 	public static CanvasImage createText(String text,
 			TextFormat format, int color) {
+//		debug("createText");
 		TextLayout layout = PlayN.graphics().layoutText(text, format);
 		CanvasImage image = PlayN.graphics().createImage(layout.width(), layout.height());
 		image.canvas().setFillColor(color);
 		image.canvas().fillText(layout, 0, 0);
 		return image;
+	}
+	
+	public static Image createTextCached(String text,
+			TextFormat format, int color) {
+		textKey.set(text, format, color);
+		Image image = Cache.getImage(textKey);
+		if (image != null) return image;
+		return Cache.putImage(textKey, createText(text, format, color));
 	}
 
 	public static Image tintImage(Image image, int tint) {

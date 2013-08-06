@@ -113,10 +113,7 @@ public class Inventory extends PlayNObject {
 	
 	private void refreshCountSprite(int index) {
 		String text = "x" + towerCounts()[index];
-		TextLayout layout = graphics().layoutText(text, textFormat);
-		CanvasImage image = graphics().createImage(layout.width(), layout.height());
-		image.canvas().setFillColor(Colors.BLACK);
-		image.canvas().fillText(layout, 0, 0);
+		CanvasImage image = CanvasUtils.createText(text, textFormat, Colors.BLACK);
 		countSprites[index].setImage(image);
 		itemButtons[index].setEnabled(towerCounts()[index] > 0);
 	}

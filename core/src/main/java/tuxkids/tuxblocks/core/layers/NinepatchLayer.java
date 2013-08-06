@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.Layer;
+import playn.core.Layer.HitTester;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
 import tripleplay.util.Colors;
@@ -236,6 +237,17 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 			for (int j = 0; j < widthDims.length; j++) {
 				if (imageLayers[i][j] != null) {
 					imageLayers[i][j].setInteractive(interactive);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void setHitTester(HitTester tester) {
+		for (int i = 0; i < heightDims.length; i++) {
+			for (int j = 0; j < widthDims.length; j++) {
+				if (imageLayers[i][j] != null) {
+					imageLayers[i][j].setHitTester(tester);
 				}
 			}
 		}

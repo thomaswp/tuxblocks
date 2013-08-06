@@ -3,9 +3,11 @@ package tuxkids.tuxblocks.core;
 import playn.core.Color;
 import playn.core.Image;
 import playn.core.Layer;
+import playn.core.Layer.HitTester;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
+import pythagoras.f.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.utils.Positioned;
@@ -14,13 +16,14 @@ public class Button extends PlayNObject implements Positioned {
 	
 	public final static float UNPRESSED_ALPHA = 0.5f;
 	
-	private ImageLayerTintable imageLayer;
+	private final ImageLayerTintable imageLayer;
+	private final boolean isCircle;
+	
 	private OnPressedListener onPressedListener;
 	private OnReleasedListener onReleaseListener;
 	private OnDragListener onDragListener;
 	private float width, height;
 	private boolean pressed;
-	private boolean isCircle;
 	private int tint, tintPressed;
 	private boolean enabled = true;
 
@@ -138,10 +141,6 @@ public class Button extends PlayNObject implements Positioned {
 		});
 	}
 	
-	public void setIsCircle(boolean isCircle) {
-		this.isCircle = isCircle;
-	}
-	
 	public void setOnPressListener(OnPressedListener onPressedListener) {
 		this.onPressedListener = onPressedListener;
 	}
@@ -183,7 +182,7 @@ public class Button extends PlayNObject implements Positioned {
 		imageLayer.setTint(tint);
 	}
 	
-	public Button(Image image, float width, float height, boolean isCircle) {
+	public Button(final Image image, float width, float height, boolean isCircle) {
 		this.width = width;
 		this.height = height;
 		this.isCircle = isCircle;
@@ -191,6 +190,15 @@ public class Button extends PlayNObject implements Positioned {
 		setImage(image);
 		imageLayer.addListener(new PointerListener());
 		setTint(Colors.WHITE, UNPRESSED_ALPHA);
+		if (isCircle) {
+			imageLayer.setHitTester(new HitTester() {
+				@Override
+				public Layer hitTest(Layer layer, Point p) {
+					if (p.distance(image.width() / 2, image.height() / 2) < image.width() / 2) return layer;
+					return null;
+				}
+			});
+		}
 	}
 	
 	public Button(Image image, boolean isCircle) {
@@ -226,6 +234,7 @@ public class Button extends PlayNObject implements Positioned {
 		
 		@Override
 		public void onPointerStart(Event event) {
+			debug("!");
 			if (!enabled || !insideLocal(event)) return;
 			pressed = true;
 			refreshTint();

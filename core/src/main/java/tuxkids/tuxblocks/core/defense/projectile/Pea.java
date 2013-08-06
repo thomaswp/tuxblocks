@@ -13,7 +13,7 @@ public class Pea extends BodyProjectile {
 
 	@Override
 	public Image createImage() {
-		return CanvasUtils.createCircle(3, Colors.LIGHT_GRAY, 1, Colors.BLACK);
+		return CanvasUtils.createCircleCached(3, Colors.LIGHT_GRAY, 1, Colors.BLACK);
 	}
 
 	@Override

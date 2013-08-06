@@ -64,6 +64,7 @@ public class Debug {
 						e.getStackTrace()[i].getMethodName().equals("write")) i++;
 				while (e.getStackTrace()[i].getClassName().equals(PlayNObject.class.getName()) &&
 						e.getStackTrace()[i].getMethodName().equals("debug")) i++;
+				while (e.getStackTrace()[i].getClassName().equals(CanvasUtils.class.getName())) i++;
 				String cName = e.getStackTrace()[i].getClassName();
 				int index = cName.lastIndexOf(".");
 				if (index > 0 && index < cName.length() - 1) 

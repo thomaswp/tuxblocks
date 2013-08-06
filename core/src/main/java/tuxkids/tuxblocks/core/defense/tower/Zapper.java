@@ -5,12 +5,16 @@ import playn.core.Image;
 import playn.core.PlayN;
 import pythagoras.f.Vector;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Cache;
+import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.defense.projectile.Lightning;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
+import tuxkids.tuxblocks.core.utils.HashCode;
 
 public class Zapper extends Tower {
 
 	private Vector projectileStart = new Vector();
+	private static ImageKey key = new ImageKey();
 	
 	@Override
 	public int rows() {
@@ -70,31 +74,60 @@ public class Zapper extends Tower {
 	
 	@Override
 	public Image createImage(float cellSize, int color) {
-		int width = (int)(cellSize * cols()), height = (int)(cellSize * rows() * 1.3f);
-		int padding = (int)(cellSize * 0.1f); 
-		int rad = (int)(Math.min(width, height) * 0.1f);
-		CanvasImage image = PlayN.graphics().createImage(width, height);
-		image.canvas().setFillColor(color);
-		image.canvas().setStrokeColor(Colors.BLACK);
+		Image cached = Cache.getImage(key.set(cellSize, color));
 		
-		float ratio = 1.3f;
-		
-		float w = width - padding * 2;
-		float h = w / ratio;
-		float y = height - h / 2 - padding;
-		float x = width / 2;
-		for (int i = 0; i < 3; i++) {
+		if (cached == null) {
+			int width = (int)(cellSize * cols()), height = (int)(cellSize * rows() * 1.3f);
+			int padding = (int)(cellSize * 0.1f); 
+			int rad = (int)(Math.min(width, height) * 0.1f);
+			CanvasImage image = PlayN.graphics().createImage(width, height);
+			image.canvas().setFillColor(color);
+			image.canvas().setStrokeColor(Colors.BLACK);
 			
-			image.canvas().fillRoundRect(x - w / 2, y - h / 2, w, h, rad);
-			image.canvas().strokeRoundRect(x - w / 2 + 0.5f, y - h / 2 + 0.5f, w - 1, h - 1, rad);
+			float ratio = 1.3f;
 			
-			y -= h / 2;
-			w -= cellSize / 5;
-			h = w / ratio;
-			
+			float w = width - padding * 2;
+			float h = w / ratio;
+			float y = height - h / 2 - padding;
+			float x = width / 2;
+			for (int i = 0; i < 3; i++) {
+				
+				image.canvas().fillRoundRect(x - w / 2, y - h / 2, w, h, rad);
+				image.canvas().strokeRoundRect(x - w / 2 + 0.5f, y - h / 2 + 0.5f, w - 1, h - 1, rad);
+				
+				y -= h / 2;
+				w -= cellSize / 5;
+				h = w / ratio;
+				
+			}
+			cached = Cache.putImage(key, image);
 		}
 		
-		return image;
+		return cached;
 	}
 
+	
+	private static class ImageKey extends Key {
+
+		private float cellSize;
+		private int color;
+		
+		private ImageKey set(float cellSize, int color) {
+			this.cellSize = cellSize;
+			this.color = color;
+			return this;
+		}
+		
+		@Override
+		public void addFields(HashCode hashCode) {
+			hashCode.addField(cellSize);
+			hashCode.addField(color);
+		}
+
+		@Override
+		public Key copy() {
+			return new ImageKey().set(cellSize, color);
+		}
+		
+	}
 }

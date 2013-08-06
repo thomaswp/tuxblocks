@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
+import tuxkids.tuxblocks.core.solve.blocks.layer.TimesLayer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public abstract class ModifierBlock extends Block {
@@ -115,6 +116,8 @@ public abstract class ModifierBlock extends Block {
 		if (hasSprite()) {
 			if (layer instanceof BlockLayer) {
 				((BlockLayer) layer).setText(text());
+			} else if (layer instanceof TimesLayer) {
+				((TimesLayer) layer).setText(text());
 			} else {
 				ImageLayerLike oldLayer = layer;
 				layer = generateImage(text());

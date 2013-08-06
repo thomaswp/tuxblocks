@@ -10,6 +10,8 @@ import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
+import playn.core.Pointer.Event;
+import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
@@ -31,8 +33,9 @@ import tuxkids.tuxblocks.core.utils.MultiList;
 public class Grid extends PlayNObject {
 
 	private final static boolean SHOW_GRID = false;
+	private final static int DOUBLE_CLICK = 300;
 
-	private int cellSize;
+	private final int cellSize;
 	private int rows, cols;
 	private GroupLayer layer, gridLayer, overlayLayer;
 	private ImageLayer gridSprite;
@@ -51,6 +54,11 @@ public class Grid extends PlayNObject {
 	private int towerColor;
 	private Particles particles;
 	private GameState state;
+	private DoubleClickListener doubleClickListener;
+	
+	public void setDoubleClickListener(DoubleClickListener doubleClickListener) {
+		this.doubleClickListener = doubleClickListener;
+	}
 
 	public Particles particles() {
 		return particles;
@@ -112,7 +120,7 @@ public class Grid extends PlayNObject {
 		}
 		int maxRowSize = maxHeight / rows, maxColSize = maxWidth / cols;
 		cellSize = Math.min(maxRowSize, maxColSize);
-
+		
 		layer = graphics().createGroupLayer();
 		gridLayer = graphics().createGroupLayer();
 		layer.add(gridLayer);
@@ -120,7 +128,10 @@ public class Grid extends PlayNObject {
 		overlayLayer.setDepth(1);
 		layer.add(overlayLayer);
 
-
+		upgradePanel = new UpgradePanel(cellSize, state.themeColor());
+		upgradePanel.setDepth(10);
+		layer.add(upgradePanel.layerAddable());
+		
 		walkerStart = new Point(rows / 2, 0);
 		walkerDestination = new Point(rows / 2, cols - 1);
 		for (int i = 0; i < rows; i++) {
@@ -185,6 +196,7 @@ public class Grid extends PlayNObject {
 			gridObject.paint(clock);
 		}
 		particles.paint(clock);
+		upgradePanel.paint(clock);
 	}
 
 	private void refreshPath() {
@@ -227,6 +239,45 @@ public class Grid extends PlayNObject {
 		//gridSprite.setAlpha(0.2f);
 		gridLayer.add(gridSprite);
 		gridSprite.setDepth(-1);
+		
+		gridSprite.addListener(new Listener() {
+			private int lastClick;
+			
+			@Override
+			public void onPointerStart(Event event) { 
+				hideUpgradePanel();
+			}
+			
+			@Override
+			public void onPointerEnd(Event event) {
+				int time = PlayN.tick();
+				if (time - lastClick < DOUBLE_CLICK) {
+					lastClick = 0;
+					if (doubleClickListener != null) {
+						doubleClickListener.wasDoubleClicked();
+					}
+				} else {
+					lastClick = time;
+				}
+				hideUpgradePanel();
+			}
+			
+			@Override
+			public void onPointerDrag(Event event) { }
+			
+			@Override
+			public void onPointerCancel(Event event) { }
+		});
+	}
+	
+	public void hideUpgradePanel() {
+		upgradePanel.setTower(null);
+	}
+	
+	private UpgradePanel upgradePanel;
+	public void towerClicked(Tower tower) {
+		upgradePanel.setTranslation(tower.position().x, tower.position().y);
+		upgradePanel.setTower(tower);
 	}
 
 	public Point getCell(float x, float y) {
@@ -240,13 +291,13 @@ public class Grid extends PlayNObject {
 	}
 
 	private float getPlaceX(float globalX) {
-		float placeX = globalX - getGlobalTx(gridLayer);
+		float placeX = (globalX - getGlobalTx(gridLayer)) / getGlobalScaleX(gridLayer);
 		if (PlayN.platform().touch().hasTouch()) placeX -= width() / 20;
 		return  placeX;
 	}
 
 	private float getPlaceY(float globalY) {
-		float placeY = globalY - getGlobalTy(gridLayer);
+		float placeY = (globalY - getGlobalTy(gridLayer)) / getGlobalScaleY(gridLayer);
 		if (PlayN.platform().touch().hasTouch()) placeY -= width() / 20;
 		return  placeY;
 	}
@@ -457,5 +508,9 @@ public class Grid extends PlayNObject {
 
 	public void addPoints(int points) {
 		state.addPoints(points);
+	}
+	
+	public interface DoubleClickListener {
+		void wasDoubleClicked();
 	}
 }

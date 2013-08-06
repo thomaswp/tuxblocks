@@ -136,7 +136,8 @@ public class BlockController extends PlayNObject {
 		this.width = width;
 		this.height = height;
 		layer = graphics().createGroupLayer();
-		equals = graphics().createImageLayer(CanvasUtils.createText("=", new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20)), Colors.WHITE));
+		equals = graphics().createImageLayer(CanvasUtils.createTextCached("=", 
+				new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20)), Colors.WHITE));
 		centerImageLayer(equals);
 		layer.add(equals);
 	}
@@ -327,7 +328,6 @@ public class BlockController extends PlayNObject {
 			if (removing.layer().tx() == off) {
 				removing.destroy();
 				list.remove(i--);
-				debug("removed");
 			}
 		}
 	}
@@ -368,7 +368,7 @@ public class BlockController extends PlayNObject {
 	private TuxParticles particles = new TuxParticles();
 	private void showInvertAnimation(float x, float y) {
 		int p = 30;
-		Emitter emitter = particles.createEmitter(p, CanvasUtils.createCircle(10, Colors.WHITE), layer);
+		Emitter emitter = particles.createEmitter(p, CanvasUtils.createCircleCached(10, Colors.WHITE), layer);
 		emitter.generator = Generator.impulse(p);
         emitter.initters.add(Lifespan.constant(1));
         emitter.initters.add(Color.constant(Colors.WHITE));
@@ -501,9 +501,8 @@ public class BlockController extends PlayNObject {
 			BaseBlock target = null;
 			for (BaseBlock base : baseBlocks) {
 				base.clearPreview();
-				if (canDropOn(base, x, y)) {
+				if (target == null && canDropOn(base, x, y)) {
 					target = base;
-					break;
 				}
 			}
 			

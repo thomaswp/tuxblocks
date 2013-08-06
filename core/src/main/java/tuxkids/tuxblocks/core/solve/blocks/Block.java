@@ -28,8 +28,6 @@ public abstract class Block extends Sprite implements Hashable {
 	
 	private boolean dragging;
 	private int doubleClickTime;
-//	private final int color = color();
-//	private final int flashColor = CanvasUtils.blendAddative(color, Colors.WHITE, 0.2f);
 	private HashMap<Integer, Integer> colorMap = new HashMap<Integer, Integer>();
 	private int timeElapsed;
 	private boolean canRelease;

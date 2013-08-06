@@ -56,8 +56,8 @@ public class TuxBlocksGame extends Game.Default {
 		
 		
 		graphics().rootLayer().add(background.layer());
-//		screens.push(new DefenseScreen(screens, state));
-		screens.push(new BuildScreen(screens, state));
+		screens.push(new DefenseScreen(screens, state));
+//		screens.push(new BuildScreen(screens, state));
 		
 	}
 	

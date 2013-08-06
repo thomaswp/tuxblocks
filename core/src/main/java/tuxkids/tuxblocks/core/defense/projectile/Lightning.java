@@ -5,10 +5,13 @@ import playn.core.Image;
 import playn.core.Path;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Cache;
+import tuxkids.tuxblocks.core.Cache.Key;
 
 public class Lightning extends ChainProjectile {
 
-
+	private static Image image;
+	
 	public Lightning(int hits, float damageReduceFactor, float rangeReduceFactor) {
 		super(hits, damageReduceFactor, rangeReduceFactor);
 	}
@@ -17,21 +20,24 @@ public class Lightning extends ChainProjectile {
 	protected int duration() {
 		return 200;
 	}
-
+	
 	@Override
 	public Image createImage() {
-		CanvasImage image = graphics().createImage(100, 10);
-		Path path = image.canvas().createPath();
-		int n = 5;
-		path.moveTo(0, image.height() / 2);
-		for (int i = 1; i <= n; i++) {
-			float x = image.width() / n * (i - 0.5f);
-			float y = (i % 2) * (image.height() - 1) + 0.5f;
-			path.lineTo(x, y);
+		if (image == null) {
+			CanvasImage cImage = graphics().createImage(100, 10);
+			Path path = cImage.canvas().createPath();
+			int n = 5;
+			path.moveTo(0, cImage.height() / 2);
+			for (int i = 1; i <= n; i++) {
+				float x = cImage.width() / n * (i - 0.5f);
+				float y = (i % 2) * (cImage.height() - 1) + 0.5f;
+				path.lineTo(x, y);
+			}
+			path.lineTo(cImage.width() - 1, cImage.height() / 2);
+			cImage.canvas().setStrokeColor(Colors.BLUE);
+			cImage.canvas().strokePath(path);
+			image = cImage;
 		}
-		path.lineTo(image.width() - 1, image.height() / 2);
-		image.canvas().setStrokeColor(Colors.BLUE);
-		image.canvas().strokePath(path);
 		return image;
 	}
 	

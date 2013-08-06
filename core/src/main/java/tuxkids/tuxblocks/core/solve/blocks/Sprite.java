@@ -105,11 +105,11 @@ public abstract class Sprite extends PlayNObject {
 	}
 	
 	public final static int modSize() {
-		return (int)(baseSize() * 0.4f);
+		return (int)(baseSize() * 0.45f);
 	}
 	
 	public final static int wrapSize() {
-		return Math.max(modSize() / 5, 6);
+		return Math.max(modSize() / 6, 6);
 	}
 	
 	public final static float textSize() {

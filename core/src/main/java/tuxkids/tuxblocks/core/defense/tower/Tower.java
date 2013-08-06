@@ -8,6 +8,8 @@ import playn.core.Color;
 import playn.core.Image;
 import playn.core.Layer;
 import playn.core.PlayN;
+import playn.core.Pointer.Event;
+import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
@@ -27,6 +29,7 @@ public abstract class Tower extends DiscreteGridObject {
 	private Vector position = new Vector();
 	private int id;
 	private Walker lastTarget;
+	protected boolean destroyed;
 	
 	public abstract int rows();
 	public abstract int cols();
@@ -47,6 +50,10 @@ public abstract class Tower extends DiscreteGridObject {
 				towerBag.add(type);
 	}
 
+	public boolean destroyed() {
+		return destroyed;
+	}
+	
 	public static TowerType getTypeByIndex(int index) {
 		return TowerType.values()[index];
 	}
@@ -122,17 +129,18 @@ public abstract class Tower extends DiscreteGridObject {
 		layer.setTranslation(col * grid.cellSize() + (baseWidth() - width()) / 2,
 				row * grid.cellSize() + (baseHeight() - height()));				
 		
-//		layer.setTranslation((col + 0.5f) * grid.cellSize() - width() / 2, 
-//				(row + 1) * grid.cellSize() - height());
 		position.set(col * grid.cellSize() + width() / 2, 
 				row * grid.cellSize() + height() / 2);
-//		position.set((col + 0.5f) * grid.cellSize(),
-//				(row + 0.5f) * grid.cellSize());
 	}
 	
 	@Override
 	protected void setDepth(float depth) {
 		layer.setDepth(depth);
+	}
+	
+	public void destroy() {
+		destroyed = true;
+		layer.destroy();
 	}
 	
 	public Tower preview(Grid grid) {
@@ -148,6 +156,21 @@ public abstract class Tower extends DiscreteGridObject {
 	public Tower place(Grid grid, Point coordinates) {
 		place(grid, 0);
 		setCoordinates(coordinates);
+		layer.addListener(new Listener() {
+			@Override
+			public void onPointerStart(Event event) { }
+			
+			@Override
+			public void onPointerEnd(Event event) {
+				Tower.this.grid.towerClicked(Tower.this);
+			}
+			
+			@Override
+			public void onPointerDrag(Event event) { }
+			
+			@Override
+			public void onPointerCancel(Event event) { }
+		});
 		for (int i = 0; i < rows(); i++) {
 			for (int j = 0; j < cols(); j++) {
 				grid.getPassability()[i + coordinates.x][j + coordinates.y] = false;
@@ -156,9 +179,12 @@ public abstract class Tower extends DiscreteGridObject {
 		return this;
 	}
 	
+	
 	@Override
 	public boolean update(int delta) {
 		super.update(delta);
+		if (destroyed) return true;
+		
 		int fireRate = fireRate();
 		if (fireRate > 0 && fireTimer > fireRate) {
 			if (fire()) {
@@ -195,7 +221,7 @@ public abstract class Tower extends DiscreteGridObject {
 		if (range() == 0) return null;
 		float rad = range() * grid.cellSize();
 		int color = Color.rgb(255, 0, 100);
-		return CanvasUtils.createCircle(rad, Color.withAlpha(color, 50), 1, color);
+		return CanvasUtils.createCircleCached(rad, Color.withAlpha(color, 50), 1, color);
 	}
 	
 	public Image createImage(float cellSize, int color) {
@@ -203,12 +229,8 @@ public abstract class Tower extends DiscreteGridObject {
 		int padding = (int)(cellSize * 0.1f); 
 		int rad = (int)(Math.min(width, height) * 0.1f);
 		CanvasImage image = PlayN.graphics().createImage(width, height);
-		image.canvas().setFillColor(color);
-		image.canvas().fillRoundRect(padding, padding, 
-				image.width() - padding * 2, image.height() - padding * 2, rad);
-		image.canvas().setStrokeColor(Colors.BLACK);
-		image.canvas().strokeRoundRect(padding, padding, 
-				image.width() - padding * 2 - 1, image.height() - padding * 2 - 1, rad);
+		Image rect = CanvasUtils.createRoundRectCached(width - padding * 2, height - padding * 2, rad, color, 1, Colors.BLACK);
+		image.canvas().drawImage(rect, padding, padding);
 		return image;
 	}
 }

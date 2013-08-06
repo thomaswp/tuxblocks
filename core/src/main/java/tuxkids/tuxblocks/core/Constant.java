@@ -8,6 +8,7 @@ public class Constant {
 	public final static String BUTTON_DOWN = IMAGE_PATH + "down.png";
 	public final static String BUTTON_OK = IMAGE_PATH + "ok.png";
 	public final static String BUTTON_CANCEL = IMAGE_PATH + "cancel.png";
+	public static final String BUTTON_CANCEL_BOREDERED = IMAGE_PATH + "cancel_bordered.png";
 	public final static String BUTTON_CENTER = IMAGE_PATH + "center.png";
 	public final static String BUTTON_PLUS = IMAGE_PATH + "plus.png";
 	public final static String BUTTON_RESET = IMAGE_PATH + "reset.png";
