@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 
 public class EquationGenerator extends PlayNObject {
 	
@@ -168,6 +169,111 @@ public class EquationGenerator extends PlayNObject {
 		.addRight(new BlockHolder())
 		.createEquation();
 	}
+	
+	/** ax + x / b + cx / d = e */
+	public static Equation generateFormB1() {
+		int a = factor();
+		int b = factor();
+		int c = factor();
+		int d = factor();
+		int bot = a * b * d + d + b * c;
+		int e = randNonZero(3) * bot;
+		
+		return new Equation.Builder()
+		.addLeft(new VariableBlock("x").times(a))
+		.addLeft(new VariableBlock("x").over(b))
+		.addLeft(new VariableBlock("x").times(c).over(d))
+		.addRight(new NumberBlock(e))
+		.createEquation();
+	}
+	
+	/** ax + (x + b) / c + dx / e = f */
+	public static Equation generateFormB2() {
+		int a = factor();
+		int c = factor();
+		int d = factor();
+		int e = factor();
+		int f = adden();
+		
+		int bot = a * c * e + e + c * d;
+		int b = c * f - randNonZero(2) * bot;
+		
+		return new Equation.Builder()
+		.addLeft(new VariableBlock("x").times(a))
+		.addLeft(new VariableBlock("x").add(b).over(c))
+		.addLeft(new VariableBlock("x").times(d).over(e))
+		.addRight(new NumberBlock(f))
+		.createEquation();
+	}
+	
+	private final static int MAX_ANSWER = 50;
+	private final static int MAX_ADD_SUB = 20;
+	private final static int MAX_TIMES = 10;
+	private final static int MIN_TIMES = 2;
+	private final static int MAX_RHS = 500;
+	
+	private enum Operation {
+		Plus, Minus, Times, Over
+	}
+	
+//	public static Equation generateComposite(int steps, int expressions) {
+//		
+//	}
+	
+	public static Equation generate(int steps) {
+		int answer = rand.nextInt(MAX_ANSWER * 2 + 1) - MAX_ANSWER;
+		int rhs = answer;
+		BaseBlock lhs = new VariableBlock("x");
+		Operation lastOperation = null;
+		Operation lastOperationInv = null;
+		Integer lastTimes = null;
+		for (int i = 0; i < steps; i++) {
+			List<Integer> factors = getFactors(rhs);
+			if (lastTimes != null) factors.remove(lastTimes);
+			
+			List<Operation> operations = new ArrayList<Operation>();
+			for (Operation operation : Operation.values()) operations.add(operation);
+			if (factors.isEmpty()) operations.remove(Operation.Over);
+			if (lastOperation != null) operations.remove(lastOperation);
+			
+			int maxTimes = MAX_TIMES;
+			if (rhs != 0) maxTimes = Math.min(maxTimes, Math.abs(MAX_RHS / rhs));
+			if (maxTimes <= MIN_TIMES) operations.remove(Operation.Times);
+			
+			if (operations.size() > 1 && lastOperationInv != null)
+				operations.remove(lastOperationInv);
+			
+			Operation operation = operations.get(rand.nextInt(operations.size()));
+			lastOperation = operation;
+			lastTimes = null;
+			
+			int value;
+			if (operation == Operation.Plus) {
+				lastOperationInv = Operation.Minus;
+				value = rand.nextInt(MAX_ADD_SUB - 1) + 1;
+				lhs = lhs.add(value);
+				rhs += value;
+			} else if (operation == Operation.Minus) {
+				lastOperationInv = Operation.Plus;
+				value = rand.nextInt(MAX_ADD_SUB - 1) + 1;
+				lhs = lhs.add(-value);
+				rhs -= value;
+			} else if (operation == Operation.Times) {
+				lastOperationInv = Operation.Over;
+				value = rand.nextInt(maxTimes - MIN_TIMES) + MIN_TIMES;
+				lhs = lhs.times(value);
+				rhs *= value;
+				lastTimes = value;
+			} else {
+				lastOperationInv = Operation.Times;
+				value = factors.get(rand.nextInt(factors.size()));
+				lhs = lhs.over(value);
+				rhs /= value;
+			}
+		}
+		return new Builder().addLeft(lhs).addRight(new NumberBlock(rhs)).createEquation();
+	}
+	
 	
 	private static int rand(int min, int max) {
 		return rand.nextInt(max - min + 1) + min;

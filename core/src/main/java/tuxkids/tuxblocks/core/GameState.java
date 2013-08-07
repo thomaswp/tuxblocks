@@ -164,7 +164,7 @@ public class GameState {
 	int index;
 	public void addProblemWithReward(Reward reward) {		
 		//Equation eq = eqs[index++ % eqs.length]; 
-		Equation eq = EquationGenerator.generateFormA3();
+		Equation eq = EquationGenerator.generateFormB2();
 //		Equation eq = EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps).toBlocks();
 		Problem problem = new Problem(eq, reward);
 		problems.add(problem);
