@@ -16,7 +16,7 @@ import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class TimesLayer extends LayerWrapper implements ImageLayerLike {
+public class TimesLayer extends LayerWrapper implements BlockLayer {
 
 	protected final GroupLayer layer;
 	protected final NinepatchLayer ninepatch;
@@ -32,6 +32,7 @@ public class TimesLayer extends LayerWrapper implements ImageLayerLike {
 		return text;
 	}
 	
+	@Override
 	public void setText(String text) {
 		this.text = text;
 		refreshTextLayer();
@@ -59,11 +60,13 @@ public class TimesLayer extends LayerWrapper implements ImageLayerLike {
 	private NinepatchLayer createNinepatch() {
 		int legs = Sprite.wrapSize();
 		int sides = 3;
-		int width = legs * 2 + sides;
+		int middle = 5;
+		int width = legs * 2 + middle;
 		int textHeight = Sprite.modSize();
 		int height = textHeight + sides * 2;
 		
-		int[] widthDims = new int[] { legs + 1, sides - 2, legs + 1 };
+		//adjust the dims a bit to make sure none of the path overflows
+		int[] widthDims = new int[] { legs + 1, middle - 3, legs + 2 };
 		int[] heightDims = new int[] { textHeight + 1, sides - 1, sides };
 		
 		if (ninepatchImage == null) {
@@ -150,4 +153,13 @@ public class TimesLayer extends LayerWrapper implements ImageLayerLike {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void setTint(int tint) {
+		ninepatch.setTint(tint);
+	}
+	
+	@Override
+	public void setTint(int baseColor, int tintColor, float perc) {
+		ninepatch.setTint(baseColor, tintColor, perc);
+	}
 }

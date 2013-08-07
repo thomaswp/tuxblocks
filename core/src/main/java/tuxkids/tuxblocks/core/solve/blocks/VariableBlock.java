@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.GameState.Stat;
@@ -53,17 +54,25 @@ public class VariableBlock extends BaseBlock {
 				return false;
 			}
 
+			//this block's vertical modifiers
 			verticalMods.clear();
+			//minus any pesky negatives
 			modifiers.addVerticalModifiersTo(verticalMods);
+			removeNegatives(verticalMods);
 			if (verticalMods.size() <= 1) {
 				if (verticalMods.size() == 1) {
-					// this variable can't divided (no x / 4)
+					// this variable can't be divided (no x / 4)
 					if (!(verticalMods.get(0) instanceof TimesBlock)) return false;
 					// nor can it have any addends inside of its factor (no 3(x + 1))
 					if (modifiers.children.size() != 0) return false;
 				}
+				
 				verticalMods.clear();
+				//the other block's vertical modifiers
 				vBlock.modifiers.addVerticalModifiersTo(verticalMods);
+				//also sans negatives
+				removeNegatives(verticalMods);
+				
 				if (verticalMods.size() <= 1) {
 					// can't add a variable that has divisors (no x / 4)
 					if (verticalMods.size() == 1 && !(verticalMods.get(0) instanceof TimesBlock)) return false;
@@ -72,6 +81,18 @@ public class VariableBlock extends BaseBlock {
 			}
 		}
 		return false;
+	}
+	
+	private int removeNegatives(List<VerticalModifierBlock> modifiers) {
+		int count = 0;
+		for (int i = 0; i < modifiers.size(); i++) {
+			ModifierBlock block = modifiers.get(i);
+			if (block instanceof TimesBlock && block.value == -1) {
+				modifiers.remove(i--);
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	@Override
@@ -84,6 +105,7 @@ public class VariableBlock extends BaseBlock {
 
 			verticalMods.clear();
 			modifiers.addVerticalModifiersTo(verticalMods);
+			int myNegatives = removeNegatives(verticalMods);
 			if (verticalMods.size() > 0) {
 				myFactor = (TimesBlock) verticalMods.get(0);
 			} else {
@@ -92,16 +114,20 @@ public class VariableBlock extends BaseBlock {
 
 			verticalMods.clear();
 			vBlock.modifiers.addVerticalModifiersTo(verticalMods);
+			int spriteNegatives = removeNegatives(verticalMods);
 			if (verticalMods.size() > 0) spriteFactor = (TimesBlock) verticalMods.get(0);
 			
 			int myValue = myFactor == null ? 1 : myFactor.value;
+			if (myNegatives == 1) myValue *= -1;
+			
 			int spriteValue = spriteFactor == null ? 1 : spriteFactor.value;
+			if (spriteNegatives == 1) spriteValue *= -1;
 			
 			Renderer myRenderer = new BaseRenderer(text());
 			Renderer spriteRenderer = new BaseRenderer(vBlock.text());
 			
-			if (myFactor != null) myRenderer = new TimesRenderer(myRenderer, new int[] { myFactor.value });
-			if (spriteFactor != null) spriteRenderer = new TimesRenderer(spriteRenderer, new int[] { spriteFactor.value });
+			if (myValue != 1) myRenderer = new TimesRenderer(myRenderer, new int[] { myValue });
+			if (spriteValue != 1) spriteRenderer = new TimesRenderer(spriteRenderer, new int[] { spriteValue });
 			
 			Renderer lhs = new JoinRenderer(myRenderer, spriteRenderer, "+");
 			Renderer rhs = new TimesRenderer(new BaseRenderer(text()), new BlankRenderer());

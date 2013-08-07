@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import playn.core.Color;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
+import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
 import tuxkids.tuxblocks.core.solve.blocks.layer.TimesLayer;
 
 public class TimesBlock extends VerticalModifierBlock{
@@ -57,7 +58,7 @@ public class TimesBlock extends VerticalModifierBlock{
 	}
 
 	@Override
-	protected ImageLayerLike generateImage(String text) {
+	protected BlockLayer generateImage(String text) {
 		return new TimesLayer(textFormat, text());
 	}
 

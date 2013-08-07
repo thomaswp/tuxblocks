@@ -1,9 +1,6 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
 import playn.core.util.Clock;
-import tuxkids.tuxblocks.core.layers.ImageLayerLike;
-import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
-import tuxkids.tuxblocks.core.solve.blocks.layer.TimesLayer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public abstract class ModifierBlock extends Block {
@@ -110,27 +107,11 @@ public abstract class ModifierBlock extends Block {
 	}
 	
 	public void setValue(int value) {
+		if (this.value == value) return;
 		this.value = value;
-		inverse.destroy(false);
-		inverse = inverseChild();
 		if (hasSprite()) {
-			if (layer instanceof BlockLayer) {
-				((BlockLayer) layer).setText(text());
-			} else if (layer instanceof TimesLayer) {
-				((TimesLayer) layer).setText(text());
-			} else {
-				ImageLayerLike oldLayer = layer;
-				layer = generateImage(text());
-				layer.setDepth(oldLayer.depth());
-				layer.setTranslation(oldLayer.tx(), oldLayer.ty());
-				layer.setSize(oldLayer.width(), oldLayer.height());
-				BlockListener listener = blockListener;
-				blockListener = null;
-				addBlockListener(listener);
-				if (oldLayer.parent() != null) oldLayer.parent().add(layer.layerAddable());
-				oldLayer.layerAddable().destroy();
-			}
-			inverse.initSprite();
+			layer.setText(text());
 		}
+		inverse.setValue(value);
 	}
 }

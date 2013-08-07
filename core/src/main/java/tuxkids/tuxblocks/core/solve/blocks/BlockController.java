@@ -208,7 +208,7 @@ public class BlockController extends PlayNObject {
 				variables++;
 			}
 		}
-		return numbers == 1 && variables == 1;
+		return numbers <= 1 && variables == 1;
 	}
 	
 	private void refreshEquationImage() {
@@ -339,6 +339,7 @@ public class BlockController extends PlayNObject {
 			if (i > leftSide.size() + 1) x += EQ_BUFFER;
 			sprite.layer().setTx(lerpTime(sprite.layer().tx(), x, base, dt, 1f));
 			sprite.layer().setTy(lerpTime(sprite.layer().ty(), (height - sprite.height()) / 2, base, dt, 1f));
+//			debug("%d %d", sprite.layer().tx(), sprite.layer().ty());
 		}
 	}
 	
@@ -351,7 +352,17 @@ public class BlockController extends PlayNObject {
 	}
 	
 	private boolean canDropOn(BaseBlock base, float x, float y) {
-		return base.canAccept(dragging) && base.intersects(dragging);
+		if (base.intersects(dragging)) {
+			if (base instanceof BlockHolder && dragging instanceof VerticalModifierBlock) {
+				int blocks = 0;
+				for (BaseBlock block : baseBlocks) {
+					if (!(block instanceof BlockHolder)) blocks++;
+				}
+				return blocks == 1;
+			}
+			return base.canAccept(dragging);
+		}
+		return false;
 	}
 	
 	private void invertDragging(boolean refresh) {
@@ -524,14 +535,18 @@ public class BlockController extends PlayNObject {
 			} else {
 			
 				if (target instanceof BlockHolder) {
-					if (dragging instanceof HorizontalModifierBlock) {
-						NumberBlockProxy proxy = ((HorizontalModifierBlock) dragging).getProxy(false);
-						dragging.layer().setVisible(false);
-						dragging = proxy;
+					if (dragging instanceof VerticalModifierBlock) {
+						dragging.destroy();
+					} else {
+						if (dragging instanceof HorizontalModifierBlock) {
+							NumberBlockProxy proxy = ((HorizontalModifierBlock) dragging).getProxy(false);
+							dragging.layer().setVisible(false);
+							dragging = proxy;
+						}
+						
+						swapExpression(getContaining(target), target, (BaseBlock) dragging);
+						target.layer().destroy();
 					}
-					
-					swapExpression(getContaining(target), target, (BaseBlock) dragging);
-					target.layer().destroy();
 					
 				} else {
 					ModifierBlock added = target.addBlock(dragging, false);

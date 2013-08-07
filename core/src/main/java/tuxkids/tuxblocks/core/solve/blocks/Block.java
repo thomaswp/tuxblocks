@@ -16,6 +16,7 @@ import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike.Factory;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
+import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayerDefault;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
@@ -23,7 +24,7 @@ public abstract class Block extends Sprite implements Hashable {
 
 	private final static int DOUBLE_CLICK = 500;
 	
-	protected ImageLayerLike layer;
+	protected BlockLayer layer;
 	protected boolean multiExpression = true;
 	
 	private boolean dragging;
@@ -102,8 +103,8 @@ public abstract class Block extends Sprite implements Hashable {
 		return layer.height();
 	}
 	
-	protected ImageLayerLike generateImage(String text) {
-		return new BlockLayer(text, 10, 10);
+	protected BlockLayer generateImage(String text) {
+		return new BlockLayerDefault(text, 10, 10);
 	}
 
 	

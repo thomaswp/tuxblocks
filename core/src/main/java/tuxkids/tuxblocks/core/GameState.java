@@ -3,7 +3,6 @@ package tuxkids.tuxblocks.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
@@ -11,10 +10,10 @@ import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
+import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
-import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
-import tuxkids.tuxblocks.core.solve.expression.EquationGenerator;
 
 public class GameState {
 	
@@ -165,8 +164,8 @@ public class GameState {
 	int index;
 	public void addProblemWithReward(Reward reward) {		
 		//Equation eq = eqs[index++ % eqs.length]; 
-//		Equation eq = EquationGenerator.generateForm();
-		Equation eq = EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps).toBlocks();
+		Equation eq = EquationGenerator.generateFormA3();
+//		Equation eq = EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps).toBlocks();
 		Problem problem = new Problem(eq, reward);
 		problems.add(problem);
 		if (problemAddedListener != null) problemAddedListener.onProblemAdded(problem);

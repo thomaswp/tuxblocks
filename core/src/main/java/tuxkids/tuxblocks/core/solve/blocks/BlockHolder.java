@@ -2,7 +2,9 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
+import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
 import tuxkids.tuxblocks.core.solve.blocks.layer.EmptyBlockLayer;
+import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
@@ -43,7 +45,7 @@ public class BlockHolder extends BaseBlock {
 	public void addFields(HashCode hashCode) { }
 	
 	@Override
-	protected ImageLayerLike generateImage(String text) {
+	protected BlockLayer generateImage(String text) {
 		return new EmptyBlockLayer(10, 10);
 	}
 	
@@ -79,6 +81,8 @@ public class BlockHolder extends BaseBlock {
 			return ((HorizontalModifierBlock) spriteCopy).getProxy(false).createRenderer();
 		} else if (spriteCopy instanceof BaseBlock) {
 			return ((BaseBlock) spriteCopy).createRenderer();
+		} else if (spriteCopy instanceof VerticalModifierBlock) {
+			return new BaseRenderer("0"); // when removing excess multipliers
 		}
 		return null;
 	}

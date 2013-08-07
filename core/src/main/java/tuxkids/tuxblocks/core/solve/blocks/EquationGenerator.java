@@ -100,10 +100,49 @@ public class EquationGenerator extends PlayNObject {
 		rhs.value *= factor;
 	}
 	
-	public static Equation generateForm() {
-		int a = rand(1, 10);
-		int c = rand(1, 10);
-		int d = rand(-20, 20);
+	private static int factor() {
+		return rand(1, 10);
+	}
+	
+	private static int factor(int not) {
+		int f = factor();
+		if (f == not) f++;
+		return f;
+	}
+	
+	private static int adden() {
+		return randNonZero(20);
+	}
+	
+	private static int adden(int not) {
+		int a = adden();
+		if (a == not) a++;
+		return a;
+	}
+	
+	/** ax + b = cx + d */
+	public static Equation generateFormA1() {
+		int a = factor();
+		int c = factor(a);
+		int d = adden();
+		int bot = a - c;
+		int b = d % bot;
+		b += randNonZero(4) * bot;
+		if (b == d) b += bot;
+		
+		return new Equation.Builder()
+		.addLeft(new VariableBlock("x").times(a).add(b))
+		.addRight(new VariableBlock("x").times(c).add(d))
+		.addRight(new BlockHolder())
+		.createEquation();
+	}
+	
+	/** ax + (x + b) / c = d */
+	public static Equation generateFormA2() {
+
+		int a = factor();
+		int c = factor();
+		int d = adden();
 		int top = c * d;
 		int bot = a * c + 1;
 		int b = top - (Math.round((float)top / bot) * bot);
@@ -112,6 +151,21 @@ public class EquationGenerator extends PlayNObject {
 		.addLeft(new VariableBlock("x").times(a))
 		.addLeft(new VariableBlock("x").add(b).over(c))
 		.addRight(new NumberBlock(d))
+		.createEquation();
+	}
+	
+	/** x / a + c * (x + b) = d */
+	public static Equation generateFormA3() {
+		int a = factor();
+		int c = factor();
+		int b = adden();
+		int d = randNonZero(2) * (c * a + 1) + c * b;
+		
+		return new Equation.Builder()
+		.addLeft(new VariableBlock("x").over(a))
+		.addLeft(new VariableBlock("x").add(b).times(c))
+		.addRight(new NumberBlock(d))
+		.addRight(new BlockHolder())
 		.createEquation();
 	}
 	

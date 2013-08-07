@@ -9,7 +9,7 @@ import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
-public class EmptyBlockLayer extends BlockLayer {
+public class EmptyBlockLayer extends BlockLayerDefault {
 
 	private static Key hKey = Key.fromClass(EmptyBlockLayer.class, "h");
 	private static Key vKey = Key.fromClass(EmptyBlockLayer.class, "v");

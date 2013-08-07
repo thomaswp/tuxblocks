@@ -58,11 +58,20 @@ public class MenuSprite extends LayerWrapper {
 		return rightButton;
 	}
 	
+	public Button createButton(String path) {
+		return createButton(assets().getImage(path));
+	}
+	
 	private Button addButton(Image image) {
-		Button button = new Button(image, defaultButtonSize(), defaultButtonSize(), true);
+		Button button = createButton(image);
 		layer.add(button.layerAddable());
-		button.setTint(state.themeColor());
 		button.layerAddable().setDepth(1);
+		return button;
+	}
+	
+	public Button createButton(Image image) {
+		Button button = new Button(image, defaultButtonSize(), defaultButtonSize(), true);
+		button.setTint(state.themeColor());
 		return button;
 	}
 	

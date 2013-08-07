@@ -216,16 +216,19 @@ public abstract class BaseBlock extends Block {
 		if (x > 0) {
 			return plus(x);
 		} else if (x < 0) {
-			return minus(x);
+			return minus(-x);
 		}
 		return this;
 	}
 	
 	public BaseBlock times(int x) {
+		if (x == 1) return this;
 		return addModifier(new TimesBlock(x));
 	}
 	
 	public BaseBlock over(int x) {
+		if (x == 1) return this;
+		if (x == -1) return times(-1);
 		return addModifier(new OverBlock(x));
 	}
 

@@ -3,10 +3,11 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.ArrayList;
 
 import playn.core.Color;
+import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
+import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayerDefault;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.markup.AddRenderer;
@@ -95,7 +96,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				modifiers.addNegative();
 			} else {
 				value = -value;
-				if (hasSprite()) ((BlockLayer) layer).setText("" + value);
+				if (hasSprite()) ((BlockLayerDefault) layer).setText("" + value);
 			}
 		} else {
 			super.showInverse();
@@ -131,6 +132,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	public void simplify(final ModifierBlock sprite, ModifierBlock pair) { //ignore pair
 		if (blockListener != null) {
 			final int answer;
+			boolean autoAnswer;
 			Renderer renderer = new BaseRenderer("" + value);
 			int level;
 			Stat stat;
@@ -141,12 +143,14 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				renderer = new TimesRenderer(renderer, operands);
 				stat = Stat.Times;
 				level = Difficulty.rankTimes(value, times.value);
+				autoAnswer = value == 1 || times.value == 1;
 			} else if (sprite instanceof OverBlock) {
 				OverBlock over = (OverBlock) sprite;
 				answer = value / over.value;
 				renderer = new OverRenderer(renderer, operands);
 				stat = Stat.Over;
 				level = Difficulty.rankOver(value, over.value);
+				autoAnswer = over.value == 1;
 			} else if (sprite instanceof HorizontalModifierBlock) {
 				HorizontalModifierBlock plus = (HorizontalModifierBlock) sprite;
 				answer = value + plus.plusValue();
@@ -154,13 +158,14 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				renderer = new AddRenderer(renderer, operands);
 				stat = plus.plusValue() >= 0 ? Stat.Plus : Stat.Minus;
 				level = Difficulty.rankPlus(value, plus.value);
+				autoAnswer = plus.value == 0 || -value == plus.plusValue();
 			} else {
 				return;
 			}
 			
 			renderer = new JoinRenderer(renderer, new BlankRenderer(), "=");
 			
-			blockListener.wasReduced(renderer, answer, value, stat, level, new SimplifyListener()  {
+			SimplifyListener listener = new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {
@@ -169,7 +174,13 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 						blockListener.wasSimplified();
 					}
 				}
-			});
+			};
+			
+			if (autoAnswer) {
+				listener.wasSimplified(true);
+			} else {
+				blockListener.wasReduced(renderer, answer, value, stat, level, listener);
+			}
 		}
 	}
 	
@@ -181,6 +192,6 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 
 	public void setValue(int value) {
 		this.value = value;
-		((BlockLayer) layer).setText(text());
+		((BlockLayerDefault) layer).setText(text());
 	}
 }

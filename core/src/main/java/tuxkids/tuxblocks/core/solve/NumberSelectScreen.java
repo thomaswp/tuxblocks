@@ -15,7 +15,6 @@ import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.TextFormat;
-import playn.core.TextLayout;
 import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
 import pythagoras.f.Vector;
@@ -26,9 +25,7 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.MenuSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
-import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.NumberLayer;
 import tuxkids.tuxblocks.core.layers.NumberLayer.NumberBitmapFont;
 import tuxkids.tuxblocks.core.screen.GameScreen;
@@ -59,7 +56,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private Point equationAnswerPoint;
 	private Renderer problem;
 	private int answer;
-	private Button buttonBack, buttonCenter;
+	private Button buttonBack, buttonCenter, buttonScratch, buttonClear;
 	private Image backImageOk, backImageBack, backImageCancel;
 	private Point recenterPoint = new Point();
 
@@ -67,6 +64,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private List<NumberLayer> numberImages = new ArrayList<NumberLayer>();
 	private NumberLayer selectedNumberLayer;
 	private NumberBitmapFont bitmapFont, bitmapFontColored;
+	
+	private ScratchLayer scratchLayer;
+	private boolean scratchMode;
 	
 	public Integer selectedAnswer() {
 		if (selectedPoint == null) return null;
@@ -118,7 +118,46 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		selectedNumberLayer.setDepth(15);
 		foregroundLayer.add(selectedNumberLayer.layerAddable());
 		
+		createScratch();
+		
 		update(0);
+	}
+	
+	private void createScratch() {
+		buttonScratch = menu.createButton(Constant.BUTTON_SCRATCH);
+		buttonScratch.setPosition(buttonScratch.width() * 0.6f, height() - buttonScratch.height() * 0.6f);
+		buttonScratch.layerAddable().setDepth(21);
+		layer.add(buttonScratch.layerAddable());
+		
+		buttonClear = menu.createButton(Constant.BUTTON_RESET);
+		buttonClear.setPosition(width() - buttonScratch.width() * 0.6f, height() - buttonScratch.height() * 0.6f);
+		buttonClear.layerAddable().setDepth(21);
+		buttonClear.layerAddable().setVisible(false);
+		layer.add(buttonClear.layerAddable());
+		
+		scratchLayer = new ScratchLayer(width(), height() - menu.height());
+		scratchLayer.setTy(menu.height());
+		scratchLayer.setAlpha(0);
+		scratchLayer.setDepth(20);
+		layer.add(scratchLayer.layerAddable());
+		
+		buttonScratch.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					scratchMode = !scratchMode;
+				}
+			}
+		});
+		
+		buttonClear.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					scratchLayer.clear();
+				}
+			}
+		});
 	}
 	
 	private void createEquation(Renderer renderer) {
@@ -153,7 +192,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		buttonCenter.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
-				selectedPoint = new Point(recenterPoint);
+				if (inButton) selectedPoint = new Point(recenterPoint);
 			}
 		});
 		
@@ -243,7 +282,6 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			float dy = position.y - p.y * SPACING;
 			float distance = FloatMath.sqrt(dx * dx + dy * dy);
 			float alpha = 1 - Math.min(distance / SPACING / 3.5f, 1);
-			float preAlpha = layer.alpha();
 			if (p.equals(selectedPoint)) {
 				selectedNumberLayer.setNumber(layer.number());
 				selectedNumberLayer.setTranslation(layer.tx(), layer.ty());
@@ -267,6 +305,12 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 					0.99f, clock.dt());
 		}
 		foregroundLayer.setTranslation(-position.x, -position.y);
+		
+		float targetScratchAlpha = scratchMode ? 1 : 0;
+		scratchLayer.setAlpha(PlayNObject.lerpTime(scratchLayer.alpha(), targetScratchAlpha, 0.99f, clock.dt(), 0.01f));
+		scratchLayer.setVisible(scratchLayer.alpha() > 0);
+//		buttonClear.layerAddable().setAlpha(scratchLayer.alpha() * Button.UNPRESSED_ALPHA);
+		buttonClear.layerAddable().setVisible(scratchMode);
 	}
 	
 	private NumberLayer createNumberSprite(Point p) {
@@ -328,7 +372,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	@Override
 	public void onPointerStart(Event event) {
 		if (buttonBack.hit(event.x(), event.y()) ||
-				buttonCenter.hit(event.x(), event.y())) {
+				buttonCenter.hit(event.x(), event.y()) ||
+				buttonScratch.hit(event.x(), event.y()) ||
+				scratchMode) {
 			return;
 		}
 		dragging = true;

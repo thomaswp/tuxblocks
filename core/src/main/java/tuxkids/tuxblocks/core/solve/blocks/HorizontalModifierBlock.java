@@ -63,4 +63,19 @@ public abstract class HorizontalModifierBlock extends ModifierBlock {
 		}
 		return sprite;
 	}
+	
+	@Override
+	public void setValue(int value) {
+		if (value < 0) {
+			super.setValue(-value);
+			showInverse();
+			if (group != null) {
+				ModifierGroup group = this.group;
+				group.removeChild(this);
+				group.addChild(inverse);
+			}
+		} else {
+			super.setValue(value);
+		}
+	}
 }

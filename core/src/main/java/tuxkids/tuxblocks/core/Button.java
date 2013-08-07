@@ -235,7 +235,6 @@ public class Button extends PlayNObject implements Positioned {
 		
 		@Override
 		public void onPointerStart(Event event) {
-			debug("!");
 			if (!enabled || !insideLocal(event)) return;
 			pressed = true;
 			refreshTint();

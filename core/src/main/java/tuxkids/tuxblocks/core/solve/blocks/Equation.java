@@ -42,6 +42,7 @@ public class Equation extends PlayNObject implements Hashable {
 	private Renderer getRenderer(List<BaseBlock> side) {
 		Renderer renderer = null;
 		for (BaseBlock base : side) {
+			if (base instanceof BlockHolder) continue;
 			Renderer toAdd = base.createRenderer();
 			if (renderer == null) renderer = toAdd;
 			else {

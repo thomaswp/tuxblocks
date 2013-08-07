@@ -195,8 +195,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 		Renderer problem = new JoinRenderer(lhs, rhs, "=");
 		final int answer = a.value / b.value;
 		
-		blockListener.wasReduced(problem, answer, a.value, Stat.Over, 
-				Difficulty.rankOver(a.value, b.value), new SimplifyListener() {
+		SimplifyListener listener = new SimplifyListener() {
 			@Override
 			public void wasSimplified(boolean success) {
 				if (success) {
@@ -205,7 +204,14 @@ public class VerticalModifierGroup extends ModifierGroup {
 					blockListener.wasSimplified();
 				}
 			}
-		});
+		};
+		
+		if (a.value == 1 || b.value == 1) {
+			listener.wasSimplified(true);
+		} else {
+			blockListener.wasReduced(problem, answer, a.value, Stat.Over, 
+					Difficulty.rankOver(a.value, b.value), listener);
+		}
 		
 	}
 
@@ -223,8 +229,8 @@ public class VerticalModifierGroup extends ModifierGroup {
 			Renderer problem = new JoinRenderer(lhs, rhs, "=");
 			
 			final int answer = a.value * b.value;
-			blockListener.wasReduced(problem, answer, b.value, Stat.Times, 
-					Difficulty.rankTimes(a.value, b.value), new SimplifyListener() {
+			
+			SimplifyListener listener = new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {
@@ -233,7 +239,14 @@ public class VerticalModifierGroup extends ModifierGroup {
 						blockListener.wasSimplified();
 					}
 				}
-			});
+			};
+			
+			if (a.value == 1 || b.value == 1) {
+				listener.wasSimplified(true);
+			} else {
+				blockListener.wasReduced(problem, answer, b.value, Stat.Times, 
+						Difficulty.rankTimes(a.value, b.value), listener);
+			}
 		}
 	}
 

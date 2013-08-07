@@ -324,7 +324,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		for (int i = 0; i < destroying.size(); i++) {
 			ModifierBlock sprite = destroying.get(i);
 			if (sprite.layer().alpha() == 0) {
-				sprite.destroy();
+//				sprite.destroy();
 				destroying.remove(i--);
 			}
 		}
@@ -336,6 +336,8 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 				if (newMods != null) {
 					layer.add(newMods.layer());
 				}
+				//TODO: check for memory leaks here... I'm not sure why the layer has children in the first place..
+				modifiers.layer.clear();
 				modifiers.layer().destroy();
 				modifiers = newMods;
 			}
