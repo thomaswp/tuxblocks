@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import tripleplay.ui.Background;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
@@ -135,8 +136,8 @@ public class GameState {
 		this.problemAddedListener = problemAddedListener;
 	}
 	
-	public GameState() {
-		background = new GameBackgroundSprite();
+	public GameState(GameBackgroundSprite background) {
+		this.background = background;
 		towerCounts = new int[Tower.towerCount()];
 		problems = new ArrayList<Problem>();
 		level = Level.generate(timeBetweenRounds);
@@ -164,40 +165,12 @@ public class GameState {
 	int index;
 	public void addProblemWithReward(Reward reward) {		
 		//Equation eq = eqs[index++ % eqs.length]; 
-		Equation eq = EquationGenerator.generateFormB2();
+		Equation eq = EquationGenerator.generateComposite(2, 3, 2);
 //		Equation eq = EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps).toBlocks();
 		Problem problem = new Problem(eq, reward);
 		problems.add(problem);
 		if (problemAddedListener != null) problemAddedListener.onProblemAdded(problem);
 	}
-	
-	private Equation[] eqs = new Equation[] {
-			
-			new Builder()
-			.addLeft(new VariableBlock("x").plus(2).times(3))
-			.addRight(new NumberBlock(9))
-			.createEquation(),
-			
-			new Builder()
-			.addLeft(new VariableBlock("x").plus(2).times(3).minus(3).over(5))
-			.addLeft(new BlockHolder())
-			.addRight(new NumberBlock(3))
-			.createEquation(),
-			
-			new Builder()
-			.addLeft(new VariableBlock("x").times(3))
-			.addLeft(new VariableBlock("x").minus(7).over(4))
-			.addRight(new NumberBlock(8))
-			.createEquation(),
-			
-			new Builder()
-			.addLeft(new VariableBlock("x").plus(12).over(3))
-			.addLeft(new VariableBlock("x").times(25).over(6))
-			.addRight(new NumberBlock(8))
-			.addRight(new VariableBlock("x").over(2))
-			.createEquation(),
-					
-	};
 
 	public void addItem(TowerType type, int count) {
 		int index = type.index();

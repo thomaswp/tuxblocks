@@ -163,7 +163,7 @@ public abstract class PlayNObject {
 		return 0;
 	}
 	
-	protected static void centerImageLayer(final ImageLayer layer) {
+	public static void centerImageLayer(final ImageLayer layer) {
 		if (layer.image() != null) {
 			layer.image().addCallback(new Callback<Image>() {
 				@Override

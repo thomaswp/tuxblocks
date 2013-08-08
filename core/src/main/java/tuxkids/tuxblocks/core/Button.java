@@ -127,9 +127,11 @@ public class Button extends PlayNObject implements Positioned {
 	
 	public void setImage(Image image) {
 		imageLayer.setImage(image);
+		imageLayer.setVisible(false);
 		imageLayer.image().addCallback(new Callback<Image>() {
 			@Override
 			public void onSuccess(Image result) {
+				imageLayer.setVisible(true);
 				imageLayer.setOrigin(result.width() / 2, result.height() / 2);
 				adjustScale();
 			}

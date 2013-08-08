@@ -5,7 +5,7 @@ import playn.core.ImageLayer;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.BlockController;

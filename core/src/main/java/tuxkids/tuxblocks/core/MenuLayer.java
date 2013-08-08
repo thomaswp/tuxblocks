@@ -8,7 +8,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class MenuSprite extends LayerWrapper {
+public class MenuLayer extends LayerWrapper {
 	
 	public static float DEFAULT_ALPHA = 0.75f;
 	
@@ -75,7 +75,7 @@ public class MenuSprite extends LayerWrapper {
 		return button;
 	}
 	
-	public MenuSprite(GameState state, float width) {
+	public MenuLayer(GameState state, float width) {
 		super(graphics().createGroupLayer());
 		this.width = width;
 		this.height = defaultButtonSize() * 1.2f;

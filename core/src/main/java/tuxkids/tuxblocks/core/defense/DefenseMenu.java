@@ -13,13 +13,13 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class DefenseMenu extends MenuSprite {
+public class DefenseMenu extends MenuLayer {
 
 	private final static int BEAT_TIME = 300;
 	private final static float ITEM_ALPHA = (1 + Button.UNPRESSED_ALPHA) / 2;

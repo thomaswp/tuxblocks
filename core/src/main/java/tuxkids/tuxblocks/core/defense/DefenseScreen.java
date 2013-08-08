@@ -7,7 +7,7 @@ import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.defense.Grid.DoubleClickListener;
@@ -80,7 +80,7 @@ public class DefenseScreen extends GameScreen {
 	}
 	
 	@Override
-	protected MenuSprite createMenu() {
+	protected MenuLayer createMenu() {
 		return new DefenseMenu(state, width());
 	}
 	
@@ -147,5 +147,10 @@ public class DefenseScreen extends GameScreen {
 	
 	public void pushSelectScreen() {
 		pushScreen(selectScreen, screens.slide().right());
+	}
+	
+	@Override
+	protected void popThis() {
+		popThis(screens.slide().up());
 	}
 }

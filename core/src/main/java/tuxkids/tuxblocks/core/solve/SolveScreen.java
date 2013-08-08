@@ -9,8 +9,9 @@ import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.defense.DefenseMenu;
+import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
@@ -53,7 +54,7 @@ public class SolveScreen extends EquationScreen {
 	}
 	
 	@Override 
-	protected MenuSprite createMenu() {
+	protected MenuLayer createMenu() {
 		return new DefenseMenu(state, width(), false); 
 	}
 	
@@ -98,7 +99,7 @@ public class SolveScreen extends EquationScreen {
 	}
 
 	@Override
-	protected void onChildScreenFinished(GameScreen screen) {
+	protected void onChildScreenFinished(BaseScreen screen) {
 		super.onChildScreenFinished(screen);
 		if (screen instanceof NumberSelectScreen) {
 			if (((NumberSelectScreen) screen).hasCorrectAnswer()) {

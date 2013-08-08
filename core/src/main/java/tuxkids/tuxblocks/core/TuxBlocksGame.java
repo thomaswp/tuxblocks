@@ -8,9 +8,11 @@ import playn.core.Color;
 import playn.core.Game;
 import playn.core.ImageLayer;
 import tripleplay.game.ScreenStack;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.solve.BuildScreen;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
+import tuxkids.tuxblocks.core.title.TitleScreen;
 
 public class TuxBlocksGame extends Game.Default {
 
@@ -49,14 +51,22 @@ public class TuxBlocksGame extends Game.Default {
 
 	@Override
 	public void init() {
-		
-		GameState state = new GameState();
-		background = state.background();
+	
+		background = new GameBackgroundSprite();
 		background.layer().setDepth(-10);
+		
+//		Button menuButton = new Button(Constant.BUTTON_MENU, 
+//				MenuLayer.defaultButtonSize(), MenuLayer.defaultButtonSize(), true);
+//		menuButton.setPosition(menuButton.width() * 0.15f, 
+//				graphics().height() - menuButton.height() * 0.15f);
+//		menuButton.setTint(Colors.WHITE, 0.3f);
+//		menuButton.layerAddable().setDepth(10);
+//		graphics().rootLayer().add(menuButton.layerAddable());
 		
 		
 		graphics().rootLayer().add(background.layer());
-		screens.push(new DefenseScreen(screens, state));
+		screens.push(new TitleScreen(screens, background));
+//		screens.push(new DefenseScreen(screens, state));
 //		screens.push(new BuildScreen(screens, state));
 		
 	}

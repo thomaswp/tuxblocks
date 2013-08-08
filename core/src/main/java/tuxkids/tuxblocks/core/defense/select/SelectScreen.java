@@ -16,10 +16,11 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.ProblemAddedListener;
-import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.defense.DefenseMenu;
 import tuxkids.tuxblocks.core.defense.Grid;
+import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
 
@@ -65,7 +66,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 	}
 	
 	@Override
-	public MenuSprite createMenu() {
+	public MenuLayer createMenu() {
 		return new DefenseMenu(state, width());
 	}
 	
@@ -163,7 +164,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 	
 	boolean del;
 	@Override
-	protected void onChildScreenFinished(GameScreen screen) {
+	protected void onChildScreenFinished(BaseScreen screen) {
 		super.onChildScreenFinished(screen);
 		if (screen instanceof SolveScreen) {
 			selectedProblem.setEquation(((SolveScreen) screen).equation());

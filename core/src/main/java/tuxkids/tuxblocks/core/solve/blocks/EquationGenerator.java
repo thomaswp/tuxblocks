@@ -12,95 +12,6 @@ public class EquationGenerator extends PlayNObject {
 	
 	private static Random rand = new Random();
 	
-	public static Equation generate(int vars, int steps) {
-		Expression lhs = new Expression(), rhs = new Expression();
-		int answer = rand.nextInt(21) - 10;
-		int factor = rand.nextInt(15) + vars;
-		int[] varFactors = new int[vars];
-		ArrayList<Integer> possibleValues = new ArrayList<Integer>();
-		for (int i = 1; i < factor; i++) possibleValues.add(i);
-		for (int i = 1; i < vars; i++) {			
-			varFactors[i] = possibleValues.remove(rand.nextInt(possibleValues.size()));
-		}
-		Arrays.sort(varFactors);
-		for (int i = 0; i < vars - 1; i++) varFactors[i] = varFactors[i+1] - varFactors[i];
-		varFactors[vars - 1] = factor - varFactors[vars - 1];
-
-		int n = answer * factor;
-		
-		VariableBlock[] vBlocks = new VariableBlock[vars];
-		for (int i = 0; i < vars; i++) {
-			VariableBlock vb = new VariableBlock("x");
-			if (varFactors[i] != 1) {
-				vb.times(varFactors[i]);
-			}
-			vBlocks[i] = vb;
-		}
-		
-		int f = factor;//varFactors[rand.nextInt(varFactors.length)];
-		for (VariableBlock v : vBlocks) v.over(f);
-		n /= f;
-		
-		for (int i = 0; i < steps; i++) {
-			
-		}
-
-		for (int i = 0; i < vars; i++) {
-			VariableBlock vb = vBlocks[i];
-			if (true || rand.nextBoolean()) {
-				lhs.add(vb);
-			} else {
-				vb.times(-1);
-				rhs.add(vb);
-			}
-			vb.simplifyModifiers();
-		}
-		if (false && rand.nextBoolean()) {
-			lhs.add(new NumberBlock(-n));
-		} else {
-			rhs.add(new NumberBlock(n));
-		}
-		
-		return new Equation(lhs, rhs);
-	}
-	
-	private static void times(Expression lhs, NumberBlock rhs) {
-		int factor = randNonZero(9);
-		for (BaseBlock b : lhs) {
-			b.times(factor);
-			b.simplifyModifiers();
-		}
-		rhs.value *= factor;
-	}
-	
-	private static void plus(Expression lhs, NumberBlock rhs) {
-		int adden = randNonZero(20);
-		for (BaseBlock b : lhs) {
-			b.add(adden);
-			b.simplifyModifiers();
-		}
-		rhs.value += adden;
-	}
-	
-	private static void over(Expression lhs, NumberBlock rhs) {
-		List<Integer> factors = getFactors(rhs.value);
-		int factor = factors.get(rand.nextInt(factors.size()));
-		for (BaseBlock b : lhs) {
-			b.over(factor);
-			b.simplifyModifiers();
-		}
-		rhs.value /= factor;
-	}
-	
-	private static void split(Expression lhs, NumberBlock rhs) {
-		int factor = randNonZero(9);
-		for (BaseBlock b : lhs) {
-			b.times(factor);
-			b.simplifyModifiers();
-		}
-		rhs.value *= factor;
-	}
-	
 	private static int factor() {
 		return rand(1, 10);
 	}
@@ -216,12 +127,30 @@ public class EquationGenerator extends PlayNObject {
 		Plus, Minus, Times, Over
 	}
 	
-//	public static Equation generateComposite(int steps, int expressions) {
-//		
-//	}
+	public static Equation generateComposite(int minSteps, int maxSteps, int expressions) {
+		Builder builder = new Builder();
+		int rhs = 0;
+		int answer = generateAnswer() / 2;
+		for (int i = 0; i < expressions; i++) {
+			int steps = rand(minSteps, maxSteps);
+			Equation eq = generate(answer, steps);
+			builder.addLeft(eq.leftSide().get(0));
+			rhs += ((NumberBlock) eq.rightSide().get(0)).value();
+		}
+		builder.addRight(new NumberBlock(rhs));
+		builder.addRight(new BlockHolder());
+		return builder.createEquation();
+	}
+	
+	private static int generateAnswer() {
+		return rand.nextInt(MAX_ANSWER * 2 + 1) - MAX_ANSWER;
+	}
 	
 	public static Equation generate(int steps) {
-		int answer = rand.nextInt(MAX_ANSWER * 2 + 1) - MAX_ANSWER;
+		return generate(generateAnswer(), steps);
+	}
+	
+	private static Equation generate(int answer, int steps) {
 		int rhs = answer;
 		BaseBlock lhs = new VariableBlock("x");
 		Operation lastOperation = null;
@@ -285,10 +214,6 @@ public class EquationGenerator extends PlayNObject {
 	
 	private static int randSign() {
 		return rand(0, 1) * 2 - 1;
-	}
-	
-	private static class Expression extends ArrayList<BaseBlock> {
-		private static final long serialVersionUID = 1L;
 	}
 	
 	public static List<Integer> getFactors(int n) {

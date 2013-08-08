@@ -33,6 +33,10 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		this.value = value;
 	}
 
+	public int value() {
+		return value;
+	}
+
 	@Override
 	public void initSpriteImpl() {
 		super.initSpriteImpl();
@@ -194,4 +198,5 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		this.value = value;
 		((BlockLayerDefault) layer).setText(text());
 	}
+
 }

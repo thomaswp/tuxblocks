@@ -14,7 +14,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.InventoryChangedListener;
-import tuxkids.tuxblocks.core.MenuSprite;
+import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
@@ -193,7 +193,7 @@ public class Inventory extends PlayNObject {
 	private void createBackgroundSprite() {
 		Image image = CanvasUtils.createRect(width, height, Color.rgb(200, 125, 125), 1, Colors.DARK_GRAY);
 		ImageLayer layer = graphics().createImageLayer(image);
-		layer.setAlpha(MenuSprite.DEFAULT_ALPHA);
+		layer.setAlpha(MenuLayer.DEFAULT_ALPHA);
 		groupLayer.add(layer);
 	}
 
