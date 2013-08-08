@@ -32,6 +32,10 @@ public class EquationGenerator extends PlayNObject {
 		return a;
 	}
 	
+	public static Equation generateEquation(int difficulty) {
+		return generate(difficulty);
+	}
+	
 	/** ax + b = cx + d */
 	public static Equation generateFormA1() {
 		int a = factor();

@@ -73,7 +73,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 
 	@Override
 	protected MenuLayer createMenu() {
-		return new MenuLayer(state, width() - toolboxWidth());
+		return new MenuLayer(width() - toolboxWidth(), state.themeColor());
 	}
 
 	@Override

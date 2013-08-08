@@ -14,7 +14,8 @@ public class MenuLayer extends LayerWrapper {
 	
 	protected final GroupLayer layer;
 	protected final float width, height;
-	protected final GameState state;
+	protected final int themeColor;
+	
 	private final ImageLayer background;
 	private Button leftButton, rightButton;
 	
@@ -71,15 +72,15 @@ public class MenuLayer extends LayerWrapper {
 	
 	public Button createButton(Image image) {
 		Button button = new Button(image, defaultButtonSize(), defaultButtonSize(), true);
-		button.setTint(state.themeColor());
+		button.setTint(themeColor);
 		return button;
 	}
 	
-	public MenuLayer(GameState state, float width) {
+	public MenuLayer(float width, int themeColor) {
 		super(graphics().createGroupLayer());
 		this.width = width;
+		this.themeColor = themeColor;
 		this.height = defaultButtonSize() * 1.2f;
-		this.state = state;
 		layer = (GroupLayer) layerAddable();
 		background = graphics().createImageLayer(
 				CanvasUtils.createRectCached(width, height, Colors.LIGHT_GRAY, 1, Colors.DARK_GRAY));

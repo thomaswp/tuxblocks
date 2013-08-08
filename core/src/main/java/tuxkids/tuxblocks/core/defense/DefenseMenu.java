@@ -28,6 +28,7 @@ public class DefenseMenu extends MenuLayer {
 	private final TextFormat barTextFormat;
 	private final TextFormat scoreTextFormat;
 	private final int itemSize;
+	private final GameState state;
 
 	private Bar[] bars;
 	private Heart heart;
@@ -40,7 +41,8 @@ public class DefenseMenu extends MenuLayer {
 	}
 	
 	public DefenseMenu(GameState state, float width, boolean showScore) {
-		super(state, width);
+		super(width, state.themeColor());
+		this.state = state;
 		
 		barTextFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, height * 0.18f));

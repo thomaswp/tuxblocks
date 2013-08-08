@@ -9,6 +9,8 @@ import playn.core.Keyboard;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer;
+import playn.core.TextFormat;
+import playn.core.Font.Style;
 import playn.core.Pointer.Event;
 import playn.core.util.Callback;
 import pythagoras.f.FloatMath;
@@ -81,6 +83,14 @@ public abstract class PlayNObject {
 	
 	protected static void debug(Object o) {
 		Debug.write(o);
+	}
+	
+	public static TextFormat createFormat(float size) {
+		return Cache.createFormat(size);
+	}
+	
+	public static TextFormat createFormat(String name, Style style, float size) {
+		return Cache.createFormat(name, style, size);
 	}
 	
 	public static float lerp(float x0, float x1, float perc) {

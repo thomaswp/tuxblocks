@@ -7,6 +7,7 @@ import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import playn.core.Font.Style;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.PlayNObject;
@@ -109,7 +110,7 @@ public class CanvasUtils extends PlayNObject {
 	public static CanvasImage createRoundRect(float width, float height, float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
 //		debug("createRoundRect");
-		width = (int)width; height = (int)height;
+		width = Math.round(width); height = Math.round(height);
 		CanvasImage image = PlayN.graphics().createImage(width, height);
 		image.canvas().setFillColor(fillColor);
 		image.canvas().fillRoundRect(strokeWidth / 2, strokeWidth / 2, 
@@ -117,8 +118,9 @@ public class CanvasUtils extends PlayNObject {
 		if (strokeWidth > 0) {
 			image.canvas().setStrokeColor(strokeColor);
 			image.canvas().setStrokeWidth(strokeWidth);
-			image.canvas().strokeRoundRect(strokeWidth / 2, strokeWidth / 2, 
-					image.width() - strokeWidth, image.height() - strokeWidth, rad);
+			int indent = Math.round(strokeWidth / 2); 
+			image.canvas().strokeRoundRect(indent, indent, 
+					image.width() - indent * 2 - 1, image.height() - indent * 2 - 1, rad);
 		}
 		return image;
 	}
@@ -239,6 +241,9 @@ public class CanvasUtils extends PlayNObject {
 	
 	public static CanvasImage createText(String text,
 			TextFormat format, int color) {
+		if (text.isEmpty() || text == null) {
+			text = " ";
+		}
 //		debug("createText");
 		TextLayout layout = PlayN.graphics().layoutText(text, format);
 		CanvasImage image = PlayN.graphics().createImage(layout.width(), layout.height());

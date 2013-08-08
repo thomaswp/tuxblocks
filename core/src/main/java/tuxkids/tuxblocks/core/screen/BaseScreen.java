@@ -16,11 +16,12 @@ import tuxkids.tuxblocks.core.PlayNObject;
 public class BaseScreen extends Screen implements Listener {
 
 	protected ScreenStack screens;
+	protected final GameBackgroundSprite background;
+	
 	private OnScreenFinishedListener onScreenFinishedListener;
 	private boolean entering, exiting;
 	private int depth;
 	private float lastTx, lastTy;
-	private final GameBackgroundSprite background;
 	
 	public boolean exiting() {
 		return exiting;

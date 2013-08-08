@@ -152,11 +152,8 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					GameState state = new GameState(background);
-					DefenseScreen ds = new DefenseScreen(screens, state);
-					pushScreen(ds, screens.slide().down());
-//					DifficultyScreen ds = new DifficultyScreen(screens, background);
-//					pushScreen(ds, screens.slide().left());
+					DifficultyScreen ds = new DifficultyScreen(screens, background);
+					pushScreen(ds, screens.slide().left());
 				}
 			}
 		});

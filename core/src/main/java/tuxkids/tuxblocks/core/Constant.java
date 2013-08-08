@@ -31,6 +31,7 @@ public class Constant {
 	public static final String TIMES_SYMBOL = "\u00D7";
 	public static final String DIVIDE_SYMBOL = "\u00F7";
 	public static final String DOT_SYMBOL = "\u00B7";
+	public static final String INFINITY_SYMBOL = "\u221E";
 	
 	public static final String TUX_URL = "http://tux4kids.alioth.debian.org/";
 }

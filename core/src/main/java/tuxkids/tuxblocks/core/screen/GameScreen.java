@@ -22,7 +22,7 @@ public class GameScreen extends BaseScreen {
 	}
 	
 	protected MenuLayer createMenu() {
-		return new MenuLayer(state, width());
+		return new MenuLayer(width(), state.themeColor());
 	}
 	
 	@Override
