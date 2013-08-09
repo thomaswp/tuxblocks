@@ -1,7 +1,5 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-import javax.swing.LayoutStyle.ComponentPlacement;
-
 import playn.core.Canvas;
 import playn.core.Canvas.Composite;
 import playn.core.Canvas.LineCap;
@@ -13,15 +11,13 @@ import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Path;
 import playn.core.PlayN;
-import playn.core.Pointer.Listener;
-import playn.core.util.Callback;
-import playn.core.util.Clock;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import playn.core.util.Callback;
+import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
-import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class TextBoxLayer extends LayerWrapper {
 
@@ -121,13 +117,18 @@ public class TextBoxLayer extends LayerWrapper {
 		
 		Path path = canvas.createPath();
 		path.moveTo(indent + spWidth, rectHeight - rad * 3);
-		path.moveTo(indent + spWidth, rectHeight - rad * 2);
+		path.lineTo(indent + spWidth, rectHeight - rad * 2);
 		path.lineTo(indent, height - strokeWidth / 2);
 		path.lineTo(indent + spWidth + rad * 2, rectHeight - indent - 1);
 		path.lineTo(indent + spWidth + rad * 3, rectHeight - indent - 1);
 		
+		// the clipping here is to support HTML5, where Composite.SRC seems not to work correctly
+		// still not perfect on Firefox
+		canvas.save();
 		canvas.setCompositeOperation(Composite.SRC);
-		canvas.fillPath(path);
+		canvas.clip(path);
+		canvas.fillRect(0, rectHeight - rad * 4, indent + spWidth + rad * 4, height - (rectHeight - rad * 4));
+		canvas.restore();
 		canvas.strokePath(path);
 		
 		return image;
