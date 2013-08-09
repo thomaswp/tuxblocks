@@ -13,6 +13,8 @@ import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.solve.BuildScreen;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.title.TitleScreen;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.TutorialLayer;
 
 public class TuxBlocksGame extends Game.Default {
 
@@ -52,6 +54,8 @@ public class TuxBlocksGame extends Game.Default {
 	@Override
 	public void init() {
 	
+		Constant.preloadImages();
+		
 		background = new GameBackgroundSprite();
 		background.layer().setDepth(-10);
 		
@@ -97,6 +101,7 @@ public class TuxBlocksGame extends Game.Default {
 		clock.update(delta);
 		background.update(delta);
         screens.update(delta);
+        Tutorial.update(delta);
 	}
 
 	@Override
@@ -104,6 +109,7 @@ public class TuxBlocksGame extends Game.Default {
 		clock.paint(alpha);
 		background.paint(clock);
         screens.paint(clock);
+        Tutorial.paint(clock);
 		updateFPS();
 	}
 }

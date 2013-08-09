@@ -2,6 +2,7 @@ package tuxkids.tuxblocks.core.screen;
 
 import playn.core.Graphics;
 import playn.core.Key;
+import playn.core.Layer;
 import playn.core.Keyboard.Event;
 import playn.core.Keyboard.Listener;
 import playn.core.Keyboard.TypedEvent;
@@ -12,6 +13,7 @@ import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
 import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.layers.LayerLike;
 
 public class BaseScreen extends Screen implements Listener {
 
@@ -81,6 +83,14 @@ public class BaseScreen extends Screen implements Listener {
 	
 	protected static void lerp(Vector v0, float x1, float y1, float perc) {
 		PlayNObject.lerp(v0, x1, y1, perc);
+	}
+	
+	protected static void lerpAlpha(LayerLike layer, float target, float base, float dt) {
+		PlayNObject.lerpAlpha(layer, target, base, dt);
+	}
+	
+	protected static void lerpAlpha(Layer layer, float target, float base, float dt) {
+		PlayNObject.lerpAlpha(layer, target, base, dt);
 	}
 	
 	protected final void pushScreen(GameScreen screen) {

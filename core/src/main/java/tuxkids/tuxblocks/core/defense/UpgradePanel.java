@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core.defense;
 import playn.core.Color;
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;
+import playn.core.TextFormat;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
@@ -22,11 +23,11 @@ public class UpgradePanel extends LayerWrapper {
 	protected final Grid grid;
 	protected final GroupLayer layer;
 	protected final float cellSize;
-	protected final ImageLayer circleLayer; 
+	protected final ImageLayer circleLayer, numberLayer; 
 	protected final ImageLayerTintable confirmLayer;
 	protected final Button buttonDelete, buttonUpgrade;
 	protected final int color;
-	
+	protected final TextFormat format;
 	
 	protected Tower tower;
 	protected float targetAlpha = 1;
@@ -78,7 +79,7 @@ public class UpgradePanel extends LayerWrapper {
 		
 		float confirmSize = buttonSize / 4;
 		confirmLayer = new ImageLayerTintable();
-		confirmLayer.setImage(assets().getImage(Constant.IMAGE_CONFIRM));
+		confirmLayer.setImage(assets().getImage(Constant.BUTTON_CANCEL));
 		confirmLayer.setSize(confirmSize, confirmSize);
 		confirmLayer.setDepth(1);
 		confirmLayer.setVisible(false);
@@ -88,6 +89,15 @@ public class UpgradePanel extends LayerWrapper {
 				buttonDelete.y() - offset);
 		centerImageLayer(confirmLayer);
 		layer.add(confirmLayer.layerAddable());
+		
+		format = createFormat(buttonSize / 3);
+		numberLayer = graphics().createImageLayer();
+		numberLayer.setDepth(1);
+		offset = buttonSize / 2 * FloatMath.sqrt(0.5f);
+		offset = 0;
+		numberLayer.setTranslation(buttonUpgrade.x() + offset, 
+				buttonUpgrade.y() + offset);
+		layer.add(numberLayer);
 	}
 
 	private boolean canUpgrade() {
@@ -102,27 +112,46 @@ public class UpgradePanel extends LayerWrapper {
 	}
 	
 	private void delete() {
-//		if (confirmLayer.visible()) {
+		if (confirmLayer.visible()) {
 			tower.destroy();
 			setTower(null);
-//		} else {
-//			confirmLayer.setVisible(true);
-//			confirmLayer.setAlpha(0);
-//		}
+		} else {
+			confirmLayer.setVisible(true);
+			confirmLayer.setAlpha(0);
+		}
 	}
 	
 	public void setTower(Tower tower) {
 		if (tower == this.tower) return;
+		this.tower = tower;
+		refreshNumberLayer();
 		if (tower == null) { 
 			fadeOut();
 		} else {
 			fadeIn();
 			setTranslation(tower.position().x, tower.position().y);
 		}
-		this.tower = tower;
 		confirmLayer.setVisible(false);
 	}
 	
+	private void refreshNumberLayer() {
+		if (tower != null) {
+			int upgradeCost = tower.upgradeCost();
+			if (upgradeCost == 0) {
+				numberLayer.setVisible(false);
+			} else {
+				numberLayer.setVisible(true);
+				numberLayer.setImage(CanvasUtils.createString(
+						format, "" + upgradeCost, Colors.BLACK));
+				centerImageLayer(numberLayer);
+				if (upgradeCost == 1) {
+					numberLayer.setOrigin(numberLayer.originX() + 2, 
+							numberLayer.originY());
+				}
+			}
+		}
+	}
+
 	protected void fadeIn() {
 		layer.setAlpha(0);
 		targetAlpha = 1;
@@ -137,6 +166,7 @@ public class UpgradePanel extends LayerWrapper {
 		boolean canUpgrade = canUpgrade();
 		buttonUpgrade.setEnabled(canUpgrade);
 		buttonUpgrade.layerAddable().setAlpha(canUpgrade ? BUTTON_ALPHA : 0.2f);
+		numberLayer.setAlpha(buttonUpgrade.layerAddable().alpha());
 	}
 	
 	public void paint(Clock clock) {

@@ -152,6 +152,11 @@ public class DifficultyScreen extends BaseScreen {
 	}
 	
 	@Override
+	public void update(int delta) {
+		super.update(delta);
+	}
+	
+	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
 		for (SlideLayer slide : slideLayers) {

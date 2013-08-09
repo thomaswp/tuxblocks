@@ -12,6 +12,7 @@ public abstract class ChainProjectile extends ConnectionProjectile {
 	private float damageFactor;
 	private float rangeFactor;
 	private ChainProjectile parent;
+	private Vector projectileStart = null;
 	
 	private boolean hasChained; 
 	
@@ -27,7 +28,15 @@ public abstract class ChainProjectile extends ConnectionProjectile {
 	
 	@Override
 	public Vector sourcePosition() {
-		return parent == null ? source.projectileStart() : parent.target.position();
+		if (parent == null) {
+			if (projectileStart == null) {
+				// cache the position in case the tower is destroyed
+				projectileStart = source.projectileStart();
+			}
+			return projectileStart;
+		} else {
+			return parent.target.position();
+		}
 	}
 	
 	public ChainProjectile createProjectile() {

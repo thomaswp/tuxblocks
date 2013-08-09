@@ -19,6 +19,7 @@ import pythagoras.f.Vector;
 import pythagoras.i.IPoint;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
+import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
@@ -123,6 +124,14 @@ public abstract class PlayNObject {
 		v0.y = lerpTime(v0.y, y1, base, dt);
 	}
 	
+	public static void lerpAlpha(LayerLike layer, float target, float base, float dt) {
+		layer.setAlpha(lerpTime(layer.alpha(), target, base, dt, 0.01f));
+	}
+	
+	public static void lerpAlpha(Layer layer, float target, float base, float dt) {
+		layer.setAlpha(lerpTime(layer.alpha(), target, base, dt, 0.01f));
+	}
+	
 	public static float shiftTo(float x0, float x1, float maxShift) {
 		float change = x1 - x0;
 		change = Math.min(Math.abs(change), maxShift) * Math.signum(change);
@@ -188,7 +197,7 @@ public abstract class PlayNObject {
 		}
 	}
 	
-	protected static void centerImageLayer(final ImageLayerLike layer) {
+	public static void centerImageLayer(final ImageLayerLike layer) {
 		if (layer.image() != null) {
 			layer.image().addCallback(new Callback<Image>() {
 				@Override

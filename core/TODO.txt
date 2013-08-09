@@ -1,0 +1,12 @@
+-solve menu
+-return when timer's up
+-difiiculty levels
+--point weights
+-balance problem
+-balance blocks
+-level design
+-multiple grids
+-color/grid selection
+-tutorials
+-storage
+-audio

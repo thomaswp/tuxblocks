@@ -27,6 +27,7 @@ import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.BuildScreen;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class TitleScreen extends BaseScreen{
@@ -143,7 +144,7 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					
+					Tutorial.start();
 				}
 			}
 		});
@@ -161,9 +162,11 @@ public class TitleScreen extends BaseScreen{
 		buildButton.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
-				GameState state = new GameState(background);
-				BuildScreen bs = new BuildScreen(screens, state);
-				pushScreen(bs, screens.slide().down());
+				if (inButton) {
+					GameState state = new GameState(background);
+					BuildScreen bs = new BuildScreen(screens, state);
+					pushScreen(bs, screens.slide().down());
+				}
 			}
 		});
 		

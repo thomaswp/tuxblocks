@@ -26,6 +26,7 @@ import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
 import tuxkids.tuxblocks.core.solve.blocks.PlusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.BlockController.BuildToolbox;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
+import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
@@ -93,13 +94,13 @@ public class Toolbox extends LayerWrapper implements BuildToolbox {
 		}
 
 		float blockSeg = (height - blockStart) / 4;
+		float barSpace = (Sprite.baseSize() - Sprite.modSize()) / 2;
 		variableBlock.layer().setTranslation((width - variableBlock.width()) / 2, blockStart + blockSeg * 0.5f - variableBlock.height() / 2);
 		numberBlock.layer().setTranslation((width - numberBlock.width()) / 2, blockStart + blockSeg * 1.5f - numberBlock.height() / 2);
-//		blockHolder.layer().setTranslation((width - blockHolder.width()) / 2, blockStart + blockSeg * 1.5f - blockHolder.height() / 2);
-		plusBlock.layer().setTranslation(width / 2 - plusBlock.width() * 5 / 4, blockStart + blockSeg * 2.5f - plusBlock.height() / 2);
-		minusBlock.layer().setTranslation(width / 2 + minusBlock.width() / 4, blockStart + blockSeg * 2.5f - minusBlock.height() / 2);
-		timesBlock.layer().setTranslation((width - timesBlock.width()) / 2 , blockStart + blockSeg * 3.5f - timesBlock.height() * 5 / 4);
-		overBlock.layer().setTranslation((width - overBlock.width()) / 2 , blockStart + blockSeg * 3.5f + overBlock.height() / 4);
+		plusBlock.layer().setTranslation(width / 2 - barSpace - plusBlock.width() / 2, blockStart + blockSeg * 2.5f - plusBlock.height() / 2);
+		minusBlock.layer().setTranslation(width / 2 + barSpace - minusBlock.width() / 2, blockStart + blockSeg * 2.5f - minusBlock.height() / 2);
+		timesBlock.layer().setTranslation((width - timesBlock.width()) / 2 , blockStart + blockSeg * 3.5f - barSpace - timesBlock.height() / 2);
+		overBlock.layer().setTranslation((width - overBlock.width()) / 2 , blockStart + blockSeg * 3.5f + barSpace - overBlock.height() / 2);
 	}
 	
 	private void createButtons(float blockStart, int themeColor) {
