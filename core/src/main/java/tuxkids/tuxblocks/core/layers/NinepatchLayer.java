@@ -89,7 +89,7 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		imageWidth = (int)image.width();
 		imageHeight = (int)image.height();
 		
-		int xOffset = 0, yOffset = 0;
+		float xOffset = 0, yOffset = 0;
 		if (widthDims == null || heightDims == null) {
 			imageWidth -= 2;
 			imageHeight -= 2;
@@ -103,7 +103,8 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 			widthDims = getDims(topPixels);
 			heightDims = getDims(sidePixels);
 			
-			xOffset = yOffset = 1;
+			// the .5 is for OpenGL issues with float-math sometimes leaving the black band visible
+			xOffset = yOffset = 1.5f; 
 		}
 		
 		this.widthDims = widthDims;

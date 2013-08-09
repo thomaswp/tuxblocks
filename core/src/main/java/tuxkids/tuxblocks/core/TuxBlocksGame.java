@@ -8,13 +8,8 @@ import playn.core.Color;
 import playn.core.Game;
 import playn.core.ImageLayer;
 import tripleplay.game.ScreenStack;
-import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.defense.DefenseScreen;
-import tuxkids.tuxblocks.core.solve.BuildScreen;
-import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
-import tuxkids.tuxblocks.core.tutorial.TutorialLayer;
 
 public class TuxBlocksGame extends Game.Default {
 

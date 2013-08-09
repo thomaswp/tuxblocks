@@ -14,6 +14,8 @@ import tuxkids.tuxblocks.core.defense.Grid.DoubleClickListener;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class DefenseScreen extends GameScreen {
@@ -56,6 +58,7 @@ public class DefenseScreen extends GameScreen {
 			@Override
 			public void wasDoubleClicked() {
 				zoomed = !zoomed;
+				Tutorial.trigger(Trigger.Defense_GridZoom);
 			}
 		});
 		
@@ -77,6 +80,11 @@ public class DefenseScreen extends GameScreen {
 		createPlusButton();
 		createStartButton();
 		
+	}
+	
+	@Override
+	protected Trigger wasShownTrigger() {
+		return Trigger.Defense_Shown;
 	}
 	
 	@Override
@@ -103,6 +111,7 @@ public class DefenseScreen extends GameScreen {
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					grid.level().startNextRound();
+					Tutorial.trigger(Trigger.Defense_StartRound);
 				}
 			}
 		});

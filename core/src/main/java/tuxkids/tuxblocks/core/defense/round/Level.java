@@ -10,6 +10,8 @@ import tuxkids.tuxblocks.core.defense.walker.ShrinkWalker;
 import tuxkids.tuxblocks.core.defense.walker.SlideWalker;
 import tuxkids.tuxblocks.core.defense.walker.SpinWalker;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public abstract class Level {
 	private List<Round> rounds = new ArrayList<Round>();

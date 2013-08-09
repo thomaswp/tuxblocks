@@ -17,52 +17,55 @@ import playn.core.util.Callback;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.layers.ImageLayerLike;
+import tuxkids.tuxblocks.core.layers.ImageLayerLike.Factory;
+import tuxkids.tuxblocks.core.layers.ImageLayerWrapper;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
+import tuxkids.tuxblocks.core.layers.NinepatchLayer;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public class TextBoxLayer extends LayerWrapper {
 
+
+	private final float spHeight = 31; //constant based on Java dimensions that created the image.. oops
+	private final float spWidth = spHeight / 2;
+	private final float hideHeight = graphics().height() * 0.1f;
+	
 	protected final GroupLayer layer, fadeInLayer;
 	protected final TextFormat format;
-	protected final ImageLayer textLayer, backgroundLayer, tuxLayer;
-	protected final float width, height;
+	protected final ImageLayer textLayer, tuxLayer;
+	protected final ImageLayerLike backgroundLayer;
 	protected final float padding;
+	protected final float width;
 	
-	public TextBoxLayer(String text, float width) {
+	protected float height;
+	protected boolean hidden;
+	
+	public TextBoxLayer(float width) {
 		super(graphics().createGroupLayer());
 		layer = (GroupLayer) layerAddable();
+		this.width = width;
+		
 		fadeInLayer = graphics().createGroupLayer();
-		fadeInLayer.setAlpha(0);
 		layer.add(fadeInLayer);
 		
 		padding = graphics().height() / 35;
-
-		float spHeight = graphics().height() / 20f;
-		float spWidth = spHeight / 2;
-		
 		format = createFormat(graphics().height() / 20)
 				.withWrapWidth(width - padding * 2 - spWidth);
-		TextLayout layout = graphics().layoutText(text, format);
 
-		this.width = width;
-		this.height = layout.height() + padding * 2 + spHeight;
-		
 		textLayer = graphics().createImageLayer();
-		CanvasImage textImage = graphics().createImage(layout.width(), layout.height());
-		textImage.canvas().setFillColor(Colors.BLACK);
-		textImage.canvas().fillText(layout, 0, 0);
-		textLayer.setImage(textImage);
-		textLayer.setTranslation(padding + spWidth, padding);
-		fadeInLayer.add(textLayer);
 		
-		backgroundLayer = graphics().createImageLayer();
-		backgroundLayer.setImage(createSpeechBubble(width, height, padding, 
-				padding / 2, spWidth, spHeight));
+		backgroundLayer = new NinepatchLayer(new Factory() {
+			@Override
+			public ImageLayerLike create(Image image) {
+				return new ImageLayerWrapper(image);
+			}
+		}, assets().getImage(Constant.NINEPATCH_BUBBLE));
 		backgroundLayer.setDepth(-1);
-		fadeInLayer.add(backgroundLayer);
+		backgroundLayer.addToLayer(fadeInLayer);
 		
 		tuxLayer = graphics().createImageLayer();
 		tuxLayer.setImage(assets().getImage(Constant.IMAGE_TUX));
-		tuxLayer.setTranslation(0, height * 1.6f);
 		layer.add(tuxLayer);
 		tuxLayer.image().addCallback(new Callback<Image>() {
 			@Override
@@ -76,20 +79,62 @@ public class TextBoxLayer extends LayerWrapper {
 				cause.printStackTrace();
 			}
 		});
+		
+		hidden = true;
+		setVisible(false);
+		fadeInLayer.setAlpha(0);
+		tuxLayer.setTranslation(0, hideHeight);
 	}
 	
-	public void show() {
+	public void show(String text) {
 		
+		if (text != null) {
+			TextLayout layout = graphics().layoutText(text, format);
+			height = layout.height() + padding * 2 + spHeight;
+			
+			CanvasImage textImage = graphics().createImage(layout.width(), layout.height());
+			textImage.canvas().setFillColor(Colors.BLACK);
+			textImage.canvas().fillText(layout, 0, 0);
+			textLayer.setImage(textImage);
+			textLayer.setTranslation(padding + spWidth, padding);
+			fadeInLayer.add(textLayer);
+			
+			fadeInLayer.setOrigin(0, height);
+			
+			backgroundLayer.setSize(width, height);
+		}
+		
+		setVisible(true);
+		hidden = false;
+	}
+	
+	public void hide() {
+		hidden = true;
 	}
 	
 	public void paint(Clock clock) {
-		if (tuxLayer.ty() > height) {
-			tuxLayer.setTy(Math.max(tuxLayer.ty() - 0.5f * clock.dt(), height));
-		} else if (fadeInLayer.alpha() < 1) {
-			lerpAlpha(fadeInLayer, 1, 0.995f, clock.dt());
+		float speed = 0.5f;
+		if (!hidden) {
+			if (tuxLayer.ty() > 0) {
+				tuxLayer.setTy(Math.max(tuxLayer.ty() - speed * clock.dt(), 0));
+			} else if (fadeInLayer.alpha() < 1) {
+				lerpAlpha(fadeInLayer, 1, 0.995f, clock.dt());
+			}
+		} else {
+			if (fadeInLayer.alpha() > 0) {
+				lerpAlpha(fadeInLayer, 0, 0.99f, clock.dt());
+				if (fadeInLayer.alpha() == 0) {
+					Tutorial.trigger(Trigger.TextBoxHidden);
+				}
+			} else if (tuxLayer.ty() < hideHeight) {
+				tuxLayer.setTy(Math.min(tuxLayer.ty() + 0.5f * clock.dt(), hideHeight));
+			} else {
+				setVisible(false);
+			}
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private Image createSpeechBubble(float width, float height, float rad, 
 			float strokeWidth, float spWidth, float spHeight) {
 		width = Math.round(width); height = Math.round(height);

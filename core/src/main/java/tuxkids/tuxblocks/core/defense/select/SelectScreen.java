@@ -23,6 +23,7 @@ import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public class SelectScreen extends GameScreen implements ProblemAddedListener {
 
@@ -63,6 +64,11 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		solveScreen = new SolveScreen(screens, gameState);
 		
 		state.setProblemAddedListener(this);
+	}
+	
+	@Override
+	public Trigger wasShownTrigger() {
+		return Trigger.Select_Shown;
 	}
 	
 	@Override

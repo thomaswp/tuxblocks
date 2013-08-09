@@ -14,6 +14,8 @@ import tripleplay.game.ScreenStack.Transition;
 import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.LayerLike;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public class BaseScreen extends Screen implements Listener {
 
@@ -37,6 +39,10 @@ public class BaseScreen extends Screen implements Listener {
 		return depth;
 	}
 	
+	protected Trigger wasShownTrigger() {
+		return null;
+	}
+	
 	@Override
 	public void wasShown() {
 		super.wasShown();
@@ -50,6 +56,7 @@ public class BaseScreen extends Screen implements Listener {
 		entering = false;
 		lastTx = 0;
 		lastTy = 0;
+		Tutorial.trigger(wasShownTrigger());
 	}
 	
 	@Override
@@ -60,12 +67,6 @@ public class BaseScreen extends Screen implements Listener {
 	@Override
 	public void wasHidden() {
 		exiting = false;
-	}
-
-	
-	@Override
-	public void wasRemoved() {
-		//layer.destroy();
 	}
 	
 	public BaseScreen(ScreenStack screens, GameBackgroundSprite background) {
@@ -106,6 +107,7 @@ public class BaseScreen extends Screen implements Listener {
 		};
 		screen.depth = depth + 1;
 		screens.push(screen, transition);
+		Tutorial.cleaIndicators();
 	}
 	
 	protected void popThis(Transition transition) {
@@ -113,6 +115,7 @@ public class BaseScreen extends Screen implements Listener {
 		screens.remove(this, transition);
 		layer.setDepth(-1);
 		if (onScreenFinishedListener != null) onScreenFinishedListener.onScreenFinished();
+		Tutorial.cleaIndicators();
 	}
 	
 	protected void popThis() {

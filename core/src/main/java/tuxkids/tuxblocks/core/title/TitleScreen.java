@@ -28,6 +28,7 @@ import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.BuildScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class TitleScreen extends BaseScreen{
@@ -144,7 +145,9 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					Tutorial.start();
+					Tutorial.start(background.primaryColor(), background.secondaryColor());
+					tutorialButton.layerAddable().setVisible(false);
+					startHere.setVisible(false);
 				}
 			}
 		});

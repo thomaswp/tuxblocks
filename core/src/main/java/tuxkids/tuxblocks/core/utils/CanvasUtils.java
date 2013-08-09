@@ -13,6 +13,8 @@ import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.PlayNObject;
 
 public class CanvasUtils extends PlayNObject {
+
+	public static final int TRANSPARENT = Color.argb(0, 0, 0, 0);
 	
 	private static class RectKey extends Key {
 
@@ -44,6 +46,7 @@ public class CanvasUtils extends PlayNObject {
 					fillColor, strokeWidth, strokeColor);
 		}	
 	}
+	
 	private static RectKey rectKey = new RectKey();
 	
 	public static CanvasImage createRect(float width, float height, int fillColor) {

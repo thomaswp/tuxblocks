@@ -19,6 +19,11 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	}
 	
 	@Override
+	public void addToLayer(GroupLayer layer) {
+		layer.add(layerAddable());
+	}
+	
+	@Override
 	public void setDepth(float depth) {
 		layer.setDepth(depth);
 	}

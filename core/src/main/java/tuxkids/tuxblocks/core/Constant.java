@@ -20,7 +20,10 @@ public class Constant {
 		}
 	}
 	
-	public final static String IMAGE_PATH = "images/"; 
+	public final static String IMAGE_PATH = "images/";
+	public final static String TUTORIAL_IMAGE_PATH = IMAGE_PATH + "tutorial/"; 
+	public final static String NINEPATCH_PATH = IMAGE_PATH + "np/";
+	
 	public final static String BUTTON_BACK = preload(IMAGE_PATH + "back.png");
 	public final static String BUTTON_FORWARD = preload(IMAGE_PATH + "forward.png");
 	public final static String BUTTON_UP = preload(IMAGE_PATH + "up.png");
@@ -44,6 +47,8 @@ public class Constant {
 	public static final String IMAGE_START = preload(IMAGE_PATH + "start.png");
 	public static final String IMAGE_TUX = preload(IMAGE_PATH + "tux.png");
 	
+	public final static String NINEPATCH_BUBBLE = preload(NINEPATCH_PATH + "bubble.9.png");
+	
 	public static final String FONT_NAME = "Arial";
 	
 	public static final String TIMES_SYMBOL = "\u00D7";
@@ -54,4 +59,12 @@ public class Constant {
 	public static final String TUX_URL = "http://tux4kids.alioth.debian.org/";
 	
 	public static final String TUTORIAL_PATH = "tutorial.txt";
+
+	public static String click() {
+		return PlayN.touch().hasTouch() ? "tap" : "click";
+	}
+
+	public static CharSequence mouse() {
+		return PlayN.touch().hasTouch() ? "finger" : "mouse";
+	}
 }

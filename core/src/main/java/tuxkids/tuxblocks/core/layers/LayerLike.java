@@ -14,6 +14,8 @@ public interface LayerLike {
 	public float alpha();
 	
 	public void setTranslation(float x, float y);
+	public void setTx(float ty);
+	public void setTy(float tx);
 	public void setVisible(boolean visible);
 	public void setTint(int tint);
 	public void setTint(int baseColor, int tintColor, float perc);
@@ -24,5 +26,6 @@ public interface LayerLike {
 	
 	public void addListener(Listener pointerListener);
 	
+	public void addToLayer(GroupLayer layer);
 	
 }

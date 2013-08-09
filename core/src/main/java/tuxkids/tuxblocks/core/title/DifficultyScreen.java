@@ -25,6 +25,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.title.SlideLayer.StopChangedListener;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class DifficultyScreen extends BaseScreen {
@@ -118,6 +119,11 @@ public class DifficultyScreen extends BaseScreen {
 				}
 			}
 		});
+	}
+
+	@Override
+	protected Trigger wasShownTrigger() {
+		return Trigger.Difficulty_Shown;
 	}
 	
 	private void startGame() {

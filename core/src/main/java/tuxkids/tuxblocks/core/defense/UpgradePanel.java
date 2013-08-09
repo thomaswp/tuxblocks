@@ -14,6 +14,8 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class UpgradePanel extends LayerWrapper {
@@ -109,6 +111,7 @@ public class UpgradePanel extends LayerWrapper {
 		
 		tower.upgrade();
 		grid.gameState().useUpgrades(tower.upgradeCost());
+		Tutorial.trigger(Trigger.Defense_TowerUpgraded);
 	}
 	
 	private void delete() {
@@ -130,6 +133,7 @@ public class UpgradePanel extends LayerWrapper {
 		} else {
 			fadeIn();
 			setTranslation(tower.position().x, tower.position().y);
+			Tutorial.trigger(Trigger.Defense_TowerSelected);
 		}
 		confirmLayer.setVisible(false);
 	}

@@ -17,4 +17,5 @@ public interface ImageLayerLike extends LayerLike {
 		public ImageLayerLike create(Image image);
 	}
 
+
 }

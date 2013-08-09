@@ -12,6 +12,10 @@ public class ImageLayerWrapper extends LayerWrapper implements ImageLayerLike {
 		super(layer);
 		this.layer = layer;
 	}
+	
+	public ImageLayerWrapper(Image image) {
+		this(graphics().createImageLayer(image));
+	}
 
 	@Override
 	public void setSize(float width, float height) {

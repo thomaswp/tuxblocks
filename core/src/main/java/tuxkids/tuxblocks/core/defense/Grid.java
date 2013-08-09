@@ -29,6 +29,8 @@ import tuxkids.tuxblocks.core.defense.round.Round;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.effect.Effect;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
@@ -36,7 +38,7 @@ public class Grid extends PlayNObject {
 
 	private final static boolean SHOW_GRID = false;
 	private final static int DOUBLE_CLICK = 300;
-	private final static int LONG_CLICK = 700;
+	private final static int LONG_CLICK = 400;
 
 	private final int cellSize;
 	private final int rows, cols;
@@ -400,6 +402,7 @@ public class Grid extends PlayNObject {
 			towers.add(toPlace);
 			toPlaceRadius.destroy();
 			refreshPath();
+			Tutorial.trigger(Trigger.Defense_TowerDropped);
 		} else if (toPlace != null) {
 			toPlace.layer().destroy();
 		}
@@ -566,6 +569,7 @@ public class Grid extends PlayNObject {
 
 	public void onRoundCompleted(Round round) {
 		round.winRound(state);
+		Tutorial.trigger(Trigger.Defense_RoundOver);
 	}
 
 	public void loseLife() {
