@@ -10,9 +10,10 @@ import playn.core.util.Callback;
 import pythagoras.f.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
+import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.utils.Positioned;
 
-public class Button extends PlayNObject implements Positioned {
+public class Button extends PlayNObject implements Positioned, Highlightable {
 	
 	public final static float UNPRESSED_ALPHA = 0.5f;
 	
@@ -26,6 +27,23 @@ public class Button extends PlayNObject implements Positioned {
 	private boolean pressed;
 	private int tint, tintPressed;
 	private boolean enabled = true;
+	
+	private Highlighter highlighter = new Highlighter() {
+		@Override
+		protected ColorState colorState() {
+			return new ColorState() {
+				@Override
+				public void reset() {
+					refreshTint();
+				}
+			};
+		}
+
+		@Override
+		protected void setTint(int baseColor, int tintColor, float perc) {
+			imageLayer.setTint(baseColor, tintColor, perc);
+		}
+	};
 
 	public Layer layerAddable() {
 		return imageLayer.layerAddable();
@@ -33,6 +51,11 @@ public class Button extends PlayNObject implements Positioned {
 	
 	public ImageLayerTintable imageLayer() {
 		return imageLayer;
+	}
+
+	@Override
+	public Highlighter highlighter() {
+		return highlighter;
 	}
 	
 	public Image image() {
@@ -166,7 +189,9 @@ public class Button extends PlayNObject implements Positioned {
 	public void setTint(int tint, int tintPressed) {
 		this.tint = tint;
 		this.tintPressed = tintPressed;
-		refreshTint();
+		if (!highlighter.highlighted()) {
+			refreshTint();
+		}
 	}
 	
 	public void setEnabled(boolean enabled) {
@@ -175,14 +200,9 @@ public class Button extends PlayNObject implements Positioned {
 		refreshTint();
 	}
 	
+	
 	public Button(String imagePath, float width, float height, boolean isCircle) {
 		this(assets().getImage(imagePath), width, height, isCircle);
-	}
-	
-	private void refreshTint() {
-		int tint = pressed ? tintPressed : this.tint;
-		if (!enabled) tint = Colors.blend(tint, Color.withAlpha(Colors.BLACK, Color.alpha(tint)), 0.5f);
-		imageLayer.setTint(tint);
 	}
 	
 	public Button(final Image image, float width, float height, boolean isCircle) {
@@ -206,6 +226,12 @@ public class Button extends PlayNObject implements Positioned {
 	
 	public Button(Image image, boolean isCircle) {
 		this(image, image.width(), image.height(), isCircle);
+	}
+	
+	private void refreshTint() {
+		int tint = pressed ? tintPressed : this.tint;
+		if (!enabled) tint = Colors.blend(tint, Color.withAlpha(Colors.BLACK, Color.alpha(tint)), 0.5f);
+		imageLayer.setTint(tint);
 	}
 	
 	public void destroy() {

@@ -16,6 +16,8 @@ import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public class BuildScreen extends EquationScreen implements NumberSelectListener {
 
@@ -46,6 +48,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 						}
 					}
 				});
+		register(menu.rightButton(), Tag.Build_Ok);
 
 		menu.addLeftButton(Constant.BUTTON_DOWN).setOnReleasedListener(
 				new OnReleasedListener() {
@@ -62,7 +65,16 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 		setEquation(Equation.NOOP);
 
 		toolbox = new Toolbox(controller, this, toolboxWidth(), height(), state.themeColor());
+		register(toolbox.buttonNumber, Tag.Build_NumberSelect);
+		register(toolbox.buttonMore, Tag.Build_NumberUp);
+		register(toolbox.buttonLess, Tag.Build_NumberDown);
+		register(toolbox, Tag.Build_LeftPanel);
 		layer.add(toolbox.layerAddable());
+	}
+	
+	@Override
+	public Trigger wasShownTrigger() {
+		return Trigger.Build_Shown;
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.MenuLayer;
@@ -25,10 +26,15 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.title.SlideLayer.StopChangedListener;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.TutorialGameState;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class DifficultyScreen extends BaseScreen {
+	
+	private final static int[] TIMES = new int[] { Difficulty.ROUND_TIME_INFINITE, 60, 50, 40, 30 };
 	
 	protected final List<SlideLayer> slideLayers = new ArrayList<SlideLayer>();
 	protected final SlideLayer mathSlider, gameSlider, timeSlider;
@@ -101,6 +107,7 @@ public class DifficultyScreen extends BaseScreen {
 		timeSlider.setStop(2, true);
 		
 		Button buttonOk = menu.addRightButton(Constant.BUTTON_OK);
+		register(buttonOk, Tag.Difficulty_Start);
 		buttonOk.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -127,7 +134,13 @@ public class DifficultyScreen extends BaseScreen {
 	}
 	
 	private void startGame() {
-		GameState state = new GameState(background);
+		GameState state;
+		if (Tutorial.running()) {
+			state = new TutorialGameState(background);
+		} else {
+			Difficulty difficulty = new Difficulty(mathSlider.stop, gameSlider.stop, TIMES[timeSlider.stop]);
+			state = new GameState(background, difficulty);
+		}
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());
 		screens.remove(this);

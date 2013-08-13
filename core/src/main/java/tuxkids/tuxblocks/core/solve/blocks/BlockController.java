@@ -36,6 +36,8 @@ import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
@@ -501,6 +503,7 @@ public class BlockController extends PlayNObject {
 
 		@Override
 		public void wasReleased(Event event) {
+			
 			if (buildToolbox != null && buildToolbox.wasDropped(event)) {
 				draggingFrom = null;
 			}
@@ -522,19 +525,29 @@ public class BlockController extends PlayNObject {
 				if (inverted) {
 					invertDragging(true);
 				}
+			} 
+			
+			if (target != draggingFrom){
+				if (dragging instanceof BaseBlock) {
+					Tutorial.trigger(Trigger.Solve_BaseBlockReleasedOnOther);
+				}
+				Tutorial.trigger(Trigger.Solve_BlockReleasedOnOther);
 			}
+			Tutorial.trigger(Trigger.Solve_BlockReleased);
+			
 			dropOn(target);
 		}
 		
 		private void dropOn(BaseBlock target) {
 //			debug(target.hierarchy());
 			
+			
 			if (target == null) {
 				if (!inBuildMode) debug("BIG PROBLEM!");
 				dragging.destroy();
 			} else {
-			
 				if (target instanceof BlockHolder) {
+					
 					if (dragging instanceof VerticalModifierBlock) {
 						dragging.destroy();
 					} else {
@@ -542,13 +555,23 @@ public class BlockController extends PlayNObject {
 							NumberBlockProxy proxy = ((HorizontalModifierBlock) dragging).getProxy(false);
 							dragging.layer().setVisible(false);
 							dragging = proxy;
+						} else if (dragging instanceof BaseBlock) {
+							ModifierGroup mods = ((BaseBlock) dragging).modifiers;
+							if (mods.isModifiedHorizontally() || mods.isModifiedVertically() || mods.children.size() > 0) {
+								Tutorial.trigger(Trigger.Solve_BlockWithModifiersReleasedOnBlank);
+							}
 						}
 						
 						swapExpression(getContaining(target), target, (BaseBlock) dragging);
 						target.layer().destroy();
 					}
 					
+					Tutorial.trigger(Trigger.Solve_BlockReleasedOnBlank);
 				} else {
+					if (dragging instanceof VariableBlock && target instanceof VariableBlock) {
+						Tutorial.trigger(Trigger.Solve_VariablesStartedCombine);
+					}
+					
 					ModifierBlock added = target.addBlock(dragging, false);
 					if (added == null) {
 						tempDragging = dragging;
@@ -617,6 +640,7 @@ public class BlockController extends PlayNObject {
 		public void wasDoubleClicked(Block sprite, Event event) {
 			if (sprite instanceof VerticalModifierBlock) {
 				if (!((ModifierBlock) sprite).canAddInverse()) return;
+				Tutorial.trigger(Trigger.Solve_VerticalModifierDoubleClicked);
 				
 				float y;
 				if (sprite instanceof TimesBlock) {
@@ -642,6 +666,7 @@ public class BlockController extends PlayNObject {
 		@Override
 		public void wasSimplified() {
 			refreshEquation = true;
+			Tutorial.trigger(Trigger.Solve_Simplified);
 		}
 
 		@Override

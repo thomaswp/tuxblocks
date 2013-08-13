@@ -1,12 +1,15 @@
 -solve menu
 -return when timer's up
--difiiculty levels
---point weights
+-difficulty levels
+--point weights (time bonus, math bonus)
 -balance problem
 -balance blocks
 -level design
--multiple grids
--color/grid selection
--tutorials
 -storage
 -audio
+-freezer image
+-quit game
+-build menu
+
+-multiple grids
+-color/grid selection

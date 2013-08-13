@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core.defense.round;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.defense.walker.FlipWalker;
 import tuxkids.tuxblocks.core.defense.walker.InchWalker;
@@ -43,13 +44,15 @@ public abstract class Level {
 	public int timeUntilNextRound() {
 		if (currentRound != null) return 0;
 		if (waitTimes.size() == 0) return 0;
+		if (waitTimes.get(0) == Difficulty.ROUND_TIME_INFINITE) 
+			return Difficulty.ROUND_TIME_INFINITE;
 		return waitTimes.get(0) - timer;
 	}
 
 	public void startNextRound() {
 		if (currentRound != null) return;
 		if (waitTimes.size() == 0) return;
-		timer = waitTimes.get(0);
+		nextRound();
 	}
 	
 	public boolean duringRound() {
@@ -64,7 +67,9 @@ public abstract class Level {
 	
 	protected void addRound(Round round, float waitTimeSeconds) {
 		rounds.add(round);
-		waitTimes.add((int)(waitTimeSeconds * 1000));
+		int waitTime = waitTimeSeconds == Difficulty.ROUND_TIME_INFINITE ?
+				Difficulty.ROUND_TIME_INFINITE : (int)(waitTimeSeconds * 1000);
+		waitTimes.add(waitTime);
 	}
 	
 	public Walker update(int delta) {
@@ -78,13 +83,18 @@ public abstract class Level {
 			return walker;
 		}
 		timer += delta;
-		if (currentRound == null && waitTimes.size() > 0 && timer >= waitTimes.get(0)) {
-			currentRound = rounds.remove(0);
-			waitTimes.remove(0);
-			timer = 0;
-			roundNumber++;
+		if (currentRound == null && waitTimes.size() > 0 && 
+				waitTimes.get(0) >= 0 && timer >= waitTimes.get(0)) {
+			nextRound();
 		}
 		return null;
+	}
+	
+	private void nextRound() {
+		currentRound = rounds.remove(0);
+		waitTimes.remove(0);
+		timer = 0;
+		roundNumber++;
 	}
 	
 	public boolean finished() {

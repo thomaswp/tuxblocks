@@ -29,12 +29,14 @@ import tuxkids.tuxblocks.core.defense.round.Round;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.effect.Effect;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
+import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
 
-public class Grid extends PlayNObject {
+public class Grid extends PlayNObject implements Highlightable {
 
 	private final static boolean SHOW_GRID = false;
 	private final static int DOUBLE_CLICK = 300;
@@ -43,7 +45,8 @@ public class Grid extends PlayNObject {
 	private final int cellSize;
 	private final int rows, cols;
 	private final GroupLayer layer, gridLayer, overlayLayer;
-	private final ImageLayer gridSprite, selectorLayer;
+	private final ImageLayer selectorLayer;
+	private final ImageLayerTintable gridSprite;
 	private final boolean[][] passability;
 	private final UpgradePanel upgradePanel;
 	private final List<Walker> walkers = new ArrayList<Walker>();
@@ -65,6 +68,10 @@ public class Grid extends PlayNObject {
 	private boolean holdingClick;
 	private int startLongClick;
 	private Point selectedPoint = new Point();
+	
+	public UpgradePanel upgradePanel() {
+		return upgradePanel;
+	}
 	
 	public void setDoubleClickListener(DoubleClickListener doubleClickListener) {
 		this.doubleClickListener = doubleClickListener;
@@ -243,10 +250,7 @@ public class Grid extends PlayNObject {
 		gridLayer.add(walker.layerAddable());
 	}
 
-	private ImageLayer createGridSprite() {
-		if (gridSprite != null) {
-			gridLayer.remove(gridSprite);
-		}
+	private ImageLayerTintable createGridSprite() {
 
 		//List<Point> path = Pathing.getPath(this, new Point(0, 0), new Point(rows - 1, cols - 1));
 
@@ -270,9 +274,9 @@ public class Grid extends PlayNObject {
 				if (SHOW_GRID) canvas.strokeRect(x, y, cellSize, cellSize);
 			}
 		}
-		ImageLayer gridSprite = graphics().createImageLayer(image);
+		ImageLayerTintable gridSprite = new ImageLayerTintable(image);
 		//gridSprite.setAlpha(0.2f);
-		gridLayer.add(gridSprite);
+		gridLayer.add(gridSprite.layerAddable());
 		gridSprite.setDepth(-1);
 		
 		gridSprite.addListener(new Listener() {
@@ -583,4 +587,27 @@ public class Grid extends PlayNObject {
 	public interface DoubleClickListener {
 		void wasDoubleClicked();
 	}
+
+	private Highlighter highlighter = new Highlighter() {
+		@Override
+		protected void setTint(int baseColor, int tintColor, float perc) {
+			gridSprite.setTint(baseColor, tintColor, perc);
+		}
+		
+		@Override
+		protected ColorState colorState() {
+			return new ColorState() {
+				@Override
+				public void reset() {
+					gridSprite.setTint(Colors.WHITE);
+				}
+			};
+		}
+	};
+
+	@Override
+	public Highlighter highlighter() {
+		return highlighter;
+	}
+
 }

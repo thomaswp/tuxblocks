@@ -19,6 +19,7 @@ import tripleplay.game.ScreenStack.Transition;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
@@ -28,6 +29,7 @@ import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.BuildScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
@@ -41,6 +43,9 @@ public class TitleScreen extends BaseScreen{
 	private final GroupLayer fadeInLayer;
 	private final TextFormat authorFormat, superFormat, optionFormat;
 	private final GameBackgroundSprite background;
+	
+	private Button tutorialButton;
+	private ImageLayerTintable startHere;
 	
 	public TitleScreen(ScreenStack screens, GameBackgroundSprite background) {
 		super(screens, background);
@@ -92,12 +97,12 @@ public class TitleScreen extends BaseScreen{
 		int tintPressed = Colors.WHITE, tintUnpressed = Color.rgb(200, 200, 200);
 		
 		final float buttonSize = height() / 6;
-		final Button tutorialButton = new Button(Constant.IMAGE_CONFIRM, buttonSize, buttonSize, true);
+		tutorialButton = new Button(Constant.IMAGE_CONFIRM, buttonSize, buttonSize, true);
 		tutorialButton.setPosition(width() / 2, midY);
 		tutorialButton.setTint(tintPressed, tintUnpressed);
 		fadeInLayer.add(tutorialButton.layerAddable());
 		
-		final ImageLayerTintable startHere = new ImageLayerTintable();
+		startHere = new ImageLayerTintable();
 		startHere.setImage(PlayN.assets().getImage(Constant.IMAGE_START));
 		startHere.image().addCallback(new Callback<Image>() {
 			@Override
@@ -122,6 +127,7 @@ public class TitleScreen extends BaseScreen{
 		Button playButton = new Button(modeImage, false);
 		playButton.setPosition(width() / 5, midY);
 		playButton.setTint(tintPressed, tintUnpressed);
+		register(playButton, Tag.Title_Play);
 		fadeInLayer.add(playButton.layerAddable());
 		
 		ImageLayer playText = graphics().createImageLayer();
@@ -133,6 +139,7 @@ public class TitleScreen extends BaseScreen{
 		Button buildButton = new Button(modeImage, false);
 		buildButton.setPosition(4 * width() / 5, midY);
 		buildButton.setTint(tintPressed, tintUnpressed);
+		register(buildButton, Tag.Title_Build);
 		fadeInLayer.add(buildButton.layerAddable());
 		
 		ImageLayer buildText = graphics().createImageLayer();
@@ -156,6 +163,7 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
+					Tutorial.trigger(Trigger.Title_Play);
 					DifficultyScreen ds = new DifficultyScreen(screens, background);
 					pushScreen(ds, screens.slide().left());
 				}
@@ -166,7 +174,8 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					GameState state = new GameState(background);
+					Tutorial.trigger(Trigger.Title_Build);
+					GameState state = new GameState(background, new Difficulty());
 					BuildScreen bs = new BuildScreen(screens, state);
 					pushScreen(bs, screens.slide().down());
 				}
@@ -233,6 +242,16 @@ public class TitleScreen extends BaseScreen{
 		}
 		
 		titleLayer.update(delta);
+		
+
+		if (!Tutorial.running()) {
+			if (tutorialButton != null) {
+				tutorialButton.layerAddable().setVisible(true);
+			}
+			if (startHere != null) {
+				startHere.setVisible(true);
+			}
+		}
 	}
 	
 	public void paint(Clock clock) {

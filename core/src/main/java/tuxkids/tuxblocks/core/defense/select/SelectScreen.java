@@ -23,6 +23,7 @@ import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public class SelectScreen extends GameScreen implements ProblemAddedListener {
@@ -41,6 +42,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		this.grid = grid;
 		
 		Button button = menu.addRightButton(Constant.BUTTON_FORWARD);
+		register(button, Tag.Select_Return);
 		button.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -73,7 +75,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 	
 	@Override
 	public MenuLayer createMenu() {
-		return new DefenseMenu(state, width());
+		return new DefenseMenu(this, width());
 	}
 	
 	@Override
@@ -124,6 +126,12 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 			bottomLeft = pb;
 		} else {
 			bottomRight = pb;
+		}
+		
+		if (problemButtons.size() == 0) {
+			register(pb, Tag.Select_FirstButton);
+		} else if (problemButtons.size() == 1) {
+			register(pb, Tag.Select_SecondButton);
 		}
 		problemButtons.add(pb);
 	}

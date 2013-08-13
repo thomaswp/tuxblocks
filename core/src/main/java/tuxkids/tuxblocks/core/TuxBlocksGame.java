@@ -2,12 +2,20 @@ package tuxkids.tuxblocks.core;
 
 import static playn.core.PlayN.currentTime;
 import static playn.core.PlayN.graphics;
+
+import javax.swing.GroupLayout.Alignment;
+
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Color;
+import playn.core.Font;
 import playn.core.Game;
 import playn.core.ImageLayer;
+import playn.core.TextFormat;
+import playn.core.Font.Style;
+import playn.core.TextLayout;
 import tripleplay.game.ScreenStack;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 
@@ -48,7 +56,7 @@ public class TuxBlocksGame extends Game.Default {
 
 	@Override
 	public void init() {
-	
+		
 		Constant.preloadImages();
 		
 		background = new GameBackgroundSprite();
@@ -81,11 +89,13 @@ public class TuxBlocksGame extends Game.Default {
 			Canvas canvas = image.canvas();
 			canvas.setFillColor(Color.rgb(50, 50, 50));
 			canvas.drawText(frames + " FPS", 0, image.height());
-			if (fpsLayer != null) 
-				graphics().rootLayer().remove(fpsLayer);
-			fpsLayer =  graphics().createImageLayer(image);
-			fpsLayer.setDepth(Float.MAX_VALUE);
-			graphics().rootLayer().add(fpsLayer);
+			if (fpsLayer == null) {
+				fpsLayer =  graphics().createImageLayer(image);
+				fpsLayer.setDepth(Float.MAX_VALUE);
+				graphics().rootLayer().add(fpsLayer);
+			} else {
+				fpsLayer.setImage(image);
+			}
 			frames = 0;
 		}
 	}
@@ -107,4 +117,13 @@ public class TuxBlocksGame extends Game.Default {
         Tutorial.paint(clock);
 		updateFPS();
 	}
+	
+//	Font font = graphics().createFont("Arial", Style.PLAIN, 24);
+//	TextFormat format = new TextFormat().withFont(font).withWrapWidth(95);
+//	TextLayout layout = graphics().layoutText("Hello, it’s the world.", format);
+//	
+//	CanvasImage image = graphics().createImage(200, 200);
+//	image.canvas().setFillColor(Colors.WHITE);
+//	image.canvas().fillText(layout, 0, 0);
+//	graphics().rootLayer().add(graphics().createImageLayer(image));
 }

@@ -56,6 +56,10 @@ public abstract class Tower extends DiscreteGridObject {
 			for (int i = 0; i < type.instance().commonness(); i++) 
 				towerBag.add(type);
 	}
+	
+	public int upgradeLevel() {
+		return upgradeLevel;
+	}
 
 	public boolean destroyed() {
 		return destroyed;

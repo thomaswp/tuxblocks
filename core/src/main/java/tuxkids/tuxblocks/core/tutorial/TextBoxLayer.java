@@ -29,7 +29,7 @@ public class TextBoxLayer extends LayerWrapper {
 
 	private final float spHeight = 31; //constant based on Java dimensions that created the image.. oops
 	private final float spWidth = spHeight / 2;
-	private final float hideHeight = graphics().height() * 0.1f;
+	private final float hideHeight = graphics().height() * 0.15f;
 	
 	protected final GroupLayer layer, fadeInLayer;
 	protected final TextFormat format;
@@ -51,7 +51,7 @@ public class TextBoxLayer extends LayerWrapper {
 		
 		padding = graphics().height() / 35;
 		format = createFormat(graphics().height() / 20)
-				.withWrapWidth(width - padding * 2 - spWidth);
+				.withWrapWidth(width - padding * 3 - spWidth);
 
 		textLayer = graphics().createImageLayer();
 		
@@ -129,6 +129,7 @@ public class TextBoxLayer extends LayerWrapper {
 			} else if (tuxLayer.ty() < hideHeight) {
 				tuxLayer.setTy(Math.min(tuxLayer.ty() + 0.5f * clock.dt(), hideHeight));
 			} else {
+				Tutorial.trigger(Trigger.TextBoxFullyHidden);
 				setVisible(false);
 			}
 		}

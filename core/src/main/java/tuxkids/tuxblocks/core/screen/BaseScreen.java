@@ -1,5 +1,10 @@
 package tuxkids.tuxblocks.core.screen;
 
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.List;
+
 import playn.core.Graphics;
 import playn.core.Key;
 import playn.core.Layer;
@@ -14,7 +19,9 @@ import tripleplay.game.ScreenStack.Transition;
 import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.LayerLike;
+import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public class BaseScreen extends Screen implements Listener {
@@ -26,6 +33,8 @@ public class BaseScreen extends Screen implements Listener {
 	private boolean entering, exiting;
 	private int depth;
 	private float lastTx, lastTy;
+	private List<Highlightable> highlightables = new ArrayList<Highlightable>();
+	private boolean showing;
 	
 	public boolean exiting() {
 		return exiting;
@@ -48,6 +57,24 @@ public class BaseScreen extends Screen implements Listener {
 		super.wasShown();
 		PlayN.keyboard().setListener(this);
 		entering = true;
+		addHighlightables();
+		showing = true;
+	}
+	
+	public void register(Highlightable highlightable, Tag tag) {
+		highlightable.highlighter().addTag(tag);
+		if (!highlightables.contains(highlightable)) {
+			highlightables.add(highlightable);
+		}
+		if (showing) {
+			Tutorial.addHighlightable(highlightable);
+		}
+	}
+	
+	private void addHighlightables() {
+		for (Highlightable h : highlightables) {
+			Tutorial.addHighlightable(h);
+		}
 	}
 
 	@Override
@@ -66,6 +93,7 @@ public class BaseScreen extends Screen implements Listener {
 	
 	@Override
 	public void wasHidden() {
+		showing = false;
 		exiting = false;
 	}
 	
@@ -99,6 +127,7 @@ public class BaseScreen extends Screen implements Listener {
 	}
 	
 	protected void pushScreen(final BaseScreen screen, Transition transition) {
+		Tutorial.clearIndicators();
 		screen.onScreenFinishedListener = new OnScreenFinishedListener() {
 			@Override
 			public void onScreenFinished() {
@@ -107,15 +136,14 @@ public class BaseScreen extends Screen implements Listener {
 		};
 		screen.depth = depth + 1;
 		screens.push(screen, transition);
-		Tutorial.cleaIndicators();
 	}
 	
 	protected void popThis(Transition transition) {
+		Tutorial.clearIndicators();
 		PlayN.keyboard().setListener(null);
 		screens.remove(this, transition);
 		layer.setDepth(-1);
 		if (onScreenFinishedListener != null) onScreenFinishedListener.onScreenFinished();
-		Tutorial.cleaIndicators();
 	}
 	
 	protected void popThis() {

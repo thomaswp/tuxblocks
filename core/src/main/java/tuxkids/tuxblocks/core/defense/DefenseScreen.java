@@ -15,6 +15,7 @@ import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
@@ -61,6 +62,9 @@ public class DefenseScreen extends GameScreen {
 				Tutorial.trigger(Trigger.Defense_GridZoom);
 			}
 		});
+		register(grid, Tag.Defense_Grid);
+		register(grid.upgradePanel().buttonUpgrade, Tag.Defense_UpgradeTower);
+		register(grid.upgradePanel().buttonDelete, Tag.Defense_DeleteTower);
 		
 		maxScale = height() / grid.height();
 		float cornerX = gridHolder.tx() + grid.width();
@@ -89,7 +93,7 @@ public class DefenseScreen extends GameScreen {
 	
 	@Override
 	protected MenuLayer createMenu() {
-		return new DefenseMenu(state, width());
+		return new DefenseMenu(this, width());
 	}
 	
 	private void createPlusButton() {
@@ -102,6 +106,7 @@ public class DefenseScreen extends GameScreen {
 				}
 			}
 		});
+		register(buttonPlus, Tag.Defense_MoreTowers);
 	}
 	
 	private void createStartButton() {
@@ -115,6 +120,7 @@ public class DefenseScreen extends GameScreen {
 				}
 			}
 		});
+		register(buttonStart, Tag.Defense_StartRound);
 	}
 	
 	@Override

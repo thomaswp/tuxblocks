@@ -10,7 +10,7 @@ public abstract class BasicWalker extends Walker {
 	}
 	
 	@Override
-	public int getMaxHp() {
+	public int maxHpBase() {
 		return maxHp;
 	}
 

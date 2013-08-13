@@ -18,6 +18,7 @@ import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class Inventory extends PlayNObject {
@@ -77,13 +78,8 @@ public class Inventory extends PlayNObject {
 		
 		textFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.BOLD, getItemSpriteSize() / 7));
-//		createBackgroundSprite();
 		createSelectionSprites();
 		createCountSprites();
-		
-//		for (int i = 0; i < Tower.towerCount(); i++) {
-//			addItem(i, 10);	
-//		}
 		
 		screen.state().setInventoryChangedListener(new InventoryChangedListener() {
 			@Override
@@ -152,6 +148,11 @@ public class Inventory extends PlayNObject {
 					image.height() - textHeight + ITEM_SPRITE_MARGIN / 2);
 			
 			final Button button = new Button(image, false);
+			screen.register(button, Tag.Defense_Towers);
+			if (towerType == TowerType.PeaShooter) {
+				screen.register(button, Tag.Defense_PeaShooter);
+			}
+			
 			float x = getItemSpriteX(index);
 			float y = getItemSpriteY(index);
 			button.setPosition(x, y);
@@ -189,12 +190,4 @@ public class Inventory extends PlayNObject {
 			itemButtons[index] = button;
 		}
 	}
-	
-	private void createBackgroundSprite() {
-		Image image = CanvasUtils.createRect(width, height, Color.rgb(200, 125, 125), 1, Colors.DARK_GRAY);
-		ImageLayer layer = graphics().createImageLayer(image);
-		layer.setAlpha(MenuLayer.DEFAULT_ALPHA);
-		groupLayer.add(layer);
-	}
-
 }

@@ -23,7 +23,7 @@ public class UpgradePanel extends LayerWrapper {
 	private final static float BUTTON_ALPHA = 0.8f;
 	
 	protected final Grid grid;
-	protected final GroupLayer layer;
+	protected final GroupLayer layer, dotsLayer;
 	protected final float cellSize;
 	protected final ImageLayer circleLayer, numberLayer; 
 	protected final ImageLayerTintable confirmLayer;
@@ -100,6 +100,19 @@ public class UpgradePanel extends LayerWrapper {
 		numberLayer.setTranslation(buttonUpgrade.x() + offset, 
 				buttonUpgrade.y() + offset);
 		layer.add(numberLayer);
+		
+		dotsLayer = graphics().createGroupLayer();
+		dotsLayer.setDepth(2);
+		dotsLayer.setAlpha(0.75f);
+		layer.add(dotsLayer);
+		
+		float dotRad = cellSize / 8;
+		for (int i = 0; i < 3; i++) {
+			ImageLayer layer = graphics().createImageLayer();
+			layer.setImage(CanvasUtils.createCircleCached(dotRad, Colors.BLACK));
+			centerImageLayer(layer);
+			dotsLayer.add(layer);
+		}
 	}
 
 	private boolean canUpgrade() {
@@ -110,6 +123,7 @@ public class UpgradePanel extends LayerWrapper {
 		if (!canUpgrade()) return;
 		
 		tower.upgrade();
+		refreshDots();
 		grid.gameState().useUpgrades(tower.upgradeCost());
 		Tutorial.trigger(Trigger.Defense_TowerUpgraded);
 	}
@@ -128,6 +142,7 @@ public class UpgradePanel extends LayerWrapper {
 		if (tower == this.tower) return;
 		this.tower = tower;
 		refreshNumberLayer();
+		refreshDots();
 		if (tower == null) { 
 			fadeOut();
 		} else {
@@ -136,6 +151,22 @@ public class UpgradePanel extends LayerWrapper {
 			Tutorial.trigger(Trigger.Defense_TowerSelected);
 		}
 		confirmLayer.setVisible(false);
+	}
+	
+	private void refreshDots() {
+		if (tower != null) {
+			int level = tower.upgradeLevel();
+			
+			float rad = level == 1 ? 0 : cellSize / 5.5f;
+			float deg = FloatMath.PI * 2 / level;
+			
+			for (int i = 0; i < dotsLayer.size(); i++) {
+				float x = rad * FloatMath.cos(i * deg);
+				float y = rad * FloatMath.sin(i * deg);
+				dotsLayer.get(i).setTranslation(x, y);
+				dotsLayer.get(i).setVisible(i < level);
+			}
+		}
 	}
 	
 	private void refreshNumberLayer() {
@@ -148,10 +179,6 @@ public class UpgradePanel extends LayerWrapper {
 				numberLayer.setImage(CanvasUtils.createString(
 						format, "" + upgradeCost, Colors.BLACK));
 				centerImageLayer(numberLayer);
-				if (upgradeCost == 1) {
-					numberLayer.setOrigin(numberLayer.originX() + 2, 
-							numberLayer.originY());
-				}
 			}
 		}
 	}

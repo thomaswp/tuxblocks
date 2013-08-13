@@ -14,6 +14,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
@@ -29,12 +30,15 @@ import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
+import tuxkids.tuxblocks.core.tutorial.Highlightable;
+import tuxkids.tuxblocks.core.tutorial.Highlightable.ColorState;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class Toolbox extends LayerWrapper implements BuildToolbox {
+public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable {
 
 	protected GroupLayer layer;
-	protected ImageLayer backgroundLayer, numberLayer;
+	protected ImageLayer numberLayer;
+	protected ImageLayerTintable backgroundLayer;
 	protected float width, height;
 	protected BlockController controller;
 	protected List<Block> blocks = new ArrayList<Block>();
@@ -57,10 +61,10 @@ public class Toolbox extends LayerWrapper implements BuildToolbox {
 		this.listener = numberSelectListener;
 		controller.setBuildToolbox(this);
 		
-		backgroundLayer = graphics().createImageLayer();
+		backgroundLayer = new ImageLayerTintable();
 		backgroundLayer.setImage(CanvasUtils.createRect(width, height, Colors.LIGHT_GRAY, 1, Colors.DARK_GRAY));
 		backgroundLayer.setAlpha(0.75f);
-		layer.add(backgroundLayer);
+		layer.add(backgroundLayer.layerAddable());
 
 		float blockStart = 2 * width / 3;
 		createButtons(blockStart, themeColor);
@@ -214,5 +218,27 @@ public class Toolbox extends LayerWrapper implements BuildToolbox {
 	
 	interface NumberSelectListener {
 		void selectNumber(int startNumber);
+	}
+
+	private final Highlighter highlighter = new Highlighter() {
+		@Override
+		protected void setTint(int baseColor, int tintColor, float perc) {
+			backgroundLayer.setTint(baseColor, tintColor, perc);
+		}
+		
+		@Override
+		protected ColorState colorState() {
+			return new ColorState() {
+				@Override
+				public void reset() {
+					backgroundLayer.setTint(Colors.WHITE);
+				}
+			};
+		}
+	};
+	
+	@Override
+	public Highlighter highlighter() {
+		return highlighter;
 	}
 }

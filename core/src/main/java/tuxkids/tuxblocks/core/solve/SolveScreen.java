@@ -15,6 +15,9 @@ import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class SolveScreen extends EquationScreen {
@@ -40,10 +43,12 @@ public class SolveScreen extends EquationScreen {
 				if (inButton) popThis();
 			}
 		});
+		register(buttonBack, Tag.Solve_Ok);
 		layer.add(buttonBack.layerAddable());
 		
 		Button buttonReset = menu.addRightButton(Constant.BUTTON_RESET);
 		buttonReset.setPosition(width() - buttonReset.width() * 0.6f, menu.height() / 2);
+		register(buttonReset, Tag.Solve_Reset);
 		buttonReset.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -53,9 +58,14 @@ public class SolveScreen extends EquationScreen {
 		layer.add(buttonReset.layerAddable());
 	}
 	
+	@Override
+	protected Trigger wasShownTrigger() {
+		return Trigger.Solve_Shown;
+	}
+	
 	@Override 
 	protected MenuLayer createMenu() {
-		return new DefenseMenu(state, width(), false); 
+		return new DefenseMenu(this, width(), false); 
 	}
 	
 	@Override
@@ -70,6 +80,9 @@ public class SolveScreen extends EquationScreen {
 			solveCallback.wasSimplified(true);
 			state.addExpForLevel(solveStat, solveLevel);
 			clearSolve();
+		}
+		if (buttonBack.image() != buttonImageOk && controller.solved()) {
+			Tutorial.trigger(Trigger.Solve_Solved);
 		}
 		buttonBack.setImage(controller.solved() ? buttonImageOk : buttonImageBack);
 	}
@@ -104,6 +117,7 @@ public class SolveScreen extends EquationScreen {
 		if (screen instanceof NumberSelectScreen) {
 			if (((NumberSelectScreen) screen).hasCorrectAnswer()) {
 				solveCorrect = true;
+				Tutorial.trigger(Trigger.Solve_SimplifiedSuccess);
 			} else {
 				solveCallback.wasSimplified(false);
 				clearSolve();

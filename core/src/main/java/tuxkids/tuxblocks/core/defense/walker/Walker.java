@@ -31,11 +31,16 @@ public abstract class Walker extends DiscreteGridObject {
 	private Vector position = new Vector();
 	
 	protected abstract void updateMovement(float perc);
-	public abstract int getMaxHp();
+	protected abstract int maxHpBase();
 	public abstract int walkCellTime();
 	public abstract Walker copy();
 	
 	protected List<Buff> buffs = new ArrayList<Buff>();
+	
+	public float maxHp() {
+		if (grid == null) return maxHpBase();
+		return maxHpBase() * grid.gameState().difficulty().getWalkerHpMultiplier();
+	}
 	
 	public Layer layerAddable() {
 		return layer.layerAddable();
@@ -45,8 +50,12 @@ public abstract class Walker extends DiscreteGridObject {
 		return layer;
 	}
 	
+	public boolean placed() {
+		return placed;
+	}
+	
 	public int exp() {
-		return (int)(50 * hp / 10 * 500 / walkingMs);
+		return Math.round(maxHp() / 10 * 500 / walkCellTime() * 10) * 5;
 	}
 	
 	public Vector position() {
@@ -79,7 +88,7 @@ public abstract class Walker extends DiscreteGridObject {
 		this.destination = desitnation;
 		this.coordinates = lastCoordinates = coordinates;
 		this.walkingMs = walkCellTime();
-		this.hp = getMaxHp();
+		this.hp = maxHp();
 		placed = true;
 		path = new ArrayList<Point>();
 		path.addAll(grid.currentPath());
@@ -151,7 +160,7 @@ public abstract class Walker extends DiscreteGridObject {
 				return true;
 			}
 		}
-		layer.setTint(Colors.WHITE, grid.towerColor(), hp / getMaxHp());
+		layer.setTint(Colors.WHITE, grid.towerColor(), hp / maxHp());
 		layer.setAlpha(alpha);
 		
 		for (int i = 0; i < buffs.size(); i++) {
@@ -186,7 +195,7 @@ public abstract class Walker extends DiscreteGridObject {
 		hp -= damage;
 		hp = Math.max(hp, 0);
 		if (hp == 0 && oldHp != 0) {
-			grid.addPoints(50);
+			grid.addPoints(exp());
 		}
 	}
 	

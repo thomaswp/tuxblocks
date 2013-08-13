@@ -36,21 +36,25 @@ public class GameState {
 	private static final int SOLVE_EXP_PER_LVL = 5;
 	private static final int EXP_TO_POINTS_FACTOR = 1;
 	
-	private int[] towerCounts;
-	private List<Problem> problems;
-	private GameBackgroundSprite background;
+	private final int[] towerCounts;
+	private final List<Problem> problems;
+	private final GameBackgroundSprite background;
+	private final int[] statLevels = new int[Stat.values().length];
+	private final int[] statExps = new int[Stat.values().length];
+	private final Difficulty difficulty;
+	
 	private InventoryChangedListener inventoryChangedListener;
 	private ProblemAddedListener problemAddedListener;
-	private int maxSteps = 1;
-	private int minSteps = 4;
-	private int[] statLevels = new int[Stat.values().length];
-	private int[] statExps = new int[Stat.values().length];
-	private int lives = 20;
-	private int score = 0;
-	private int upgrades = 20;
-	private int earnedUpgrades = 0;
-	private int timeBetweenRounds = 31;
-	private Level level;
+	
+	protected int lives = 20;
+	protected int score = 0;
+	protected int upgrades = 2;
+	protected int earnedUpgrades = 0;
+	protected Level level;
+	
+	public Difficulty difficulty() {
+		return difficulty;
+	}
 	
 	public Level level() {
 		return level;
@@ -136,16 +140,14 @@ public class GameState {
 		this.problemAddedListener = problemAddedListener;
 	}
 	
-	public GameState(GameBackgroundSprite background) {
+	public GameState(GameBackgroundSprite background, Difficulty difficulty) {
 		this.background = background;
+		this.difficulty = difficulty;
 		towerCounts = new int[Tower.towerCount()];
 		problems = new ArrayList<Problem>();
-		level = Level.generate(timeBetweenRounds);
-		addItem(TowerType.PeaShooter, 4);
-		addItem(TowerType.BigShooter, 4);
-		addItem(TowerType.Zapper, 4);
-		addItem(TowerType.Freezer, 4);
-		for (int i = 0; i < 8; i++) {
+		level = Level.generate(difficulty.roundTime);
+		addItem(TowerType.PeaShooter, 2);
+		for (int i = 0; i < 2; i++) {
 			addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
 		}
 	}
@@ -162,11 +164,13 @@ public class GameState {
 		}
 	}
 	
-	int index;
-	public void addProblemWithReward(Reward reward) {		
-		//Equation eq = eqs[index++ % eqs.length]; 
-		Equation eq = EquationGenerator.generateComposite(2, 3, 2);
-//		Equation eq = EquationGenerator.generate((int)(Math.random() * (maxSteps - minSteps)) + minSteps).toBlocks();
+	protected Equation createEquation() { 
+		return EquationGenerator.generate(difficulty);
+	}
+	
+	public void addProblemWithReward(Reward reward) {
+//		Equation eq = EquationGenerator.generateComposite(2, 3, 2);
+		Equation eq = createEquation();
 		Problem problem = new Problem(eq, reward);
 		problems.add(problem);
 		if (problemAddedListener != null) problemAddedListener.onProblemAdded(problem);

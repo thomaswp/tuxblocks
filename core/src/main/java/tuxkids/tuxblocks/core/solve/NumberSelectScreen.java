@@ -31,6 +31,9 @@ import tuxkids.tuxblocks.core.layers.NumberLayer.NumberBitmapFont;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class NumberSelectScreen extends GameScreen implements Listener {
@@ -123,6 +126,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		update(0);
 	}
 	
+	@Override
+	public Trigger wasShownTrigger() {
+		return Trigger.Number_Shown;
+	}
+	
 	private void createScratch() {
 		buttonScratch = menu.createButton(Constant.BUTTON_SCRATCH);
 		buttonScratch.setPosition(buttonScratch.width() * 0.6f, height() - buttonScratch.height() * 0.6f);
@@ -146,9 +154,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					scratchMode = !scratchMode;
+					Tutorial.trigger(Trigger.Number_Scratch);
 				}
 			}
 		});
+		register(buttonScratch, Tag.Number_Scratch);
 		
 		buttonClear.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -158,6 +168,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 				}
 			}
 		});
+		register(buttonClear, Tag.Number_Clear);
 	}
 	
 	private void createEquation(Renderer renderer) {
@@ -175,6 +186,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		backImageBack = PlayN.assets().getImage(Constant.BUTTON_BACK);
 		backImageCancel = PlayN.assets().getImage(Constant.BUTTON_CANCEL);
 		buttonBack = menu.addLeftButton(backImageBack);
+		register(buttonBack, Tag.Number_Ok);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -440,6 +452,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		public void onPointerEnd(Event event) { 
 			if (point.equals(possibleSelectedPoint)) {
 				selectedPoint = point;
+				Tutorial.trigger(Trigger.Number_NumberSelected);
 			}
 		}
 

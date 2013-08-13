@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.defense;
 
 import playn.core.Color;
+import playn.core.Font;
 import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;
@@ -10,13 +11,18 @@ import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
+import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
+import tuxkids.tuxblocks.core.screen.GameScreen;
+import tuxkids.tuxblocks.core.tutorial.Highlightable;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class DefenseMenu extends MenuLayer {
@@ -36,13 +42,13 @@ public class DefenseMenu extends MenuLayer {
 	private Timer timer;
 	private Upgrade upgrade;
 	
-	public DefenseMenu(GameState state, float width) {
-		this(state, width, true);
+	public DefenseMenu(GameScreen parent, float width) {
+		this(parent, width, true);
 	}
 	
-	public DefenseMenu(GameState state, float width, boolean showScore) {
-		super(width, state.themeColor());
-		this.state = state;
+	public DefenseMenu(GameScreen parent, float width, boolean showScore) {
+		super(width, parent.state().themeColor());
+		state = parent.state();
 		
 		barTextFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, height * 0.18f));
@@ -58,6 +64,10 @@ public class DefenseMenu extends MenuLayer {
 		createUpgrade(itemCenter);
 		createScore();
 		if (!showScore) score.setVisible(false);
+		
+		parent.register(heart, Tag.Menu_Lives);
+		parent.register(timer, Tag.Menu_Countdown);
+		parent.register(upgrade, Tag.Menu_Upgrades);
 	}
 	
 	private void createScore() {
@@ -150,7 +160,38 @@ public class DefenseMenu extends MenuLayer {
 		}
 	}
 	
-	private class Upgrade extends LayerWrapper {
+	private abstract class LayerWrapperHighlightable extends LayerWrapper implements  Highlightable {
+
+		protected abstract ImageLayerTintable highlightLayer();
+		
+		protected final Highlighter highlighter = new Highlighter() {
+			@Override
+			protected void setTint(int baseColor, int tintColor, float perc) {
+				highlightLayer().setTint(baseColor, tintColor, perc);
+			}
+			
+			@Override
+			protected ColorState colorState() {
+				return new ColorState() {
+					@Override
+					public void reset() {
+						highlightLayer().setTint(state.themeColor());
+					}
+				};
+			}
+		};
+		
+		public LayerWrapperHighlightable(Layer layer) {
+			super(layer);
+		}
+
+		@Override
+		public Highlighter highlighter() {
+			return highlighter;
+		}
+	}
+	
+	private class Upgrade extends LayerWrapperHighlightable {
 
 		private final GroupLayer layer;
 		private final ImageLayerTintable plusLayer;
@@ -198,15 +239,22 @@ public class DefenseMenu extends MenuLayer {
 				plusLayer.setAlpha(plusLayer.alpha() * 0.5f);
 			}
 		}
+
+		@Override
+		protected ImageLayerTintable highlightLayer() {
+			return plusLayer;
+		}
 	}
 	
-	private class Timer extends LayerWrapper {
+	private class Timer extends LayerWrapperHighlightable {
 
+		private final static int DURING_ROUND = Difficulty.ROUND_TIME_INFINITE - 1;
+		
 		private final GroupLayer layer;
 		private final ImageLayerTintable hourglassLayer;
 		private final ImageLayer numberLayer;
 		
-		private int time = -1;
+		private int time = DURING_ROUND;
 		private int beatMS;
 		
 		public Timer(int width, int height) {
@@ -232,16 +280,29 @@ public class DefenseMenu extends MenuLayer {
 			int l;
 			boolean beat = true;
 			if (state.level().duringRound()) {
-				l = -1;
+				l = DURING_ROUND;
 			} else {
-				l = state.level().timeUntilNextRound() / 1000;
+				l = state.level().timeUntilNextRound();
+				if (l > 0) l /= 1000;
 				beat = l <= 5;
 			}
 			if (l != time) {
 				time = l;
-				String text = time >= 0 ? "" + time : "Round " + state.level().roundNumber();
+				String text;
+				if (time == Difficulty.ROUND_TIME_INFINITE) {
+					text = Constant.INFINITY_SYMBOL;
+				} else if (time == DURING_ROUND) {
+					text = "Round " + state.level().roundNumber();
+				} else {
+					text = "" + time;
+				}
+				TextFormat tf = barTextFormat;
+				if (time == Difficulty.ROUND_TIME_INFINITE) {
+					Font font = Cache.getFont(tf.font.name(), tf.font.style(), tf.font.size() * 2f);
+					tf = tf.withFont(font);
+				}
 				numberLayer.setImage(CanvasUtils.createString(
-						barTextFormat, text, ITEM_TEXT_COLOR));
+						tf, text, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
 				if (beat) beatMS = BEAT_TIME;
 			}
@@ -261,6 +322,11 @@ public class DefenseMenu extends MenuLayer {
 							ITEM_ALPHA, 0.995f, clock.dt(), 0.01f));
 				}
 			}
+		}
+
+		@Override
+		protected ImageLayerTintable highlightLayer() {
+			return hourglassLayer;
 		}
 	}
 	
@@ -299,7 +365,7 @@ public class DefenseMenu extends MenuLayer {
 		}
 	}
 
-	private class Heart extends LayerWrapper {
+	private class Heart extends LayerWrapperHighlightable {
 		private final static int BEAT_TIME = 300;
 
 		private final GroupLayer layer;
@@ -342,6 +408,11 @@ public class DefenseMenu extends MenuLayer {
 			updateBeat(beatMS, layer);
 			updateAlpha(beatMS, heartLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
+		}
+
+		@Override
+		protected ImageLayerTintable highlightLayer() {
+			return heartLayer;
 		}
 	}
 	

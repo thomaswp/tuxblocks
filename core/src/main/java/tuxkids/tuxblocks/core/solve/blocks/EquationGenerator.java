@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 
@@ -265,5 +266,9 @@ public class EquationGenerator extends PlayNObject {
 			if (n % prime == 0) return false;
 		}
 		return true;
+	}
+
+	public static Equation generate(Difficulty difficulty) {
+		return generate(difficulty.mathDifficulty + 1);
 	}
 }

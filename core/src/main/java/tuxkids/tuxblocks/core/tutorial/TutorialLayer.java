@@ -24,10 +24,11 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 	protected final float width, height;
 	protected final ImageLayer touchCatcher;
 	protected final TextBoxLayer textBox; 
-	protected final Button buttonRepeat;
+	protected final Button buttonRepeat, buttonCancel;
 	protected final int themeColor;
+	protected final List<IndicatorLayer> indicators = new ArrayList<IndicatorLayer>();
 	
-	protected List<IndicatorLayer> indicators = new ArrayList<IndicatorLayer>();
+	protected boolean cancelling;
 	
 	public TutorialLayer(int themeColor) {
 		super(graphics().createGroupLayer());
@@ -53,16 +54,36 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		
 		float size = MenuLayer.defaultButtonSize() * 0.7f;
 		buttonRepeat = new Button(Constant.BUTTON_RESET, size, size, true);
-		buttonRepeat.setPosition(width / 2, height - buttonRepeat.height() * 0.75f);
+		buttonRepeat.setPosition(width / 2 - size * 0.6f, height - buttonRepeat.height() * 0.75f);
 		buttonRepeat.layerAddable().setDepth(touchCatcher.depth() + 1);
 		buttonRepeat.setTint(Colors.LIGHT_GRAY, 0.4f);
 		layer.add(buttonRepeat.layerAddable());
+		
+		buttonCancel = new Button(Constant.BUTTON_CANCEL, size, size, true);
+		buttonCancel.setPosition(width / 2 + size * 0.6f, buttonRepeat.y());
+		buttonCancel.layerAddable().setDepth(buttonRepeat.layerAddable().depth());
+		buttonCancel.setTint(Colors.LIGHT_GRAY, 0.4f);
+		layer.add(buttonCancel.layerAddable());
 		
 		buttonRepeat.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					repeatMessage();
+					Tutorial.messageRepeated();
+				}
+			}
+		});
+		
+		buttonCancel.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (cancelling) {
+					Tutorial.cancel();
+				} else {
+					cancelling = true;
+					buttonCancel.setTint(Colors.darker(Colors.RED), Colors.RED);
+					touchCatcher.setVisible(true);
 				}
 			}
 		});
@@ -118,6 +139,10 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 	public void onPointerStart(Event event) {
 		textBox.hide();
 		touchCatcher.setVisible(false);
+		if (cancelling) {
+			cancelling = false;
+			buttonCancel.setTint(Colors.LIGHT_GRAY, 0.4f);
+		}
 	}
 
 	@Override

@@ -58,10 +58,16 @@ public class Constant {
 	
 	public static final String TUX_URL = "http://tux4kids.alioth.debian.org/";
 	
-	public static final String TUTORIAL_PATH = "tutorial.txt";
+	public static final String TUTORIAL_START_PATH = "TutorialStart.txt";
+	public static final String TUTORIAL_PLAY_PATH = "TutorialPlay.txt";
+	public static final String TUTORIAL_BUILD_PATH = "TutorialBuild.txt";
 
 	public static String click() {
 		return PlayN.touch().hasTouch() ? "tap" : "click";
+	}
+
+	public static CharSequence clicking() {
+		return PlayN.touch().hasTouch() ? "tapping" : "clicking";
 	}
 
 	public static CharSequence mouse() {
