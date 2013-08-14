@@ -9,12 +9,12 @@ import playn.core.TextLayout;
 import playn.core.Font.Style;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter.Config;
+import tuxkids.tuxblocks.core.widget.Button;
 
 public class ProblemButton extends Button {
 

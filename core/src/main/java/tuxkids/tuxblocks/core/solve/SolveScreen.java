@@ -4,14 +4,11 @@ import playn.core.Image;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import tripleplay.game.ScreenStack;
-import tuxkids.tuxblocks.core.Button;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.MenuLayer;
-import tuxkids.tuxblocks.core.defense.DefenseMenu;
+import tuxkids.tuxblocks.core.defense.DefenseHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
@@ -20,6 +17,9 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class SolveScreen extends EquationScreen {
 	
@@ -66,8 +66,8 @@ public class SolveScreen extends EquationScreen {
 	}
 	
 	@Override 
-	protected MenuLayer createMenu() {
-		return new DefenseMenu(this, width(), false); 
+	protected HeaderLayer createMenu() {
+		return new DefenseHeaderLayer(this, width(), false); 
 	}
 	
 	@Override

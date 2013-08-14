@@ -123,4 +123,7 @@ public class Constant {
 	public static CharSequence mouse() {
 		return PlayN.touch().hasTouch() ? "finger" : "mouse";
 	}
+	
+	public final static String KEY_BG_VOLUME = "bg-volume";
+	public final static String KEY_SE_VOLUME = "se-volume";
 }

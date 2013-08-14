@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.title;
 
 public class Difficulty {
 

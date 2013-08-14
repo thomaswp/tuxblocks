@@ -12,15 +12,15 @@ import playn.core.Pointer.Listener;
 import playn.core.TextLayout;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
-import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.InventoryChangedListener;
-import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
 public class Inventory extends PlayNObject {
 	
@@ -187,7 +187,9 @@ public class Inventory extends PlayNObject {
 				}
 				
 				@Override
-				public void onPointerCancel(Event event) { }
+				public void onPointerCancel(Event event) { 
+					grid.cancelPlacement();
+				}
 			});
 			
 			groupLayer.add(button.layerAddable());

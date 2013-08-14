@@ -13,7 +13,7 @@ import playn.core.ImmediateLayer.Renderer;
 import playn.core.PlayN;
 import playn.core.Surface;
 import tripleplay.util.Destroyable;
-import tuxkids.tuxblocks.core.GLStatus;
+import tuxkids.tuxblocks.core.utils.GLStatus;
 
 /**
  * Emits and updates particles according to a particle system configuration.

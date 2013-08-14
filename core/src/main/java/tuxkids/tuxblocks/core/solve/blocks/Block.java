@@ -200,7 +200,7 @@ public abstract class Block extends Sprite implements Hashable {
 			
 			@Override
 			public void onPointerCancel(Event event) {
-				
+				onPointerEnd(event);
 			}
 		});
 	}

@@ -6,7 +6,7 @@
 -balance blocks
 -level design
 -storage
--audio
+-menu in tutorial
 -freezer image
 -quit game
 -build menu

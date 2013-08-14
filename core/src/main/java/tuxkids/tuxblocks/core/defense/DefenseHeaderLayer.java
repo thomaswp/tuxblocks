@@ -11,22 +11,22 @@ import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
-import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.screen.GameScreen;
+import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
-public class DefenseMenu extends MenuLayer {
+public class DefenseHeaderLayer extends HeaderLayer {
 
 	private final static int BEAT_TIME = 300;
 	private final static float ITEM_ALPHA = (1 + Button.UNPRESSED_ALPHA) / 2;
@@ -43,11 +43,11 @@ public class DefenseMenu extends MenuLayer {
 	private Timer timer;
 	private Upgrade upgrade;
 	
-	public DefenseMenu(GameScreen parent, float width) {
+	public DefenseHeaderLayer(GameScreen parent, float width) {
 		this(parent, width, true);
 	}
 	
-	public DefenseMenu(GameScreen parent, float width, boolean showScore) {
+	public DefenseHeaderLayer(GameScreen parent, float width, boolean showScore) {
 		super(width, parent.state().themeColor());
 		state = parent.state();
 		

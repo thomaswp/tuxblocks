@@ -8,8 +8,6 @@ import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Button;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
@@ -17,6 +15,8 @@ import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class UpgradePanel extends LayerWrapper {
 	

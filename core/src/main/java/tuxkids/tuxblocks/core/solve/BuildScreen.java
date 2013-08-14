@@ -3,12 +3,10 @@ package tuxkids.tuxblocks.core.solve;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.Toolbox.NumberSelectListener;
@@ -19,6 +17,8 @@ import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class BuildScreen extends EquationScreen implements NumberSelectListener {
 
@@ -86,8 +86,8 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 	}
 
 	@Override
-	protected MenuLayer createMenu() {
-		return new MenuLayer(width() - toolboxWidth(), state.themeColor());
+	protected HeaderLayer createMenu() {
+		return new HeaderLayer(width() - toolboxWidth(), state.themeColor());
 	}
 
 	@Override

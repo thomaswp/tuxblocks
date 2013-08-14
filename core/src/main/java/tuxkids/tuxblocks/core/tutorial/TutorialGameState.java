@@ -1,7 +1,5 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-import tuxkids.tuxblocks.core.Difficulty;
-import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
@@ -9,6 +7,8 @@ import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
+import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 
 public class TutorialGameState extends GameState {
 

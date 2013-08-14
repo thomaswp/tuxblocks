@@ -5,12 +5,9 @@ import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.Audio;
-import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.PlayNObject;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.defense.Grid.DoubleClickListener;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
@@ -19,6 +16,10 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Formatter;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
+import tuxkids.tuxblocks.core.widget.MenuLayer;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class DefenseScreen extends GameScreen {
 
@@ -93,8 +94,8 @@ public class DefenseScreen extends GameScreen {
 	}
 	
 	@Override
-	protected MenuLayer createMenu() {
-		return new DefenseMenu(this, width());
+	protected HeaderLayer createMenu() {
+		return new DefenseHeaderLayer(this, width());
 	}
 	
 	private void createPlusButton() {
@@ -168,7 +169,8 @@ public class DefenseScreen extends GameScreen {
 	
 	@Override
 	protected void popThis() {
-		popThis(screens.slide().up());
-		Audio.bg().play(Constant.BG_MENU);
+//		popThis(screens.slide().up());
+//		Audio.bg().play(Constant.BG_MENU);
+		MenuLayer.show(this);
 	}
 }

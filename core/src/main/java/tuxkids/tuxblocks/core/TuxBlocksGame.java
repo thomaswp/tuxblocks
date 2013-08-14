@@ -18,6 +18,8 @@ import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
+import tuxkids.tuxblocks.core.widget.MenuLayer;
 
 public class TuxBlocksGame extends Game.Default {
 
@@ -59,13 +61,13 @@ public class TuxBlocksGame extends Game.Default {
 		
 		Cache.clear();
 		Audio.clear();
-		Tutorial.cancel();
+		MenuLayer.clear();
+		Tutorial.clear();
 		
 		Constant.preloadImages();
 		Constant.preloadAudio();
 		
 		Audio.bg().play(Constant.BG_MENU);
-		Audio.bg().setVolume(0.7f);
 		
 		background = new GameBackgroundSprite();
 		background.layer().setDepth(-10);
@@ -116,6 +118,7 @@ public class TuxBlocksGame extends Game.Default {
         screens.update(delta);
         Tutorial.update(delta);
         Audio.update(delta);
+        MenuLayer.update(delta);
 	}
 
 	@Override
@@ -124,6 +127,7 @@ public class TuxBlocksGame extends Game.Default {
 		background.paint(clock);
         screens.paint(clock);
         Tutorial.paint(clock);
+        MenuLayer.paint(clock);
 		updateFPS();
 	}
 	

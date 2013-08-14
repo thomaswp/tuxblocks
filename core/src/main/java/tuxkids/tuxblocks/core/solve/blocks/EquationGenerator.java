@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
+import tuxkids.tuxblocks.core.title.Difficulty;
 
 public class EquationGenerator extends PlayNObject {
 	

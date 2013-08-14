@@ -5,7 +5,6 @@ import java.util.List;
 
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.defense.walker.FlipWalker;
 import tuxkids.tuxblocks.core.defense.walker.InchWalker;
@@ -13,6 +12,7 @@ import tuxkids.tuxblocks.core.defense.walker.ShrinkWalker;
 import tuxkids.tuxblocks.core.defense.walker.SlideWalker;
 import tuxkids.tuxblocks.core.defense.walker.SpinWalker;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
+import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 

@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.widget;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +13,9 @@ import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
 import pythagoras.f.Point;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
+import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.utils.Positioned;
@@ -149,7 +152,7 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 	public void setSize(float width, float height) {
 		this.width = width;
 		this.height = height;
-		if (imageLayer.image().isReady()) {
+		if (imageLayer.image() != null && imageLayer.image().isReady()) {
 			adjustScale();
 		}
 	}
@@ -157,19 +160,21 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 	public void setImage(Image image) {
 		imageLayer.setImage(image);
 		imageLayer.setVisible(false);
-		imageLayer.image().addCallback(new Callback<Image>() {
-			@Override
-			public void onSuccess(Image result) {
-				imageLayer.setVisible(true);
-				imageLayer.setOrigin(result.width() / 2, result.height() / 2);
-				adjustScale();
-			}
-
-			@Override
-			public void onFailure(Throwable cause) {
-				cause.printStackTrace();
-			}
-		});
+		if (image != null) {
+			imageLayer.image().addCallback(new Callback<Image>() {
+				@Override
+				public void onSuccess(Image result) {
+					imageLayer.setVisible(true);
+					imageLayer.setOrigin(result.width() / 2, result.height() / 2);
+					adjustScale();
+				}
+	
+				@Override
+				public void onFailure(Throwable cause) {
+					cause.printStackTrace();
+				}
+			});
+		}
 	}
 	
 	public void setOnPressListener(OnPressedListener onPressedListener) {
@@ -213,8 +218,12 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 	public Button(String imagePath, float width, float height, boolean isCircle) {
 		this(assets().getImage(imagePath), width, height, isCircle);
 	}
+	
+	public Button(Image image, boolean isCircle) {
+		this(image, image == null ? 0 : image.width(), image == null ? 0 : image.height(), isCircle);
+	}
 
-	public Button(final Image image, float width, float height, boolean isCircle) {
+	public Button(Image image, float width, float height, boolean isCircle) {
 		this.width = width;
 		this.height = height;
 		this.isCircle = isCircle;
@@ -226,15 +235,14 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 			imageLayer.setHitTester(new HitTester() {
 				@Override
 				public Layer hitTest(Layer layer, Point p) {
-					if (p.distance(image.width() / 2, image.height() / 2) < image.width() / 2) return layer;
+					if (imageLayer.image() == null) return null;
+					if (p.distance(imageLayer.image().width() / 2, 
+							imageLayer.image().height() / 2) < 
+							imageLayer.image().width() / 2) return layer;
 					return null;
 				}
 			});
 		}
-	}
-	
-	public Button(Image image, boolean isCircle) {
-		this(image, image.width(), image.height(), isCircle);
 	}
 	
 	private void refreshTint() {
@@ -304,7 +312,10 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		}
 
 		@Override
-		public void onPointerCancel(Event event) { }
+		public void onPointerCancel(Event event) {
+			pressed = false;
+			refreshTint();
+		}
 	}
 	
 	public interface OnReleasedListener {

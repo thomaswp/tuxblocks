@@ -2,6 +2,7 @@ package tuxkids.tuxblocks.core;
 
 import java.util.HashMap;
 
+import playn.core.PlayN;
 import tripleplay.sound.Clip;
 import tripleplay.sound.Loop;
 import tripleplay.sound.Playable;
@@ -24,7 +25,13 @@ public abstract class Audio extends PlayNObject {
 		se.updateInstance(delta);
 	}
 
+	public static void clear() {
+		bg = new BG();
+		se = new SE();
+	}
+
 	protected abstract Playable load(String path);
+	protected abstract String volumeKey();
 	public abstract void stop();
 	
 	protected final SoundBoard soundboard;
@@ -35,6 +42,14 @@ public abstract class Audio extends PlayNObject {
 	
 	private Audio() {
 		soundboard = new SoundBoard();
+		String volume = PlayN.storage().getItem(volumeKey());
+		if (volume != null) {
+			try {
+				setVolume(Float.parseFloat(volume));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public float volume() {
@@ -42,7 +57,7 @@ public abstract class Audio extends PlayNObject {
 	}
 	
 	public void setVolume(float volume) {
-		soundboard.volume.update(volume);
+		soundboard.volume.update(Math.min(Math.max(volume, 0), 1));
 	}
 	
 	public void play(String path) {
@@ -66,11 +81,6 @@ public abstract class Audio extends PlayNObject {
 		cache.put(path, load(path));
 	}
 
-	public static void clear() {
-		bg = new BG();
-		se = new SE();
-	}
-
 	public void stop(String path) {
 		Playable p = cache.get(path);
 		if (p != null) p.stop();
@@ -80,6 +90,13 @@ public abstract class Audio extends PlayNObject {
 		Playable p = cache.get(path);
 		if (p != null) return p.isPlaying();
 		return false;
+	}
+
+	public void restart() {
+		if (lastPlayed != null) {
+			lastPlayed.stop();
+			lastPlayed.play();
+		}
 	}
 	
 	protected static class BG extends Audio {
@@ -104,10 +121,19 @@ public abstract class Audio extends PlayNObject {
 			((Loop) lastPlayed).fadeOut(1000);
 		}
 		
+		@Override
+		public void setVolume(float volume) {
+			super.setVolume(Math.max(volume, 0.001f));
+		}
+
+		@Override
+		protected String volumeKey() {
+			return Constant.KEY_BG_VOLUME;
+		}
 	}
 	
 	protected static class SE extends Audio {
-
+		
 		@Override
 		protected Playable load(String path) {
 			Clip clip = soundboard.getClip(path);
@@ -128,5 +154,9 @@ public abstract class Audio extends PlayNObject {
 			
 		}
 		
+		@Override
+		protected String volumeKey() {
+			return Constant.KEY_SE_VOLUME;
+		}
 	}
 }

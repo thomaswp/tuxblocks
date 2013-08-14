@@ -19,6 +19,7 @@ import pythagoras.i.Point;
 import tripleplay.particle.Emitter;
 import tripleplay.particle.Particles;
 import tripleplay.particle.TuxParticles;
+import tripleplay.ui.Menu;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
@@ -37,6 +38,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
+import tuxkids.tuxblocks.core.widget.MenuLayer;
 
 public class Grid extends PlayNObject implements Highlightable {
 
@@ -192,6 +194,8 @@ public class Grid extends PlayNObject implements Highlightable {
 	}
 
 	public void update(int delta) {
+		if (MenuLayer.showing()) return;
+		
 		if (layer.alpha() < targetAlpha * 0.99f) {
 			layer.setAlpha(lerpTime(layer.alpha(), targetAlpha, 0.99f, delta));
 		} else {
@@ -224,6 +228,8 @@ public class Grid extends PlayNObject implements Highlightable {
 	}
 
 	public void paint(Clock clock) {
+		if (MenuLayer.showing()) return;
+		
 		int nObjects = gridObjects.size();
 		for (int i = 0; i < nObjects; i++) {
 			GridObject gridObject = gridObjects.get(i);
@@ -417,6 +423,15 @@ public class Grid extends PlayNObject implements Highlightable {
 		toPlaceRadius.destroy();
 		toPlaceRadius = null;
 		return canPlace;
+	}
+	
+
+
+	public void cancelPlacement() {
+		toPlace.layer().destroy();
+		toPlace = null;
+		toPlaceRadius.destroy();
+		toPlaceRadius = null;
 	}
 
 	private void updateToPlace() {

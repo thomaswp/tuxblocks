@@ -16,13 +16,14 @@ import pythagoras.f.Vector;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
-import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
+import tuxkids.tuxblocks.core.widget.MenuLayer;
 
 public class BaseScreen extends Screen implements Listener {
 
@@ -170,8 +171,15 @@ public class BaseScreen extends Screen implements Listener {
 
 	@Override
 	public void onKeyDown(Event event) {
-		if (event.key() == Key.BACK || event.key() == Key.ESCAPE) {
-			popThis();
+		if (event.key() == Key.BACK || event.key() == Key.DOWN) {
+			if (MenuLayer.showing()) {
+				MenuLayer.toggle(this);
+			} else {
+				popThis();
+			}
+		}
+		if (event.key() == Key.MENU || event.key() == Key.ESCAPE) {
+			MenuLayer.toggle(this);
 		}
 	}
 
@@ -186,4 +194,5 @@ public class BaseScreen extends Screen implements Listener {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

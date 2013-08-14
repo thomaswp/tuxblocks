@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import playn.core.Color;
 import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayerDefault;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;
@@ -17,6 +16,7 @@ import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.OverRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.markup.TimesRenderer;
+import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
 public class NumberBlock extends BaseBlock implements Simplifiable {

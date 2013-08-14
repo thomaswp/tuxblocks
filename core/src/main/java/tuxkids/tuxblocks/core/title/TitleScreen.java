@@ -18,13 +18,9 @@ import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.Difficulty;
-import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
@@ -33,6 +29,9 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class TitleScreen extends BaseScreen{
 
@@ -220,14 +219,6 @@ public class TitleScreen extends BaseScreen{
 	public void wasAdded() {
 		super.wasAdded();
 		untilSnap = SNAP_TIME;
-	}
-	
-	@Override
-	public void wasShown() {
-		super.wasShown();
-		if (untilSnap == 0) {
-			titleLayer.snap();
-		}
 	}
 	
 	@Override

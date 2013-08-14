@@ -50,7 +50,7 @@ public abstract class PlayNObject {
 		return graphics().width();
 	}
 	
-	protected static int gHidth() {
+	protected static int gHeight() {
 		return graphics().height();
 	}
 	

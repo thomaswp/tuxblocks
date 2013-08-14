@@ -5,12 +5,12 @@ import playn.core.ImageLayer;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.BlockController;
 import tuxkids.tuxblocks.core.solve.blocks.BlockController.Parent;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
 public abstract class EquationScreen extends GameScreen implements Parent {
 	

@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.widget;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-public class MenuLayer extends LayerWrapper {
+public class HeaderLayer extends LayerWrapper {
 	
 	public static float DEFAULT_ALPHA = 0.75f;
 	
@@ -79,7 +79,7 @@ public class MenuLayer extends LayerWrapper {
 		return button;
 	}
 	
-	public MenuLayer(float width, int themeColor) {
+	public HeaderLayer(float width, int themeColor) {
 		super(graphics().createGroupLayer());
 		this.width = width;
 		this.themeColor = themeColor;

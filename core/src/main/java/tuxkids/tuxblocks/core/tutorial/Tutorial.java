@@ -279,9 +279,10 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 
-	public static void cancel() {
+	public static void clear() {
 		if (instance != null) {
 			instance.destroy();
+			instance = null;
 		}
 	}
 

@@ -1,14 +1,18 @@
 package tuxkids.tuxblocks.core.screen;
 
 import playn.core.util.Clock;
+import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
+import tripleplay.game.ScreenStack.Predicate;
+import tuxkids.tuxblocks.core.Audio;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.MenuLayer;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
 public class GameScreen extends BaseScreen {
 	
 	protected GameState state;
-	protected MenuLayer menu;
+	protected HeaderLayer menu;
 
 	public GameState state() {
 		return state;
@@ -21,8 +25,8 @@ public class GameScreen extends BaseScreen {
 		layer.add(menu.layerAddable());
 	}
 	
-	protected MenuLayer createMenu() {
-		return new MenuLayer(width(), state.themeColor());
+	protected HeaderLayer createMenu() {
+		return new HeaderLayer(width(), state.themeColor());
 	}
 	
 	@Override
@@ -37,5 +41,16 @@ public class GameScreen extends BaseScreen {
 		if (!exiting()) {
 			menu.paint(clock);
 		}
+	}
+
+	public void quit() {
+		Screen popTo = screens.find(new Predicate() {
+			@Override
+			public boolean apply(Screen screen) {
+				return !(screen instanceof GameScreen);
+			}
+		});
+		screens.popTo(popTo, screens.slide().up());
+		Audio.bg().play(Constant.BG_MENU);
 	}
 }

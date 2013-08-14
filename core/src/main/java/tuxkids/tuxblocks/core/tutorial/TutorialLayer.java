@@ -9,15 +9,15 @@ import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Button;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Action;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Indicator;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class TutorialLayer extends LayerWrapper implements Listener {
 
@@ -37,7 +37,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		width = graphics().width();
 		height = graphics().height();
 		this.themeColor = themeColor;
-		setDepth(1000);
+		setDepth(50);
 		graphics().rootLayer().add(layer);
 		
 		textBox = new TextBoxLayer(width * 0.85f);
@@ -53,7 +53,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		layer.add(touchCatcher);
 		
 		
-		float size = MenuLayer.defaultButtonSize() * 0.7f;
+		float size = HeaderLayer.defaultButtonSize() * 0.7f;
 		buttonRepeat = new Button(Constant.BUTTON_RESET, size, size, true);
 		buttonRepeat.setPosition(width / 2 - size * 0.6f, height - buttonRepeat.height() * 0.75f);
 		buttonRepeat.layerAddable().setDepth(touchCatcher.depth() + 1);
@@ -81,7 +81,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (cancelling) {
-					Tutorial.cancel();
+					Tutorial.clear();
 				} else {
 					cancelling = true;
 					buttonCancel.setTint(Colors.darker(Colors.RED), Colors.RED);

@@ -13,19 +13,19 @@ import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
-import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.ProblemAddedListener;
-import tuxkids.tuxblocks.core.MenuLayer;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
-import tuxkids.tuxblocks.core.defense.DefenseMenu;
+import tuxkids.tuxblocks.core.defense.DefenseHeaderLayer;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class SelectScreen extends GameScreen implements ProblemAddedListener {
 
@@ -76,8 +76,8 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 	}
 	
 	@Override
-	public MenuLayer createMenu() {
-		return new DefenseMenu(this, width());
+	public HeaderLayer createMenu() {
+		return new DefenseHeaderLayer(this, width());
 	}
 	
 	@Override

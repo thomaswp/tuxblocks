@@ -11,41 +11,41 @@ import playn.core.TextFormat;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Button;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.Difficulty;
-import tuxkids.tuxblocks.core.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
-import tuxkids.tuxblocks.core.title.SlideLayer.StopChangedListener;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.TutorialGameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
+import tuxkids.tuxblocks.core.widget.DiscreteSlideLayer;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.DiscreteSlideLayer.StopChangedListener;
 
 public class DifficultyScreen extends BaseScreen {
 	
 	private final static int[] TIMES = new int[] { Difficulty.ROUND_TIME_INFINITE, 60, 50, 40, 30 };
 	
-	protected final List<SlideLayer> slideLayers = new ArrayList<SlideLayer>();
-	protected final SlideLayer mathSlider, gameSlider, timeSlider;
+	protected final List<DiscreteSlideLayer> slideLayers = new ArrayList<DiscreteSlideLayer>();
+	protected final DiscreteSlideLayer mathSlider, gameSlider, timeSlider;
 	protected final TextFormat promptFormat, descriptionFormat;
 	protected final float spacing;
 	
 	public DifficultyScreen(ScreenStack screens, final GameBackgroundSprite background) {
 		super(screens, background);
 		
-		MenuLayer menu = new MenuLayer(width(), background.primaryColor());
+		HeaderLayer menu = new HeaderLayer(width(), background.primaryColor());
 		layer.add(menu.layerAddable());
 		
 		ImageLayer titleLayer = graphics().createImageLayer();
@@ -146,17 +146,16 @@ public class DifficultyScreen extends BaseScreen {
 		if (Tutorial.running()) {
 			state = new TutorialGameState(background);
 		} else {
-			Difficulty difficulty = new Difficulty(mathSlider.stop, gameSlider.stop, TIMES[timeSlider.stop]);
+			Difficulty difficulty = new Difficulty(mathSlider.stop(), gameSlider.stop(), TIMES[timeSlider.stop()]);
 			state = new GameState(background, difficulty);
 		}
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());
 		screens.remove(this);
-//		Audio.bg().stop();
 		Audio.bg().play(Constant.BG_GAME1);
 	}
 	
-	private SlideLayer createSlideLyer(String prompt, String description, float height, String... stops) {
+	private DiscreteSlideLayer createSlideLyer(String prompt, String description, float height, String... stops) {
 		ImageLayer promptLayer = graphics().createImageLayer();
 		promptLayer.setImage(CanvasUtils.createTextCached(prompt, promptFormat, Colors.WHITE));
 		promptLayer.setTranslation(width() * 0.025f + promptLayer.width() / 2, height);
@@ -171,7 +170,7 @@ public class DifficultyScreen extends BaseScreen {
 			layer.add(descriptionLayer);
 		}
 		
-		SlideLayer slider = new SlideLayer(width() * 0.7f, 
+		DiscreteSlideLayer slider = new DiscreteSlideLayer(width() * 0.7f, 
 				height() / 6, background.primaryColor(), stops);
 		slider.centerLayer();
 		slider.setTranslation(width() * 0.6f, height);
@@ -188,7 +187,7 @@ public class DifficultyScreen extends BaseScreen {
 	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
-		for (SlideLayer slide : slideLayers) {
+		for (DiscreteSlideLayer slide : slideLayers) {
 			slide.paint(clock);
 		}
 	}

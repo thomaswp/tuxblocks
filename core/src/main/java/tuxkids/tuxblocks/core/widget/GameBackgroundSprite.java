@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import playn.core.ImageLayer;
 import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.Sobol;
 

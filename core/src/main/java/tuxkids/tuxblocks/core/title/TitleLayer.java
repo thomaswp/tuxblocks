@@ -2,6 +2,7 @@ package tuxkids.tuxblocks.core.title;
 
 import playn.core.GroupLayer;
 import playn.core.Image;
+import playn.core.ImageLayer;
 import playn.core.ImmediateLayer;
 import playn.core.ImmediateLayer.Renderer;
 import playn.core.Pointer.Event;
@@ -21,6 +22,7 @@ public class TitleLayer extends LayerWrapper implements Listener {
 	
 	protected final GroupLayer layer;
 	protected final Image image;
+	protected final ImageLayer touchCatcher;
 	
 	protected Block[][] blocks;
 	protected float boundsWidth, boundsHeight;
@@ -33,7 +35,6 @@ public class TitleLayer extends LayerWrapper implements Listener {
 	
 	public void snap() {
 		snapped = true;
-		pointer().setListener(this);
 	}
 	
 	public float width() {
@@ -61,6 +62,13 @@ public class TitleLayer extends LayerWrapper implements Listener {
 				cause.printStackTrace();
 			}
 		});
+		
+		touchCatcher = graphics().createImageLayer(
+				CanvasUtils.createRect(1, 1, CanvasUtils.TRANSPARENT));
+		touchCatcher.setSize(gWidth(), gHeight());
+		touchCatcher.setDepth(100);
+		touchCatcher.addListener(this);
+		layer.add(touchCatcher);
 	}
 	
 	private void setup(float targetWidth) {

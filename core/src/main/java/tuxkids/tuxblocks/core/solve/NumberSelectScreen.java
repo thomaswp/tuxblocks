@@ -21,8 +21,6 @@ import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Button;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
@@ -36,6 +34,9 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.MenuLayer;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class NumberSelectScreen extends GameScreen implements Listener {
 	
@@ -56,7 +57,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private int createsSpritesThisFrame;
 	private int themeColor;
 	private Vector blankCenter;
-	private ImageLayer equationAnswer;
+	private ImageLayer equationAnswer, touchLayer;
 	private Point equationAnswerPoint;
 	private Renderer problem;
 	private int answer;
@@ -121,6 +122,13 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		selectedNumberLayer = new NumberLayer(bitmapFontColored);
 		selectedNumberLayer.setDepth(15);
 		foregroundLayer.add(selectedNumberLayer.layerAddable());
+		
+//		touchLayer = graphics().createImageLayer(
+//		CanvasUtils.createRect(1, 1, CanvasUtils.TRANSPARENT));
+//		touchLayer.addListener(this);
+//		touchLayer.setDepth(100);
+//		touchLayer.setSize(width(), height());
+//		layer.add(touchLayer);
 		
 		createScratch();
 		
@@ -400,6 +408,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private boolean dragging;
 	@Override
 	public void onPointerStart(Event event) {
+		if (MenuLayer.showing()) return;
+		
 		if (buttonBack.hit(event.x(), event.y()) ||
 				buttonCenter.hit(event.x(), event.y()) ||
 				buttonScratch.hit(event.x(), event.y()) ||
@@ -415,6 +425,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 
 	@Override
 	public void onPointerEnd(Event event) {
+		if (MenuLayer.showing()) return;
 		if (!dragging) return;
 		dragging = false;
 		if (positionTrail.size() > 1) {
@@ -435,6 +446,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	@Override
 	public void onPointerDrag(Event event) {
+		if (MenuLayer.showing()) dragging = false;
 		if (!dragging) return;
 		position.set(-event.x() + dragOffset.x, -event.y() + dragOffset.y);
 		positionTrail.add(position.clone());

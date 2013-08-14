@@ -11,8 +11,6 @@ import playn.core.TextFormat;
 import playn.core.util.Clock;
 import tripleplay.ui.layout.AxisLayout.Horizontal;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Button;
-import tuxkids.tuxblocks.core.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
@@ -33,6 +31,8 @@ import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.tutorial.Highlightable.ColorState;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable {
 

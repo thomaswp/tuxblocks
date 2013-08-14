@@ -7,7 +7,7 @@ import pythagoras.f.Vector;
 import tripleplay.particle.Initializer;
 import tripleplay.particle.ParticleBuffer;
 import tripleplay.util.Randoms;
-import tuxkids.tuxblocks.core.GLStatus;
+import tuxkids.tuxblocks.core.utils.GLStatus;
 
 public class TuxVelocity  {
 	/**
