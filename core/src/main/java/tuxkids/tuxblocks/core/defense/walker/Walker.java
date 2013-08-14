@@ -10,8 +10,10 @@ import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Cache.Key;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.Pathing;
@@ -196,6 +198,7 @@ public abstract class Walker extends DiscreteGridObject {
 		hp = Math.max(hp, 0);
 		if (hp == 0 && oldHp != 0) {
 			grid.addPoints(exp());
+			Audio.se().play(Constant.SE_DIE);
 		}
 	}
 	

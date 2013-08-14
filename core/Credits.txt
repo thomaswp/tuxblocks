@@ -1,0 +1,43 @@
+Sound:
+
+ViRiX: "Some of the sounds in this project were created by David McKee (ViRiX) soundcloud.com/virix"
+-gameover: http://opengameart.org/content/ui-sound-effects-pack
+
+Lokif: 
+-ok, back: http://opengameart.org/content/gui-sound-effects
+
+Kenny Vleugels: kenny.nl
+-tick, drop: http://opengameart.org/content/51-ui-sound-effects-buttons-switches-and-clicks
+
+Broumbroum: http://www.b23prodtm.info/
+-success: http://www.freesound.org/people/broumbroum/sounds/50565/
+
+Neotone
+-beat: http://www.freesound.org/people/Neotone/sounds/75358/
+
+Mojomills
+-pitch, pitch-final: http://www.freesound.org/people/mojomills/sounds/167553/
+
+m_O_m
+-boom: http://www.freesound.org/people/m_O_m/sounds/108757/
+
+klangfabrik
+-wind: http://www.freesound.org/people/klangfabrik/sounds/117513/
+
+JoelAudio
+-zap: http://www.freesound.org/people/JoelAudio/sounds/136542/
+
+SunnySideSound
+-pop: http://www.freesound.org/people/SunnySideSound/sounds/67088/
+
+Music:
+
+Rezoner: http://soundcloud.com/rezoner/
+-menu: http://opengameart.org/content/trance-menu
+
+FoxSynergy
+-game1: http://opengameart.org/content/bouncing-baal
+
+Possible additions:
+http://opengameart.org/content/tower-defense-theme
+http://opengameart.org/content/puzzle-tune-1

@@ -6,6 +6,7 @@ import playn.core.Pointer.Event;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
@@ -37,6 +38,7 @@ public class SolveScreen extends EquationScreen {
 		buttonImageBack = PlayN.assets().getImage(Constant.BUTTON_DOWN);
 		buttonImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
 		buttonBack = menu.addLeftButton(buttonImageBack);
+		buttonBack.setNoSound();
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -71,6 +73,11 @@ public class SolveScreen extends EquationScreen {
 	@Override
 	protected void popThis() {
 		popThis(screens.slide().up());
+		if (controller.solved()) {
+			Audio.se().play(Constant.SE_SUCCESS);
+		} else {
+			Audio.se().play(Constant.SE_BACK);
+		}
 	}
 	
 	@Override
@@ -84,7 +91,12 @@ public class SolveScreen extends EquationScreen {
 		if (buttonBack.image() != buttonImageOk && controller.solved()) {
 			Tutorial.trigger(Trigger.Solve_Solved);
 		}
-		buttonBack.setImage(controller.solved() ? buttonImageOk : buttonImageBack);
+		if (controller.solved()) {
+			buttonBack.setImage(buttonImageOk);
+		} else {
+			buttonBack.setImage(buttonImageBack);
+		}
+		
 	}
 	
 	private void clearSolve() {
@@ -124,6 +136,4 @@ public class SolveScreen extends EquationScreen {
 			}
 		}
 	}
-	
-
 }

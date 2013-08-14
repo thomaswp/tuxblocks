@@ -3,6 +3,8 @@ package tuxkids.tuxblocks.core.defense.round;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.Audio;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Difficulty;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.defense.walker.FlipWalker;
@@ -86,6 +88,7 @@ public abstract class Level {
 		if (currentRound == null && waitTimes.size() > 0 && 
 				waitTimes.get(0) >= 0 && timer >= waitTimes.get(0)) {
 			nextRound();
+			Audio.se().play(Constant.SE_PITCH_FINAL);
 		}
 		return null;
 	}

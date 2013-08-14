@@ -7,6 +7,7 @@ import playn.core.CanvasImage;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Platform.Type;
 import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
@@ -259,6 +260,13 @@ public class TitleScreen extends BaseScreen{
 		titleLayer.paint(clock);
 		if (untilSnap == 0) {
 			fadeInLayer.setAlpha(PlayNObject.lerpTime(fadeInLayer.alpha(), 1, 0.998f, clock.dt(), 0.01f));
+		}
+	}
+	
+	@Override
+	protected void popThis() {
+		if (PlayN.platformType() == Type.ANDROID) {
+			super.popThis();
 		}
 	}
 }

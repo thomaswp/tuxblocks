@@ -26,6 +26,7 @@ import tripleplay.particle.init.TuxVelocity;
 import tripleplay.util.Colors;
 import tripleplay.util.Interpolator;
 import tripleplay.util.Randoms;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.PlayNObject;
@@ -498,7 +499,7 @@ public class BlockController extends PlayNObject {
 			refreshEquation = true;
 			updatePosition();
 			
-			
+			Audio.se().play(Constant.SE_TICK);
 		}
 
 		@Override
@@ -590,6 +591,8 @@ public class BlockController extends PlayNObject {
 			
 			refreshEquation = true;
 //			debug(target.hierarchy());
+			
+			Audio.se().play(Constant.SE_DROP);
 		}
 
 		@Override
@@ -661,18 +664,23 @@ public class BlockController extends PlayNObject {
 				}
 				refreshEquation = true;
 			}
+			
+
+			Audio.se().play(Constant.SE_TICK);
 		}
 
 		@Override
 		public void wasSimplified() {
 			refreshEquation = true;
 			Tutorial.trigger(Trigger.Solve_Simplified);
+			Audio.se().play(Constant.SE_TICK);
 		}
 
 		@Override
 		public void wasReduced(Renderer problem, int answer, int startNumber, 
 				Stat stat, int level, SimplifyListener callback) {
 			parent.showNumberSelectScreen(problem, answer, startNumber, stat, level, callback);
+			Audio.se().play(Constant.SE_TICK);
 		}
 		
 		@Override

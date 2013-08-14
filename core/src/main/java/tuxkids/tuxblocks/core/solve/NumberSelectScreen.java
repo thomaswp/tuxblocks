@@ -23,6 +23,7 @@ import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
@@ -186,13 +187,15 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		backImageBack = PlayN.assets().getImage(Constant.BUTTON_BACK);
 		backImageCancel = PlayN.assets().getImage(Constant.BUTTON_CANCEL);
 		buttonBack = menu.addLeftButton(backImageBack);
+		buttonBack.setNoSound();
 		register(buttonBack, Tag.Number_Ok);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					if (selectedPoint != null && getNumber(selectedPoint) != answer && answer != ANY_ANSWER) {
+					if (selectedPoint != null && !hasCorrectAnswer()) {
 						buttonBack.setImage(backImageCancel);
+						Audio.se().play(Constant.SE_BACK);
 					} else {
 						popThis();
 					}
@@ -218,6 +221,20 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		blankCenter.y += eqLayer.ty();
 		
 		layer.add(equationLayer);
+	}
+	
+	@Override
+	protected void popThis() {
+		super.popThis();
+		if (hasCorrectAnswer()) {
+			if (answer != ANY_ANSWER) {
+				Audio.se().play(Constant.SE_SUCCESS);
+			} else {
+				Audio.se().play(Constant.SE_OK);
+			}
+		} else {
+			Audio.se().play(Constant.SE_BACK);
+		}
 	}
 	
 	private void updateEquationAnswer() {
@@ -452,6 +469,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		public void onPointerEnd(Event event) { 
 			if (point.equals(possibleSelectedPoint)) {
 				selectedPoint = point;
+				Audio.se().play(Constant.SE_TICK);
 				Tutorial.trigger(Trigger.Number_NumberSelected);
 			}
 		}

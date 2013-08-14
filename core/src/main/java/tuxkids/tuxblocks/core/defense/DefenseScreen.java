@@ -4,6 +4,7 @@ import playn.core.GroupLayer;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
@@ -111,6 +112,7 @@ public class DefenseScreen extends GameScreen {
 	
 	private void createStartButton() {
 		Button buttonStart = menu.addRightButton(Constant.BUTTON_OK);
+		buttonStart.setSuccess();
 		buttonStart.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -167,5 +169,6 @@ public class DefenseScreen extends GameScreen {
 	@Override
 	protected void popThis() {
 		popThis(screens.slide().up());
+		Audio.bg().play(Constant.BG_MENU);
 	}
 }

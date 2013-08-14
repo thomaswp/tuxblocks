@@ -5,7 +5,9 @@ import playn.core.Image;
 import playn.core.PlayN;
 import pythagoras.f.Vector;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Cache;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.defense.projectile.Lightning;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
@@ -141,5 +143,14 @@ public class Zapper extends Tower {
 	@Override
 	public int upgradeCost() {
 		return 3;
+	}
+	
+	@Override
+	protected boolean fire() {
+		boolean fire = super.fire();
+		if (fire) {
+			Audio.se().play(Constant.SE_ZAP);
+		}
+		return fire;
 	}
 }

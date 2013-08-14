@@ -1,5 +1,9 @@
 package tuxkids.tuxblocks.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import playn.core.Color;
 import playn.core.Image;
 import playn.core.Layer;
@@ -27,6 +31,8 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 	private boolean pressed;
 	private int tint, tintPressed;
 	private boolean enabled = true;
+	
+	protected String soundPath = Constant.SE_OK;
 	
 	private Highlighter highlighter = new Highlighter() {
 		@Override
@@ -200,11 +206,14 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		refreshTint();
 	}
 	
+	public void setSoundPath(String soundPath) {
+		this.soundPath = soundPath;
+	}
 	
 	public Button(String imagePath, float width, float height, boolean isCircle) {
 		this(assets().getImage(imagePath), width, height, isCircle);
 	}
-	
+
 	public Button(final Image image, float width, float height, boolean isCircle) {
 		this.width = width;
 		this.height = height;
@@ -258,12 +267,12 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		imageLayer.setScale(width / imageLayer.image().width(), 
 				height / imageLayer.image().height());
 	}
-
 	private class PointerListener implements Listener {
 		
 		@Override
 		public void onPointerStart(Event event) {
 			if (!enabled || !insideLocal(event)) return;
+			if (soundPath != null) Audio.se().play(soundPath);
 			pressed = true;
 			refreshTint();
 			if (onPressedListener != null) onPressedListener.onPress(event);
@@ -308,5 +317,21 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 	
 	public interface OnDragListener {
 		public void onDrag(Event event);
+	}
+
+	public void setCancel() {
+		setSoundPath(Constant.SE_BACK);
+	}
+
+	public void setSuccess() {
+		setSoundPath(Constant.SE_SUCCESS);
+	}
+
+	public void setOk() {
+		setSoundPath(Constant.SE_OK);
+	}
+
+	public void setNoSound() {
+		setSoundPath(null);
 	}
 }

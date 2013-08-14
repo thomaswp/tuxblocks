@@ -7,47 +7,97 @@ import playn.core.PlayN;
 
 public class Constant {
 	
-	private final static List<String> preload = new ArrayList<String>();
+	private final static List<String> preloadImages = new ArrayList<String>(),
+			preloadMusic = new ArrayList<String>(),
+			preloadSound = new ArrayList<String>();
 	
-	private static String preload(String imagePath) {
-		preload.add(imagePath);
+	private static String preloadImage(String imagePath) {
+		preloadImages.add(imagePath);
 		return imagePath;
 	}
 	
+	private static String preloadMusic(String audioPath) {
+		preloadMusic.add(audioPath);
+		return audioPath;
+	}
+	
+	private static String preloadSound(String audioPath) {
+		preloadSound.add(audioPath);
+		return audioPath;
+	}
+	
 	public static void preloadImages() {
-		for (String path : preload) {
+		for (String path : preloadImages) {
 			PlayN.assets().getImage(path);
+		}
+	}
+	
+	public static void preloadAudio() {
+		for (String path : preloadMusic) {
+			Audio.bg().preload(path);
+		}
+		for (String path : preloadSound) {
+			Audio.se().preload(path);
 		}
 	}
 	
 	public final static String IMAGE_PATH = "images/";
 	public final static String TUTORIAL_IMAGE_PATH = IMAGE_PATH + "tutorial/"; 
 	public final static String NINEPATCH_PATH = IMAGE_PATH + "np/";
+	public final static String AUDIO_PATH = "audio/";
+	public final static String BG_PATH = AUDIO_PATH + "bg/";
+	public final static String SE_PATH = AUDIO_PATH  + "se/";
 	
-	public final static String BUTTON_BACK = preload(IMAGE_PATH + "back.png");
-	public final static String BUTTON_FORWARD = preload(IMAGE_PATH + "forward.png");
-	public final static String BUTTON_UP = preload(IMAGE_PATH + "up.png");
-	public final static String BUTTON_DOWN = preload(IMAGE_PATH + "down.png");
-	public final static String BUTTON_OK = preload(IMAGE_PATH + "ok.png");
-	public final static String BUTTON_CANCEL = preload(IMAGE_PATH + "cancel.png");
-	public final static String BUTTON_CENTER = preload(IMAGE_PATH + "center.png");
-	public final static String BUTTON_PLUS = preload(IMAGE_PATH + "plus.png");
-	public final static String BUTTON_RESET = preload(IMAGE_PATH + "reset.png");
-	public final static String BUTTON_CIRCLE = preload(IMAGE_PATH + "circle.png");
-	public final static String BUTTON_LESS = preload(IMAGE_PATH + "less.png");
-	public final static String BUTTON_MORE = preload(IMAGE_PATH + "more.png");
-	public final static String BUTTON_SCRATCH = preload(IMAGE_PATH + "scratch.png");
-	public static final String BUTTON_MENU = preload(IMAGE_PATH + "options.png");
+	public final static String BUTTON_BACK = preloadImage(IMAGE_PATH + "back.png");
+	public final static String BUTTON_FORWARD = preloadImage(IMAGE_PATH + "forward.png");
+	public final static String BUTTON_UP = preloadImage(IMAGE_PATH + "up.png");
+	public final static String BUTTON_DOWN = preloadImage(IMAGE_PATH + "down.png");
+	public final static String BUTTON_OK = preloadImage(IMAGE_PATH + "ok.png");
+	public final static String BUTTON_CANCEL = preloadImage(IMAGE_PATH + "cancel.png");
+	public final static String BUTTON_CENTER = preloadImage(IMAGE_PATH + "center.png");
+	public final static String BUTTON_PLUS = preloadImage(IMAGE_PATH + "plus.png");
+	public final static String BUTTON_RESET = preloadImage(IMAGE_PATH + "reset.png");
+	public final static String BUTTON_CIRCLE = preloadImage(IMAGE_PATH + "circle.png");
+	public final static String BUTTON_LESS = preloadImage(IMAGE_PATH + "less.png");
+	public final static String BUTTON_MORE = preloadImage(IMAGE_PATH + "more.png");
+	public final static String BUTTON_SCRATCH = preloadImage(IMAGE_PATH + "scratch.png");
+	public static final String BUTTON_MENU = preloadImage(IMAGE_PATH + "options.png");
 	
-	public static final String IMAGE_HEART = preload(IMAGE_PATH + "heart.png");
-	public static final String IMAGE_CONFIRM = preload(IMAGE_PATH + "confirm.png");
-	public static final String IMAGE_HOURGLASS = preload(IMAGE_PATH + "hourglass.png");
-	public static final String IMAGE_UPGRADE = preload(IMAGE_PATH + "upgrade.png");
-	public static final String IMAGE_LOGO = preload(IMAGE_PATH + "logo.png");
-	public static final String IMAGE_START = preload(IMAGE_PATH + "start.png");
-	public static final String IMAGE_TUX = preload(IMAGE_PATH + "tux.png");
+	public static final String IMAGE_HEART = preloadImage(IMAGE_PATH + "heart.png");
+	public static final String IMAGE_CONFIRM = preloadImage(IMAGE_PATH + "confirm.png");
+	public static final String IMAGE_HOURGLASS = preloadImage(IMAGE_PATH + "hourglass.png");
+	public static final String IMAGE_UPGRADE = preloadImage(IMAGE_PATH + "upgrade.png");
+	public static final String IMAGE_LOGO = preloadImage(IMAGE_PATH + "logo.png");
+	public static final String IMAGE_START = preloadImage(IMAGE_PATH + "start.png");
+	public static final String IMAGE_TUX = preloadImage(IMAGE_PATH + "tux.png");
 	
-	public final static String NINEPATCH_BUBBLE = preload(NINEPATCH_PATH + "bubble.9.png");
+	public final static String NINEPATCH_BUBBLE = preloadImage(NINEPATCH_PATH + "bubble.9.png");
+	
+	public final static String BG_MENU = preloadMusic(BG_PATH + "menu");
+	public final static String BG_GAME1 = preloadMusic(BG_PATH + "game1");
+	
+	public final static String SE_OK = preloadSound(SE_PATH + "ok");
+	public final static String SE_BACK = preloadSound(SE_PATH + "back");
+	public final static String SE_SUCCESS = preloadSound(SE_PATH + "success");
+	public static final String SE_SUCCESS_SPECIAL = preloadSound(SE_PATH + "success-special");
+	public final static String SE_TICK = preloadSound(SE_PATH + "tick");
+	public final static String SE_DROP = preloadSound(SE_PATH + "drop");
+	public static final String SE_SELECT = preloadSound(SE_PATH + "select");
+	public static final String SE_BEAT = preloadSound(SE_PATH + "beat");
+	public static final String SE_PITCH = preloadSound(SE_PATH + "pitch");
+	public static final String SE_PITCH_FINAL = preloadSound(SE_PATH + "pitch-final");
+	public static final String SE_DIE = preloadSound(SE_PATH + "die");
+	public static final String SE_BOOM = preloadSound(SE_PATH + "boom");
+	public static final String SE_ZAP = preloadSound(SE_PATH + "zap");
+	public static final String SE_WIND = preloadSound(SE_PATH + "wind");
+	public static final String SE_POP0 = preloadSound(SE_PATH + "pop0");
+	public static final String SE_POP1 = preloadSound(SE_PATH + "pop1");
+	public static final String SE_POP2 = preloadSound(SE_PATH + "pop2");
+	public static final String SE_POP3 = preloadSound(SE_PATH + "pop3");
+	
+	public static String SEPop(int n) {
+		return SE_PATH + "pop" + n;
+	}
 	
 	public static final String FONT_NAME = "Arial";
 	

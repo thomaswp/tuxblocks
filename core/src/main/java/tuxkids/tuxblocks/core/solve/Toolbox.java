@@ -124,6 +124,7 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		buttonLess = new Button(Constant.BUTTON_LESS, width / 6, width / 3, false);
 		buttonLess.setPosition(arrowX, buttonNumber.y());
 		buttonLess.setTint(themeColor);
+		buttonLess.setSoundPath(Constant.SE_DROP);
 		buttonLess.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -137,6 +138,7 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		buttonMore = new Button(Constant.BUTTON_MORE, width / 6, width / 3, false);
 		buttonMore.setPosition(width - arrowX, buttonNumber.y());
 		buttonMore.setTint(themeColor);
+		buttonMore.setSoundPath(Constant.SE_DROP);
 		buttonMore.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {

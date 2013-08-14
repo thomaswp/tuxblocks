@@ -20,6 +20,8 @@ import tripleplay.particle.Emitter;
 import tripleplay.particle.Particles;
 import tripleplay.particle.TuxParticles;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.projectile.ChainProjectile;
@@ -199,6 +201,7 @@ public class Grid extends PlayNObject implements Highlightable {
 		if (level().waitingForFinish() && walkers.size() == 0) {
 			onRoundCompleted(level().currentRound());
 			level().finishRound();
+			Audio.se().play(Constant.SE_SUCCESS_SPECIAL);
 		}
 		Walker walker = level().update(delta);
 		if (walker != null) {

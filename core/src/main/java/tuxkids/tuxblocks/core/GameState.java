@@ -48,7 +48,7 @@ public class GameState {
 	
 	protected int lives = 20;
 	protected int score = 0;
-	protected int upgrades = 2;
+	protected int upgrades = 0;
 	protected int earnedUpgrades = 0;
 	protected Level level;
 	
@@ -88,6 +88,7 @@ public class GameState {
 		if (statExps[index] >= nextLevelExp) {
 			statExps[index] -= nextLevelExp;
 			statLevels[index]++;
+			Audio.se().play(Constant.SE_SUCCESS_SPECIAL);
 		}
 		addPoints(exp * EXP_TO_POINTS_FACTOR);
 	}
@@ -147,6 +148,9 @@ public class GameState {
 		problems = new ArrayList<Problem>();
 		level = Level.generate(difficulty.roundTime);
 		addItem(TowerType.PeaShooter, 2);
+		addItem(TowerType.BigShooter, 2);
+		addItem(TowerType.Zapper, 2);
+		addItem(TowerType.Freezer, 2);
 		for (int i = 0; i < 2; i++) {
 			addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
 		}
@@ -198,6 +202,7 @@ public class GameState {
 
 	public void loseLife() {
 		lives--;
+		Audio.se().play(Constant.SE_BEAT);
 	}
 
 	public void addPoints(int points) {
@@ -206,6 +211,7 @@ public class GameState {
 		if (earned != earnedUpgrades) {
 			upgrades += earned - earnedUpgrades;
 			earnedUpgrades = earned;
+			Audio.se().play(Constant.SE_SUCCESS_SPECIAL);
 		}
 	}
 

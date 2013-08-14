@@ -12,6 +12,7 @@ import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
@@ -42,6 +43,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		this.grid = grid;
 		
 		Button button = menu.addRightButton(Constant.BUTTON_FORWARD);
+		button.setNoSound();
 		register(button, Tag.Select_Return);
 		button.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -81,6 +83,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 	@Override
 	protected void popThis() {
 		popThis(screens.slide().left());
+		Audio.se().play(Constant.SE_BACK);
 	}
 	
 	private void addProblemButton(Problem problem) {

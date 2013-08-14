@@ -11,6 +11,7 @@ import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.MenuLayer;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
@@ -63,6 +64,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		buttonCancel.setPosition(width / 2 + size * 0.6f, buttonRepeat.y());
 		buttonCancel.layerAddable().setDepth(buttonRepeat.layerAddable().depth());
 		buttonCancel.setTint(Colors.LIGHT_GRAY, 0.4f);
+		buttonCancel.setCancel();
 		layer.add(buttonCancel.layerAddable());
 		
 		buttonRepeat.setOnReleasedListener(new OnReleasedListener() {
@@ -139,6 +141,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 	public void onPointerStart(Event event) {
 		textBox.hide();
 		touchCatcher.setVisible(false);
+		Audio.se().play(Constant.SE_OK);
 		if (cancelling) {
 			cancelling = false;
 			buttonCancel.setTint(Colors.LIGHT_GRAY, 0.4f);

@@ -13,6 +13,7 @@ import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Difficulty;
@@ -118,6 +119,7 @@ public class DifficultyScreen extends BaseScreen {
 		});
 		
 		Button buttonBack = menu.addLeftButton(Constant.BUTTON_BACK);
+		buttonBack.setNoSound();
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -128,6 +130,12 @@ public class DifficultyScreen extends BaseScreen {
 		});
 	}
 
+	@Override
+	protected void popThis() {
+		Audio.se().play(Constant.SE_BACK);
+		super.popThis();
+	}
+	
 	@Override
 	protected Trigger wasShownTrigger() {
 		return Trigger.Difficulty_Shown;
@@ -144,6 +152,8 @@ public class DifficultyScreen extends BaseScreen {
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());
 		screens.remove(this);
+//		Audio.bg().stop();
+		Audio.bg().play(Constant.BG_GAME1);
 	}
 	
 	private SlideLayer createSlideLyer(String prompt, String description, float height, String... stops) {

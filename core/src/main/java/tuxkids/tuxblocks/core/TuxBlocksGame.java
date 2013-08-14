@@ -57,7 +57,15 @@ public class TuxBlocksGame extends Game.Default {
 	@Override
 	public void init() {
 		
+		Cache.clear();
+		Audio.clear();
+		Tutorial.cancel();
+		
 		Constant.preloadImages();
+		Constant.preloadAudio();
+		
+		Audio.bg().play(Constant.BG_MENU);
+		Audio.bg().setVolume(0.7f);
 		
 		background = new GameBackgroundSprite();
 		background.layer().setDepth(-10);
@@ -107,6 +115,7 @@ public class TuxBlocksGame extends Game.Default {
 		background.update(delta);
         screens.update(delta);
         Tutorial.update(delta);
+        Audio.update(delta);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.defense.tower;
 
+import tuxkids.tuxblocks.core.Audio;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.projectile.Pea;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 
@@ -65,4 +67,14 @@ public class PeaShooter extends Tower {
 		return 1;
 	}
 
+	private static int pop = 0;
+	@Override
+	protected boolean fire() {
+		boolean fire = super.fire();
+		if (fire) {
+			Audio.se().play(Constant.SEPop(pop++), 0.5f);
+			pop %= 2;
+		}
+		return fire;
+	}
 }

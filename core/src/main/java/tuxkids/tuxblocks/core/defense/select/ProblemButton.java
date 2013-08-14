@@ -63,6 +63,7 @@ public class ProblemButton extends Button {
 		this.problem = problem;
 		this.minHeight = minHeight;
 		this.towerColor = towerColor;
+		setSoundPath(Constant.SE_TICK);
 	}
 
 	private static Image createImage(Problem problem, float width, float minHeight, int towerColor) {

@@ -11,6 +11,7 @@ import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.TextLayout;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.InventoryChangedListener;
@@ -157,6 +158,7 @@ public class Inventory extends PlayNObject {
 			float y = getItemSpriteY(index);
 			button.setPosition(x, y);
 			button.setTint(Colors.WHITE, Color.rgb(230, 230, 230));
+			button.setNoSound();
 			
 			final int fi = index;
 			button.imageLayer().addListener(new Listener() {
@@ -164,6 +166,7 @@ public class Inventory extends PlayNObject {
 				public void onPointerStart(Event event) {
 					if (!button.enabled()) return;
 					grid.startPlacement(towerType.newInstance());
+					Audio.se().play(Constant.SE_TICK);
 				}
 				
 				@Override
@@ -172,6 +175,7 @@ public class Inventory extends PlayNObject {
 					if (grid.endPlacement(event.x(), event.y())) {
 						towerCounts()[fi]--;
 						refreshCountSprite(fi);
+						Audio.se().play(Constant.SE_DROP);
 					}
 				}
 				

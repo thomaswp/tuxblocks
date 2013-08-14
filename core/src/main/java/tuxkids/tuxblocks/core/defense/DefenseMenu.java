@@ -10,6 +10,7 @@ import playn.core.TextFormat;
 import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Button;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
@@ -235,9 +236,9 @@ public class DefenseMenu extends MenuLayer {
 			updateBeat(beatMS, layer);
 			updateAlpha(beatMS, plusLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
-			if (state.upgrades() == 0) {
-				plusLayer.setAlpha(plusLayer.alpha() * 0.5f);
-			}
+//			if (state.upgrades() == 0) {
+//				plusLayer.setAlpha(plusLayer.alpha() * 0.5f);
+//			}
 		}
 
 		@Override
@@ -304,7 +305,12 @@ public class DefenseMenu extends MenuLayer {
 				numberLayer.setImage(CanvasUtils.createString(
 						tf, text, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
-				if (beat) beatMS = BEAT_TIME;
+				if (beat) {
+					beatMS = BEAT_TIME;
+					if (time != DURING_ROUND && time != Difficulty.ROUND_TIME_INFINITE) {
+						Audio.se().play(Constant.SE_PITCH);
+					}
+				}
 			}
 		}
 		

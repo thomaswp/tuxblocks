@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.defense.projectile;
 
 import playn.core.Image;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.effect.MissileExplosion;
 
@@ -32,5 +33,6 @@ public class Missile extends BodyProjectile {
 	public void onFinish() {
 		super.onFinish();
 		new MissileExplosion(grid, position, level);
+		Audio.se().play(Constant.SE_BOOM);
 	}
 }

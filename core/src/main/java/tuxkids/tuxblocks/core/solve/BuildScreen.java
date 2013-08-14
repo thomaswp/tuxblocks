@@ -4,6 +4,7 @@ import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
@@ -59,6 +60,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 						}
 					}
 				});
+		menu.leftButton().setNoSound();
 
 		controller.layer().setTx(toolboxWidth());
 		controller.layer().setDepth(1);
@@ -122,5 +124,6 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 	@Override
 	protected void popThis() {
 		popThis(screens.slide().up());
+		Audio.se().play(Constant.SE_BACK);
 	}
 }
