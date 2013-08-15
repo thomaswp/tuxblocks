@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.solve;
+package tuxkids.tuxblocks.core.solve.build;
 
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
@@ -9,10 +9,13 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
-import tuxkids.tuxblocks.core.solve.Toolbox.NumberSelectListener;
+import tuxkids.tuxblocks.core.solve.EquationScreen;
+import tuxkids.tuxblocks.core.solve.NumberSelectScreen;
+import tuxkids.tuxblocks.core.solve.SolveScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
+import tuxkids.tuxblocks.core.solve.build.Toolbox.NumberSelectListener;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
@@ -36,10 +39,10 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 	public BuildScreen(final ScreenStack screens, GameState state) {
 		super(screens, state);
 
-		solveScreen = new SolveScreen(screens, state);
+		solveScreen = new BuildSolveScreen(screens, state);
 
-		menu.setTx(toolboxWidth());
-		menu.addRightButton(Constant.BUTTON_OK).setOnReleasedListener(
+		header.setTx(toolboxWidth());
+		header.addRightButton(Constant.BUTTON_OK).setOnReleasedListener(
 				new OnReleasedListener() {
 					@Override
 					public void onRelease(Event event, boolean inButton) {
@@ -49,9 +52,9 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 						}
 					}
 				});
-		register(menu.rightButton(), Tag.Build_Ok);
+		register(header.rightButton(), Tag.Build_Ok);
 
-		menu.addLeftButton(Constant.BUTTON_DOWN).setOnReleasedListener(
+		header.addLeftButton(Constant.BUTTON_DOWN).setOnReleasedListener(
 				new OnReleasedListener() {
 					@Override
 					public void onRelease(Event event, boolean inButton) {
@@ -60,7 +63,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 						}
 					}
 				});
-		menu.leftButton().setNoSound();
+		header.leftButton().setNoSound();
 
 		controller.layer().setTx(toolboxWidth());
 		controller.layer().setDepth(1);
@@ -86,7 +89,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 	}
 
 	@Override
-	protected HeaderLayer createMenu() {
+	protected HeaderLayer createHeader() {
 		return new HeaderLayer(width() - toolboxWidth(), state.themeColor());
 	}
 

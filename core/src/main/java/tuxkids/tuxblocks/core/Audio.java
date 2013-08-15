@@ -49,6 +49,8 @@ public abstract class Audio extends PlayNObject {
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}
+		} else {
+			setVolume(0.5f);
 		}
 	}
 	

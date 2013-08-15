@@ -1,15 +1,8 @@
--solve menu/game sate
--return when timer's up
--difficulty levels
---point weights (time bonus, math bonus)
--balance problem
--balance blocks
+-balance problems and add difficulty
 -level design
+--balance blocks
 -Android 4.0 menu
--menu in tutorial
--freezer image
--quit game
--build menu
 
 -multiple grids
 -color/grid selection
+-high scores

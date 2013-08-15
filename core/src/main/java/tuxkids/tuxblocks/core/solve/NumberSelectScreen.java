@@ -25,6 +25,7 @@ import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.layers.NumberLayer;
 import tuxkids.tuxblocks.core.layers.NumberLayer.NumberBitmapFont;
 import tuxkids.tuxblocks.core.screen.GameScreen;
@@ -35,6 +36,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.MainMenuLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
@@ -92,6 +94,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		this.problem = problem;
 		this.answer = answer;
 	}
+	
+	@Override
+	protected int exitTime() {
+		return 3000;
+	}
 
 	@Override
 	public void wasAdded() {
@@ -116,8 +123,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		PlayN.pointer().setListener(this);
 		createBackground();
 		createEquation(problem);
-		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - menu.height() / 2);
-		backgroundLayer.setTranslation(0, menu.height() / 2);
+		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - header.height() / 2);
+		backgroundLayer.setTranslation(0, header.height() / 2);
 		
 		selectedNumberLayer = new NumberLayer(bitmapFontColored);
 		selectedNumberLayer.setDepth(15);
@@ -136,24 +143,34 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	}
 	
 	@Override
+	public HeaderLayer createHeader() {
+		return new GameHeaderLayer(this, width()) {
+			@Override
+			protected void createWidgets() {
+				createTimer();
+			}
+		};
+	}
+	
+	@Override
 	public Trigger wasShownTrigger() {
 		return Trigger.Number_Shown;
 	}
 	
 	private void createScratch() {
-		buttonScratch = menu.createButton(Constant.BUTTON_SCRATCH);
+		buttonScratch = header.createButton(Constant.BUTTON_SCRATCH);
 		buttonScratch.setPosition(buttonScratch.width() * 0.6f, height() - buttonScratch.height() * 0.6f);
 		buttonScratch.layerAddable().setDepth(21);
 		layer.add(buttonScratch.layerAddable());
 		
-		buttonClear = menu.createButton(Constant.BUTTON_RESET);
+		buttonClear = header.createButton(Constant.BUTTON_RESET);
 		buttonClear.setPosition(width() - buttonScratch.width() * 0.6f, height() - buttonScratch.height() * 0.6f);
 		buttonClear.layerAddable().setDepth(21);
 		buttonClear.layerAddable().setVisible(false);
 		layer.add(buttonClear.layerAddable());
 		
-		scratchLayer = new ScratchLayer(width(), height() - menu.height());
-		scratchLayer.setTy(menu.height());
+		scratchLayer = new ScratchLayer(width(), height() - header.height());
+		scratchLayer.setTy(header.height());
 		scratchLayer.setAlpha(0);
 		scratchLayer.setDepth(20);
 		layer.add(scratchLayer.layerAddable());
@@ -189,12 +206,12 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		blankCenter = equation.blankCenter();
 		
 		ImageLayer eqLayer = graphics().createImageLayer(eqImage);
-		eqLayer.setTranslation((width() - eqLayer.width()) / 2, (menu.height() - eqLayer.height()) / 2); 
+		eqLayer.setTranslation((width() - eqLayer.width()) / 2, (header.height() - eqLayer.height()) / 2); 
 		
 		backImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
 		backImageBack = PlayN.assets().getImage(Constant.BUTTON_BACK);
 		backImageCancel = PlayN.assets().getImage(Constant.BUTTON_CANCEL);
-		buttonBack = menu.addLeftButton(backImageBack);
+		buttonBack = header.addLeftButton(backImageBack);
 		buttonBack.setNoSound();
 		register(buttonBack, Tag.Number_Ok);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
@@ -211,7 +228,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			}
 		});
 		 
-		buttonCenter = menu.addRightButton(Constant.BUTTON_CENTER);
+		buttonCenter = header.addRightButton(Constant.BUTTON_CENTER);
 		buttonCenter.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -220,7 +237,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		});
 		
 		equationLayer = graphics().createGroupLayer();
-		equationLayer.add(menu.layerAddable());
+		equationLayer.add(header.layerAddable());
 		equationLayer.add(eqLayer);
 		equationLayer.add(buttonBack.layerAddable());
 		equationLayer.add(buttonCenter.layerAddable());

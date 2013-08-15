@@ -30,6 +30,9 @@ JoelAudio
 SunnySideSound
 -pop: http://www.freesound.org/people/SunnySideSound/sounds/67088/
 
+Kastenfrosch
+-victory: http://www.freesound.org/people/Kastenfrosch/sounds/162458/
+
 Music:
 
 Rezoner: http://soundcloud.com/rezoner/

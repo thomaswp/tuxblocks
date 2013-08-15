@@ -16,7 +16,7 @@ import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.ProblemAddedListener;
-import tuxkids.tuxblocks.core.defense.DefenseHeaderLayer;
+import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
@@ -31,18 +31,21 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 
 	private final static int COLS = 2;
 	
-	private Grid grid;
 	private GroupLayer problemLayer;
 	private ProblemButton selectedProblem;
 	private List<ProblemButton> problemButtons = new ArrayList<ProblemButton>();
 	private ProblemButton bottomLeft, bottomRight;
 	private SolveScreen solveScreen;
 	
-	public SelectScreen(final ScreenStack screens, GameState gameState, Grid grid) {
+	@Override
+	protected int exitTime() {
+		return 1000;
+	}
+	
+	public SelectScreen(final ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
-		this.grid = grid;
 		
-		Button button = menu.addRightButton(Constant.BUTTON_FORWARD);
+		Button button = header.addRightButton(Constant.BUTTON_FORWARD);
 		button.setNoSound();
 		register(button, Tag.Select_Return);
 		button.setOnReleasedListener(new OnReleasedListener() {
@@ -59,7 +62,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 //		layer.add(bg);
 		
 		problemLayer = graphics().createGroupLayer();
-		problemLayer.setTy(menu.height());
+		problemLayer.setTy(header.height());
 		layer.add(problemLayer);
 		for (Problem problem : state.problems()) {
 			addProblemButton(problem);
@@ -76,8 +79,13 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 	}
 	
 	@Override
-	public HeaderLayer createMenu() {
-		return new DefenseHeaderLayer(this, width());
+	public HeaderLayer createHeader() {
+		return new GameHeaderLayer(this, width()) {
+			@Override
+			protected void createWidgets() {
+				createAll();
+			}
+		};
 	}
 	
 	@Override
@@ -105,7 +113,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		ProblemButton above = col == 0 ? bottomLeft : bottomRight;
 		float aboveY = above == null ? 0 : above.bottom();
 		
-		final ProblemButton pb = new ProblemButton(problem, width, minHeight, grid.towerColor());
+		final ProblemButton pb = new ProblemButton(problem, width, minHeight, state.themeColor());
 		problemLayer.add(pb.layerAddable());
 		pb.setPosition((col + 0.5f) * width() / COLS, aboveY + margin + pb.height() / 2);
 		pb.setTint(Color.withAlpha(Colors.WHITE, 225), Colors.LIGHT_GRAY);
@@ -151,22 +159,10 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		if (bottomLeft == button) bottomLeft = bottomLeft.above();
 		if (bottomRight == button) bottomRight = bottomRight.above();
 	}
-
-	@Override
-	public void showTransitionCompleted() {
-		super.showTransitionCompleted();
-	}
-	
-	@Override
-	public void update(int delta) {
-		super.update(delta);
-		grid.update(delta);
-	}
 	
 	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
-		grid.paint(clock);
 		
 		if (entering()) return;
 		for (ProblemButton problem : problemButtons) {

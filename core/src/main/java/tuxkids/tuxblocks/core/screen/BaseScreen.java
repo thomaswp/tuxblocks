@@ -37,6 +37,14 @@ public class BaseScreen extends Screen implements Listener {
 	private List<Highlightable> highlightables = new ArrayList<Highlightable>();
 	private boolean showing;
 	
+	public ScreenStack screens() {
+		return screens;
+	}
+
+	public GameBackgroundSprite background() {
+		return background;
+	}
+	
 	public boolean exiting() {
 		return exiting;
 	}
@@ -63,6 +71,7 @@ public class BaseScreen extends Screen implements Listener {
 	}
 	
 	public void register(Highlightable highlightable, Tag tag) {
+		if (highlightable == null) return;
 		highlightable.highlighter().addTag(tag);
 		if (!highlightables.contains(highlightable)) {
 			highlightables.add(highlightable);
@@ -127,7 +136,7 @@ public class BaseScreen extends Screen implements Listener {
 		pushScreen(screen, screens.slide().left());
 	}
 	
-	protected void pushScreen(final BaseScreen screen, Transition transition) {
+	public void pushScreen(final BaseScreen screen, Transition transition) {
 		Tutorial.clearIndicators();
 		screen.onScreenFinishedListener = new OnScreenFinishedListener() {
 			@Override

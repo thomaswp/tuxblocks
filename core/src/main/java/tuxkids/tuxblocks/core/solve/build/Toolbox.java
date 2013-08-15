@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.solve;
+package tuxkids.tuxblocks.core.solve.build;
 
 import java.util.ArrayList;
 import java.util.List;

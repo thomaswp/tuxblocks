@@ -22,6 +22,7 @@ public abstract class Level implements Persistable {
 	private int timer;
 	private Round currentRound;
 	private boolean waitingForFinish;
+	private Walker lastWalker;
 	
 	private int roundNumber = 0;
 	
@@ -36,6 +37,12 @@ public abstract class Level implements Persistable {
 	public void finishRound() {
 		waitingForFinish = false;
 		currentRound = null;
+	}
+	
+	public Walker popWalker() {
+		Walker walker = lastWalker;
+		lastWalker = null;
+		return walker;
 	}
 	
 	public boolean waitingForFinish() {
@@ -57,7 +64,11 @@ public abstract class Level implements Persistable {
 	}
 	
 	public boolean duringRound() {
-		return currentRound != null;
+		return currentRound != null || rounds.size() == 0;
+	}
+	
+	public boolean victory() {
+		return currentRound == null && rounds.size() == 0;
 	}
 	
 	protected abstract void populateLevel();
@@ -70,7 +81,12 @@ public abstract class Level implements Persistable {
 		rounds.add(round);
 	}
 	
-	public Walker update(int delta) {
+	public void update(int delta) {
+		Walker walker = updateWalker(delta);
+		if (walker != null) lastWalker = walker;
+	}
+	
+	private Walker updateWalker(int delta) {
 		if (finished()) return null;
 		if (currentRound != null) {
 			if (waitingForFinish) return null;

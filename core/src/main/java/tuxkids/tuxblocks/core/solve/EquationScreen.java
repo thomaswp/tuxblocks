@@ -19,6 +19,10 @@ public abstract class EquationScreen extends GameScreen implements Parent {
 	protected ImageLayer eqLayer, eqLayerOld;
 	protected Image lastEqImage;
 	
+	protected float equationXPercent() {
+		return 0.5f;
+	}
+	
 	public void setEquation(Equation equation) {
 		this.originalEquation = equation;
 		controller.addEquation(equation.copy());
@@ -39,21 +43,21 @@ public abstract class EquationScreen extends GameScreen implements Parent {
 	public EquationScreen(ScreenStack screens, GameState state) {
 		super(screens, state);
 		
-		menu.layerAddable().setDepth(-1);
+		header.layerAddable().setDepth(-1);
 		
-		controller = new BlockController(this, controllerWidth(), height() - menu.height());
-		controller.setEquationImageHeight(menu.height());
-		controller.layer().setTy(menu.height());
+		controller = new BlockController(this, controllerWidth(), height() - header.height());
+		controller.setEquationImageHeight(header.height());
+		controller.layer().setTy(header.height());
 		layer.add(controller.layer());
 		
 		eqLayer = graphics().createImageLayer();
-		layer.add(eqLayer);
 		eqLayer.setImage(controller.equationImage());
+		layer.add(eqLayer);
 		
 		eqLayerOld = graphics().createImageLayer();
-		layer.add(eqLayerOld);
 		eqLayerOld.setImage(controller.equationImage());
 		eqLayerOld.setAlpha(0);
+		layer.add(eqLayerOld);
 	}
 	
 	@Override
@@ -80,7 +84,9 @@ public abstract class EquationScreen extends GameScreen implements Parent {
 			lastEqImage = controller.equationImage();
 		}
 		if (eqLayer.image() != null) {
-			eqLayer.setTranslation((menu.width() - eqLayer.width()) / 2 + menu.tx(), (menu.height() - eqLayer.height()) / 2);
+			eqLayer.setTranslation(
+					header.width() * equationXPercent() - eqLayer.width() / 2 + header.tx(), 
+					(header.height() - eqLayer.height()) / 2);
 		}
 	}
 	

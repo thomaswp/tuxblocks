@@ -1,5 +1,8 @@
 package tuxkids.tuxblocks.core.defense;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import playn.core.Color;
 import playn.core.Font;
 import playn.core.Font.Style;
@@ -26,7 +29,7 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
-public class DefenseHeaderLayer extends HeaderLayer {
+public abstract class GameHeaderLayer extends HeaderLayer {
 
 	private final static int BEAT_TIME = 300;
 	private final static float ITEM_ALPHA = (1 + Button.UNPRESSED_ALPHA) / 2;
@@ -36,6 +39,9 @@ public class DefenseHeaderLayer extends HeaderLayer {
 	private final TextFormat scoreTextFormat;
 	private final int itemSize;
 	private final GameState state;
+	private final List<Drawable> drawables = new ArrayList<GameHeaderLayer.Drawable>();
+	private final float barCenter, itemCenter;
+	private final GameScreen parent;
 
 	private Bar[] bars;
 	private Heart heart;
@@ -43,13 +49,17 @@ public class DefenseHeaderLayer extends HeaderLayer {
 	private Timer timer;
 	private Upgrade upgrade;
 	
-	public DefenseHeaderLayer(GameScreen parent, float width) {
-		this(parent, width, true);
+	protected interface Drawable {
+		void update(int delta);
+		void paint(Clock clock);
 	}
 	
-	public DefenseHeaderLayer(GameScreen parent, float width, boolean showScore) {
+	protected abstract void createWidgets();
+	
+	public GameHeaderLayer(GameScreen parent, float width) {
 		super(width, parent.state().themeColor());
 		state = parent.state();
+		this.parent = parent;
 		
 		barTextFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, height * 0.18f));
@@ -57,48 +67,55 @@ public class DefenseHeaderLayer extends HeaderLayer {
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, height * 0.4f));
 		itemSize = (int) (2 * height / 3);
 		
-		float barCenter = width * 0.26f, itemCenter = width * 0.74f;
-
-		createBars(barCenter);
-		createHeart(itemCenter);
-		createTimer(itemCenter);
-		createUpgrade(itemCenter);
-		createScore();
-		if (!showScore) score.setVisible(false);
+		barCenter = width * 0.26f;
+		itemCenter = width * 0.74f;
 		
-		parent.register(heart, Tag.Menu_Lives);
-		parent.register(timer, Tag.Menu_Countdown);
-		parent.register(upgrade, Tag.Menu_Upgrades);
+		createWidgets();
+	}
+
+	protected void createAll() {
+		createBars();
+		createHeart();
+		createTimer();
+		createUpgrades();
+		createScore();
 	}
 	
-	private void createScore() {
+	protected void createScore() {
 		score = new Score(height);
 		score.setTranslation(width / 2, 0);
 		layer.add(score.layerAddable());
+		drawables.add(score);
 	}
 	
-	private void createUpgrade(float itemCenter) {
+	protected void createUpgrades() {
 		upgrade = new Upgrade(itemSize, itemSize);
 		upgrade.setTranslation(itemCenter - itemSize * 4 / 3, 
 				height / 2);
 		layer.add(upgrade.layerAddable());
+		parent.register(upgrade, Tag.Menu_Upgrades);
+		drawables.add(upgrade);
 	}
 	
-	private void createTimer(float itemCenter) {
+	protected void createTimer() {
 		timer = new Timer(itemSize, itemSize);
 		timer.setTranslation(itemCenter + itemSize * 4 / 3, 
 				height / 2);
 		layer.add(timer.layerAddable());
+		parent.register(timer, Tag.Menu_Countdown);
+		drawables.add(timer);
 	}
 	
-	private void createHeart(float itemCenter) {
+	protected void createHeart() {
 		heart = new Heart(itemSize, itemSize);
 		heart.setTranslation(itemCenter, 
 				height / 2);
 		layer.add(heart.layerAddable());
+		parent.register(heart, Tag.Menu_Lives);
+		drawables.add(heart);
 	}
 	
-	private void createBars(float barCenter) {
+	protected void createBars() {
 		bars = new Bar[4];
 		int index = 0;
 		float barWidth = width / 4;
@@ -113,6 +130,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 //			int col = index % 2;
 //			bar.setTranslation(barIndent + barWidth * col, height / 5 * (row + 0.5f) * 2);
 			layer.add(bar.layerAddable());
+			drawables.add(bar);
 			
 			bars[index++] = bar;
 		}
@@ -121,25 +139,17 @@ public class DefenseHeaderLayer extends HeaderLayer {
 	@Override
 	public void update(int delta) {
 		super.update(delta);
-		for (Bar bar : bars) {
-			bar.update(delta);
+		for (Drawable drawable : drawables) {
+			if (drawable != null) drawable.update(delta);
 		}
-		heart.update(delta);
-		score.update(delta);
-		timer.update(delta);
-		upgrade.update(delta);
 	}
 	
 	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
-		for (Bar bar : bars) {
-			bar.paint(clock);
+		for (Drawable drawable : drawables) {
+			if (drawable != null) drawable.paint(clock);
 		}
-		heart.paint(clock);
-		score.paint(clock);
-		timer.paint(clock);
-		upgrade.paint(clock);
 	}
 	
 	private void updateBeat(int ms, Layer layer) {
@@ -161,7 +171,8 @@ public class DefenseHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private abstract class LayerWrapperHighlightable extends LayerWrapper implements  Highlightable {
+	private abstract class LayerWrapperHighlightable extends LayerWrapper 
+	implements  Highlightable, Drawable {
 
 		protected abstract ImageLayerTintable highlightLayer();
 		
@@ -220,7 +231,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 			update(0);
 		}
 		
-		private void update(int delta) {
+		public void update(int delta) {
 			int m = state.upgrades();
 			if (m != upgrades) {
 				upgrades = m;
@@ -232,7 +243,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 			}
 		}
 		
-		private void paint(Clock clock) {
+		public void paint(Clock clock) {
 			updateBeat(beatMS, layer);
 			updateAlpha(beatMS, plusLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
@@ -277,7 +288,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 			update(0);
 		}
 		
-		private void update(int delta) {
+		public void update(int delta) {
 			int l;
 			boolean beat = true;
 			if (state.level().duringRound()) {
@@ -314,7 +325,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 			}
 		}
 		
-		private void paint(Clock clock) {
+		public void paint(Clock clock) {
 			updateBeat(beatMS, layer);
 			if (beatMS > 0) {
 				beatMS -= clock.dt();
@@ -336,7 +347,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private class Score extends LayerWrapper {
+	private class Score extends LayerWrapper implements Drawable {
 
 		private final static int BEAT_TIME = 300;
 		
@@ -399,7 +410,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 			update(0);
 		}
 		
-		private void update(int delta) {
+		public void update(int delta) {
 			int l = state.lives();
 			if (l != lives) {
 				lives = l;
@@ -410,7 +421,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 			}
 		}
 		
-		private void paint(Clock clock) {
+		public void paint(Clock clock) {
 			updateBeat(beatMS, layer);
 			updateAlpha(beatMS, heartLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
@@ -422,7 +433,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private class Bar extends LayerWrapper {
+	private class Bar extends LayerWrapper implements Drawable {
 
 		private float TEXT_SPACE = barTextFormat.font.size();
 		
@@ -467,7 +478,7 @@ public class DefenseHeaderLayer extends HeaderLayer {
 			update(0);
 		}
 		
-		private void update(int delta) {
+		public void update(int delta) {
 			int l = state.getStatLevel(stat);
 			if (level != l) {
 				level = l;

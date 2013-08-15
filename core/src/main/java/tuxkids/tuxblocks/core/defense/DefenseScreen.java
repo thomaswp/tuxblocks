@@ -16,6 +16,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Formatter;
+import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.MainMenuLayer;
@@ -40,20 +41,18 @@ public class DefenseScreen extends GameScreen {
 		super.wasAdded();
 		
 		layer = graphics().createGroupLayer();
-		layer.add(menu.layerAddable());
+		layer.add(header.layerAddable());
 		super.layer.add(layer);
 		
-		float titleBarHeight = menu.height();
+		float titleBarHeight = header.height();
 		
-		float maxGridWidth = width() * 0.7f; 
-		Grid testGrid = new Grid(state, 15, 21, (int)maxGridWidth, (int)(height() - titleBarHeight));
+		float maxGridWidth = width() * 0.7f;
 
-		grid = testGrid;//new Grid(state, 15, 21, (int)(testGrid.width() * 1.5f), (int)(testGrid.height() * 1.5f));
+		grid = new Grid(state, 15, 21, (int)maxGridWidth, (int)(height() - titleBarHeight));
 		grid.setTowerColor(state.themeColor());
 		gridHolder = graphics().createGroupLayer();
 		gridHolder.add(grid.layer());
-		gridHolder.setTranslation(width() - testGrid.width(), (height() + titleBarHeight - testGrid.height()) / 2);
-//		gridHolder.setScale((float)testGrid.width() / grid.width());
+		gridHolder.setTranslation(width() - grid.width(), (height() + titleBarHeight - grid.height()) / 2);
 		gridHolder.setDepth(1);
 		layer.add(gridHolder);
 		
@@ -78,12 +77,12 @@ public class DefenseScreen extends GameScreen {
 		layer.setOrigin(cornerX, cornerY);
 		layer.setTranslation(cornerX, cornerY);
 		
-		inventory = new Inventory(this, grid, (int)(width() - testGrid.width()), (int)(height() - titleBarHeight));
+		inventory = new Inventory(this, grid, (int)(width() - grid.width()), (int)(height() - titleBarHeight));
 		inventory.layer().setDepth(1);
 		inventory.layer().setTy(titleBarHeight);
 		layer.add(inventory.layer());
 		
-		selectScreen = new SelectScreen(screens, state, grid);
+		selectScreen = new SelectScreen(screens, state);
 		
 		createPlusButton();
 		createStartButton();
@@ -96,12 +95,17 @@ public class DefenseScreen extends GameScreen {
 	}
 	
 	@Override
-	protected HeaderLayer createMenu() {
-		return new DefenseHeaderLayer(this, width());
+	public HeaderLayer createHeader() {
+		return new GameHeaderLayer(this, width()) {
+			@Override
+			protected void createWidgets() {
+				createAll();
+			}
+		};
 	}
 	
 	private void createPlusButton() {
-		Button buttonPlus = menu.addLeftButton(Constant.BUTTON_PLUS);
+		Button buttonPlus = header.addLeftButton(Constant.BUTTON_PLUS);
 		buttonPlus.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -114,7 +118,7 @@ public class DefenseScreen extends GameScreen {
 	}
 	
 	private void createStartButton() {
-		Button buttonStart = menu.addRightButton(Constant.BUTTON_OK);
+		Button buttonStart = header.addRightButton(Constant.BUTTON_OK);
 		buttonStart.setSuccess();
 		buttonStart.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -144,7 +148,7 @@ public class DefenseScreen extends GameScreen {
 		super.update(delta);
 		grid.update(delta);
 		Level level = grid.level();
-		menu.rightButton().layerAddable().setVisible(false);
+		header.rightButton().layerAddable().setVisible(false);
 		if (level.finished()) {
 //			menuSprite.setText("Level Complete!");
 		} if (level.duringRound()) {
@@ -152,7 +156,26 @@ public class DefenseScreen extends GameScreen {
 		} else {
 //			int nextRoundIn = grid.level().timeUntilNextRound() / 1000 + 1;
 //			menuSprite.setText(Formatter.format("Next round in %d...", nextRoundIn));
-			menu.rightButton().layerAddable().setVisible(true);
+			header.rightButton().layerAddable().setVisible(true);
+		}
+		header.leftButton().layerAddable().setVisible(!state.level().duringRound());
+		
+		if (!exiting() && state.lives() <= 0) {
+			GameEndMenuLayer.show(false, new Runnable() {
+				@Override
+				public void run() {
+					popThis(screens.slide().up());
+					Audio.bg().play(Constant.BG_MENU);
+				}
+			});
+		} else if (!exiting() && state.level().victory()) {
+			GameEndMenuLayer.show(true, new Runnable() {
+				@Override
+				public void run() {
+					popThis(screens.slide().up());
+					Audio.bg().play(Constant.BG_MENU);
+				}
+			});
 		}
 	}
 
@@ -171,8 +194,6 @@ public class DefenseScreen extends GameScreen {
 	
 	@Override
 	protected void popThis() {
-//		popThis(screens.slide().up());
-//		Audio.bg().play(Constant.BG_MENU);
 		MainMenuLayer.show(this);
 	}
 }

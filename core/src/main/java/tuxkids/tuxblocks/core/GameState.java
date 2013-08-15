@@ -267,4 +267,16 @@ public class GameState implements Persistable {
 	public boolean canSave() {
 		return !level.duringRound();
 	}
+	
+	public void finishRound() {
+		if (difficulty.roundTime > 0) {
+			addPoints((70 - difficulty.roundTime) * 5);
+		}
+	}
+
+	public void update(int delta) {
+		if (level != null) {
+			level.update(delta);
+		}
+	}
 }

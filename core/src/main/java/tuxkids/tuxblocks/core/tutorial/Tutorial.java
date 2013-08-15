@@ -157,6 +157,7 @@ public abstract class Tutorial extends PlayNObject {
 				line = line.replace("<click>", Constant.click());
 				line = line.replace("<clicking>", Constant.clicking());
 				line = line.replace("<mouse>", Constant.mouse());
+				line = line.replace("<esc>", Constant.menu());
 				sections.add(line);
 			}
 		}

@@ -177,13 +177,16 @@ public class CanvasUtils extends PlayNObject {
 	public static CanvasImage createCircle(float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
 //		debug("createCircle");
-		CanvasImage image = PlayN.graphics().createImage(rad * 2, rad * 2);
+		float size = (int)Math.ceil(rad * 2);
+		CanvasImage image = PlayN.graphics().createImage(size, size);
 		image.canvas().setFillColor(fillColor);
-		image.canvas().fillCircle(rad, rad, rad);
+		int indent = (int) Math.ceil(strokeWidth / 2) + 1;
+		float offset = 0.5f;
+		image.canvas().fillCircle(rad - offset, rad - offset, rad - indent);
 		if (strokeWidth > 0) {
 			image.canvas().setStrokeColor(strokeColor);
 			image.canvas().setStrokeWidth(strokeWidth);
-			image.canvas().strokeCircle(rad, rad, rad - strokeWidth / 2);
+			image.canvas().strokeCircle(rad - offset, rad - offset, rad - indent);
 		}
 		return image;
 	}

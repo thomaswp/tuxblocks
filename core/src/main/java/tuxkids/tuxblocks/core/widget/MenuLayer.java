@@ -9,10 +9,14 @@ import playn.core.GroupLayer;
 import playn.core.ImageLayer;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button.OnPressedListener;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class MenuLayer extends LayerWrapper {
@@ -109,6 +113,12 @@ public class MenuLayer extends LayerWrapper {
 		button.setSize(image.width(), image.height());
 		button.setOnReleasedListener(action);
 		button.setTint(Colors.WHITE, Colors.darker(Colors.WHITE));
+		button.setOnPressListener(new OnPressedListener() {
+			@Override
+			public void onPress(Event event) {
+				Audio.se().play(Constant.SE_OK);
+			}
+		});
 	}
 	
 	protected void showInstance() {

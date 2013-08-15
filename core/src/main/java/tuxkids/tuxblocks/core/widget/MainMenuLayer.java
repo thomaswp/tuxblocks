@@ -9,7 +9,9 @@ import playn.core.Pointer.Event;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import playn.core.util.Clock;
+import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.AboutScreen;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
@@ -71,7 +73,7 @@ public class MainMenuLayer extends MenuLayer {
 		buttonExit.setPosition(0, -0.3f * height);
 		layer.add(buttonExit.layerAddable());
 
-		createButtons();
+//		createButtons();
 	}
 	
 	protected SlideLayer createSlider(String caption, float y) {
@@ -87,7 +89,6 @@ public class MainMenuLayer extends MenuLayer {
 		layer.add(textLayer);
 		textLayer.setTranslation(0, y);
 
-		
 		return slider;
 	}
 	
@@ -103,11 +104,32 @@ public class MainMenuLayer extends MenuLayer {
 	}
 	
 	protected void updateButtons() {		
-		buttonExit.setEnabled(screen instanceof GameScreen && ((GameScreen) screen).canSave());
-		buttonExit.layerAddable().setAlpha(buttonExit.enabled() ? 1f : 0.5f);
+		if (screen instanceof GameScreen) {
+			createGameButton();
+			buttonExit.setEnabled(((GameScreen) screen).canSave());
+			buttonExit.layerAddable().setAlpha(buttonExit.enabled() ? 1f : 0.5f);
+		} else {
+			createMenuButton();
+			buttonExit.setEnabled(!(screen instanceof AboutScreen));
+			buttonExit.layerAddable().setAlpha(buttonExit.enabled() ? 1f : 0.5f);
+		}
 	}
 	
-	protected void createButtons() {
+	protected void createMenuButton() {
+		createButton(buttonExit, width * 0.8f, "About TuxBlocks", buttonTextSize, new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					hideInstance();
+					ScreenStack screens = screen.screens();
+					screen.pushScreen(new AboutScreen(screens, screen.background()), 
+							screens.slide().up());
+				}
+			}
+		});
+	}
+	
+	protected void createGameButton() {
 		createButton(buttonExit, width * 0.8f, "Save and Quit", buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {

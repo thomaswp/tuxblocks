@@ -79,6 +79,7 @@ public class TutorialPlay extends Tutorial {
 		addAction(Trigger.Defense_Shown)
 		.addHighlight(Tag.Defense_PeaShooter);
 		addAction(Trigger.TextBoxHidden);
+		addAction(Trigger.TextBoxHidden);
 		
 	}
 }

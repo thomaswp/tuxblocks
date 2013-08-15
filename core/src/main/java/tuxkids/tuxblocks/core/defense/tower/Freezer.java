@@ -1,6 +1,9 @@
 package tuxkids.tuxblocks.core.defense.tower;
 
+import playn.core.Color;
+import playn.core.Image;
 import playn.core.util.Clock;
+import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
@@ -8,6 +11,7 @@ import tuxkids.tuxblocks.core.defense.projectile.Snow;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.defense.walker.buff.Buff;
 import tuxkids.tuxblocks.core.defense.walker.buff.Frozen;
+import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
 public class Freezer extends Tower {
 
@@ -129,5 +133,9 @@ public class Freezer extends Tower {
 	@Override
 	public TowerType type() {
 		return TowerType.Freezer;
+	}
+	
+	public Image createImage(float cellSize, int color) {
+		return CanvasUtils.createCircleCached(cellSize / 2, color, 1, Colors.BLACK);
 	}
 }

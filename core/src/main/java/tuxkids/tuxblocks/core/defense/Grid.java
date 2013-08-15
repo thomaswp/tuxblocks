@@ -204,9 +204,10 @@ public class Grid extends PlayNObject implements Highlightable {
 		if (level().waitingForFinish() && walkers.size() == 0) {
 			onRoundCompleted(level().currentRound());
 			level().finishRound();
+			state.finishRound();
 			Audio.se().play(Constant.SE_SUCCESS_SPECIAL);
 		}
-		Walker walker = level().update(delta);
+		Walker walker = level().popWalker();
 		if (walker != null) {
 			addWalker(walker.place(this, walkerStart, walkerDestination, 0));
 		}

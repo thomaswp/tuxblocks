@@ -94,6 +94,8 @@ public class Constant {
 	public static final String SE_POP1 = preloadSound(SE_PATH + "pop1");
 	public static final String SE_POP2 = preloadSound(SE_PATH + "pop2");
 	public static final String SE_POP3 = preloadSound(SE_PATH + "pop3");
+	public static final String SE_GAMEOVER = preloadSound(SE_PATH + "gameover");
+	public static final String SE_VICTORY = preloadSound(SE_PATH + "victory");
 	
 	public static String SEPop(int n) {
 		return SE_PATH + "pop" + n;
@@ -111,6 +113,8 @@ public class Constant {
 	public static final String TUTORIAL_START_PATH = "TutorialStart.txt";
 	public static final String TUTORIAL_PLAY_PATH = "TutorialPlay.txt";
 	public static final String TUTORIAL_BUILD_PATH = "TutorialBuild.txt";
+	
+	public static final String TEXT_ABOUT = "About.txt";
 
 	public static String click() {
 		return PlayN.touch().hasTouch() ? "tap" : "click";
@@ -122,6 +126,10 @@ public class Constant {
 
 	public static CharSequence mouse() {
 		return PlayN.touch().hasTouch() ? "finger" : "mouse";
+	}
+	
+	public static CharSequence menu() {
+		return PlayN.touch().hasTouch() ? "the Android menu button" : "the Esc button on the keyboard";
 	}
 	
 	public final static String KEY_BG_VOLUME = "bg-volume";

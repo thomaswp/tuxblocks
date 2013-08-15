@@ -19,14 +19,14 @@ import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
-import tuxkids.tuxblocks.core.BuildGameState;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
-import tuxkids.tuxblocks.core.solve.BuildScreen;
+import tuxkids.tuxblocks.core.solve.build.BuildGameState;
+import tuxkids.tuxblocks.core.solve.build.BuildScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
@@ -84,12 +84,6 @@ public class TitleScreen extends BaseScreen{
 				cause.printStackTrace();
 			}
 		});
-	}
-	
-	@Override
-	protected void pushScreen(final BaseScreen screen, Transition transition) {
-		PlayN.pointer().setListener(null);
-		super.pushScreen(screen, transition);
 	}
 	
 	private void setup() {
@@ -225,12 +219,12 @@ public class TitleScreen extends BaseScreen{
 	
 	private void continueGame() {
 		GameState state = PersistUtils.fetch(GameState.class, Constant.KEY_GAME);
+		PersistUtils.clear(Constant.KEY_GAME);
 		if (state == null) {
 			toDifficultyScreen();
-			PersistUtils.clear(Constant.KEY_GAME);
 			Debug.write("failed to load game!");
 			return;
-		}
+		} else
 		state.setBackground(background);
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());

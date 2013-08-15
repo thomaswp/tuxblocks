@@ -86,4 +86,6 @@ In fact, if you've been following this tutorial exactly, you've probably already
 
 Notice how you now have extra Pea Shooters from all the problems you solved!
 
-That's about all for this Tutorial. You can start it over from Title screen, or learn about Build mode. You're welcome to keep playing this game, but you may want to start a new game with your choice of difficulty. Good luck!
+That's about all for this Tutorial. You can start it over from Title screen, or learn about Build mode. You're welcome to keep playing this game, but you may want to start a new game with your choice of difficulty. 
+
+To quit, bring up the menu by pressing <esc>. There you can adjust the game's volume or Save and Quit, though you can only save between rounds. When you start a game, you can either continue your last save or start a new game. Good luck and have fun!

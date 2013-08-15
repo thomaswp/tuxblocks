@@ -8,7 +8,7 @@ import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.defense.DefenseHeaderLayer;
+import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
@@ -31,13 +31,22 @@ public class SolveScreen extends EquationScreen {
 	private int solveLevel;
 	private Stat solveStat;
 	
+	@Override
+	protected float equationXPercent() {
+		return 0.6f;
+	}
+	
+	@Override
+	protected int exitTime() {
+		return 2000;
+	}
 	
 	public SolveScreen(final ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
 
 		buttonImageBack = PlayN.assets().getImage(Constant.BUTTON_DOWN);
 		buttonImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
-		buttonBack = menu.addLeftButton(buttonImageBack);
+		buttonBack = header.addLeftButton(buttonImageBack);
 		buttonBack.setNoSound();
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -48,8 +57,8 @@ public class SolveScreen extends EquationScreen {
 		register(buttonBack, Tag.Solve_Ok);
 		layer.add(buttonBack.layerAddable());
 		
-		Button buttonReset = menu.addRightButton(Constant.BUTTON_RESET);
-		buttonReset.setPosition(width() - buttonReset.width() * 0.6f, menu.height() / 2);
+		Button buttonReset = header.addRightButton(Constant.BUTTON_RESET);
+		buttonReset.setPosition(width() - buttonReset.width() * 0.6f, header.height() / 2);
 		register(buttonReset, Tag.Solve_Reset);
 		buttonReset.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -66,8 +75,14 @@ public class SolveScreen extends EquationScreen {
 	}
 	
 	@Override 
-	protected HeaderLayer createMenu() {
-		return new DefenseHeaderLayer(this, width(), false); 
+	protected HeaderLayer createHeader() {
+		return new GameHeaderLayer(this, width()) {
+			@Override
+			protected void createWidgets() {
+				createBars();
+				createTimer();
+			}
+		}; 
 	}
 	
 	@Override
