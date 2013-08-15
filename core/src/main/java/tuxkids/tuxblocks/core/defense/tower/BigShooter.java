@@ -69,4 +69,9 @@ public class BigShooter extends Tower {
 	public int upgradeCost() {
 		return 2;
 	}
+
+	@Override
+	public TowerType type() {
+		return TowerType.BigShooter;
+	}
 }

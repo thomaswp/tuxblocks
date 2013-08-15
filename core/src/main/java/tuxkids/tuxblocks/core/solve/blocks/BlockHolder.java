@@ -7,6 +7,8 @@ import tuxkids.tuxblocks.core.solve.blocks.layer.EmptyBlockLayer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
 
 public class BlockHolder extends BaseBlock {
 
@@ -90,5 +92,14 @@ public class BlockHolder extends BaseBlock {
 	@Override
 	protected Sprite copyChild() {
 		return new BlockHolder();
+	}
+
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new BlockHolder();
+			}
+		};
 	}
 }

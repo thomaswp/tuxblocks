@@ -30,6 +30,7 @@ import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Round;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
+import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.effect.Effect;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
@@ -55,7 +56,7 @@ public class Grid extends PlayNObject implements Highlightable {
 	private final UpgradePanel upgradePanel;
 	private final List<Walker> walkers = new ArrayList<Walker>();
 	private final List<Projectile> projectiles = new ArrayList<Projectile>();
-	private final List<Tower> towers = new ArrayList<Tower>();
+	protected final List<Tower> towers = new ArrayList<Tower>();
 	private final List<Effect> effects = new ArrayList<Effect>();
 	@SuppressWarnings("unchecked")
 	private final MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers, effects);
@@ -409,12 +410,8 @@ public class Grid extends PlayNObject implements Highlightable {
 	public boolean endPlacement(float globalX, float globalY) {
 		boolean canPlace = canPlace();
 		if (canPlace) {
-			toPlace.place(this, toPlace.coordinates());
-			overlayLayer.remove(toPlace.layerAddable());
-			gridLayer.add(toPlace.layerAddable());
-			towers.add(toPlace);
+			placeTower(toPlace, toPlace.coordinates);
 			toPlaceRadius.destroy();
-			refreshPath();
 			Tutorial.trigger(Trigger.Defense_TowerDropped);
 		} else if (toPlace != null) {
 			toPlace.layer().destroy();
@@ -426,6 +423,12 @@ public class Grid extends PlayNObject implements Highlightable {
 	}
 	
 
+	public void placeTower(Tower tower, Point point) {
+		tower.place(this, point);
+		gridLayer.add(tower.layerAddable());
+		towers.add(tower);
+		refreshPath();
+	}
 
 	public void cancelPlacement() {
 		toPlace.layer().destroy();

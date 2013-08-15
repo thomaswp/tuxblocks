@@ -1,6 +1,8 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
 import playn.core.Color;
+import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
 
 public class MinusBlock extends HorizontalModifierBlock {
 	
@@ -41,6 +43,15 @@ public class MinusBlock extends HorizontalModifierBlock {
 	@Override
 	protected void setPlusValue(int value) {
 		setValue(-value);
+	}
+	
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new MinusBlock(0);
+			}
+		};
 	}
 
 }

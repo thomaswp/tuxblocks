@@ -18,6 +18,10 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.markup.TimesRenderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
+import tuxkids.tuxblocks.core.utils.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
 
 public class NumberBlock extends BaseBlock implements Simplifiable {
 
@@ -199,4 +203,18 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		((BlockLayerDefault) layer).setText(text());
 	}
 
+	@Override
+	public void persist(Data data) throws NumberFormatException, ParseDataException {
+		super.persist(data);
+		value = data.persist(value);
+	}
+
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new NumberBlock(0);
+			}
+		};
+	}
 }

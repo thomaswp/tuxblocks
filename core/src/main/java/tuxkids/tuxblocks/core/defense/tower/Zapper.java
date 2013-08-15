@@ -153,4 +153,9 @@ public class Zapper extends Tower {
 		}
 		return fire;
 	}
+
+	@Override
+	public TowerType type() {
+		return TowerType.Zapper;
+	}
 }

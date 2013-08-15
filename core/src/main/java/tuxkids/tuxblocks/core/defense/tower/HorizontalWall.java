@@ -69,4 +69,9 @@ public class HorizontalWall extends Tower {
 		return false;
 	}
 
+	@Override
+	public TowerType type() {
+		return TowerType.HorizontalWall;
+	}
+
 }

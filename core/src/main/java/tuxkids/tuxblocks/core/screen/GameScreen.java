@@ -7,6 +7,7 @@ import tripleplay.game.ScreenStack.Predicate;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
 public class GameScreen extends BaseScreen {
@@ -44,6 +45,7 @@ public class GameScreen extends BaseScreen {
 	}
 
 	public void quit() {
+		PersistUtils.persist(state, Constant.KEY_GAME);
 		Screen popTo = screens.find(new Predicate() {
 			@Override
 			public boolean apply(Screen screen) {

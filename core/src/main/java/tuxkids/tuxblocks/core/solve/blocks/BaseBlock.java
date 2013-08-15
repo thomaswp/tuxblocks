@@ -286,4 +286,9 @@ public abstract class BaseBlock extends Block {
 		BaseBlock copy = (BaseBlock) castMe;
 		copy.modifiers = (HorizontalModifierGroup) modifiers.copy();
 	}
+	
+	@Override
+	public void persist(Data data) throws NumberFormatException, ParseDataException {
+		modifiers = data.persist(modifiers);
+	}
 }

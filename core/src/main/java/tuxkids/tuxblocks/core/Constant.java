@@ -126,4 +126,5 @@ public class Constant {
 	
 	public final static String KEY_BG_VOLUME = "bg-volume";
 	public final static String KEY_SE_VOLUME = "se-volume";
+	public static final String KEY_GAME = "<game>";
 }

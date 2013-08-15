@@ -125,4 +125,9 @@ public class Freezer extends Tower {
 			}
 		}
 	}
+
+	@Override
+	public TowerType type() {
+		return TowerType.Freezer;
+	}
 }

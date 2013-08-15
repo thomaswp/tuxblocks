@@ -2,6 +2,8 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import playn.core.Color;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
 
 public class OverBlock extends VerticalModifierBlock {
 
@@ -32,6 +34,15 @@ public class OverBlock extends VerticalModifierBlock {
 	protected int color() {
 //		return getColor(210);
 		return Color.rgb(0x03, 0xC6, 0x03);
+	}
+	
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new OverBlock(0);
+			}
+		};
 	}
 
 }

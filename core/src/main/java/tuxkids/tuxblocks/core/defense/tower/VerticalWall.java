@@ -68,4 +68,9 @@ public class VerticalWall extends Tower {
 	public boolean canUpgrade() {
 		return false;
 	}
+
+	@Override
+	public TowerType type() {
+		return TowerType.VerticalWall;
+	}
 }

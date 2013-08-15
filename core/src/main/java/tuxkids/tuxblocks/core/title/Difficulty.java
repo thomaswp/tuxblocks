@@ -1,6 +1,8 @@
 package tuxkids.tuxblocks.core.title;
 
-public class Difficulty {
+import tuxkids.tuxblocks.core.utils.Persistable;
+
+public class Difficulty implements Persistable {
 
 	private static double rankN(double n) {
 		return Math.pow(Math.log(Math.abs(n) + 1), 2) / 3 + 1;
@@ -28,7 +30,7 @@ public class Difficulty {
 	
 	public final static int ROUND_TIME_INFINITE = -1;
 	
-	public final int mathDifficulty, gameDifficulty, roundTime;
+	public int mathDifficulty, gameDifficulty, roundTime;
 	
 	public Difficulty() {
 		this(0, 0, ROUND_TIME_INFINITE);
@@ -42,5 +44,23 @@ public class Difficulty {
 	
 	public float getWalkerHpMultiplier() {
 		return 1 +  (gameDifficulty - 2) * 0.25f;
+	}
+
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new Difficulty();
+			}
+			
+		};
+	}
+
+	@Override
+	public void persist(Data data) throws ParseDataException,
+			NumberFormatException {
+		mathDifficulty = data.persist(mathDifficulty);
+		gameDifficulty = data.persist(gameDifficulty);
+		roundTime = data.persist(roundTime);
 	}
 }

@@ -77,4 +77,9 @@ public class PeaShooter extends Tower {
 		}
 		return fire;
 	}
+
+	@Override
+	public TowerType type() {
+		return TowerType.PeaShooter;
+	}
 }

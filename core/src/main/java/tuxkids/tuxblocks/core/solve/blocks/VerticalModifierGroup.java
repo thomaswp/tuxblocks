@@ -11,6 +11,10 @@ import tuxkids.tuxblocks.core.solve.markup.OverRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.markup.TimesRenderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
+import tuxkids.tuxblocks.core.utils.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
 
 public class VerticalModifierGroup extends ModifierGroup {
 
@@ -336,5 +340,30 @@ public class VerticalModifierGroup extends ModifierGroup {
 	@Override
 	protected Sprite copyChild() {
 		return new VerticalModifierGroup();
+	}
+	
+	@Override
+	public void persist(Data data) throws NumberFormatException, ParseDataException {
+		super.persist(data);
+		if (!data.writeMode()) {
+			timesBlocks.clear();
+			divBlocks.clear();
+			for (ModifierBlock mod : children) {
+				if (mod instanceof TimesBlock) {
+					timesBlocks.add(mod);
+				} else {
+					divBlocks.add(mod);
+				}
+			}
+		}
+	}
+	
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new VerticalModifierGroup();
+			}
+		};
 	}
 }

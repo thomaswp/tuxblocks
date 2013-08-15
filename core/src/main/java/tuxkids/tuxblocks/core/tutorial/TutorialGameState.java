@@ -33,8 +33,8 @@ public class TutorialGameState extends GameState {
 			.createEquation(),
 	};
 	
-	public TutorialGameState(GameBackgroundSprite background) {
-		super(background, new Difficulty(0, 0, Difficulty.ROUND_TIME_INFINITE));
+	public TutorialGameState() {
+		super(new Difficulty(0, 0, Difficulty.ROUND_TIME_INFINITE));
 		upgrades = 1;
 		addReward(new Reward(TowerType.PeaShooter, 2));
 	}

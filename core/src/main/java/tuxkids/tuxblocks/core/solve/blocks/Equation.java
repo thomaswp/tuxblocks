@@ -8,9 +8,10 @@ import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.Persistable;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
-public class Equation extends PlayNObject implements Hashable {
+public class Equation extends PlayNObject implements Hashable, Persistable {
 
 	private final List<BaseBlock> leftSide, rightSide;
 	private Renderer renderer;
@@ -92,5 +93,22 @@ public class Equation extends PlayNObject implements Hashable {
 		public Equation createEquation() {
 			return new Equation(leftSide, rightSide);
 		}
+	}
+
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new Equation(new ArrayList<BaseBlock>(), 
+						new ArrayList<BaseBlock>());
+			}
+		};
+	}
+	
+	@Override
+	public void persist(Data data) throws ParseDataException,
+			NumberFormatException {
+		data.persistList(leftSide);
+		data.persistList(rightSide);
 	}
 }

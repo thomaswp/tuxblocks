@@ -44,6 +44,7 @@ public abstract class Tower extends DiscreteGridObject {
 	public abstract int cost();
 	public abstract int upgradeCost();
 	public abstract int commonness();
+	public abstract TowerType type();
 
 	protected abstract float baseDamage();
 	protected abstract float damagePerLevel();
@@ -179,6 +180,7 @@ public abstract class Tower extends DiscreteGridObject {
 	}
 	
 	public Tower place(Grid grid, Point coordinates) {
+		preview(grid);
 		place(grid, 0);
 		setCoordinates(coordinates);
 		layer.addListener(new Listener() {
@@ -229,9 +231,13 @@ public abstract class Tower extends DiscreteGridObject {
 		fireTimer += clock.dt();
 	}
 	
+	public void setUpgradeLevel(int upgradeLevel) {
+		this.upgradeLevel = upgradeLevel;
+		if (layer != null) updateColor();
+	}
+	
 	public void upgrade() {
-		upgradeLevel++;
-		updateColor();
+		setUpgradeLevel(upgradeLevel + 1);
 	}
 	
 	protected void updateColor() {

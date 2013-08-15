@@ -1,24 +1,23 @@
 package tuxkids.tuxblocks.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import tripleplay.ui.Background;
+import tuxkids.tuxblocks.core.defense.Grid;
+import tuxkids.tuxblocks.core.defense.TowerState;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
-import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
-import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
-import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
-import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.utils.Persistable;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 
-public class GameState {
+public class GameState implements Persistable {
 	
 	public enum Stat {
 		Plus("+"), 
@@ -40,10 +39,11 @@ public class GameState {
 	
 	private final int[] towerCounts;
 	private final List<Problem> problems;
-	private final GameBackgroundSprite background;
 	private final int[] statLevels = new int[Stat.values().length];
 	private final int[] statExps = new int[Stat.values().length];
 	private final Difficulty difficulty;
+
+	private GameBackgroundSprite background;
 	
 	private InventoryChangedListener inventoryChangedListener;
 	private ProblemAddedListener problemAddedListener;
@@ -53,6 +53,12 @@ public class GameState {
 	protected int upgrades = 0;
 	protected int earnedUpgrades = 0;
 	protected Level level;
+	protected Grid grid;
+	protected TowerState loadedTowerState;
+	
+	public Grid grid() {
+		return grid;
+	}
 	
 	public Difficulty difficulty() {
 		return difficulty;
@@ -143,8 +149,11 @@ public class GameState {
 		this.problemAddedListener = problemAddedListener;
 	}
 	
-	public GameState(GameBackgroundSprite background, Difficulty difficulty) {
+	public void setBackground(GameBackgroundSprite background) {
 		this.background = background;
+	}
+	
+	public GameState(Difficulty difficulty) {
 		this.difficulty = difficulty;
 		towerCounts = new int[Tower.towerCount()];
 		problems = new ArrayList<Problem>();
@@ -219,5 +228,39 @@ public class GameState {
 
 	public void useUpgrades(int cost) {
 		upgrades -= cost;
+	}
+
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new GameState(new Difficulty());
+			}
+		};
+	}
+
+	public void registerGrid(Grid grid) {
+		this.grid = grid;
+		if (loadedTowerState != null) {
+			loadedTowerState.set(grid);
+			loadedTowerState = null;
+		}
+	}
+	
+	@Override
+	public void persist(Data data) throws ParseDataException,
+			NumberFormatException {
+		data.persistArray(towerCounts);
+		data.persistArray(statLevels);
+		data.persistArray(statExps);
+		data.persistList(problems);
+		data.persist(difficulty);
+		
+		lives = data.persist(lives);
+		score = data.persist(score);
+		upgrades = data.persist(upgrades);
+		earnedUpgrades = data.persist(earnedUpgrades);
+		level = data.persist(level);
+		loadedTowerState = data.persist(new TowerState(grid));
 	}
 }

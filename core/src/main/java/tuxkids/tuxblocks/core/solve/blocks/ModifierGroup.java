@@ -12,6 +12,8 @@ import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
+import tuxkids.tuxblocks.core.utils.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
 
 public abstract class ModifierGroup extends Sprite implements Hashable, Simplifiable {
 
@@ -402,5 +404,11 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			copy.addChild((ModifierBlock) child.copy());
 		}
 		if (modifiers != null) copy.setModifiers((ModifierGroup) modifiers.copy());
+	}
+	
+	@Override
+	public void persist(Data data) throws NumberFormatException, ParseDataException {
+		children = data.persistList(children);
+		modifiers = data.persist(modifiers);
 	}
 }

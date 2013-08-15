@@ -175,7 +175,8 @@ public class TitleScreen extends BaseScreen{
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					Tutorial.trigger(Trigger.Title_Build);
-					GameState state = new GameState(background, new Difficulty());
+					GameState state = new GameState(new Difficulty());
+					state.setBackground(background);
 					BuildScreen bs = new BuildScreen(screens, state);
 					pushScreen(bs, screens.slide().down());
 				}

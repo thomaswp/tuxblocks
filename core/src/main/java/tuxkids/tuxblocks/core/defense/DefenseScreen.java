@@ -57,6 +57,8 @@ public class DefenseScreen extends GameScreen {
 		gridHolder.setDepth(1);
 		layer.add(gridHolder);
 		
+		state.registerGrid(grid);
+		
 		grid.setDoubleClickListener(new DoubleClickListener() {
 			@Override
 			public void wasDoubleClicked() {

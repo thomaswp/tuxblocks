@@ -5,6 +5,10 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
 import tuxkids.tuxblocks.core.solve.blocks.layer.TimesLayer;
+import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
+import tuxkids.tuxblocks.core.utils.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
 
 public class TimesBlock extends VerticalModifierBlock{
 	
@@ -71,5 +75,14 @@ public class TimesBlock extends VerticalModifierBlock{
 	protected ModifierBlock inverseChild() {
 		if (value == -1) return new TimesBlock(this);
 		return new OverBlock(this);
+	}
+	
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new TimesBlock(0);
+			}
+		};
 	}
 }

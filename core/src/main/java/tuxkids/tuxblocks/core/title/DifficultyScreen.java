@@ -26,6 +26,7 @@ import tuxkids.tuxblocks.core.tutorial.TutorialGameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
@@ -144,11 +145,19 @@ public class DifficultyScreen extends BaseScreen {
 	private void startGame() {
 		GameState state;
 		if (Tutorial.running()) {
-			state = new TutorialGameState(background);
+			state = new TutorialGameState();
 		} else {
-			Difficulty difficulty = new Difficulty(mathSlider.stop(), gameSlider.stop(), TIMES[timeSlider.stop()]);
-			state = new GameState(background, difficulty);
+			state = null;
+			if (PersistUtils.stored(Constant.KEY_GAME)) {
+				state = PersistUtils.fetch(GameState.class, Constant.KEY_GAME);
+			}
+			if (state == null) {
+				Difficulty difficulty = new Difficulty(mathSlider.stop(), gameSlider.stop(), TIMES[timeSlider.stop()]);
+				state = new GameState(difficulty);
+			}
 		}
+		state.setBackground(background);
+		
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());
 		screens.remove(this);

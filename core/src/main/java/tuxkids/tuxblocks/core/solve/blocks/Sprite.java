@@ -8,8 +8,9 @@ import pythagoras.f.Rectangle;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.utils.Persistable;
 
-public abstract class Sprite extends PlayNObject {
+public abstract class Sprite extends PlayNObject implements Persistable {
 
 	protected static final int SIMPLIFY_DEPTH = 1;
 	

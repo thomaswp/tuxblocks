@@ -11,6 +11,10 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.markup.TimesRenderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
+import tuxkids.tuxblocks.core.utils.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
 
 public class VariableBlock extends BaseBlock {
 
@@ -183,5 +187,20 @@ public class VariableBlock extends BaseBlock {
 		} else {
 			return super.addBlock(sprite, snap);
 		}
+	}
+	
+	@Override
+	public void persist(Data data) throws NumberFormatException, ParseDataException {
+		super.persist(data);
+		symbol = data.persist(symbol);
+	}
+
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new VariableBlock(null);
+			}
+		};
 	}
 }

@@ -2,6 +2,8 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
 
 public abstract class ModifierBlock extends Block {
 	
@@ -113,5 +115,13 @@ public abstract class ModifierBlock extends Block {
 			layer.setText(text());
 		}
 		inverse.setValue(value);
+	}
+	
+	@Override
+	public void persist(Data data) throws NumberFormatException, ParseDataException {
+		value = data.persist(value);
+		if (!data.writeMode()) {
+			setValue(value);
+		}
 	}
 }

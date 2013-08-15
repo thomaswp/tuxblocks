@@ -11,13 +11,16 @@ import playn.core.Color;
 import playn.core.Font;
 import playn.core.Game;
 import playn.core.ImageLayer;
+import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.Font.Style;
 import playn.core.TextLayout;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.MenuLayer;
 
@@ -58,6 +61,8 @@ public class TuxBlocksGame extends Game.Default {
 
 	@Override
 	public void init() {
+		
+		PersistUtils.clear(Constant.KEY_GAME);
 		
 		Cache.clear();
 		Audio.clear();

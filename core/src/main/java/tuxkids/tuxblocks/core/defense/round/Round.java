@@ -6,15 +6,16 @@ import java.util.List;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
+import tuxkids.tuxblocks.core.utils.Persistable;
 
 public abstract class Round {
 	private List<Wave> waves = new ArrayList<Wave>();
 	private List<Integer> waitTimes = new ArrayList<Integer>();
+	private List<Reward> rewards = new ArrayList<Reward>();
 	
 	private int timer;
 	private Wave currentWave;
 	private int nextDepth;
-	private List<Reward> rewards = new ArrayList<Reward>();
 	
 	protected abstract void populateRound();
 

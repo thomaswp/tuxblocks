@@ -10,6 +10,8 @@ import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
 
 public class HorizontalModifierGroup extends ModifierGroup {
 
@@ -226,5 +228,14 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	@Override
 	protected Sprite copyChild() {
 		return new HorizontalModifierGroup();
+	}
+	
+	public static Constructor constructor() {
+		return new Constructor() {
+			@Override
+			public Persistable construct() {
+				return new HorizontalModifierGroup();
+			}
+		};
 	}
 }
