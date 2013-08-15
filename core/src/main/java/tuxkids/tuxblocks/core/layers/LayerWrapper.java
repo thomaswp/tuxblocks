@@ -131,4 +131,9 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	public void destroy() {
 		layer.destroy();
 	}
+
+	@Override
+	public boolean destroyed() {
+		return layer.destroyed();
+	}
 }

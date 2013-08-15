@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.utils;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import playn.core.PlayN;
 import tuxkids.tuxblocks.core.GameState;
@@ -61,17 +62,43 @@ public class PersistUtils {
 	
 	private static String tag;
 	private static int n;
+	private static LinkedList<String> store = new LinkedList<String>();
+	
+	private static String NULL = "<NULL>";
+	
+	private static void saveStore(String tag) {
+		StringBuilder sb = new StringBuilder();
+		for (String line : store) {
+			if (sb.length() > 0) sb.append("\n");
+			sb.append(line == null ? NULL : line);
+		}
+		String value = sb.toString();
+		PlayN.storage().setItem(tag, value);
+		store.clear();
+	}
+	
+	private static void loadStore(String tag) {
+		store.clear();
+		String data = PlayN.storage().getItem(tag);
+		if (data == null) return;
+		String[] lines = data.split("\n");
+		for (String line : lines) {
+			store.add(line.equals(NULL) ? null : line);
+		}
+	}
 	
 	public static void persist(Persistable persistable, String tag) {
-		PlayN.storage().setItem(tag, "");
+//		PlayN.storage().setItem(tag, "");
 		Data data = new Data(true);
 		PersistUtils.tag = tag;
 		n = 0;
+		store.clear();
 		try {
 			persistable.persist(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		saveStore(tag);
 		tag = null;
 		n = 0;
 	}
@@ -82,14 +109,19 @@ public class PersistUtils {
 		PersistUtils.tag = tag;
 		n = 0;
 		try {
+			loadStore(tag);
+			if (store == null) return null;
+			
 			Persistable obj = construct(clazz.getName());
 			obj.persist(data);
 			return (T) obj;
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			tag = null;
+			n = 0;
+			store.clear();
 		}
-		tag = null;
-		n = 0;
 		return null;
 	}
 	
@@ -102,16 +134,21 @@ public class PersistUtils {
 	}
 	
 	public static String read() throws ParseDataException {
-		String key = nextKey();
-		String data = PlayN.storage().getItem(key);
-		Debug.write("Read %s: %s", key, data);
-		return data;
+//		String key = nextKey();
+//		String data = PlayN.storage().getItem(key);
+//		Debug.write("Read %s: %s", key, data);
+//		return data;
+		
+		if (store.isEmpty()) throw new ParseDataException("No data");
+		return store.removeFirst();
 	}
 
 	public static void write(String data) {
-		String key = nextKey();
-		Debug.write("Write %s: %s", key, data);
-		PlayN.storage().setItem(key, data);
+//		String key = nextKey();
+//		Debug.write("Write %s: %s", key, data);
+//		PlayN.storage().setItem(key, data);
+		
+		store.add(data);
 	}
 
 	public static void clear(String tag) {

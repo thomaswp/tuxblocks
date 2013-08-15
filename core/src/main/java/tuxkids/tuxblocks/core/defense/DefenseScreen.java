@@ -18,7 +18,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Formatter;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
-import tuxkids.tuxblocks.core.widget.MenuLayer;
+import tuxkids.tuxblocks.core.widget.MainMenuLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class DefenseScreen extends GameScreen {
@@ -173,6 +173,6 @@ public class DefenseScreen extends GameScreen {
 	protected void popThis() {
 //		popThis(screens.slide().up());
 //		Audio.bg().play(Constant.BG_MENU);
-		MenuLayer.show(this);
+		MainMenuLayer.show(this);
 	}
 }

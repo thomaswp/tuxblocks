@@ -55,4 +55,9 @@ public class GameScreen extends BaseScreen {
 		screens.popTo(popTo, screens.slide().up());
 		Audio.bg().play(Constant.BG_MENU);
 	}
+	
+
+	public boolean canSave() {
+		return state.canSave();
+	}
 }

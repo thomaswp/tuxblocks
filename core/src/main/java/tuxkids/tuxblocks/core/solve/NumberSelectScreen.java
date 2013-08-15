@@ -35,7 +35,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
-import tuxkids.tuxblocks.core.widget.MenuLayer;
+import tuxkids.tuxblocks.core.widget.MainMenuLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class NumberSelectScreen extends GameScreen implements Listener {
@@ -408,7 +408,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private boolean dragging;
 	@Override
 	public void onPointerStart(Event event) {
-		if (MenuLayer.showing()) return;
+		if (MainMenuLayer.showing()) return;
 		
 		if (buttonBack.hit(event.x(), event.y()) ||
 				buttonCenter.hit(event.x(), event.y()) ||
@@ -425,7 +425,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 
 	@Override
 	public void onPointerEnd(Event event) {
-		if (MenuLayer.showing()) return;
+		if (MainMenuLayer.showing()) return;
 		if (!dragging) return;
 		dragging = false;
 		if (positionTrail.size() > 1) {
@@ -446,7 +446,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	@Override
 	public void onPointerDrag(Event event) {
-		if (MenuLayer.showing()) dragging = false;
+		if (MainMenuLayer.showing()) dragging = false;
 		if (!dragging) return;
 		position.set(-event.x() + dragOffset.x, -event.y() + dragOffset.y);
 		positionTrail.add(position.clone());

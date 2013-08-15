@@ -1,10 +1,7 @@
 package tuxkids.tuxblocks.core.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import tuxkids.tuxblocks.core.defense.tower.TowerType;
 
 public interface Persistable {
 
@@ -251,7 +248,7 @@ public interface Persistable {
 					x.persist(this);
 				}
 			}
-			Debug.write("end " + type);
+//			Debug.write("end " + type);
 			return x;
 		}
 		

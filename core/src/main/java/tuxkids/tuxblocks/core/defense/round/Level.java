@@ -110,9 +110,10 @@ public abstract class Level implements Persistable {
 		}
 	}
 	
-	public static Level generate(final int secondsBetween) {
+	public static Level generate(int secondsBetween) {
 		Level level = new Level1();
-		level.waitTime = secondsBetween * 1000;
+		if (secondsBetween > 0) secondsBetween *= 1000;
+		level.waitTime = secondsBetween;
 		return level;
 	}
 	

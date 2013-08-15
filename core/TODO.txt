@@ -1,11 +1,11 @@
--solve menu
+-solve menu/game sate
 -return when timer's up
 -difficulty levels
 --point weights (time bonus, math bonus)
 -balance problem
 -balance blocks
 -level design
--storage
+-Android 4.0 menu
 -menu in tutorial
 -freezer image
 -quit game

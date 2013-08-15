@@ -12,6 +12,7 @@ public interface LayerLike {
 	public float ty();
 	public float depth();
 	public float alpha();
+	public boolean destroyed();
 	
 	public void setTranslation(float x, float y);
 	public void setTx(float ty);

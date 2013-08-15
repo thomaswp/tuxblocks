@@ -263,4 +263,8 @@ public class GameState implements Persistable {
 		level = data.persist(level);
 		loadedTowerState = data.persist(new TowerState(grid));
 	}
+
+	public boolean canSave() {
+		return !level.duringRound();
+	}
 }

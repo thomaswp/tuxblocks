@@ -147,14 +147,8 @@ public class DifficultyScreen extends BaseScreen {
 		if (Tutorial.running()) {
 			state = new TutorialGameState();
 		} else {
-			state = null;
-			if (PersistUtils.stored(Constant.KEY_GAME)) {
-				state = PersistUtils.fetch(GameState.class, Constant.KEY_GAME);
-			}
-			if (state == null) {
-				Difficulty difficulty = new Difficulty(mathSlider.stop(), gameSlider.stop(), TIMES[timeSlider.stop()]);
-				state = new GameState(difficulty);
-			}
+			Difficulty difficulty = new Difficulty(mathSlider.stop(), gameSlider.stop(), TIMES[timeSlider.stop()]);
+			state = new GameState(difficulty);
 		}
 		state.setBackground(background);
 		

@@ -23,7 +23,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
-import tuxkids.tuxblocks.core.widget.MenuLayer;
+import tuxkids.tuxblocks.core.widget.MainMenuLayer;
 
 public class BaseScreen extends Screen implements Listener {
 
@@ -172,14 +172,14 @@ public class BaseScreen extends Screen implements Listener {
 	@Override
 	public void onKeyDown(Event event) {
 		if (event.key() == Key.BACK || event.key() == Key.DOWN) {
-			if (MenuLayer.showing()) {
-				MenuLayer.toggle(this);
+			if (MainMenuLayer.showing()) {
+				MainMenuLayer.toggle(this);
 			} else {
 				popThis();
 			}
 		}
 		if (event.key() == Key.MENU || event.key() == Key.ESCAPE) {
-			MenuLayer.toggle(this);
+			MainMenuLayer.toggle(this);
 		}
 	}
 

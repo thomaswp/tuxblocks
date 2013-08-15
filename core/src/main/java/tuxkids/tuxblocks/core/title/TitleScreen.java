@@ -18,6 +18,8 @@ import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Audio;
+import tuxkids.tuxblocks.core.BuildGameState;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.PlayNObject;
@@ -29,7 +31,11 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.ContinueMenuLayer;
+import tuxkids.tuxblocks.core.widget.ContinueMenuLayer.ResponseListener;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
@@ -163,9 +169,20 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					Tutorial.trigger(Trigger.Title_Play);
-					DifficultyScreen ds = new DifficultyScreen(screens, background);
-					pushScreen(ds, screens.slide().left());
+					if (PersistUtils.stored(Constant.KEY_GAME)) {
+						ContinueMenuLayer.show(new ResponseListener() {
+							@Override
+							public void responded(boolean cont) {
+								if (cont) {
+									continueGame();
+								} else {
+									toDifficultyScreen();
+								}
+							}
+						});
+					} else {
+						toDifficultyScreen();
+					}
 				}
 			}
 		});
@@ -175,7 +192,7 @@ public class TitleScreen extends BaseScreen{
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					Tutorial.trigger(Trigger.Title_Build);
-					GameState state = new GameState(new Difficulty());
+					GameState state = new BuildGameState();
 					state.setBackground(background);
 					BuildScreen bs = new BuildScreen(screens, state);
 					pushScreen(bs, screens.slide().down());
@@ -198,6 +215,26 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onPointerCancel(Event event) { }
 		});
+	}
+	
+	private void toDifficultyScreen() {
+		Tutorial.trigger(Trigger.Title_Play);
+		DifficultyScreen ds = new DifficultyScreen(screens, background);
+		pushScreen(ds, screens.slide().left());
+	}
+	
+	private void continueGame() {
+		GameState state = PersistUtils.fetch(GameState.class, Constant.KEY_GAME);
+		if (state == null) {
+			toDifficultyScreen();
+			PersistUtils.clear(Constant.KEY_GAME);
+			Debug.write("failed to load game!");
+			return;
+		}
+		state.setBackground(background);
+		DefenseScreen ds = new DefenseScreen(screens, state);
+		pushScreen(ds, screens.slide().down());
+		Audio.bg().play(Constant.BG_GAME1);
 	}
 	
 	private ImageLayer createSuperTextLayer(String text, float x) {
