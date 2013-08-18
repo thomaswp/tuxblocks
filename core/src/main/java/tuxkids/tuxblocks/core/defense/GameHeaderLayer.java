@@ -497,7 +497,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			float target = state.getStatPerc(stat);
 			if (target < barPerc) target++; //causes wrap around
 			barPerc = lerpTime(barPerc, target, 0.995f, clock.dt(), 0.01f);
-			if (barPerc > 0.99f) barPerc--; //causes wrap around
+			if (barPerc >= 1f) barPerc--; //causes wrap around
 
 			barFill.setWidth(barPerc * (barBG.width() - strokWidth * 2));
 		}

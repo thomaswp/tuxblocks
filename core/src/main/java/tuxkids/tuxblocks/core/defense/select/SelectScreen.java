@@ -5,9 +5,6 @@ import java.util.List;
 
 import playn.core.Color;
 import playn.core.GroupLayer;
-import playn.core.ImmediateLayer;
-import playn.core.ImmediateLayer.Renderer;
-import playn.core.Surface;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
@@ -15,19 +12,18 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.GameState.ProblemAddedListener;
+import tuxkids.tuxblocks.core.GameState.ProblemsChangedListener;
 import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
-import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.widget.Button;
-import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
-public class SelectScreen extends GameScreen implements ProblemAddedListener {
+public class SelectScreen extends GameScreen implements ProblemsChangedListener {
 
 	private final static int COLS = 2;
 	
@@ -99,17 +95,16 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		int width = (int)((width() - margin * (COLS + 1)) / COLS);
 		int minHeight = (int)(height() / 6);
 		
-		int col;
-		if (bottomLeft == null) {
-			col = 0;
-		} else if (bottomRight == null) {
-			col = 1;
-		} else if (bottomLeft.bottom() <= bottomRight.bottom()) {
-			col = 0;
-		} else {
-			col = 1;
+		int leftButtons = 0, rightButtons = 0;
+		for (ProblemButton button : problemButtons) {
+			boolean left = button.x() < width() / 2;
+			if (button.enabled()) {
+				if (left) leftButtons++;
+				else rightButtons++;
+			}
 		}
 		
+		int col = leftButtons <= rightButtons ? 0 : 1;
 		ProblemButton above = col == 0 ? bottomLeft : bottomRight;
 		float aboveY = above == null ? 0 : above.bottom();
 		
@@ -124,6 +119,7 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 					selectedProblem = pb;
 					solveScreen.setEquation(pb.equation());
 					pushScreen(solveScreen, screens.slide().down());
+//					removeProblem(pb, true); // for auto-solving
 				}
 			}
 		});
@@ -147,8 +143,8 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		problemButtons.add(pb);
 	}
 	
-	public void solveProblem(ProblemButton button) {
-		state.solveProblem(button.problem());
+	public void removeProblem(ProblemButton button, boolean solve) {
+		if (solve) state.solveProblem(button.problem());
 		button.destroy();
 		if (button.above() != null) {
 			button.above().setBelow(button.below());
@@ -168,21 +164,26 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 		for (ProblemButton problem : problemButtons) {
 			problem.paint(clock);
 		}
-		
-		if (del && selectedProblem != null && selectedProblem.layerAddable().alpha() < 0.03f) {
-			solveProblem(selectedProblem);
-			del = false;
+	}
+	
+	@Override
+	public void update(int delta) {
+		super.update(delta);
+		for (int i = 0; i < problemButtons.size(); i++) {
+			ProblemButton button = problemButtons.get(i);
+			if (button.fadedOut()) {
+				removeProblem(button, button == selectedProblem);
+				problemButtons.remove(i--);
+			}
 		}
 	}
 	
-	boolean del;
 	@Override
 	protected void onChildScreenFinished(BaseScreen screen) {
 		super.onChildScreenFinished(screen);
 		if (screen instanceof SolveScreen) {
 			selectedProblem.setEquation(((SolveScreen) screen).equation());
-			del = ((SolveScreen) screen).solved(); 
-			if (del) {
+			if (((SolveScreen) screen).solved()) {
 				selectedProblem.setEnabled(false);
 				selectedProblem.fadeOut();
 			}
@@ -192,6 +193,21 @@ public class SelectScreen extends GameScreen implements ProblemAddedListener {
 	@Override
 	public void onProblemAdded(Problem problem) {
 		addProblemButton(problem);
+	}
+
+	@Override
+	public void onProblemRemoved(Problem problem) {
+		ProblemButton toRemove = null;
+		for (ProblemButton button : problemButtons) {
+			if (button.problem() == problem) {
+				toRemove = button;
+				break;
+			}
+		}
+		if (toRemove != null) {
+			toRemove.setEnabled(false);
+			toRemove.fadeOut();
+		}
 	}
 
 }

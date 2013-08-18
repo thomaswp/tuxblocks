@@ -27,7 +27,7 @@ public class BigShooter extends Tower {
 
 	@Override
 	public int fireRate() {
-		return 1500 - (upgradeLevel - 1) * 100;
+		return 1000 - (upgradeLevel - 1) * 150;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BigShooter extends Tower {
 
 	@Override
 	public int cost() {
-		return 4;
+		return 2;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class BigShooter extends Tower {
 	
 	@Override
 	public float splashRadius() {
-		return 1.1f + 0.5f * upgradeLevel;
+		return 1.5f + 0.5f * upgradeLevel;
 	}
 
 	@Override

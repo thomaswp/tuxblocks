@@ -213,7 +213,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 		if (a.value == 1 || b.value == 1) {
 			listener.wasSimplified(true);
 		} else {
-			blockListener.wasReduced(problem, answer, a.value, Stat.Over, 
+			blockListener.wasReduced(problem, answer, 0, Stat.Over, 
 					Difficulty.rankOver(a.value, b.value), listener);
 		}
 		

@@ -16,7 +16,12 @@ public class Pathing {
 //	private final static int[] offRows = new int[] {0, 1, 0, -1, 0, 2, 0, -2};
 //	private final static int[] offCols = new int[] {1, 0, -1, 0, 2, 0, -2, 0};
 	
+	
 	public static List<Point> getPath(Grid grid, Point from, Point to) {
+		return getPath(grid, from, to, false);
+	}
+	
+	public static List<Point> getPath(Grid grid, Point from, Point to, boolean canFly) {
 		List<Point> closedSet = new ArrayList<Point>(),
 				openSet = new ArrayList<Point>();
 		HashMap<Point, Point> cameFrom = new HashMap<Point, Point>();
@@ -48,7 +53,7 @@ public class Pathing {
 				int col = current.y + offCols[i];
 				if (row < 0 || row >= grid.rows()) continue;
 				if (col < 0 || col >= grid.cols()) continue;
-				if (!grid.getPassability()[row][col]) continue;
+				if (!canFly && !grid.getPassability()[row][col]) continue;
 
 				Point neighbor = new Point(row, col); 
 

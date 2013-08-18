@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import playn.core.CanvasImage;
+import playn.core.Color;
 import playn.core.Image;
 import playn.core.Layer;
 import playn.core.util.Clock;
@@ -19,6 +20,7 @@ import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.Pathing;
 import tuxkids.tuxblocks.core.defense.walker.buff.Buff;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
+import tuxkids.tuxblocks.core.utils.HashCode;
 
 public abstract class Walker extends DiscreteGridObject {
 	
@@ -27,6 +29,7 @@ public abstract class Walker extends DiscreteGridObject {
 	protected ImageLayerTintable layer;
 	protected float hp;
 	protected float alpha = 1;
+	protected int level;
 	
 	private float walkingMs;
 	private boolean placed;
@@ -38,6 +41,12 @@ public abstract class Walker extends DiscreteGridObject {
 	public abstract Walker copy();
 	
 	protected List<Buff> buffs = new ArrayList<Buff>();
+
+
+	public Walker setLevel(int level) {
+		this.level = level;
+		return this;
+	}
 	
 	public float maxHp() {
 		if (grid == null) return maxHpBase();
@@ -100,13 +109,53 @@ public abstract class Walker extends DiscreteGridObject {
 		return this;
 	}
 	
+	private static SpriteKey key = new SpriteKey();
+	private static class SpriteKey extends Key {
+
+		int color;
+		float size;
+		
+		public SpriteKey set(int color, float cellSize) {
+			this.color = color;
+			this.size = cellSize;
+			return this;
+		}
+		
+		@Override
+		public void addFields(HashCode hashCode) {
+			hashCode.addField(color);
+			hashCode.addField(size);
+		}
+
+		@Override
+		public Key copy() {
+			return new SpriteKey().set(color, size);
+		} 
+		
+	}
+	
+	private int getBaseTint() {
+		if (level == 1) {
+			return grid.gameState().secondaryColor();
+//			int value = 150;
+//			return Color.rgb(value, value, value);
+		} else if (level == 2) {
+			return grid.gameState().ternaryColor();
+//			int value = 50;
+//			return Color.rgb(value, value, value);
+		} else {
+			return Colors.WHITE;
+		}
+	}
+	
 	private void createSprite() {
-		Key key = Key.fromClass(Walker.class, grid.cellSize());
-		Image cached = Cache.getImage(key);
+		int color = Colors.WHITE;
+		
+		Image cached = Cache.getImage(key.set(color, grid.cellSize()));
 		
 		if (cached == null) {
 			CanvasImage image = graphics().createImage(grid.cellSize(), grid.cellSize());
-			image.canvas().setFillColor(Colors.WHITE);
+			image.canvas().setFillColor(color);
 			image.canvas().setStrokeColor(Colors.BLACK);
 			int border = (int)(grid.cellSize() * 0.1f);
 			image.canvas().fillRect(border, border, image.width() - border * 2, image.height() - border * 2);
@@ -162,7 +211,7 @@ public abstract class Walker extends DiscreteGridObject {
 				return true;
 			}
 		}
-		layer.setTint(Colors.WHITE, grid.towerColor(), hp / maxHp());
+		layer.setTint(getBaseTint(), grid.towerColor(), hp / maxHp());
 		layer.setAlpha(alpha);
 		
 		for (int i = 0; i < buffs.size(); i++) {

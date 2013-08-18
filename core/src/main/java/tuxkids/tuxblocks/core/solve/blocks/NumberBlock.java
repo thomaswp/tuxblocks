@@ -144,6 +144,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			Renderer renderer = new BaseRenderer("" + value);
 			int level;
 			Stat stat;
+			int start = value;
 			int[] operands = new int[] { sprite.value };
 			if (sprite instanceof TimesBlock) {
 				TimesBlock times = (TimesBlock) sprite;
@@ -152,12 +153,14 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				stat = Stat.Times;
 				level = Difficulty.rankTimes(value, times.value);
 				autoAnswer = value == 1 || times.value == 1;
+				if (value * times.value < 0) start = 0;
 			} else if (sprite instanceof OverBlock) {
 				OverBlock over = (OverBlock) sprite;
 				answer = value / over.value;
 				renderer = new OverRenderer(renderer, operands);
 				stat = Stat.Over;
 				level = Difficulty.rankOver(value, over.value);
+				start = 0;
 				autoAnswer = over.value == 1;
 			} else if (sprite instanceof HorizontalModifierBlock) {
 				HorizontalModifierBlock plus = (HorizontalModifierBlock) sprite;
@@ -167,6 +170,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				stat = plus.plusValue() >= 0 ? Stat.Plus : Stat.Minus;
 				level = Difficulty.rankPlus(value, plus.value);
 				autoAnswer = plus.value == 0 || -value == plus.plusValue();
+//				start = Math.abs(value) > Math.abs(plus.value) ? value : plus.plusValue();
 			} else {
 				return;
 			}
@@ -187,7 +191,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			if (autoAnswer) {
 				listener.wasSimplified(true);
 			} else {
-				blockListener.wasReduced(renderer, answer, value, stat, level, listener);
+				blockListener.wasReduced(renderer, answer, start, stat, level, listener);
 			}
 		}
 	}

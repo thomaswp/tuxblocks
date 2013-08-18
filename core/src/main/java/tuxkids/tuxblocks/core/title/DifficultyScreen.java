@@ -22,21 +22,19 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
-import tuxkids.tuxblocks.core.tutorial.TutorialGameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.tutorial.TutorialGameState;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.DiscreteSlideLayer;
+import tuxkids.tuxblocks.core.widget.DiscreteSlideLayer.StopChangedListener;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
-import tuxkids.tuxblocks.core.widget.DiscreteSlideLayer;
-import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
-import tuxkids.tuxblocks.core.widget.DiscreteSlideLayer.StopChangedListener;
 
 public class DifficultyScreen extends BaseScreen {
 	
-	private final static int[] TIMES = new int[] { Difficulty.ROUND_TIME_INFINITE, 60, 50, 40, 30 };
 	
 	protected final List<DiscreteSlideLayer> slideLayers = new ArrayList<DiscreteSlideLayer>();
 	protected final DiscreteSlideLayer mathSlider, gameSlider, timeSlider;
@@ -80,7 +78,7 @@ public class DifficultyScreen extends BaseScreen {
 		mathSlider.setStopChangedListener(new StopChangedListener() {
 			@Override
 			public void onStopChanged(int stop) {
-				Equation eq = EquationGenerator.generate(stop, 0);
+				Equation eq = EquationGenerator.generateSample(stop);
 				int size = Math.round(Math.min(height() / 16 / eq.renderer().lines(), height() / 18));
 				ExpressionWriter writer = eq.renderer().getExpressionWriter(Cache.createFormat(size));
 				float pad = height() / 40, rad = pad / 2;
@@ -100,9 +98,12 @@ public class DifficultyScreen extends BaseScreen {
 				"How difficult Blocks are to destroy",
 				2f * spacing + offY, "1", "2", "3", "4", "5");
 		
+		String[] timeStops = new String[Difficulty.TIMES.length];
+		timeStops[0] = Constant.INFINITY_SYMBOL;
+		for (int i = 1; i < timeStops.length; i++) timeStops[i] = Difficulty.TIMES[i] + "s";
 		timeSlider = createSlideLyer("Solve time:", 
 				"How long you have to solve problems between rounds",
-				3f * spacing + offY, Constant.INFINITY_SYMBOL, "60s", "50s", "40s", "30s");
+				3f * spacing + offY, timeStops);
 		
 		mathSlider.setStop(2, true);
 		gameSlider.setStop(2, true);
@@ -147,7 +148,7 @@ public class DifficultyScreen extends BaseScreen {
 		if (Tutorial.running()) {
 			state = new TutorialGameState();
 		} else {
-			Difficulty difficulty = new Difficulty(mathSlider.stop(), gameSlider.stop(), TIMES[timeSlider.stop()]);
+			Difficulty difficulty = new Difficulty(mathSlider.stop(), gameSlider.stop(), Difficulty.TIMES[timeSlider.stop()]);
 			state = new GameState(difficulty);
 		}
 		state.setBackground(background);

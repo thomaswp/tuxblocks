@@ -17,7 +17,7 @@ public class SlideWalker extends BasicWalker {
 
 	@Override
 	public Walker copy() {
-		return new SlideWalker(maxHp, walkCellTime);
+		return new SlideWalker(maxHp, walkCellTime).setLevel(level);
 	}
 	
 }

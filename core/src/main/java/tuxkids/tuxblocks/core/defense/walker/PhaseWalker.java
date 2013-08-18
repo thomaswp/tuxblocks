@@ -15,6 +15,6 @@ public class PhaseWalker extends BasicWalker {
 
 	@Override
 	public Walker copy() {
-		return new PhaseWalker(maxHp, walkCellTime);
+		return new PhaseWalker(maxHp, walkCellTime).setLevel(level);
 	}
 }

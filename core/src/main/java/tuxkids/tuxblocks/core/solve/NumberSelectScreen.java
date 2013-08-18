@@ -59,7 +59,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private int createsSpritesThisFrame;
 	private int themeColor;
 	private Vector blankCenter;
-	private ImageLayer equationAnswer, touchLayer;
+	private ImageLayer equationAnswer;
 	private Point equationAnswerPoint;
 	private Renderer problem;
 	private int answer;
@@ -427,12 +427,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	public void onPointerStart(Event event) {
 		if (MainMenuLayer.showing()) return;
 		
-		if (buttonBack.hit(event.x(), event.y()) ||
-				buttonCenter.hit(event.x(), event.y()) ||
-				buttonScratch.hit(event.x(), event.y()) ||
-				scratchMode) {
+		if (buttonScratch.hit(event.x(), event.y()) || scratchMode) {
 			return;
 		}
+		
 		dragging = true;
 		dragOffset.set(position.x + event.x(), position.y + event.y());
 		positionTrail.clear();
@@ -491,6 +489,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		@Override
 		public void onPointerStart(Event event) {
 			event.flags().setPropagationStopped(false);
+			if ((event.y() < header.height() && 
+					Math.abs(event.x() / width() - 0.5f) > 0.25f)) {
+				return;
+			}
 			possibleSelectedPoint = point;
 		}
 

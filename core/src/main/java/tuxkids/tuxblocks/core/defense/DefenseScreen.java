@@ -15,12 +15,10 @@ import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
-import tuxkids.tuxblocks.core.utils.Formatter;
-import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.MainMenuLayer;
-import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 public class DefenseScreen extends GameScreen {
 

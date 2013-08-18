@@ -18,5 +18,4 @@ public abstract class BasicWalker extends Walker {
 	public int walkCellTime() {
 		return walkCellTime;
 	}
-
 }

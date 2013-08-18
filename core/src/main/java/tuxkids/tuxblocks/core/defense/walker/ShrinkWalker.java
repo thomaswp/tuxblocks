@@ -25,7 +25,7 @@ public class ShrinkWalker extends BasicWalker {
 
 	@Override
 	public Walker copy() {
-		return new ShrinkWalker(maxHp, walkCellTime);
+		return new ShrinkWalker(maxHp, walkCellTime).setLevel(level);
 	}
 
 }

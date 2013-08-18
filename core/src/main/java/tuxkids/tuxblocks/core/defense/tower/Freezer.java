@@ -27,12 +27,12 @@ public class Freezer extends Tower {
 
 	@Override
 	protected float baseDamage() {
-		return 0.2f;
+		return 0.3f;
 	}
 	
 	@Override
 	protected float damagePerLevel() {
-		return 0.1f;
+		return 0.15f;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class Freezer extends Tower {
 
 	@Override
 	public int cost() {
-		return 3;
+		return 2;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class Freezer extends Tower {
 
 	@Override
 	public void addBuffs(Walker walker) {
-		final float mod = 0.5f - 0.1f * (upgradeLevel - 1);
+		final float mod = 0.5f - 0.10f * (upgradeLevel - 1);
 		walker.addBuff(new Buff() {
 			@Override
 			public float modifySpeed(float dt) {

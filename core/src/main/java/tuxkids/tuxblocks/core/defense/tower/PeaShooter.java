@@ -29,7 +29,7 @@ public class PeaShooter extends Tower {
 
 	@Override
 	public int fireRate() {
-		return 650 - upgradeLevel * 150;
+		return 500 - (upgradeLevel - 1) * 150;
 	}
 
 	@Override

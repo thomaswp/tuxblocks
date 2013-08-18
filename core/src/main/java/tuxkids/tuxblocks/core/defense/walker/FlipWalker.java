@@ -28,7 +28,7 @@ public class FlipWalker extends BasicWalker {
 
 	@Override
 	public Walker copy() {
-		return new FlipWalker(maxHp, walkCellTime);
+		return new FlipWalker(maxHp, walkCellTime).setLevel(level);
 	}
 
 }

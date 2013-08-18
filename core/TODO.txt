@@ -4,9 +4,10 @@ For Beta
 --balance blocks
 
 Bugs
--score flipping infinitely
 -random solve block errors (disappearing blocks)
+-exit solve screen when block is being dragged
 
 -multiple grids
 -color/grid selection
 -high scores
+-flip sign in number select

@@ -24,6 +24,7 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
 public abstract class Tower extends DiscreteGridObject {
 
 	private static final int SELL_MULTIPLIER = 100;
+	private static final float DAMAGE_MULTIPLIER = 1f;
 	
 	protected ImageLayerTintable layer;
 	
@@ -43,9 +44,9 @@ public abstract class Tower extends DiscreteGridObject {
 	public abstract String name();
 	public abstract int cost();
 	public abstract int upgradeCost();
-	public abstract int commonness();
 	public abstract TowerType type();
 
+	protected abstract int commonness();
 	protected abstract float baseDamage();
 	protected abstract float damagePerLevel();
 	
@@ -117,7 +118,7 @@ public abstract class Tower extends DiscreteGridObject {
 	}
 	
 	public float damage() {
-		return baseDamage() + damagePerLevel() * (upgradeLevel - 1);
+		return (baseDamage() + damagePerLevel() * (upgradeLevel - 1)) * DAMAGE_MULTIPLIER;
 	}
 
 	public static TowerType randomTower() {

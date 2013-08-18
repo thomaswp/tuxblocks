@@ -33,7 +33,6 @@ public class ScratchLayer extends LayerWrapper implements Listener {
 
 		rows = (int)height / SEGMENT + 1;
 		cols = (int)width / SEGMENT + 1;
-		debug(rows + ", " + cols);
 
 		backgroundLayer = graphics().createImageLayer();
 		backgroundLayer.setImage(CanvasUtils.createRect(width, height, Colors.WHITE));

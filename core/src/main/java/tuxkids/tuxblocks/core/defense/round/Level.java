@@ -3,20 +3,24 @@ package tuxkids.tuxblocks.core.defense.round;
 import java.util.ArrayList;
 import java.util.List;
 
+import pythagoras.f.FloatMath;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.defense.walker.FlipWalker;
+import tuxkids.tuxblocks.core.defense.walker.FlyWalker;
 import tuxkids.tuxblocks.core.defense.walker.InchWalker;
 import tuxkids.tuxblocks.core.defense.walker.ShrinkWalker;
 import tuxkids.tuxblocks.core.defense.walker.SlideWalker;
 import tuxkids.tuxblocks.core.defense.walker.SpinWalker;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Persistable;
 
 public abstract class Level implements Persistable {
-	private List<Round> rounds = new ArrayList<Round>();
+	
+	protected List<Round> rounds = new ArrayList<Round>();
 	private int waitTime;
 	
 	private int timer;
@@ -133,101 +137,165 @@ public abstract class Level implements Persistable {
 		return level;
 	}
 	
+	
 	public static class Level1 extends Level {
+		
+		public final static int ROUNDS = 25;
 		
 		@Override
 		protected void populateLevel() {
 
-			final Walker basic = new SlideWalker(10, 500);
-			final Walker medium = new FlipWalker(30, 750);
-			final Walker hard = new InchWalker(70, 1500);
+//			final Walker basic = new SlideWalker(10, 500);
+//			final Walker medium = new FlipWalker(30, 750);
+//			final Walker hard = new InchWalker(70, 1500);
+//			
+//			final Walker quick = new SpinWalker(15, 375);
+//			final Walker quicker = new ShrinkWalker(20, 250);
 			
-			final Walker quick = new SpinWalker(15, 375);
-			final Walker quicker = new ShrinkWalker(20, 250);
+			Walker[] walkers = new Walker[] {
+					new SlideWalker(10, 500),
+					new FlipWalker(30, 750),
+					new InchWalker(100, 1500),
+					new SpinWalker(20, 375),
+					new ShrinkWalker(30, 250),
+					new FlyWalker(40, 750),
+					
+
+					new SlideWalker(40, 400).setLevel(1),
+					new FlipWalker(120, 650).setLevel(1),
+					new InchWalker(400, 1200).setLevel(1),
+					new SpinWalker(80, 325).setLevel(1),
+					new ShrinkWalker(120, 200).setLevel(1),
+					new FlyWalker(160, 650).setLevel(1),
+					
+					
+					new SlideWalker(160, 300).setLevel(2),
+					new FlipWalker(500, 550).setLevel(2),
+					new InchWalker(1500, 1000).setLevel(2),
+					new SpinWalker(320, 300).setLevel(2),
+					new ShrinkWalker(480, 175).setLevel(2),
+					new FlyWalker(600, 550).setLevel(2),
+			};
+			
+			ArrayList<Walker> possibleWalkers = new ArrayList<Walker>(); 
+			
+			for (int i = 0; i < ROUNDS; i++) {
+				possibleWalkers.clear();
+				int points = (int) ((i * i / (i + 2.5f) * 2f + 1) * walkers[0].exp() * 5);
+				for (int j = 0; j < walkers.length; j++) {
+					Walker walker = walkers[j];
+					int count = points / walker.exp();
+					if ((j == 0 || count >= 8)  && count <= 20) {
+						possibleWalkers.add(walker);
+					}
+				}
+				final Walker walker = possibleWalkers.get(
+						(int) (possibleWalkers.size() * Math.random()));
+				int exp = walker.exp();
+				
+				int minBase = exp * 5;
+				int speedupCap = 6;
+				float maxSpeedup = Math.min(speedupCap - 1, (float) (points - minBase) / minBase);
+				float speedup = (float) Math.random() * maxSpeedup + 1;
+				final int frequency = (int)(walker.walkCellTime() * 2 / speedup);
+				int frequencyPoints = (int) ((speedup - 1) * minBase);
+				
+				final int n = (points - frequencyPoints) / exp;
+				int maxGroups = Math.min(5, n / 3);
+				int groups = 1 + (int) (Math.random() * (maxGroups - 1));
+				final int perGroup = Math.round((float) n / groups);
+				
+				addRound(new Round() {
+					@Override
+					protected void populateRound() {
+						int wait = 0;
+						int remaining = n;
+						while (remaining > 0) {
+							int count = Math.min(remaining, perGroup);
+							addWave(new Wave(walker, frequency, count), wait);
+							remaining -= count;
+							wait = 2000;
+						}
+					}
+				});
+			}
 		
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(basic, 1000, 5), 0);
-					addReward(new Reward(TowerType.PeaShooter, 2));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(basic, 500, 5), 0);
-					addWave(new Wave(basic, 500, 5), 2000);
-					addReward(new Reward(TowerType.PeaShooter, 2));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(basic, 500, 3), 0);
-					addWave(new Wave(medium, 1000, 3), 2000);
-					addWave(new Wave(basic, 500, 3), 2000);
-					addReward(new Reward(TowerType.BigShooter, 1));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(basic, 500, 15), 0);
-					addReward(new Reward(TowerType.PeaShooter, 2));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(basic, 500, 2), 0);
-					addWave(new Wave(medium, 500, 2), 500);
-					addWave(new Wave(basic, 500, 2), 500);
-					addWave(new Wave(medium, 500, 2), 500);
-					addWave(new Wave(basic, 500, 2), 500);
-					addWave(new Wave(medium, 500, 2), 500);
-					addReward(new Reward(TowerType.BigShooter, 1));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(quick, 250, 6), 0);
-					addReward(new Reward(TowerType.HorizontalWall, 1));
-					addReward(new Reward(TowerType.VerticalWall, 1));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(medium, 500, 3), 0);
-					addWave(new Wave(quick, 500, 3), 1000);
-					addWave(new Wave(medium, 500, 4), 1000);
-					addWave(new Wave(quick, 500, 4), 1000);
-					addReward(new Reward(TowerType.BigShooter, 1));
-					addReward(new Reward(TowerType.PeaShooter, 2));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(basic, 300, 25), 0);
-					addReward(new Reward(TowerType.Freezer, 1));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(medium, 500, 15), 0);
-					addReward(new Reward(TowerType.Freezer, 1));
-					addReward(new Reward(TowerType.BigShooter, 1));
-				}
-			});
-			addRound(new Round() {
-				@Override
-				protected void populateRound() {
-					addWave(new Wave(hard, 1500, 5), 0);
-				}
-			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(basic, 1000, 5), 0);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(basic, 500, 5), 0);
+//					addWave(new Wave(basic, 500, 5), 2000);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(medium, 1000, 3), 2000);
+//					addWave(new Wave(medium, 1000, 3), 2000);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(basic, 500, 15), 0);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(basic, 500, 2), 0);
+//					addWave(new Wave(medium, 500, 2), 500);
+//					addWave(new Wave(basic, 500, 2), 500);
+//					addWave(new Wave(medium, 500, 2), 500);
+//					addWave(new Wave(basic, 500, 2), 500);
+//					addWave(new Wave(medium, 500, 2), 500);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(quick, 250, 6), 0);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(medium, 500, 3), 0);
+//					addWave(new Wave(quick, 500, 3), 1000);
+//					addWave(new Wave(medium, 500, 4), 1000);
+//					addWave(new Wave(quick, 500, 4), 1000);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(basic, 300, 25), 0);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(medium, 500, 15), 0);
+//				}
+//			});
+//			addRound(new Round() {
+//				@Override
+//				protected void populateRound() {
+//					addWave(new Wave(hard, 1500, 5), 0);
+//				}
+//			});
+			
+			int i = 0;
+			for (Round round : rounds) {
+				round.addRandomReward((float) i / rounds.size());
+				i++;
+			}
 		}
 		
 		public static Constructor constructor() {

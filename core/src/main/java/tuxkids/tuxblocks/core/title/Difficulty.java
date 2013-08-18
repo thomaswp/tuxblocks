@@ -4,6 +4,9 @@ import tuxkids.tuxblocks.core.utils.Persistable;
 
 public class Difficulty implements Persistable {
 
+	public final static int ROUND_TIME_INFINITE = -1;
+	public final static int[] TIMES = new int[] { ROUND_TIME_INFINITE, 90, 70, 50, 30 };
+	
 	private static double rankN(double n) {
 		return Math.pow(Math.log(Math.abs(n) + 1), 2) / 3 + 1;
 	}
@@ -27,8 +30,6 @@ public class Difficulty implements Persistable {
 	public static int rankOver(int a, int b)  {
 		return (int)rankM(Math.pow(Math.abs(a), 0.5f) + Math.abs(b));
 	}
-	
-	public final static int ROUND_TIME_INFINITE = -1;
 	
 	public int mathDifficulty, gameDifficulty, roundTime;
 	

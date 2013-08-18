@@ -30,7 +30,7 @@ public class Zapper extends Tower {
 
 	@Override
 	protected float baseDamage() {
-		return 8;
+		return 5;
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class Zapper extends Tower {
 
 	@Override
 	public int fireRate() {
-		return 1700 - 200 * upgradeLevel;
+		return 1750 - 200 * (upgradeLevel - 1);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class Zapper extends Tower {
 
 	@Override
 	public int cost() {
-		return 10;
+		return 3;
 	}
 
 	@Override

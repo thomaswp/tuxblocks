@@ -1,7 +1,7 @@
 package tuxkids.tuxblocks.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.defense.Grid;
@@ -32,10 +32,10 @@ public class GameState implements Persistable {
 		}
 	}
 
-	private static final int POINTS_PER_UPGRADE = 500;
 	private static final int SOLVE_EXP_BASE = 10;
 	private static final int SOLVE_EXP_PER_LVL = 5;
 	private static final int EXP_TO_POINTS_FACTOR = 1;
+	private static final int MAX_PROBLEMS = 6;
 	
 	private final int[] towerCounts;
 	private final List<Problem> problems;
@@ -46,7 +46,7 @@ public class GameState implements Persistable {
 	private GameBackgroundSprite background;
 	
 	private InventoryChangedListener inventoryChangedListener;
-	private ProblemAddedListener problemAddedListener;
+	private ProblemsChangedListener problemsChangedListener;
 	
 	protected int lives = 20;
 	protected int score = 0;
@@ -93,11 +93,13 @@ public class GameState implements Persistable {
 		int index = stat.ordinal();
 		statExps[index] += exp;
 		int nextLevelExp = getNextLevelExp(statLevels[index]);
-		if (statExps[index] >= nextLevelExp) {
+		boolean play = false;
+		while (statExps[index] >= nextLevelExp) {
 			statExps[index] -= nextLevelExp;
 			statLevels[index]++;
-			Audio.se().play(Constant.SE_SUCCESS_SPECIAL);
+			play = true;
 		}
+		if (play) Audio.se().play(Constant.SE_SUCCESS_SPECIAL);
 		addPoints(exp * EXP_TO_POINTS_FACTOR);
 	}
 
@@ -145,8 +147,8 @@ public class GameState implements Persistable {
 		this.inventoryChangedListener = inventoryChangedListener;
 	}
 	
-	public void setProblemAddedListener(ProblemAddedListener problemAddedListener) {
-		this.problemAddedListener = problemAddedListener;
+	public void setProblemAddedListener(ProblemsChangedListener problemAddedListener) {
+		this.problemsChangedListener = problemAddedListener;
 	}
 	
 	public void setBackground(GameBackgroundSprite background) {
@@ -158,9 +160,12 @@ public class GameState implements Persistable {
 		towerCounts = new int[Tower.towerCount()];
 		problems = new ArrayList<Problem>();
 		level = Level.generate(difficulty.roundTime);
-		addItem(TowerType.PeaShooter, 2);
+		addItem(TowerType.PeaShooter, 3);
+//		addItem(TowerType.BigShooter, 2);
+//		addItem(TowerType.Zapper, 2);
+//		addItem(TowerType.Freezer, 2);
 		for (int i = 0; i < 2; i++) {
-			addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
+			addProblemWithReward(new Reward(TowerType.PeaShooter, 1));
 		}
 	}
 
@@ -183,8 +188,25 @@ public class GameState implements Persistable {
 	public void addProblemWithReward(Reward reward) {
 		Equation eq = createEquation();
 		Problem problem = new Problem(eq, reward);
+		while (problems.size() >= MAX_PROBLEMS) {
+			removeProblem();
+		}
 		problems.add(problem);
-		if (problemAddedListener != null) problemAddedListener.onProblemAdded(problem);
+		if (problemsChangedListener != null) problemsChangedListener.onProblemAdded(problem);
+	}
+	
+	private void removeProblem() {
+		for (int round = 0; round < 2; round++) {
+			for (int i = 0; i < problems.size(); i++) {
+				if (round > 0 || !problems.get(i).modified()) {
+					Problem removed = problems.remove(i);
+					if (problemsChangedListener != null) {
+						problemsChangedListener.onProblemRemoved(removed);
+					}
+					return;
+				}
+			}
+		}
 	}
 
 	public void addItem(TowerType type, int count) {
@@ -203,8 +225,9 @@ public class GameState implements Persistable {
 		void onInventoryChanged(int index, int count);
 	}
 	
-	public interface ProblemAddedListener {
+	public interface ProblemsChangedListener {
 		void onProblemAdded(Problem problem);
+		void onProblemRemoved(Problem problem);
 	}
 
 	public void loseLife() {
@@ -214,12 +237,20 @@ public class GameState implements Persistable {
 
 	public void addPoints(int points) {
 		score += points;
-		int earned = score / POINTS_PER_UPGRADE;
-		if (earned != earnedUpgrades) {
-			upgrades += earned - earnedUpgrades;
-			earnedUpgrades = earned;
+		if (score > nextUpgrade()) {
+			upgrades++;
+			earnedUpgrades++;
 			Audio.se().play(Constant.SE_SUCCESS_SPECIAL);
 		}
+	}
+	
+	private int nextUpgrade() {
+		int base = pointsPerUpgradeBase();
+		return base * (earnedUpgrades + 1) * (earnedUpgrades + 2) / 2;
+	}
+
+	private int pointsPerUpgradeBase() {
+		return (int)(160 * difficulty.getWalkerHpMultiplier()) * 5;
 	}
 
 	public void useUpgrades(int cost) {
@@ -266,7 +297,7 @@ public class GameState implements Persistable {
 	
 	public void finishRound() {
 		if (difficulty.roundTime > 0) {
-			addPoints((70 - difficulty.roundTime) * 5);
+			addPoints(((Difficulty.TIMES[1] - difficulty.roundTime) / 2 + 10) * 5);
 		}
 	}
 

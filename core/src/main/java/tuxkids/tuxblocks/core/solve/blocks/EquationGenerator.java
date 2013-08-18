@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.defense.round.Level.Level1;
 import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 import tuxkids.tuxblocks.core.title.Difficulty;
 
@@ -81,21 +82,16 @@ public class EquationGenerator extends PlayNObject {
 	public static Generator[][] generators = new Generator[][] {
 		new Generator[] {
 				new StandardGenerator(1),
-				new StandardGenerator(1),
-				new StandardGenerator(2),
 		},
 
 		new Generator[] {
-				new StandardGenerator(1),
-				new StandardGenerator(1),
-				new StandardGenerator(2),
 				new StandardGenerator(2),
 				new StandardGenerator(2),
 				new CompositeGenerator(1, 1, 2),
+				gA1,
 		},
 
 		new Generator[] {
-				new StandardGenerator(2),
 				new StandardGenerator(3),
 				new StandardGenerator(3),
 				new CompositeGenerator(1, 2, 2),
@@ -103,23 +99,21 @@ public class EquationGenerator extends PlayNObject {
 		},
 
 		new Generator[] {
-				new StandardGenerator(3),
 				new StandardGenerator(4),
 				new StandardGenerator(4),
 				new CompositeGenerator(2, 3, 2),
-				gA1, gA2, gA3, gB1,
+				gA2, gA3, gB1,
 		},
 
 		new Generator[] {
-				new StandardGenerator(4),
 				new StandardGenerator(5),
 				new CompositeGenerator(3, 3, 2),
 				new CompositeGenerator(1, 2, 3),
-				gA1, gA2, gA3, gB1, gB2,
+				gB1, gB2,
 		},
 	};
 
-	private final static int MAX_LEVEL = 30;
+	private final static int MAX_LEVEL = Level1.ROUNDS;
 	private final static int MIN_FACTOR = 2;
 
 	private static Random rand = new Random();
@@ -170,11 +164,30 @@ public class EquationGenerator extends PlayNObject {
 	}
 
 	public static Equation generate(int difficulty, int level) {
-//		difficulty--; // 1-based counting -> 0-based
 		EquationGenerator.level = level;
+		EquationGenerator.difficulty = difficulty;
+		
+		// give a chance to select a higher or lower difficulty problem
+		// the higher the level, the higher the chance of a more difficult problem
+		float barLower = 0.5f - (float)level / MAX_LEVEL / 2;
+		float barHigher = 0.5f;
+		int genIndex = difficulty;
+		float r = rand.nextFloat();
+		if (r < barLower) {
+			if (genIndex > 0) genIndex--;
+		} else if (r < barHigher) {
+			if (genIndex < generators.length - 1) genIndex++;
+		}
+		
+		Generator[] gens = generators[genIndex];
+		return gens[rand.nextInt(gens.length)].generate();
+	}
+	
+	public static Equation generateSample(int difficulty) {
 		EquationGenerator.difficulty = difficulty;
 		Generator[] gens = generators[difficulty];
 		return gens[rand.nextInt(gens.length)].generate();
+		
 	}
 
 	public static Equation generate(Difficulty difficulty, int level) {
@@ -278,7 +291,9 @@ public class EquationGenerator extends PlayNObject {
 			rhs += ((NumberBlock) eq.rightSide().get(0)).value();
 		}
 		builder.addRight(new NumberBlock(rhs));
-		builder.addRight(new BlockHolder());
+		if (expressions < 3) {
+			builder.addRight(new BlockHolder());
+		}
 		return builder.createEquation();
 	}
 

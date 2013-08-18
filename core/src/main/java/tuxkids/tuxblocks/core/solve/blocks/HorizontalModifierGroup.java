@@ -168,7 +168,8 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			final int answer = before.plusValue() + hSprite.plusValue();
 			Stat stat = hSprite.plusValue() >= 0 ? Stat.Plus : Stat.Minus;
 			int level = Difficulty.rankPlus(before.plusValue(), hSprite.plusValue());
-			blockListener.wasReduced(problem, answer, before.plusValue(), stat, level, new SimplifyListener() {
+			int start = before.plusValue(); //before.value > hSprite.value ? before.plusValue() : hSprite.plusValue();
+			blockListener.wasReduced(problem, answer, start, stat, level, new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {

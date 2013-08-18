@@ -124,7 +124,6 @@ public class SolveScreen extends EquationScreen {
 	@Override
 	public void showNumberSelectScreen(Renderer problem, int answer, int startNumber, 
 			Stat stat, int level, SimplifyListener callback) {
-		Debug.write("problem level: " + level);
 		if (level > state.getStatLevel(stat)) {
 			NumberSelectScreen nss = new NumberSelectScreen(screens, state, problem, answer);
 			nss.setFocusedNumber(startNumber);

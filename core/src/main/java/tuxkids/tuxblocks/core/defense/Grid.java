@@ -521,8 +521,10 @@ public class Grid extends PlayNObject implements Highlightable {
 		if (target == null) return false;
 		Projectile p = tower.createProjectile();
 		p.place(this, target, tower);
-		gridLayer.add(p.layer());
-		projectiles.add(p);
+		if (!p.layer().destroyed()) {
+			gridLayer.add(p.layer());
+			projectiles.add(p);
+		}
 		return true;
 	}
 

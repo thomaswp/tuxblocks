@@ -32,6 +32,6 @@ public class InchWalker extends BasicWalker {
 
 	@Override
 	public Walker copy() {
-		return new InchWalker(maxHp, walkCellTime);
+		return new InchWalker(maxHp, walkCellTime).setLevel(level);
 	}
 }

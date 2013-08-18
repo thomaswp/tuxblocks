@@ -21,6 +21,6 @@ public class SpinWalker extends BasicWalker {
 
 	@Override
 	public Walker copy() {
-		return new SpinWalker(maxHp, walkCellTime);
+		return new SpinWalker(maxHp, walkCellTime).setLevel(level);
 	}
 }

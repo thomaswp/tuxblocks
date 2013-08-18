@@ -58,6 +58,10 @@ public class ProblemButton extends Button {
 		return problem;
 	}
 	
+	public boolean fadedOut() {
+		return targetAlpha == 0 && layerAddable().alpha() < 0.03f;
+	}
+	
 	public ProblemButton(Problem problem, float width, float minHeight, int towerColor) {
 		super(createImage(problem, width, minHeight, towerColor), false);
 		this.problem = problem;
