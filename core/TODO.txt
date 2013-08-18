@@ -1,7 +1,11 @@
+For Beta
 -balance problems and add difficulty
 -level design
 --balance blocks
--Android 4.0 menu
+
+Bugs
+-score flipping infinitely
+-random solve block errors (disappearing blocks)
 
 -multiple grids
 -color/grid selection

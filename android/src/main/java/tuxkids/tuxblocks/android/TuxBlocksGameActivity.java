@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.android;
 import playn.android.GameActivity;
 import playn.core.PlayN;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
+import android.view.Menu;
 
 public class TuxBlocksGameActivity extends GameActivity {
 
@@ -17,4 +18,9 @@ public class TuxBlocksGameActivity extends GameActivity {
 			finish();
 		}
 	} 
+	
+	@Override
+	public boolean onMenuOpened(int featureId, Menu menu) {
+		return false; //stops the menu from opening on Android 4+
+	}
 }

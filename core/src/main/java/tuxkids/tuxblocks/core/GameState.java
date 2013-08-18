@@ -159,9 +159,6 @@ public class GameState implements Persistable {
 		problems = new ArrayList<Problem>();
 		level = Level.generate(difficulty.roundTime);
 		addItem(TowerType.PeaShooter, 2);
-		addItem(TowerType.BigShooter, 2);
-		addItem(TowerType.Zapper, 2);
-		addItem(TowerType.Freezer, 2);
 		for (int i = 0; i < 2; i++) {
 			addProblemWithReward(new Reward(TowerType.PeaShooter, 2));
 		}
@@ -180,11 +177,10 @@ public class GameState implements Persistable {
 	}
 	
 	protected Equation createEquation() { 
-		return EquationGenerator.generate(difficulty);
+		return EquationGenerator.generate(difficulty, level.roundNumber());
 	}
 	
 	public void addProblemWithReward(Reward reward) {
-//		Equation eq = EquationGenerator.generateComposite(2, 3, 2);
 		Equation eq = createEquation();
 		Problem problem = new Problem(eq, reward);
 		problems.add(problem);

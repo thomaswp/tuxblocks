@@ -8,6 +8,7 @@ import tuxkids.tuxblocks.core.utils.Persistable;
 public class Problem implements Persistable {
 	private Reward reward;
 	private Equation equation;
+	private boolean modified;
 	
 	public Equation equation() {
 		return equation;
@@ -17,8 +18,13 @@ public class Problem implements Persistable {
 		return reward;
 	}
 	
+	public boolean modified() {
+		return modified;
+	}
+	
 	public void setEquation(Equation equation) {
 		this.equation = equation;
+		modified = true;
 	}
 	
 	public Problem(Equation equation, TowerType reward, int rewardCount) {
@@ -44,5 +50,6 @@ public class Problem implements Persistable {
 			NumberFormatException {
 		reward = data.persist(reward);
 		equation = data.persist(equation);
+		modified = data.persist(modified);
 	}
 }

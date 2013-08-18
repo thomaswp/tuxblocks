@@ -53,7 +53,7 @@ public class GameScreen extends BaseScreen {
 			header.update(delta);
 			if (!MenuLayer.showing()) {
 				state.update(delta);
-				if (!validDuringRound() && !entering()) {
+				if (state.difficulty().roundTime > 0 && !validDuringRound() && !entering()) {
 					if (state.level().duringRound() || 
 							state.level().timeUntilNextRound() < exitTime()) {
 						popThis();

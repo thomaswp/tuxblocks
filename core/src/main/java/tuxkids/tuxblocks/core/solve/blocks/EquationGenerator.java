@@ -1,7 +1,6 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -10,33 +9,178 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 import tuxkids.tuxblocks.core.title.Difficulty;
 
 public class EquationGenerator extends PlayNObject {
-	
-	private static Random rand = new Random();
-	
-	private static int factor() {
-		return rand(1, 10);
+
+	private static interface Generator {
+		public Equation generate();
 	}
+
+	private static class StandardGenerator implements Generator {
+
+		private final int operations;
+
+		public StandardGenerator(int operations) {
+			this.operations = operations;
+		}
+
+		@Override
+		public Equation generate() {
+			return generateStandard(operations);
+		}
+	}
+
+	private static class CompositeGenerator implements Generator {
+		public final int minSteps, maxSteps, expressions;
+
+		public CompositeGenerator(int minSteps, int maxSteps, int expressions) {
+			this.minSteps = maxSteps;
+			this.maxSteps = maxSteps;
+			this.expressions = expressions;
+		}
+
+		@Override
+		public Equation generate() {
+			return generateComposite(minSteps, maxSteps, expressions);
+		}
+	}
+
+	private static Generator gA1 = new Generator() {
+		@Override
+		public Equation generate() {
+			return generateFormA1();
+		}
+	};
+
+	private static Generator gA2 = new Generator() {
+		@Override
+		public Equation generate() {
+			return generateFormA2();
+		}
+	};
+
+	private static Generator gA3 = new Generator() {
+		@Override
+		public Equation generate() {
+			return generateFormA3();
+		}
+	};
+
+	private static Generator gB1 = new Generator() {
+		@Override
+		public Equation generate() {
+			return generateFormB1();
+		}
+	};
+
+	private static Generator gB2 = new Generator() {
+		@Override
+		public Equation generate() {
+			return generateFormB2();
+		}
+	};
 	
+	public static Generator[][] generators = new Generator[][] {
+		new Generator[] {
+				new StandardGenerator(1),
+				new StandardGenerator(1),
+				new StandardGenerator(2),
+		},
+
+		new Generator[] {
+				new StandardGenerator(1),
+				new StandardGenerator(1),
+				new StandardGenerator(2),
+				new StandardGenerator(2),
+				new StandardGenerator(2),
+				new CompositeGenerator(1, 1, 2),
+		},
+
+		new Generator[] {
+				new StandardGenerator(2),
+				new StandardGenerator(3),
+				new StandardGenerator(3),
+				new CompositeGenerator(1, 2, 2),
+				gA1, gA2, gA3,
+		},
+
+		new Generator[] {
+				new StandardGenerator(3),
+				new StandardGenerator(4),
+				new StandardGenerator(4),
+				new CompositeGenerator(2, 3, 2),
+				gA1, gA2, gA3, gB1,
+		},
+
+		new Generator[] {
+				new StandardGenerator(4),
+				new StandardGenerator(5),
+				new CompositeGenerator(3, 3, 2),
+				new CompositeGenerator(1, 2, 3),
+				gA1, gA2, gA3, gB1, gB2,
+		},
+	};
+
+	private final static int MAX_LEVEL = 30;
+	private final static int MIN_FACTOR = 2;
+
+	private static Random rand = new Random();
+
+	// I really should find a better way to pass this around
+	// but since everything's synchronous, it should work fine
+	private static int level, difficulty;  
+
+	private static int maxFactor() {
+		return 10 + 5 * level / MAX_LEVEL + difficulty;
+	}
+
+	private static int maxAdden() {
+		return 20 + 20 * level / MAX_LEVEL + difficulty * 2;
+	}
+
+	private static int maxRHS() {
+		return 200 + 200 * level / MAX_LEVEL + difficulty * 50;
+	}
+
+	private static int maxAnswer() {
+		return 30 + 15 * level / MAX_LEVEL + 5 * difficulty;
+	}
+
+	private static int factor() {
+		return rand(MIN_FACTOR, maxFactor());
+	}
+
+	private static int factorSigned() {
+		return rand(MIN_FACTOR, maxFactor()) * randSign();
+	}
+
 	private static int factor(int not) {
 		int f = factor();
-		if (f == not) f++;
+		if (f == not) return factor(not);
 		return f;
 	}
-	
+
 	private static int adden() {
-		return randNonZero(20);
+		return randNonZero(maxAdden());
 	}
-	
+
+	@SuppressWarnings("unused")
 	private static int adden(int not) {
 		int a = adden();
-		if (a == not) a++;
+		if (a == not) return adden(not);
 		return a;
 	}
-	
-	public static Equation generateEquation(int difficulty) {
-		return generate(difficulty);
+
+	public static Equation generate(int difficulty, int level) {
+//		difficulty--; // 1-based counting -> 0-based
+		EquationGenerator.level = level;
+		EquationGenerator.difficulty = difficulty;
+		Generator[] gens = generators[difficulty];
+		return gens[rand.nextInt(gens.length)].generate();
 	}
-	
+
+	public static Equation generate(Difficulty difficulty, int level) {
+		return generate(difficulty.mathDifficulty, level);
+	}
+
 	/** ax + b = cx + d */
 	public static Equation generateFormA1() {
 		int a = factor();
@@ -46,14 +190,14 @@ public class EquationGenerator extends PlayNObject {
 		int b = d % bot;
 		b += randNonZero(4) * bot;
 		if (b == d) b += bot;
-		
+
 		return new Equation.Builder()
 		.addLeft(new VariableBlock("x").times(a).add(b))
 		.addRight(new VariableBlock("x").times(c).add(d))
 		.addRight(new BlockHolder())
 		.createEquation();
 	}
-	
+
 	/** ax + (x + b) / c = d */
 	public static Equation generateFormA2() {
 
@@ -63,21 +207,21 @@ public class EquationGenerator extends PlayNObject {
 		int top = c * d;
 		int bot = a * c + 1;
 		int b = top - (Math.round((float)top / bot) * bot);
-		
+
 		return new Equation.Builder()
 		.addLeft(new VariableBlock("x").times(a))
 		.addLeft(new VariableBlock("x").add(b).over(c))
 		.addRight(new NumberBlock(d))
 		.createEquation();
 	}
-	
+
 	/** x / a + c * (x + b) = d */
 	public static Equation generateFormA3() {
 		int a = factor();
 		int c = factor();
 		int b = adden();
 		int d = randNonZero(2) * (c * a + 1) + c * b;
-		
+
 		return new Equation.Builder()
 		.addLeft(new VariableBlock("x").over(a))
 		.addLeft(new VariableBlock("x").add(b).times(c))
@@ -85,7 +229,7 @@ public class EquationGenerator extends PlayNObject {
 		.addRight(new BlockHolder())
 		.createEquation();
 	}
-	
+
 	/** ax + x / b + cx / d = e */
 	public static Equation generateFormB1() {
 		int a = factor();
@@ -94,7 +238,7 @@ public class EquationGenerator extends PlayNObject {
 		int d = factor();
 		int bot = a * b * d + d + b * c;
 		int e = randNonZero(3) * bot;
-		
+
 		return new Equation.Builder()
 		.addLeft(new VariableBlock("x").times(a))
 		.addLeft(new VariableBlock("x").over(b))
@@ -102,7 +246,7 @@ public class EquationGenerator extends PlayNObject {
 		.addRight(new NumberBlock(e))
 		.createEquation();
 	}
-	
+
 	/** ax + (x + b) / c + dx / e = f */
 	public static Equation generateFormB2() {
 		int a = factor();
@@ -110,10 +254,10 @@ public class EquationGenerator extends PlayNObject {
 		int d = factor();
 		int e = factor();
 		int f = adden();
-		
+
 		int bot = a * c * e + e + c * d;
 		int b = c * f - randNonZero(2) * bot;
-		
+
 		return new Equation.Builder()
 		.addLeft(new VariableBlock("x").times(a))
 		.addLeft(new VariableBlock("x").add(b).over(c))
@@ -121,24 +265,15 @@ public class EquationGenerator extends PlayNObject {
 		.addRight(new NumberBlock(f))
 		.createEquation();
 	}
-	
-	private final static int MAX_ANSWER = 50;
-	private final static int MAX_ADD_SUB = 20;
-	private final static int MAX_TIMES = 10;
-	private final static int MIN_TIMES = 2;
-	private final static int MAX_RHS = 500;
-	
-	private enum Operation {
-		Plus, Minus, Times, Over
-	}
-	
+
+
 	public static Equation generateComposite(int minSteps, int maxSteps, int expressions) {
 		Builder builder = new Builder();
 		int rhs = 0;
 		int answer = generateAnswer() / 2;
 		for (int i = 0; i < expressions; i++) {
 			int steps = rand(minSteps, maxSteps);
-			Equation eq = generate(answer, steps);
+			Equation eq = generateStandard(answer, steps);
 			builder.addLeft(eq.leftSide().get(0));
 			rhs += ((NumberBlock) eq.rightSide().get(0)).value();
 		}
@@ -146,16 +281,20 @@ public class EquationGenerator extends PlayNObject {
 		builder.addRight(new BlockHolder());
 		return builder.createEquation();
 	}
-	
+
 	private static int generateAnswer() {
-		return rand.nextInt(MAX_ANSWER * 2 + 1) - MAX_ANSWER;
+		return rand.nextInt(maxAnswer() * 2 + 1) - maxAnswer();
 	}
-	
-	public static Equation generate(int steps) {
-		return generate(generateAnswer(), steps);
+
+	private enum Operation {
+		Plus, Minus, Times, Over
 	}
-	
-	private static Equation generate(int answer, int steps) {
+
+	public static Equation generateStandard(int steps) {
+		return generateStandard(generateAnswer(), steps);
+	}
+
+	private static Equation generateStandard(int answer, int steps) {
 		int rhs = answer;
 		BaseBlock lhs = new VariableBlock("x");
 		Operation lastOperation = null;
@@ -164,37 +303,37 @@ public class EquationGenerator extends PlayNObject {
 		for (int i = 0; i < steps; i++) {
 			List<Integer> factors = getFactors(rhs);
 			if (lastTimes != null) factors.remove(lastTimes);
-			
+
 			List<Operation> operations = new ArrayList<Operation>();
 			for (Operation operation : Operation.values()) operations.add(operation);
 			if (factors.isEmpty()) operations.remove(Operation.Over);
 			if (lastOperation != null) operations.remove(lastOperation);
-			
-			int maxTimes = MAX_TIMES;
-			if (rhs != 0) maxTimes = Math.min(maxTimes, Math.abs(MAX_RHS / rhs));
-			if (maxTimes <= MIN_TIMES) operations.remove(Operation.Times);
-			
+
+			int maxTimes = maxFactor();
+			if (rhs != 0) maxTimes = Math.min(maxTimes, Math.abs(maxRHS() / rhs));
+			if (maxTimes <= MIN_FACTOR) operations.remove(Operation.Times);
+
 			if (operations.size() > 1 && lastOperationInv != null)
 				operations.remove(lastOperationInv);
-			
+
 			Operation operation = operations.get(rand.nextInt(operations.size()));
 			lastOperation = operation;
 			lastTimes = null;
-			
+
 			int value;
 			if (operation == Operation.Plus) {
 				lastOperationInv = Operation.Minus;
-				value = rand.nextInt(MAX_ADD_SUB - 1) + 1;
+				value = adden();
 				lhs = lhs.add(value);
 				rhs += value;
 			} else if (operation == Operation.Minus) {
 				lastOperationInv = Operation.Plus;
-				value = rand.nextInt(MAX_ADD_SUB - 1) + 1;
+				value = adden();
 				lhs = lhs.add(-value);
 				rhs -= value;
 			} else if (operation == Operation.Times) {
 				lastOperationInv = Operation.Over;
-				value = rand.nextInt(maxTimes - MIN_TIMES) + MIN_TIMES;
+				value = factorSigned();
 				lhs = lhs.times(value);
 				rhs *= value;
 				lastTimes = value;
@@ -207,20 +346,20 @@ public class EquationGenerator extends PlayNObject {
 		}
 		return new Builder().addLeft(lhs).addRight(new NumberBlock(rhs)).createEquation();
 	}
-	
-	
+
+
 	private static int rand(int min, int max) {
 		return rand.nextInt(max - min + 1) + min;
 	}
-	
+
 	private static int randNonZero(int maxMag) {
 		return rand(1, maxMag) * randSign();
 	}
-	
+
 	private static int randSign() {
 		return rand(0, 1) * 2 - 1;
 	}
-	
+
 	public static List<Integer> getFactors(int n) {
 		List<Integer> factors = new ArrayList<Integer>();
 		n = Math.abs(n);
@@ -246,7 +385,7 @@ public class EquationGenerator extends PlayNObject {
 		return factors;
 	}
 
-	
+
 	private final static List<Integer> primes = new ArrayList<Integer>();
 	static { primes.add(2); }
 	private static int getPrime(int index) {
@@ -258,7 +397,7 @@ public class EquationGenerator extends PlayNObject {
 
 		return primes.get(index);
 	}
-	
+
 	private static boolean isPrimeSoFar(int n) {
 		double max = Math.sqrt(n);
 		for (int prime : primes) {
@@ -266,9 +405,5 @@ public class EquationGenerator extends PlayNObject {
 			if (n % prime == 0) return false;
 		}
 		return true;
-	}
-
-	public static Equation generate(Difficulty difficulty) {
-		return generate(difficulty.mathDifficulty + 1);
 	}
 }

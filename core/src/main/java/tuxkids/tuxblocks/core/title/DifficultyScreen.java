@@ -80,7 +80,7 @@ public class DifficultyScreen extends BaseScreen {
 		mathSlider.setStopChangedListener(new StopChangedListener() {
 			@Override
 			public void onStopChanged(int stop) {
-				Equation eq = EquationGenerator.generateEquation(stop + 1);
+				Equation eq = EquationGenerator.generate(stop, 0);
 				int size = Math.round(Math.min(height() / 16 / eq.renderer().lines(), height() / 18));
 				ExpressionWriter writer = eq.renderer().getExpressionWriter(Cache.createFormat(size));
 				float pad = height() / 40, rad = pad / 2;
