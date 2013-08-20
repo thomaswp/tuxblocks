@@ -9,6 +9,6 @@ ProgressLog.launch
 objc/*
 html/gwt-unitCache/*
 html/war/*
-android/assets/*
+android/assets
 ios/assets/*
 cmd.exe.lnk
