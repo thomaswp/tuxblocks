@@ -168,6 +168,10 @@ public abstract class Block extends Sprite implements Hashable {
 		if (hasSprite()) attachBlockListener();
 	}
 	
+	public void cancelDrag() {
+		dragging = false;
+	}
+	
 	private void attachBlockListener() {
 		layer.addListener(new Listener() {
 			

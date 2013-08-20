@@ -20,7 +20,7 @@ public class FlyWalker extends BasicWalker {
 
 	@Override
 	public int exp() {
-		return super.exp() * 2;
+		return super.exp() * 3 / 2;
 	}
 	
 	@Override

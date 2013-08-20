@@ -1,6 +1,12 @@
 package tuxkids.tuxblocks.core.defense.walker.buff;
 
+import tuxkids.tuxblocks.core.defense.tower.Tower;
+
 public class Frozen extends Buff {
+
+	public Frozen(Tower cause) {
+		super(cause);
+	}
 
 	@Override
 	protected int lifespan() {

@@ -92,9 +92,10 @@ public class GameState implements Persistable {
 	public void addExp(Stat stat, int exp) {
 		int index = stat.ordinal();
 		statExps[index] += exp;
-		int nextLevelExp = getNextLevelExp(statLevels[index]);
+		int nextLevelExp;
 		boolean play = false;
-		while (statExps[index] >= nextLevelExp) {
+		while (statExps[index] >= (nextLevelExp = 
+				getNextLevelExp(statLevels[index]))) {
 			statExps[index] -= nextLevelExp;
 			statLevels[index]++;
 			play = true;
@@ -104,7 +105,7 @@ public class GameState implements Persistable {
 	}
 
 	private int getNextLevelExp(int level) {
-		return 50;
+		return 50 + 20 * level;
 	}
 
 	public int lives() {
@@ -165,7 +166,7 @@ public class GameState implements Persistable {
 //		addItem(TowerType.Zapper, 2);
 //		addItem(TowerType.Freezer, 2);
 		for (int i = 0; i < 2; i++) {
-			addProblemWithReward(new Reward(TowerType.PeaShooter, 1));
+			addProblemWithReward(0);
 		}
 	}
 
@@ -181,13 +182,34 @@ public class GameState implements Persistable {
 		}
 	}
 	
-	protected Equation createEquation() { 
-		return EquationGenerator.generate(difficulty, level.roundNumber());
+	protected final int MAX_REWARD_POINTS = 6;
+	
+	protected Equation createEquation(int difficulty, float percFinished) {
+		return EquationGenerator.generate(difficulty, percFinished);
 	}
 	
-	public void addProblemWithReward(Reward reward) {
-		Equation eq = createEquation();
-		Problem problem = new Problem(eq, reward);
+	public void addProblemWithReward(float percFinished) {
+
+		// give a chance to select a higher or lower difficulty problem
+		// the higher the level, the higher the chance of a more difficult problem
+		float barLower = 0.5f - percFinished / 2;
+		float barHigher = 0.5f;
+		int difficulty = this.difficulty.mathDifficulty;
+		float r = (float) Math.random();
+		if (r < barLower) {
+			if (difficulty > 0) {
+				difficulty--;
+				percFinished = Math.max(0, percFinished - 1f / MAX_REWARD_POINTS);
+			}
+		} else if (r < barHigher) {
+			if (difficulty < Difficulty.MAX_MATH_DIFFICULTY - 1) {
+				difficulty++;
+				percFinished = Math.min(1, percFinished + 1f / MAX_REWARD_POINTS);
+			}
+		}
+		
+		Equation eq = createEquation(difficulty, percFinished);
+		Problem problem = new Problem(eq, d(percFinished));
 		while (problems.size() >= MAX_PROBLEMS) {
 			removeProblem();
 		}
@@ -195,10 +217,26 @@ public class GameState implements Persistable {
 		if (problemsChangedListener != null) problemsChangedListener.onProblemAdded(problem);
 	}
 	
+	private Reward d(float percFinished) {
+		int points = (int)(percFinished * (MAX_REWARD_POINTS - 0.5f) + 0.5f) + 1;
+		ArrayList<Reward> possibleRewards = new ArrayList<Reward>();
+		for (TowerType type : TowerType.values()) {
+			if (type.instance().cost() <= points) {
+				possibleRewards.add(new Reward(type, points / type.instance().cost()));
+			}
+		}
+		Reward reward = possibleRewards.get(
+				(int) (Math.random() * possibleRewards.size()));
+		return reward;
+	}
+	
 	private void removeProblem() {
 		for (int round = 0; round < 2; round++) {
 			for (int i = 0; i < problems.size(); i++) {
-				if (round > 0 || !problems.get(i).modified()) {
+				Problem problem = problems.get(i);
+				if (problem.modified()) {
+					problem.resetModified();
+				} else {
 					Problem removed = problems.remove(i);
 					if (problemsChangedListener != null) {
 						problemsChangedListener.onProblemRemoved(removed);
@@ -250,7 +288,7 @@ public class GameState implements Persistable {
 	}
 
 	private int pointsPerUpgradeBase() {
-		return (int)(160 * difficulty.getWalkerHpMultiplier()) * 5;
+		return (int)(150 * difficulty.getWalkerHpMultiplier()) * 5;
 	}
 
 	public void useUpgrades(int cost) {

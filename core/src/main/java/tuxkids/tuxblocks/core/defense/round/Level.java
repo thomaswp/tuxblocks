@@ -140,7 +140,7 @@ public abstract class Level implements Persistable {
 	
 	public static class Level1 extends Level {
 		
-		public final static int ROUNDS = 25;
+		protected final static int ROUNDS = 25;
 		
 		@Override
 		protected void populateLevel() {
@@ -181,7 +181,8 @@ public abstract class Level implements Persistable {
 			
 			for (int i = 0; i < ROUNDS; i++) {
 				possibleWalkers.clear();
-				int points = (int) ((i * i / (i + 2.5f) * 2f + 1) * walkers[0].exp() * 5);
+				float base = i * i / (i + 2.5f) * 2f + FloatMath.pow(i * 5 / 2 / ROUNDS, 4.5f) + 1;
+				int points = (int) (base * walkers[0].exp() * 5);
 				for (int j = 0; j < walkers.length; j++) {
 					Walker walker = walkers[j];
 					int count = points / walker.exp();

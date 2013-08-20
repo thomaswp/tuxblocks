@@ -9,6 +9,7 @@ import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Layer;
+import playn.core.PlayN;
 import playn.core.Font.Style;
 import playn.core.Pointer.Event;
 import playn.core.TextFormat;
@@ -467,7 +468,12 @@ public class BlockController extends PlayNObject {
 					nSprite.interpolateDefaultRect(null);
 					sprite = nSprite;
 				} else {
+					// This happens when the dragging block isn't a part of any BaseBlock's group
+					// which shouldn't be able to happen but somehow has... so we cancel everything
 					debug("BIG PROBLEM!");
+					sprite.cancelDrag();
+					PlayN.pointer().cancelLayerDrags();
+					return;
 				}
 			}
 			

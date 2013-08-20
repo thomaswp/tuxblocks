@@ -77,8 +77,8 @@ public class Freezer extends Tower {
 
 	@Override
 	public void addBuffs(Walker walker) {
-		final float mod = 0.5f - 0.10f * (upgradeLevel - 1);
-		walker.addBuff(new Buff() {
+		final float mod = 0.65f - 0.10f * (upgradeLevel - 1);
+		walker.addBuff(new Buff(this) {
 			@Override
 			public float modifySpeed(float dt) {
 				return dt * mod;

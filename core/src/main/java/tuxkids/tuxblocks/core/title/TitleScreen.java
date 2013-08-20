@@ -163,7 +163,7 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					if (PersistUtils.stored(Constant.KEY_GAME)) {
+					if (!Tutorial.running() && PersistUtils.stored(Constant.KEY_GAME)) {
 						ContinueMenuLayer.show(new ResponseListener() {
 							@Override
 							public void responded(boolean cont) {

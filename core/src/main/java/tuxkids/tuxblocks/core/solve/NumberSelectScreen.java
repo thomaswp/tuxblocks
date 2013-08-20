@@ -66,6 +66,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private Button buttonBack, buttonCenter, buttonScratch, buttonClear;
 	private Image backImageOk, backImageBack, backImageCancel;
 	private Point recenterPoint = new Point();
+	private boolean madeMistake;
 
 	private List<Point> numberPoints = new ArrayList<Point>();
 	private List<NumberLayer> numberImages = new ArrayList<NumberLayer>();
@@ -93,6 +94,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		super(screens, gameState);
 		this.problem = problem;
 		this.answer = answer;
+	}
+	
+	public boolean noMistakes() {
+		return !madeMistake;
 	}
 	
 	@Override
@@ -129,6 +134,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		selectedNumberLayer = new NumberLayer(bitmapFontColored);
 		selectedNumberLayer.setDepth(15);
 		foregroundLayer.add(selectedNumberLayer.layerAddable());
+		
+		madeMistake = false;
 		
 //		touchLayer = graphics().createImageLayer(
 //		CanvasUtils.createRect(1, 1, CanvasUtils.TRANSPARENT));
@@ -221,6 +228,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 					if (selectedPoint != null && !hasCorrectAnswer()) {
 						buttonBack.setImage(backImageCancel);
 						Audio.se().play(Constant.SE_BACK);
+						madeMistake = true;
 					} else {
 						popThis();
 					}

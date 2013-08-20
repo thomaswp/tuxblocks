@@ -26,6 +26,10 @@ public class Problem implements Persistable {
 		this.equation = equation;
 		modified = true;
 	}
+
+	public void resetModified() {
+		modified = false;
+	}
 	
 	public Problem(Equation equation, TowerType reward, int rewardCount) {
 		this(equation, new Reward(reward, rewardCount));

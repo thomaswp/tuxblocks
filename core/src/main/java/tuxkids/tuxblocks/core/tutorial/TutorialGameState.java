@@ -8,7 +8,6 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.title.Difficulty;
-import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 
 public class TutorialGameState extends GameState {
 
@@ -36,14 +35,14 @@ public class TutorialGameState extends GameState {
 	public TutorialGameState() {
 		super(new Difficulty(0, 0, Difficulty.ROUND_TIME_INFINITE));
 		upgrades = 1;
-		addReward(new Reward(TowerType.PeaShooter, 2));
+//		addReward(new Reward(TowerType.PeaShooter, 2));
 	}
 
 	@Override
-	protected Equation createEquation() {
+	protected Equation createEquation(int difficulty, float percFinished) {
 		if (eqationIndex < equations.length) {
 			return equations[eqationIndex++];
 		}
-		return super.createEquation();
+		return super.createEquation(difficulty, percFinished);
 	}
 }

@@ -97,10 +97,12 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		
 		int leftButtons = 0, rightButtons = 0;
 		for (ProblemButton button : problemButtons) {
-			boolean left = button.x() < width() / 2;
 			if (button.enabled()) {
-				if (left) leftButtons++;
-				else rightButtons++;
+				if (button.x() < width() / 2) {
+					leftButtons++;
+				} else {
+					rightButtons++;
+				}
 			}
 		}
 		
@@ -144,7 +146,10 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 	}
 	
 	public void removeProblem(ProblemButton button, boolean solve) {
-		if (solve) state.solveProblem(button.problem());
+		if (solve) {
+			state.solveProblem(button.problem());
+			selectedProblem = null;
+		}
 		button.destroy();
 		if (button.above() != null) {
 			button.above().setBelow(button.below());
@@ -197,16 +202,12 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 
 	@Override
 	public void onProblemRemoved(Problem problem) {
-		ProblemButton toRemove = null;
 		for (ProblemButton button : problemButtons) {
 			if (button.problem() == problem) {
-				toRemove = button;
-				break;
+				button.setEnabled(false);
+				button.fadeOut();
+				return;
 			}
-		}
-		if (toRemove != null) {
-			toRemove.setEnabled(false);
-			toRemove.fadeOut();
 		}
 	}
 

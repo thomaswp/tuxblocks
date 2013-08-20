@@ -78,7 +78,7 @@ Oh, I almost forget. If you're solving a problem that gets too hard for you to d
 
 You can draw with your <mouse> here, or clear your work with the Clear button in the bottom right corner. Play around with it and hit the Scratch button again to close it. 
 
-Great job! Did you notice the bars up at the top of the screen. They show your level for the 4 different operators, and how close you are to leveling up. The harder the problems you solve, the more experience you gain. 
+Great job! Did you notice the bars up at the top of the screen. They show your level for the 4 different operators and how close you are to leveling up. You gain experience for solving arithmetic problems correctly on your first try. The harder the problem you solve, the more experience you gain. 
 
 As you level up, some problems will solve themselves, instead of making you go to the Simplify screen. After all, how many times do you need to do an easy addition problem before you've learned how?
 

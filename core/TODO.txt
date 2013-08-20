@@ -1,13 +1,10 @@
 For Beta
--balance problems and add difficulty
--level design
---balance blocks
 
 Bugs
--random solve block errors (disappearing blocks)
--exit solve screen when block is being dragged
 
+For the future:
 -multiple grids
--color/grid selection
+-color/grid/#levels selection
 -high scores
 -flip sign in number select
+-shuffle equations

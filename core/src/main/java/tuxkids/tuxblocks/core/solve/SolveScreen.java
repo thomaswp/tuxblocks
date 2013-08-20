@@ -100,7 +100,9 @@ public class SolveScreen extends EquationScreen {
 		super.update(delta);
 		if (solveCorrect && !entering()) {
 			solveCallback.wasSimplified(true);
-			state.addExpForLevel(solveStat, solveLevel);
+			if (solveStat != null) {
+				state.addExpForLevel(solveStat, solveLevel);
+			}
 			clearSolve();
 		}
 		if (buttonBack.image() != buttonImageOk && controller.solved()) {
@@ -141,8 +143,10 @@ public class SolveScreen extends EquationScreen {
 	protected void onChildScreenFinished(BaseScreen screen) {
 		super.onChildScreenFinished(screen);
 		if (screen instanceof NumberSelectScreen) {
-			if (((NumberSelectScreen) screen).hasCorrectAnswer()) {
+			NumberSelectScreen nss = (NumberSelectScreen) screen;
+			if (nss.hasCorrectAnswer()) {
 				solveCorrect = true;
+				if (!nss.noMistakes()) solveStat = null;
 				Tutorial.trigger(Trigger.Solve_SimplifiedSuccess);
 			} else {
 				solveCallback.wasSimplified(false);

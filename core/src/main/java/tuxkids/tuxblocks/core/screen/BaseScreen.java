@@ -152,6 +152,7 @@ public class BaseScreen extends Screen implements Listener {
 	protected void popThis(Transition transition) {
 		Tutorial.clearIndicators();
 		PlayN.keyboard().setListener(null);
+		PlayN.pointer().cancelLayerDrags();
 		screens.remove(this, transition);
 		layer.setDepth(-1);
 		if (onScreenFinishedListener != null) onScreenFinishedListener.onScreenFinished();
