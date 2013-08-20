@@ -11,4 +11,4 @@ html/gwt-unitCache/*
 html/war/*
 android/assets/*
 ios/assets/*
-cmd.exe
+cmd.exe.lnk
