@@ -42,7 +42,6 @@ public class Constant {
 	}
 	
 	public final static String IMAGE_PATH = "images/";
-	public final static String TUTORIAL_IMAGE_PATH = IMAGE_PATH + "tutorial/"; 
 	public final static String NINEPATCH_PATH = IMAGE_PATH + "np/";
 	public final static String AUDIO_PATH = "audio/";
 	public final static String BG_PATH = AUDIO_PATH + "bg/";

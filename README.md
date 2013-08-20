@@ -33,6 +33,14 @@ TuxBlocks is built on top of PlayN and can be set up using the instructions in t
 
 As explained in the getting started guide, PlayN requires [Apache Maven](http://maven.apache.org/) 3.03 or newer, and the [m2eclipse plugin](http://m2eclipse.codehaus.org/) is recommended. Once you have the m2eclipse plugin installed, you can import the  **android**, **assets**, **core**, **html** and **java** projects into eclispe, using the instructions in the getting started guide (you may import the **flash** and **ios** projects as well, but they are not in current use). If you get errors during the import process, choose to "Resolve Later" and continue. They should not be a problem.
 
+It is recommended that you unpack the TuxBlocks repository in a folder with no spaces in its path, for instance:
+
+    C:\Users\Thomas\tux\
+	
+and not
+
+    C:\Users\Thomas\Tux Blocks\
+
 Running the Game
 ----------------
 
@@ -54,7 +62,7 @@ If this is the case, go to Run->Run Configurations, select the TuxBlockGameJava 
 	
 	-Djava.library.path=target/natives
 	
-The game should run successfully after this, and continue to work. If you run a mvn -clean on the project, however, you may have to run mvn install again.
+The game should run successfully after this, and continue to work. If you run a mvn clean on the project, however, you may have to run mvn install again.
 
 ### Android ###
 
@@ -66,4 +74,58 @@ You should be able to run TuxBlock on Android by executing the following command
 
     mvn -Pandroid install
 	
-This will install the game on any conencted Android device; however, it will not run the game. If you are on a Windows machine, you can intall *and run* by executing the run_android.bat file instead.
+This will install the game on any connected Android device; however, it will not run the game. You must start the game manually. If you are on a Windows machine, you can install *and run* by executing the run_android.bat file instead.
+
+### HTML ###
+
+To run the web version of TuxBlocks, navigate to the root folder and run:
+
+    mvn -Phtml integration-test
+	
+When the command prompt informs you that the jetty server has started, navigate to [http://localhost:8080/](http://localhost:8080/), and you should find the game running there.
+
+Unlike with other App Engine projects, you must recompile TuxBlocks every time you wish to run the HTML version. Make sure to terminate the jetty server before running another (Ctrl+C). A running jetty server will mask a newly run one. If the the project does not seem to be updating, you can try the command:
+
+    mvn -Phtml clean
+	
+The run_html.bat combines these commands for you convenience. 
+
+You may also find it useful to have the [Google App Engine plugin](https://developers.google.com/appengine/docs/java/tools/eclipse) for eclipse. This will allow you to deploy the project to App Engine.
+
+#### HTML5 Caveats ####
+
+The HTML5 backend for PlayN contains both an HTML5 Canvas graphics implementation, and a WebGL implementation. Browsers such as Chrome and Firefox should default to WebGL, which is faster and more featureful, but some users, such as Internet Explorer users will not have WebGL. For this reason, it is important to test the HTML version with multiple browsers, at least on of which should have WebGL and one should not. One particularly important difference between the Canvas and WebGL implementations of the game is that Canvas does not have ability to set the tint of layers. For this reason the [ImageLayerTintable](core/src/main/java/tuxkids/tuxblocks/core/layers/ImageLayerTintable.java) was created, which emulates the tint on HTML5 Canvas. Also, GWT (the basis of the HTML backend) does not support the String.format() method, so make sure to use the Formatter.format() method instead.
+
+### iOS ###
+
+The iOS build is still in development, but for more information on how to run a PlayN game on iOS, see [PlayN-IOS](https://github.com/thomaswp/playn-ios).
+
+Structure
+---------
+
+To understand how TuxBlocks is organized, it will be useful to read the [PlayN documentation](http://code.google.com/p/playn/w/list) on the subject.
+
+Like all PlayN projects, TuxBlocks is split into separate projects, one for each platform. There is also an **assets** project, which contains all of the game's assets. It also contains an *Originals* folder, which contains some of the original art and sound for the game. Much of the art is in .xcf format, the native format for the [GIMP](http://www.gimp.org/) imaging program.
+
+Each platform project, such as **java** or **android** will have platform-specific code. This will likely not need to be changed, unless you need to change a screen resolution or Android version.
+
+The logic of TuxBlocks resides in the **core** project. The code is organized into a number of packages and sub-packages, so if you are using eclipse, it is recommended you select the Package Explorer Options->Package Presentation->Hierarchical option. Use the package names and code documentation to navigate the project. However, a few important base classes are discussed below.
+
+Base and Utility Classes
+------------------------
+
+You may want to make use of these classes as you contribute to TuxBlocks. See the code documentation for more details.
+
+**PlayNObject**: the base class of most Objects in the game, contains many convenience methods for debugging, linear interpolation and accessing PlayN's static classes.
+
+**HashCode/Hashable**: a class and interface for easy generation of hash codes based on a list of fields. It also allows for equality comparison. PlayNObjects which implement Hashable will also override equals to use those same properties.
+
+**PersistUtils/Peristable**: a class and interface for making an object persistable using PlayN's Storage interface. This is akin to a simplified serialization routine using the String key/value pairs that PlayN uses for storage.
+
+**CanvasUtils**: a class for procedurally generating various shapes and text.
+
+**LayerLike**: emulates the behavior of PlayN's Layer interface. LayerLike classes cannot be directly added to other GroupLayers, but they have a layerAddable() property which can. This class is useful for creating composite Layers made of others, such as the NinepatchLayer or ImageLayerLike. 
+
+**ImageLayerTintable**: This class emulates the behavior of PlayN's ImageLayer interface but allows for tinting that works even on HTML5 Canvas backends. It works by overlaying a tinted version of the image on top of the original, and changing opacity to create variants in tint.
+
+**BaseScreen**: An extention of [TriplePlay](https://github.com/threerings/tripleplay)'s Screen class. This is the base of every screen you see in the game, which transition on- and off-screen by sliding into position.
