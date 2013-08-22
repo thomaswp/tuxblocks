@@ -53,6 +53,12 @@ public abstract class Level implements Persistable {
 		return waitingForFinish;
 	}
 	
+	public void skipRounds(int n) {
+		for (int i = 0; i < n; i++) {
+			rounds.remove(0);
+		}
+	}
+	
 	public int timeUntilNextRound() {
 		if (currentRound != null) return 0;
 		if (rounds.size() == 0) return 0;
