@@ -37,7 +37,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
-import tuxkids.tuxblocks.core.widget.MainMenuLayer;
+import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
 
 public class Grid extends PlayNObject implements Highlightable {
 

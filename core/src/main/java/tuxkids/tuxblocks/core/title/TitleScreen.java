@@ -34,8 +34,8 @@ import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
-import tuxkids.tuxblocks.core.widget.ContinueMenuLayer;
-import tuxkids.tuxblocks.core.widget.ContinueMenuLayer.ResponseListener;
+import tuxkids.tuxblocks.core.widget.menu.ContinueMenuLayer;
+import tuxkids.tuxblocks.core.widget.menu.ContinueMenuLayer.ResponseListener;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 

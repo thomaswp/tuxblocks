@@ -32,7 +32,7 @@ import tuxkids.tuxblocks.core.widget.HeaderLayer;
 public abstract class GameHeaderLayer extends HeaderLayer {
 
 	private final static int BEAT_TIME = 300;
-	private final static float ITEM_ALPHA = (1 + Button.UNPRESSED_ALPHA) / 2;
+	private final static float ITEM_ALPHA = (1 + Button.DEFAULT_UNPRESSED_ALPHA) / 2;
 	private final static int ITEM_TEXT_COLOR = Colors.BLACK;
 	
 	private final TextFormat barTextFormat;

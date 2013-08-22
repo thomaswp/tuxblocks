@@ -24,7 +24,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
-import tuxkids.tuxblocks.core.widget.MainMenuLayer;
+import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
 
 public class BaseScreen extends Screen implements Listener {
 

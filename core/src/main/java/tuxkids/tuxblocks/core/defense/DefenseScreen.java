@@ -17,8 +17,9 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.menu.GameEndMenuLayer;
+import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
-import tuxkids.tuxblocks.core.widget.MainMenuLayer;
 
 public class DefenseScreen extends GameScreen {
 
@@ -117,7 +118,7 @@ public class DefenseScreen extends GameScreen {
 	
 	private void createStartButton() {
 		Button buttonStart = header.addRightButton(Constant.BUTTON_OK);
-		buttonStart.setSuccess();
+		buttonStart.setSuccessSound();
 		buttonStart.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {

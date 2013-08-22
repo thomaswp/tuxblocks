@@ -1,18 +1,23 @@
-package tuxkids.tuxblocks.core.widget;
+package tuxkids.tuxblocks.core.widget.menu;
 
-import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.TextFormat;
 import playn.core.Pointer.Event;
+import playn.core.TextFormat;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
-
+/**
+ * A {@link MenuLayer} for asking if players want to continue the 
+ * previous game or start a new one.
+ */
 public class ContinueMenuLayer extends MenuLayer {
 	
+	// keep an instance so it's only created once
 	private static ContinueMenuLayer instance; 
 	
+	/** Shows this menu with a listener for the response */
 	public static void show(ResponseListener listener) {
 		if (instance == null || instance.destroyed()) {
 			instance = new ContinueMenuLayer();
@@ -39,7 +44,7 @@ public class ContinueMenuLayer extends MenuLayer {
 		float buttonTextSize = height / 8f;
 		buttonContinue = new Button(null, false);
 		buttonContinue.setPosition(width * -0.25f, height * 0.2f);
-		createButton(buttonContinue, width * 0.4f, "Continue", buttonTextSize, new OnReleasedListener() {
+		setButton(buttonContinue, width * 0.4f, "Continue", buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton && listener != null) {
@@ -52,7 +57,7 @@ public class ContinueMenuLayer extends MenuLayer {
 		
 		buttonStartOver = new Button(null, false);
 		buttonStartOver.setPosition(width * 0.25f, height * 0.2f);
-		createButton(buttonStartOver, width * 0.4f, "Start Over", buttonTextSize, new OnReleasedListener() {
+		setButton(buttonStartOver, width * 0.4f, "Start Over", buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton && listener != null) {

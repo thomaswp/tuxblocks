@@ -57,7 +57,7 @@ public class UpgradePanel extends LayerWrapper {
 		buttonDelete.setPosition(-circleRad, 0);
 		buttonDelete.setTint(Colors.darker(color), color);
 		buttonDelete.layerAddable().setAlpha(BUTTON_ALPHA);
-		buttonDelete.setCancel();
+		buttonDelete.setCancelSound();
 		buttonDelete.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -72,7 +72,7 @@ public class UpgradePanel extends LayerWrapper {
 		buttonUpgrade.setPosition(circleRad, 0);
 		buttonUpgrade.setTint(Colors.darker(color), color);
 		buttonUpgrade.layerAddable().setAlpha(BUTTON_ALPHA);
-		buttonUpgrade.setSuccess();
+		buttonUpgrade.setSuccessSound();
 		buttonUpgrade.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {

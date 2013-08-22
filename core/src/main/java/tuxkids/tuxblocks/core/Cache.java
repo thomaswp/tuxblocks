@@ -3,14 +3,13 @@ package tuxkids.tuxblocks.core;
 import java.util.HashMap;
 
 import playn.core.Font;
-import playn.core.PlayN;
-import playn.core.TextFormat;
 import playn.core.Font.Style;
 import playn.core.Image;
-import tuxkids.tuxblocks.core.defense.tower.Tower;
+import playn.core.PlayN;
+import playn.core.TextFormat;
 import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 /**
  * Class for caching various resources for reuse.

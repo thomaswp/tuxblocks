@@ -1,11 +1,8 @@
 package tuxkids.tuxblocks.core.widget;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import playn.core.Color;
 import playn.core.Image;
+import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.Layer.HitTester;
 import playn.core.Pointer.Event;
@@ -20,9 +17,14 @@ import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.Positioned;
 
+/**
+ * A clickable wrapper for an {@link ImageLayer} with some
+ * utility methods. Buttons always have their origin at their center.
+ */
 public class Button extends PlayNObject implements Positioned, Highlightable {
 	
-	public final static float UNPRESSED_ALPHA = 0.5f;
+	// default alpha for the button when it is unpressed
+	public final static float DEFAULT_UNPRESSED_ALPHA = 0.5f;
 	
 	private final ImageLayerTintable imageLayer;
 	private final boolean isCircle;
@@ -35,6 +37,7 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 	private int tint, tintPressed;
 	private boolean enabled = true;
 	
+	// sound to play when the button is pressed
 	protected String soundPath = Constant.SE_OK;
 	
 	private Highlighter highlighter = new Highlighter() {
@@ -190,21 +193,25 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 	}
 	
 	public void setTint(int tint) {
-		setTint(tint, UNPRESSED_ALPHA);
+		setTint(tint, DEFAULT_UNPRESSED_ALPHA);
 	}
 	
+	/** Sets this button's tint to the given color, and to the given alpha when unpressed. */
 	public void setTint(int tint, float alphaUnpressed) {
 		setTint(Color.withAlpha(tint, (int)(255 * alphaUnpressed)), tint);
 	}
 	
-	public void setTint(int tint, int tintPressed) {
-		this.tint = tint;
+	/** Sets this button's tint to the given pressed and unpressed colors. */
+	public void setTint(int tintUnpressed, int tintPressed) {
+		this.tint = tintUnpressed;
 		this.tintPressed = tintPressed;
 		if (!highlighter.highlighted()) {
 			refreshTint();
 		}
 	}
 	
+	/** Sets whether this button is enabled or not. Disabled buttons
+	 *  have a darker color and cannot be pressed. */
 	public void setEnabled(boolean enabled) {
 		if (this.enabled == enabled) return;
 		this.enabled = enabled;
@@ -215,14 +222,21 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		this.soundPath = soundPath;
 	}
 	
+	/** See {@link Button#Button(Image, float, float, boolean)} */
 	public Button(String imagePath, float width, float height, boolean isCircle) {
 		this(assets().getImage(imagePath), width, height, isCircle);
 	}
 	
+	/** See {@link Button#Button(Image, float, float, boolean)} */
 	public Button(Image image, boolean isCircle) {
 		this(image, image == null ? 0 : image.width(), image == null ? 0 : image.height(), isCircle);
 	}
 
+	/**
+	 * Creates a Button with the given Image, width and height, and whether the button
+	 * is a circle or not. Circular buttons only respond to click within a radius
+	 * of 1/2 their width. 
+	 */
 	public Button(Image image, float width, float height, boolean isCircle) {
 		this.width = width;
 		this.height = height;
@@ -230,7 +244,7 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		imageLayer = new ImageLayerTintable();
 		setImage(image);
 		imageLayer.addListener(new PointerListener());
-		setTint(Colors.WHITE, UNPRESSED_ALPHA);
+		setTint(Colors.WHITE, DEFAULT_UNPRESSED_ALPHA);
 		if (isCircle) {
 			imageLayer.setHitTester(new HitTester() {
 				@Override
@@ -255,6 +269,11 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		imageLayer.destroy();
 	}
 
+	/** 
+	 * Returns true if the given coordinates (relative to this Button's parent layer) 
+	 * are inside the Button. Circular buttons will be hit if the click is within a 
+	 * radius of 1/2 the button's width. 
+	 */
 	public boolean hit(float x, float y) {
 		if (isCircle) {
 			return hitCircle(x, y);
@@ -263,11 +282,11 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		}
 	}
 	
-	public boolean hitRectangle(float x, float y) {
+	protected boolean hitRectangle(float x, float y) {
 		return Math.abs(x - x()) < width / 2 && Math.abs(y - y()) < height / 2;
 	}
 	
-	public boolean hitCircle(float x, float y) {
+	protected boolean hitCircle(float x, float y) {
 		return distance(x(), y(), x, y) < width / 2;
 	}
 	
@@ -294,6 +313,9 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 			if (onReleaseListener != null) onReleaseListener.onRelease(event, insideLocal(event));
 		}
 		
+		// can't use the hit() method because these are local coordinates
+		// and there's no way of knowing if the global coordinates are
+		// aligned with the button's parent Layer
 		private boolean insideLocal(Event event) {
 			float dw = image().width() / 2;
 			float dh = image().height() / 2;
@@ -330,18 +352,22 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		public void onDrag(Event event);
 	}
 
-	public void setCancel() {
+	/** Sets this button's sound to the Cancel sound */
+	public void setCancelSound() {
 		setSoundPath(Constant.SE_BACK);
 	}
 
-	public void setSuccess() {
+	/** Sets this button's sound to the Success sound */
+	public void setSuccessSound() {
 		setSoundPath(Constant.SE_SUCCESS);
 	}
 
-	public void setOk() {
+	/** Sets this button's sound to the Ok sound */
+	public void setOkSound() {
 		setSoundPath(Constant.SE_OK);
 	}
 
+	/** Sets this button's sound to no sound */
 	public void setNoSound() {
 		setSoundPath(null);
 	}

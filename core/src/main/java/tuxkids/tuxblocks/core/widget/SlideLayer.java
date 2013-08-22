@@ -12,6 +12,12 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * A slide-bar widget, allowing players to select a value from 0-1.
+ * For a slide-bar with discrete options, see {@link DiscreteSlideLayer}.
+ * You must call this {@link SlideLayer#paint(Clock)} for this widget to
+ * function correctly. 
+ */
 public class SlideLayer extends LayerWrapper implements Listener {
 	protected final GroupLayer layer;
 	protected final ImageLayer barLayer, fillLayer, nubLayer;
@@ -34,12 +40,14 @@ public class SlideLayer extends LayerWrapper implements Listener {
 		setOrigin(width() / 2, height() / 2);
 	}
 	
+	/** Returns the fill percentage [0-1] of the bar. */
 	public float fill() {
 		return Math.min(Math.max(0, nubLayer.tx() / width), 1);
 	}
 
-	public void setFill(float volume) {
-		nubLayer.setTx(width * volume);
+	/** Sets the fill percentage [0-1] of the bar. */
+	public void setFill(float fill) {
+		nubLayer.setTx(width * fill);
 	}
 	
 	public void setFillListener(FillListener fillListener) {
@@ -80,6 +88,7 @@ public class SlideLayer extends LayerWrapper implements Listener {
 		
 	}
 	
+	// sets the nub's x value and updates graphics appropriately
 	protected void setNubX(float x) {
 		x = Math.max(0, Math.min(width, x));
 		nubLayer.setTx(x);

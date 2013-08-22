@@ -1,8 +1,5 @@
 package tuxkids.tuxblocks.core.widget;
 
-import java.util.Arrays;
-import java.util.List;
-
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
@@ -11,6 +8,9 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/** 
+ * A Layer to place at the top of the screen with information and buttons.
+ */
 public class HeaderLayer extends LayerWrapper {
 	
 	public static float DEFAULT_ALPHA = 0.75f;
@@ -42,26 +42,31 @@ public class HeaderLayer extends LayerWrapper {
 		return rightButton;
 	}
 
+	/** Creates a menu button and sets it in the left corner */
 	public Button addLeftButton(String path) {
 		return addLeftButton(assets().getImage(path));
 	}
 	
+	/** Creates a menu button and sets it in the left corner */
 	public Button addLeftButton(Image image) {
 		leftButton = addButton(image);
 		leftButton.setPosition(leftButton.width() * 0.6f, height / 2);
 		return leftButton;
 	}
 
+	/** Creates a menu button and sets it in the right corner */
 	public Button addRightButton(String path) {
 		return addRightButton(assets().getImage(path));
 	}
 	
+	/** Creates a menu button and sets it in the right corner */
 	public Button addRightButton(Image image) {
 		rightButton = addButton(image);
 		rightButton.setPosition(width - rightButton.width() * 0.6f, height / 2);
 		return rightButton;
 	}
 	
+	/** Creates a menu button */
 	public Button createButton(String path) {
 		return createButton(assets().getImage(path));
 	}

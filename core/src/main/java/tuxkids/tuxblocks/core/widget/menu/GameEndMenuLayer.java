@@ -1,22 +1,26 @@
-package tuxkids.tuxblocks.core.defense;
+package tuxkids.tuxblocks.core.widget.menu;
 
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.TextFormat;
-import playn.core.TextLayout;
 import playn.core.Pointer.Event;
+import playn.core.TextFormat;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
-import tuxkids.tuxblocks.core.widget.MenuLayer;
 
+/**
+ * Menu shown at the end of a game, showing whether the player was
+ * victorious or not.
+ */
 public class GameEndMenuLayer extends MenuLayer {
 
+	// keep an instance so it's only created once
 	private static GameEndMenuLayer instance; 
 	
+	/** Shows this menu, showing either vicotry or game over */
 	public static void show(boolean victory, Runnable onDismiss) {
 		if (instance == null || instance.destroyed()) {
 			instance = new GameEndMenuLayer();
@@ -48,7 +52,7 @@ public class GameEndMenuLayer extends MenuLayer {
 		continueButton = new Button(null, false);
 		continueButton.setPosition(0, height * 0.2f);
 		layer.add(continueButton.layerAddable());
-		createButton(continueButton, width * 0.6f, "Continue", height * 0.15f, new OnReleasedListener() {
+		setButton(continueButton, width * 0.6f, "Continue", height * 0.15f, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {

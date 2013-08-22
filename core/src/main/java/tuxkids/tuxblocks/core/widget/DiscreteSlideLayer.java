@@ -7,7 +7,10 @@ import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
-
+/** 
+ * A {@link SlideLayer} with discrete stops that the nub
+ * will snap to.
+ */
 public class DiscreteSlideLayer extends SlideLayer {
 
 	protected final ImageLayer[] stopLayers;
@@ -24,6 +27,7 @@ public class DiscreteSlideLayer extends SlideLayer {
 		listener = stopChangedListener;
 	}
 	
+	/** Sets the current stop. If forced, snap the nub in place. */
 	public void setStop(int stop, boolean force) {
 		if (force) {
 			this.stop = -1;
@@ -40,6 +44,10 @@ public class DiscreteSlideLayer extends SlideLayer {
 		}
 	}
 	
+	/**
+	 * Creates a {@link DiscreteSlideLayer} with the given properties.
+	 * Each stop provided will be even distributed along the bar.
+	 */
 	public DiscreteSlideLayer(float width, float height, int color,
 			String... stops) {
 		super(width, height, color);

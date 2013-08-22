@@ -64,7 +64,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		buttonCancel.setPosition(width / 2 + size * 0.6f, buttonRepeat.y());
 		buttonCancel.layerAddable().setDepth(buttonRepeat.layerAddable().depth());
 		buttonCancel.setTint(Colors.LIGHT_GRAY, 0.4f);
-		buttonCancel.setCancel();
+		buttonCancel.setCancelSound();
 		layer.add(buttonCancel.layerAddable());
 		
 		buttonRepeat.setOnReleasedListener(new OnReleasedListener() {

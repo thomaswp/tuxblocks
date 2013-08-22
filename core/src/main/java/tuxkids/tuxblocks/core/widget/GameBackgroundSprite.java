@@ -13,13 +13,21 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.Sobol;
 
+/**
+ * The background for the game, with overlapping colored blocks.
+ */
 public class GameBackgroundSprite extends PlayNObject {
 
+	// how fast rects are created 
 	private final static int CREATE_RECT_INTERVAL = 300;
+	// how fast rects are removed
 	private static final int REMOVE_RECT_INTERVAL = 1500;
+	// max rects displayed at once
 	private final static int MAX_RECTS = 30;
 	
+	// hue offset for secondary color
 	private final static float HUE_OFFSET_1 = 0.3f;
+	// hue offset for ternary color
 	private final static float HUE_OFFSET_2 = 0.7f;
 	
 	private GroupLayer groupLayer;
@@ -43,22 +51,27 @@ public class GameBackgroundSprite extends PlayNObject {
 		return groupLayer;
 	}
 	
+	/** The hue of the {@link GameBackgroundSprite#primaryColor */
 	public float primaryHue() {
 		return primaryHue;
 	}
 	
+	/** The primary color used for rects */
 	public int primaryColor() {
 		return primaryColor;
 	}
 	
+	/** The secondary color used for rects */
 	public int secondaryColor() {
 		return secondaryColor;
 	}
 	
+	/** The ternary color used for rects */
 	public int ternaryColor() {
 		return ternaryColor;
 	}
 	
+	/** Scrolls the background parallax-style */
 	public void scroll(float x, float y) {
 		offset.x += x;
 		offset.y += y;
@@ -84,6 +97,7 @@ public class GameBackgroundSprite extends PlayNObject {
 	}
 	
 
+	/** Changes the primary color and its corresponding colors */
 	public void newThemeColor() {
 		primaryHue = (float)Math.random();
 		primaryColor = CanvasUtils.hsvToRgb(primaryHue, 1, 1);
@@ -123,6 +137,8 @@ public class GameBackgroundSprite extends PlayNObject {
 		return maxSize() / 6;
 	}
 	
+	// use Sobol for an even multi-dimensional distribution
+	// see http://en.wikipedia.org/wiki/Sobol_sequence
 	private Sobol sobolD5 = new Sobol(5);
 	private class BackgroundSprite {
 		private ImageLayer layer;

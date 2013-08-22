@@ -10,10 +10,9 @@ import playn.core.ImageLayer;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
-import tuxkids.tuxblocks.core.utils.PersistUtils;
 import tuxkids.tuxblocks.core.utils.SolidClock;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
-import tuxkids.tuxblocks.core.widget.MenuLayer;
+import tuxkids.tuxblocks.core.widget.menu.MenuLayer;
 
 public class TuxBlocksGame extends Game.Default {
 
