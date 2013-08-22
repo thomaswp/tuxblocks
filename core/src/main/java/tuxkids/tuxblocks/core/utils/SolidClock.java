@@ -1,7 +1,13 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.utils;
 
 import playn.core.util.Clock;
 
+/**
+ * A {@link Clock} implementation which ensures that the sum of all
+ * dt's returned over a given time-interval will nearly equal the sum of
+ * deltas passed in the update method. This is, for some unknown reason, not
+ * the case with {@link Clock.Source}. 
+ */
 public class SolidClock implements Clock {
 	private final int updateRate;
 	private int elapsed;

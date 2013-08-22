@@ -6,9 +6,9 @@ import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import pythagoras.f.Rectangle;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public abstract class Sprite extends PlayNObject implements Persistable {
 

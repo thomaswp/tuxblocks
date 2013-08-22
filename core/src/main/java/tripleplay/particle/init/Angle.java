@@ -9,12 +9,25 @@ import static tripleplay.particle.ParticleBuffer.VEL_Y;
 import pythagoras.f.FloatMath;
 import tripleplay.particle.Initializer;
 
+/**
+ * Contains methods for {@link Initializer}s that change a particle's
+ * angle.
+ */
 public class Angle {
 	
+	/**
+	 * See {@link Angle#byVelocity(float)}
+	 */
 	public static Initializer byVelocity() {
 		return byVelocity(0);
 	}
 	
+	/**
+	 * Sets a particle's angle based on the angle of its velocity. You may supply
+	 * an angleOffset, which will be added to this angle. This allows, for instance,
+	 * for spikes to come out of a particle effect facing <i>outward</i> rather than
+	 * a specific angle.
+	 */
 	public static Initializer byVelocity(final float angleOffset) {
 		return new Initializer() {
 			@Override

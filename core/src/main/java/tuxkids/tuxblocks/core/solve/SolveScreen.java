@@ -101,7 +101,7 @@ public class SolveScreen extends EquationScreen {
 		if (solveCorrect && !entering()) {
 			solveCallback.wasSimplified(true);
 			if (solveStat != null) {
-				state.addExpForLevel(solveStat, solveLevel);
+				state.addExpForSolving(solveStat, solveLevel);
 			}
 			clearSolve();
 		}

@@ -3,10 +3,10 @@ package tuxkids.tuxblocks.core.defense;
 import java.util.HashMap;
 
 import pythagoras.i.Point;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public class TowerState extends PlayNObject implements Persistable {
 	

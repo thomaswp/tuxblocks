@@ -7,7 +7,7 @@ import playn.core.Color;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public abstract class Tutorial extends PlayNObject {
 

@@ -11,11 +11,11 @@ import playn.core.TextLayout;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.AboutScreen;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
+import tuxkids.tuxblocks.core.title.AboutScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.widget.SlideLayer.FillListener;
@@ -72,8 +72,6 @@ public class MainMenuLayer extends MenuLayer {
 		buttonExit = new Button(null, false);
 		buttonExit.setPosition(0, -0.3f * height);
 		layer.add(buttonExit.layerAddable());
-
-//		createButtons();
 	}
 	
 	protected SlideLayer createSlider(String caption, float y) {

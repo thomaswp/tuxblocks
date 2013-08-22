@@ -3,12 +3,12 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
 public class Equation extends PlayNObject implements Hashable, Persistable {

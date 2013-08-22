@@ -4,6 +4,11 @@ import playn.core.GroupLayer;
 import playn.core.Image;
 import react.Slot;
 
+/**
+ * This class, as well as the other "Tux" particle classes allow for non-GL
+ * rendering of particle effects (in a limited capacity). This class mirrors
+ * the {@link Particles} class.
+ */
 public class TuxParticles extends Particles {
 
 

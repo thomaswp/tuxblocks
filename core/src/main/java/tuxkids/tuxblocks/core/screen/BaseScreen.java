@@ -16,13 +16,13 @@ import pythagoras.f.Vector;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.MainMenuLayer;
 

@@ -16,9 +16,11 @@ import tripleplay.util.Destroyable;
 import tuxkids.tuxblocks.core.utils.GLStatus;
 
 /**
- * Emits and updates particles according to a particle system configuration.
+ * This class, as well as the other "Tux" particle classes allow for non-GL
+ * rendering of particle effects (in a limited capacity). This class mirrors
+ * the {@link Emitter} class.
  */
-public class TuxEmitter extends Emitter
+class TuxEmitter extends Emitter
     implements Destroyable
 {
 
@@ -35,6 +37,8 @@ public class TuxEmitter extends Emitter
 				if (renderer != null) renderer.render(surface, _buffer, image, effectors, now);
 			}
 		});
+    	// TODO: fix the commented-out portions so that particles can work in GL
+    	// or non-GL modes. Currently we force non-GL mode because of bugs.
 //    	if (!GLStatus.enabled()) {
         	layer.setVisible(false);
         	renderer = new CanvasParticleRenderer(image);

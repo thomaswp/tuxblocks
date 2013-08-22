@@ -3,7 +3,12 @@ package tripleplay.particle.init;
 import playn.core.Layer;
 import tripleplay.particle.Initializer;
 import tripleplay.particle.ParticleBuffer;
+import tripleplay.particle.TuxParticles;
 
+/**
+ * A version of the {@link Transform} Initter, which works correctly with
+ * {@link TuxParticles} and non-GL platforms. 
+ */
 public class TuxTransform extends Transform {
 
 
@@ -15,6 +20,9 @@ public class TuxTransform extends Transform {
     public static Initializer layer (final Layer layer) {
         return new Initializer() {
             @Override public void willInit (int count) {
+            	// TODO: fix the commented-out portions so that particles can work in GL
+            	// or non-GL modes. Currently we force non-GL mode because of bugs.
+            	
 //            	if (!GLStatus.enabled()) {
             		_matrix[0] = 1; _matrix[3] = 1;
             		return;

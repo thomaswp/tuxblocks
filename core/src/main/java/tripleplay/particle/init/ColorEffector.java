@@ -5,6 +5,9 @@ import tripleplay.util.Colors;
 import tripleplay.util.Interpolator;
 import static tripleplay.particle.ParticleBuffer.*;
 
+/**
+ * An {@link Effector} which changes the color of a particle over time.
+ */
 public abstract class ColorEffector extends Effector {
 
 	public abstract int startColor();

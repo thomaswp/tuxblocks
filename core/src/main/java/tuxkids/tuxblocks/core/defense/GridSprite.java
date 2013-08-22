@@ -1,6 +1,6 @@
 package tuxkids.tuxblocks.core.defense;
 
-import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public class GridSprite extends PlayNObject {
 	

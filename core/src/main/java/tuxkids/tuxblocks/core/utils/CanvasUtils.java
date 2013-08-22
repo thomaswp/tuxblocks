@@ -10,7 +10,6 @@ import playn.core.Font.Style;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.Cache;
-import tuxkids.tuxblocks.core.PlayNObject;
 
 public class CanvasUtils extends PlayNObject {
 

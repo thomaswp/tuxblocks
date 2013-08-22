@@ -1,7 +1,7 @@
 package tuxkids.tuxblocks.core.effect.anim;
 
 import playn.core.Image;
-import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public class Animation extends PlayNObject {
 

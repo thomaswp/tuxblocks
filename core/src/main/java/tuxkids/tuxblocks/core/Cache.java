@@ -9,8 +9,12 @@ import playn.core.Font.Style;
 import playn.core.Image;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
+/**
+ * Class for caching various resources for reuse.
+ */
 public class Cache {
 
 	private final static HashMap<Key, Image> imageMap = new HashMap<Cache.Key, Image>();
@@ -49,9 +53,18 @@ public class Cache {
 		return new TextFormat().withFont(getFont(Constant.FONT_NAME, style, size));
 	}
 	
+	/**
+	 * Identifies a resource for reuse later. Should be able to copy iteself
+	 * to a new instance if necessary.
+	 */
 	public static abstract class Key extends PlayNObject implements Hashable {
 		public abstract Key copy();
 
+		/**
+		 * Creates a Key based on the supplied class and any Object.
+		 * Note: Keys are compared using equals(), and so will
+		 * the supplied Object.
+		 */
 		public static Key fromClass(Class<?> clazz, Object key) {
 			return new ClassKey(clazz, key);
 		}

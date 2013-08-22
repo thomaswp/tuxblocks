@@ -5,6 +5,10 @@ import java.util.ArrayList;
 
 import playn.core.PlayN;
 
+/**
+ * Class containing constant values, such as resource paths
+ * and storage keys.
+ */
 public class Constant {
 	
 	private final static List<String> preloadImages = new ArrayList<String>(),
@@ -102,6 +106,7 @@ public class Constant {
 	
 	public static final String FONT_NAME = "Arial";
 	
+	// unicode symbols
 	public static final String TIMES_SYMBOL = "\u00D7";
 	public static final String DIVIDE_SYMBOL = "\u00F7";
 	public static final String DOT_SYMBOL = "\u00B7";
@@ -115,6 +120,7 @@ public class Constant {
 	
 	public static final String TEXT_ABOUT = "About.txt";
 
+	// functions for swapping out touch-specific words on Android/iOS
 	public static String click() {
 		return PlayN.touch().hasTouch() ? "tap" : "click";
 	}
@@ -127,7 +133,7 @@ public class Constant {
 		return PlayN.touch().hasTouch() ? "finger" : "mouse";
 	}
 	
-	public static CharSequence menu() {
+	public static CharSequence menu() { 
 		return PlayN.touch().hasTouch() ? "the Android menu button" : "the Esc button on the keyboard";
 	}
 	

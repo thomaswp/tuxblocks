@@ -1,7 +1,7 @@
 package tuxkids.tuxblocks.core.solve.markup;
 
 import playn.core.TextFormat;
-import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public abstract class Renderer extends PlayNObject {
 	

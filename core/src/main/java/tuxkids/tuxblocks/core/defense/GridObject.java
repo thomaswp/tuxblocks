@@ -1,7 +1,7 @@
 package tuxkids.tuxblocks.core.defense;
 
 import playn.core.util.Clock;
-import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public abstract class GridObject extends PlayNObject {
 	

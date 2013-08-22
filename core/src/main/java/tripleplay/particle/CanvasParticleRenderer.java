@@ -7,11 +7,15 @@ import playn.core.Image;
 import playn.core.Surface;
 import tripleplay.particle.TuxEmitter.ParticleRenderer;
 import tripleplay.particle.init.ColorEffector;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 import static tripleplay.particle.ParticleBuffer.*;
 
-public class CanvasParticleRenderer extends PlayNObject implements ParticleRenderer {
+/**
+ * Renders particles from a {@link TuxParticles} group using ImageLayers instead of
+ * a GL shader to make them HTML5 Canvas compliant. 
+ */
+class CanvasParticleRenderer extends PlayNObject implements ParticleRenderer {
 
 	private ImageLayerTintable imageLayer;
 	
@@ -22,11 +26,13 @@ public class CanvasParticleRenderer extends PlayNObject implements ParticleRende
 	
 	@Override
 	public void render(Surface surface, ParticleBuffer buffer, Image image, List<? extends Effector> effectors, float now) {
+		// get the ColorEffector for tinting later
 		ColorEffector colorEffector = null;
 		for (Effector effector : effectors) {
 			if (effector instanceof ColorEffector) colorEffector = (ColorEffector) effector;
 		}
 		
+		// mirrors the iteration of particles found in the ParticleBuffer class
 		int pp = 0, ppos = 0, rendered = 0;
 		float[] data = buffer.data;
         for (int aa = 0; aa < buffer.alive.length; aa++) {

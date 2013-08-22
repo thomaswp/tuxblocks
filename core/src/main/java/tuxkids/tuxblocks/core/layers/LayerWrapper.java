@@ -4,7 +4,7 @@ import playn.core.GroupLayer;
 import playn.core.Layer;
 import playn.core.Pointer.Listener;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public class LayerWrapper extends PlayNObject implements LayerLike {
 	private Layer layer;

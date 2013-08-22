@@ -1,6 +1,7 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.utils;
 
 import playn.core.Assets;
+import playn.core.Font.Style;
 import playn.core.Graphics;
 import playn.core.GroupLayer;
 import playn.core.Image;
@@ -9,23 +10,26 @@ import playn.core.Keyboard;
 import playn.core.Layer;
 import playn.core.PlayN;
 import playn.core.Pointer;
-import playn.core.TextFormat;
-import playn.core.Font.Style;
 import playn.core.Pointer.Event;
+import playn.core.TextFormat;
 import playn.core.util.Callback;
 import pythagoras.f.FloatMath;
 import pythagoras.f.IVector;
 import pythagoras.f.Vector;
 import pythagoras.i.IPoint;
+import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
-import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerLike;
-import tuxkids.tuxblocks.core.utils.Debug;
-import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
-import tuxkids.tuxblocks.core.utils.Positioned;
 
+/**
+ * Base class, containing a number of useful methods so that they
+ * don't need to be imported.
+ */
 public abstract class PlayNObject {
+	
+	// Wrap PlayN's methods
+	
 	protected static Graphics graphics() {
 		return PlayN.graphics();
 	}
@@ -58,6 +62,8 @@ public abstract class PlayNObject {
 		return graphics().rootLayer();
 	}
 	
+	// wrap Debug's methods
+	
 	protected static void debug(String msg) {
 		Debug.write(msg);
 	}
@@ -86,6 +92,8 @@ public abstract class PlayNObject {
 		Debug.write(o);
 	}
 	
+	// wrap Cache's methods
+	
 	public static TextFormat createFormat(float size) {
 		return Cache.createFormat(size);
 	}
@@ -93,6 +101,8 @@ public abstract class PlayNObject {
 	public static TextFormat createFormat(String name, Style style, float size) {
 		return Cache.createFormat(name, style, size);
 	}
+	
+	// linear-interpolation in any flavor you like
 	
 	public static float lerp(float x0, float x1, float perc) {
 		return x0 * (1 - perc) + x1 * perc;
@@ -114,6 +124,8 @@ public abstract class PlayNObject {
 		return lerp(x0, x1, perc);
 	}
 	
+	/** Linearly interpolates, but uses an elapsed time instead of a factor, 
+	 * making the interpolation smoother if the frames aren't consistent. */
 	public static float lerpTime(float x0, float x1, float base, float dt, float snapDistance) {
 		float perc = 1 - FloatMath.pow(base, dt);
 		return lerp(x0, x1, perc, snapDistance);
@@ -132,11 +144,14 @@ public abstract class PlayNObject {
 		layer.setAlpha(lerpTime(layer.alpha(), target, base, dt, 0.01f));
 	}
 	
+	/** Returns x0, linearly shifted to x1 by maxShift, but not past x1 */
 	public static float shiftTo(float x0, float x1, float maxShift) {
 		float change = x1 - x0;
 		change = Math.min(Math.abs(change), maxShift) * Math.signum(change);
 		return x0 + change;
 	}
+	
+	// distance methods
 	
 	public static float distance(float x1, float y1, float x2, float y2) {
 		float dx = x2 - x1;
@@ -182,6 +197,9 @@ public abstract class PlayNObject {
 		return 0;
 	}
 	
+	// Layer utility methods
+	
+	/** Centers the origin of the given Layer */
 	public static void centerImageLayer(final ImageLayer layer) {
 		if (layer.image() != null) {
 			layer.image().addCallback(new Callback<Image>() {
@@ -197,6 +215,7 @@ public abstract class PlayNObject {
 		}
 	}
 	
+	/** Centers the origin of the given Layer */
 	public static void centerImageLayer(final ImageLayerLike layer) {
 		if (layer.image() != null) {
 			layer.image().addCallback(new Callback<Image>() {
@@ -212,6 +231,7 @@ public abstract class PlayNObject {
 		}
 	}
 	
+	/** Get the global x-coordinate of this Layer on the screen */
 	public static float getGlobalTx(Layer layer) {
 		Layer parent = layer;
 		float tx = 0;
@@ -224,6 +244,7 @@ public abstract class PlayNObject {
 		return tx;
 	}
 	
+	/** Get the global y-coordinate of this Layer on the screen */
 	public static float getGlobalTy(Layer layer) {
 		Layer parent = layer;
 		float ty = 0;
@@ -236,6 +257,7 @@ public abstract class PlayNObject {
 		return ty;
 	}
 	
+	/** Get the global x-scale of this Layer on the screen */
 	public static float getGlobalScaleX(Layer layer) {
 		Layer parent = layer;
 		float scaleX = 1;
@@ -246,6 +268,7 @@ public abstract class PlayNObject {
 		return scaleX;
 	}
 	
+	/** Get the global y-scale of this Layer on the screen */
 	public static float getGlobalScaleY(Layer layer) {
 		Layer parent = layer;
 		float scaleY = 1;
@@ -256,6 +279,7 @@ public abstract class PlayNObject {
 		return scaleY;
 	}
 	
+	// Creates a hashCode for this object if it's Hashable
 	private HashCode hashCode;
 	protected PlayNObject() {
 		if (this instanceof Hashable) hashCode = new HashCode((Hashable) this);
@@ -263,16 +287,19 @@ public abstract class PlayNObject {
 	
 	@Override
 	public int hashCode() {
+		// use the hasCode if it's available
 		if (hashCode == null) return super.hashCode();
 		return hashCode.hashCode();
 	}
 	
+	/** For {@link Hashable} objects that wish to access {@link Object#hashCode()} */
 	protected int nativeHashCode() {
 		return super.hashCode();
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
+		// use the hasCode if it's available
 		if (hashCode == null) return super.equals(obj);
 		if (this == obj) return true;
 		if (obj == null) return false;

@@ -11,35 +11,33 @@ import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.utils.PersistUtils;
+import tuxkids.tuxblocks.core.utils.SolidClock;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.MenuLayer;
 
 public class TuxBlocksGame extends Game.Default {
 
+	/** The target milliseconds per update call */
 	public static final int UPDATE_RATE = 1000 / 30;
+	// max milliseconds per update call
 	private final static int MAX_DELTA = (int)(UPDATE_RATE * 1.5f);
+	private final static boolean SHOW_FPS = false;
 	
 	protected final SolidClock clock = new SolidClock(UPDATE_RATE);
-	//protected final Clock.Source clock = new Clock.Source(UPDATE_RATE);
 
     protected final ScreenStack screens = new ScreenStack() {
-//        @Override protected void handleError (RuntimeException error) {
-//            log().warn("Screen failure", error);
-//        }
         @Override public Transition defaultPushTransition () {
-//        	return fade;
             return slide();
         }
         @Override public Transition defaultPopTransition () {
-            //return new FadeTransition(screens); 
             return slide().right();
         }
     };
     
 	private static TuxBlocksGame instance;
-	
 	private GameBackgroundSprite background;
 	
+	/** Returns the number of screen showing. Called from the Android activity */
 	public static int screenDepth() {
 		return instance.screens.size();
 	}
@@ -50,7 +48,8 @@ public class TuxBlocksGame extends Game.Default {
 	}
 
 	@Override
-	public void init() {		
+	public void init() {	
+		//Clear static classes for Android because the JVM is maintained
 		Cache.clear();
 		Audio.clear();
 		MenuLayer.clear();
@@ -69,6 +68,7 @@ public class TuxBlocksGame extends Game.Default {
 		
 	}
 	
+	// Logic to show FPS
 	private int frames;
 	private double lastUpdate;
 	private ImageLayer fpsLayer;
@@ -109,15 +109,6 @@ public class TuxBlocksGame extends Game.Default {
         screens.paint(clock);
         Tutorial.paint(clock);
         MenuLayer.paint(clock);
-		updateFPS();
+        if (SHOW_FPS) updateFPS();
 	}
-	
-//	Font font = graphics().createFont("Arial", Style.PLAIN, 24);
-//	TextFormat format = new TextFormat().withFont(font).withWrapWidth(95);
-//	TextLayout layout = graphics().layoutText("Hello, it’s the world.", format);
-//	
-//	CanvasImage image = graphics().createImage(200, 200);
-//	image.canvas().setFillColor(Colors.WHITE);
-//	image.canvas().fillText(layout, 0, 0);
-//	graphics().rootLayer().add(graphics().createImageLayer(image));
 }

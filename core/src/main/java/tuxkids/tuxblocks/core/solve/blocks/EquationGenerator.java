@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.round.Level.Level1;
 import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public class EquationGenerator extends PlayNObject {
 

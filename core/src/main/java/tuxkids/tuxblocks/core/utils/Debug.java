@@ -1,7 +1,6 @@
 package tuxkids.tuxblocks.core.utils;
 
 import playn.core.PlayN;
-import tuxkids.tuxblocks.core.PlayNObject;
 
 
 /**

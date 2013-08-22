@@ -7,7 +7,12 @@ import tripleplay.sound.Clip;
 import tripleplay.sound.Loop;
 import tripleplay.sound.Playable;
 import tripleplay.sound.SoundBoard;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
+/**
+ * Class for playing Audio. Contains a BG instance for background music
+ * and an SE instance for sound effects. All methods are static.
+ */
 public abstract class Audio extends PlayNObject {
 	
 	private static Audio bg = new BG(), se = new SE();
@@ -20,11 +25,13 @@ public abstract class Audio extends PlayNObject {
 		return se;
 	}
 	
+	// called from TuxBlockGame
 	public static void update(int delta) {
 		bg.updateInstance(delta);
 		se.updateInstance(delta);
 	}
 
+	// called from TuxBlockGame
 	public static void clear() {
 		bg = new BG();
 		se = new SE();
@@ -35,6 +42,7 @@ public abstract class Audio extends PlayNObject {
 	public abstract void stop();
 	
 	protected final SoundBoard soundboard;
+	// cache sound effects
 	protected final HashMap<String, Playable> cache =
 			new HashMap<String, Playable>();
 	
@@ -42,6 +50,7 @@ public abstract class Audio extends PlayNObject {
 	
 	private Audio() {
 		soundboard = new SoundBoard();
+		//load previous volume
 		String volume = PlayN.storage().getItem(volumeKey());
 		if (volume != null) {
 			try {
@@ -63,7 +72,7 @@ public abstract class Audio extends PlayNObject {
 	}
 	
 	public void play(String path) {
-		preload(path);
+		preload(path); // load the sound into the cache
 		Playable playing = cache.get(path);
 		playing.play();
 		lastPlayed = playing;
@@ -109,6 +118,7 @@ public abstract class Audio extends PlayNObject {
 		}
 
 		public void play(String path) {
+			// fade out other background music before playing
 			for (Playable p : cache.values()) {
 				if (p.isPlaying()) {
 					((Loop) p).fadeOut(1000);
@@ -146,6 +156,7 @@ public abstract class Audio extends PlayNObject {
 		public void play(String path) {
 			preload(path);
 			Playable playing = cache.get(path);
+			// Only play the sound effect if it's not already playing
 			if (playing != lastPlayed || lastPlayed == null || !lastPlayed.isPlaying()) {
 				super.play(path);
 			}

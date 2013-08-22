@@ -9,7 +9,7 @@ import playn.core.Layer.HitTester;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.PlayNObject;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 

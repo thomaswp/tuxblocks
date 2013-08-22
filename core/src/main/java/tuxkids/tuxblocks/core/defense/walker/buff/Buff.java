@@ -1,8 +1,8 @@
 package tuxkids.tuxblocks.core.defense.walker.buff;
 
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.utils.HashCode;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 
 public abstract class Buff extends PlayNObject implements Hashable {

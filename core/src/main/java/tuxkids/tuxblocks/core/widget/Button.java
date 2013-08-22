@@ -15,9 +15,9 @@ import pythagoras.f.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.Positioned;
 
 public class Button extends PlayNObject implements Positioned, Highlightable {

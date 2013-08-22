@@ -30,7 +30,6 @@ import tripleplay.util.Randoms;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.effect.MissileExplosion;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
@@ -42,6 +41,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 
 public class BlockController extends PlayNObject {

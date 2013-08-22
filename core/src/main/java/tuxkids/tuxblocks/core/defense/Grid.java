@@ -23,7 +23,6 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.PlayNObject;
 import tuxkids.tuxblocks.core.defense.projectile.ChainProjectile;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.round.Level;
@@ -37,6 +36,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.MultiList;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.MainMenuLayer;
 
 public class Grid extends PlayNObject implements Highlightable {
