@@ -63,9 +63,8 @@ public class TuxBlocksGame extends Game.Default {
 		
 		background = new GameBackgroundSprite();
 		background.layer().setDepth(-10);
-		
-		
 		graphics().rootLayer().add(background.layer());
+		
 		screens.push(new TitleScreen(screens, background));
 		
 	}

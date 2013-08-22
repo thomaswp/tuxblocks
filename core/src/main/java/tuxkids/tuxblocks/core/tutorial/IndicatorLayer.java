@@ -41,25 +41,61 @@ public class IndicatorLayer extends LayerWrapper {
 		set = false;
 	}
 	
-	public void set(final Indicator indicator, final int themeColor) {
-		set = true;
-		
-		layer.setTranslation(indicator.x, indicator.y);
-		
-		foregroundLayer.setImage(assets().getImage(
-				Constant.TUTORIAL_IMAGE_PATH + indicator.name + ".png"));
-		foregroundLayer.setVisible(false);
-		
-//		backgroundLayer.setImage(assets().getImage(
-//				Constant.TUTORIAL_IMAGE_PATH + indicator.name + "_bg.png"));
-//		backgroundLayer.setVisible(false);
-//
-//		backgroundLayer.image().addCallback(new Callback<Image>() {
-//
+//	public void set(final Indicator indicator, final int themeColor) {
+//		set = true;
+//		
+//		layer.setTranslation(indicator.x, indicator.y);
+//		
+//		foregroundLayer.setImage(assets().getImage(
+//				Constant.TUTORIAL_IMAGE_PATH + indicator.name + ".png"));
+//		foregroundLayer.setVisible(false);
+//		
+////		backgroundLayer.setImage(assets().getImage(
+////				Constant.TUTORIAL_IMAGE_PATH + indicator.name + "_bg.png"));
+////		backgroundLayer.setVisible(false);
+////
+////		backgroundLayer.image().addCallback(new Callback<Image>() {
+////
+////			@Override
+////			public void onSuccess(Image result) {
+//////				backgroundLayer.setImage(CanvasUtils.tintImage(result, Colors.WHITE));
+//////				backgroundLayer.setVisible(true);
+////			}
+////
+////			@Override
+////			public void onFailure(Throwable cause) {
+////				cause.printStackTrace();
+////			}
+////		});
+//		
+//		
+//		
+//		foregroundLayer.image().addCallback(new Callback<Image>() {
 //			@Override
 //			public void onSuccess(Image result) {
-////				backgroundLayer.setImage(CanvasUtils.tintImage(result, Colors.WHITE));
-////				backgroundLayer.setVisible(true);
+//				
+//				foregroundLayer.setVisible(true);
+//				if (indicator.color != Colors.WHITE) {
+//					foregroundLayer.setImage(CanvasUtils.tintImage(result, indicator.color));
+//				}
+//				if (indicator.height < 0) {
+//					layer.setScale(indicator.width / result.width());
+//				} else if (indicator.width < 0) {
+//					layer.setScale(indicator.height / result.height());
+//				} else {
+//					layer.setScale(indicator.width, indicator.height);
+//				}
+//				if (indicator.align == Align.Center) {
+//					layer.setOrigin(result.width() / 2, result.height() / 2);
+//				} else if (indicator.align == Align.TopRight) {
+//					layer.setOrigin(result.width(), 0);
+//				} else if (indicator.align == Align.BottomLeft) {
+//					layer.setOrigin(0, result.height());
+//				} else if (indicator.align == Align.ButtonRight) {
+//					layer.setOrigin(result.width(), result.height());
+//				} else {
+//					layer.setOrigin(0, 0);
+//				}
 //			}
 //
 //			@Override
@@ -67,42 +103,6 @@ public class IndicatorLayer extends LayerWrapper {
 //				cause.printStackTrace();
 //			}
 //		});
-		
-		
-		
-		foregroundLayer.image().addCallback(new Callback<Image>() {
-			@Override
-			public void onSuccess(Image result) {
-				
-				foregroundLayer.setVisible(true);
-				if (indicator.color != Colors.WHITE) {
-					foregroundLayer.setImage(CanvasUtils.tintImage(result, indicator.color));
-				}
-				if (indicator.height < 0) {
-					layer.setScale(indicator.width / result.width());
-				} else if (indicator.width < 0) {
-					layer.setScale(indicator.height / result.height());
-				} else {
-					layer.setScale(indicator.width, indicator.height);
-				}
-				if (indicator.align == Align.Center) {
-					layer.setOrigin(result.width() / 2, result.height() / 2);
-				} else if (indicator.align == Align.TopRight) {
-					layer.setOrigin(result.width(), 0);
-				} else if (indicator.align == Align.BottomLeft) {
-					layer.setOrigin(0, result.height());
-				} else if (indicator.align == Align.ButtonRight) {
-					layer.setOrigin(result.width(), result.height());
-				} else {
-					layer.setOrigin(0, 0);
-				}
-			}
-
-			@Override
-			public void onFailure(Throwable cause) {
-				cause.printStackTrace();
-			}
-		});
-	}
+//	}
 	
 }

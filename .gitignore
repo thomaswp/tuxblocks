@@ -12,3 +12,4 @@ html/war/*
 android/assets
 ios/assets/*
 cmd.exe.lnk
+android/pw.txt

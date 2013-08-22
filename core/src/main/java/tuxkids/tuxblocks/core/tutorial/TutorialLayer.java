@@ -100,19 +100,19 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 	public void showAction(Action action) {
 		showMessage(action.message);
 		clearIndicators();
-		int index = 0;
-		for (final Indicator indicator : action.indicators) {
-			if (indicators.size() == index) {
-				IndicatorLayer indicatorLayer = new IndicatorLayer();
-				indicators.add(indicatorLayer);
-				layer.add(indicatorLayer.layerAddable());
-			}
-			
-			IndicatorLayer indicatorLayer = indicators.get(index);
-			indicatorLayer.set(indicator, themeColor);
-			indicatorLayer.setVisible(true);
-			index++;
-		}
+//		int index = 0;
+//		for (final Indicator indicator : action.indicators) {
+//			if (indicators.size() == index) {
+//				IndicatorLayer indicatorLayer = new IndicatorLayer();
+//				indicators.add(indicatorLayer);
+//				layer.add(indicatorLayer.layerAddable());
+//			}
+//			
+//			IndicatorLayer indicatorLayer = indicators.get(index);
+//			indicatorLayer.set(indicator, themeColor);
+//			indicatorLayer.setVisible(true);
+//			index++;
+//		}
 	}
 	
 	public void showMessage(String text) {

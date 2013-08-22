@@ -14,8 +14,8 @@
   <name>TuxBlocksGame Android</name>
 
   <properties>
-    <sign.keystore>game.keystore</sign.keystore>
-    <keystore.alias>game</keystore.alias>
+    <sign.keystore></sign.keystore>
+    <keystore.alias>Thomas</keystore.alias>
     <!-- you can pass these on the command line as -Dkeystore.password=foo etc. -->
     <keystore.password></keystore.password>
     <key.password></key.password>
@@ -84,7 +84,6 @@
           <assetsDirectory>${project.basedir}/assets</assetsDirectory>
           <resourceDirectory>${project.basedir}/res</resourceDirectory>
           <sdk>
-			<path>C:/Program Files/Android/android-sdk/</path>
             <platform>11</platform>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
