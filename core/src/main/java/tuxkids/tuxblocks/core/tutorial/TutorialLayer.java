@@ -16,9 +16,12 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Action;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Indicator;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
-import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
+/**
+ * Overlay layer shown during the tutorial
+ */
 public class TutorialLayer extends LayerWrapper implements Listener {
 
 	protected final GroupLayer layer;
@@ -45,6 +48,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		textBox.setDepth(1);
 		layer.add(textBox.layerAddable());
 		
+		// catch touches to dismiss the textbox
 		touchCatcher = graphics().createImageLayer(CanvasUtils.createRect(1, 1, CanvasUtils.TRANSPARENT));
 		touchCatcher.setDepth(10);
 		touchCatcher.setSize(width, height);
@@ -80,6 +84,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		buttonCancel.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
+				// make the player confirm a cancel
 				if (cancelling) {
 					Tutorial.clear();
 				} else {
@@ -97,34 +102,38 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		}
 	}
 
+	/** Shows the given {@link Action}, displaying its text in the {@link TextBoxLayer} */
 	public void showAction(Action action) {
 		showMessage(action.message);
 		clearIndicators();
-//		int index = 0;
-//		for (final Indicator indicator : action.indicators) {
-//			if (indicators.size() == index) {
-//				IndicatorLayer indicatorLayer = new IndicatorLayer();
-//				indicators.add(indicatorLayer);
-//				layer.add(indicatorLayer.layerAddable());
-//			}
-//			
-//			IndicatorLayer indicatorLayer = indicators.get(index);
-//			indicatorLayer.set(indicator, themeColor);
-//			indicatorLayer.setVisible(true);
-//			index++;
-//		}
+		int index = 0;
+		for (final Indicator indicator : action.indicators) {
+			if (indicators.size() == index) {
+				IndicatorLayer indicatorLayer = new IndicatorLayer();
+				indicators.add(indicatorLayer);
+				layer.add(indicatorLayer.layerAddable());
+			}
+			
+			IndicatorLayer indicatorLayer = indicators.get(index);
+			indicatorLayer.set(indicator, themeColor);
+			indicatorLayer.setVisible(true);
+			index++;
+		}
 	}
 	
+	/** Shows the given message in the {@link TextBoxLayer} */
 	public void showMessage(String text) {
 		textBox.show(text);
 		touchCatcher.setVisible(true);
 	}
 	
+	/** Repeats the last shown message */
 	public void repeatMessage() {
 		textBox.show(null);
 		touchCatcher.setVisible(true);
 	}
 	
+	/** Called from {@link Tutorial#paintInstance(Clock)} */
 	public void paint(Clock clock) {
 		textBox.paint(clock);
 		for (IndicatorLayer layer : indicators) {
@@ -143,27 +152,19 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		touchCatcher.setVisible(false);
 		Audio.se().play(Constant.SE_OK);
 		if (cancelling) {
+			// cancel the cancel
 			cancelling = false;
 			buttonCancel.setTint(Colors.LIGHT_GRAY, 0.4f);
 		}
 	}
 
 	@Override
-	public void onPointerEnd(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onPointerEnd(Event event) { }
 
 	@Override
-	public void onPointerDrag(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onPointerDrag(Event event) { }
 
 	@Override
-	public void onPointerCancel(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onPointerCancel(Event event) { }
 
 }

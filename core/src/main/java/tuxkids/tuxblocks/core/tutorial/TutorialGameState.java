@@ -1,18 +1,18 @@
 package tuxkids.tuxblocks.core.tutorial;
 
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.defense.round.Reward;
-import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.title.Difficulty;
 
+/** {@link GameState} to use when playing during the tutorial. */
 public class TutorialGameState extends GameState {
 
 	private int eqationIndex;
 	
+	// prepackaged equations to use during the tutorial
 	private final static Equation[] equations = new Equation[] {
 			new Equation.Builder()
 			.addLeft(new VariableBlock("x").add(3).times(4))
@@ -35,7 +35,6 @@ public class TutorialGameState extends GameState {
 	public TutorialGameState() {
 		super(new Difficulty(0, 0, Difficulty.ROUND_TIME_INFINITE));
 		upgrades = 1;
-//		addReward(new Reward(TowerType.PeaShooter, 2));
 	}
 
 	@Override

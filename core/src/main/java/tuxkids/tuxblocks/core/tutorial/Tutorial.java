@@ -6,21 +6,32 @@ import java.util.List;
 import playn.core.Color;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
+import tripleplay.game.Screen;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
+import tuxkids.tuxblocks.core.widget.Button;
 
+/**
+ * A class for managing Tutorials. Also the base class for the
+ * individual tutorials.
+ */
 public abstract class Tutorial extends PlayNObject {
 
 	public final static int HIGHLIGHT_COLOR_1 = Color.rgb(0xff, 0xaa, 0x44);
 	public final static int HIGHLIGHT_COLOR_2 = Color.rgb(0xff, 0x44, 0x44);
 	public final static int HIGHLIGHT_CYCLE = 1500;
 	
+	/**
+	 * Events which can happen in-game. When they do happen, the
+	 * corresponding Trigger will be passed to {@link Tutorial#trigger(Trigger)}.
+	 */
 	public enum Trigger {
-		Title_Play, 
-		Title_Build, 
-		
 		TextBoxHidden, 
 		TextBoxFullyHidden,
+		
+		Title_Play, 
+		Title_Build, 
 		
 		Difficulty_Shown,
 		
@@ -53,6 +64,10 @@ public abstract class Tutorial extends PlayNObject {
 		Build_Shown, 
 	}
 	
+	/**
+	 * A tag for a specific {@link Button} or other 
+	 * {@link Highlightable} object for identification.
+	 */
 	public enum Tag {
 		Title_Play,
 		Title_Build,
@@ -123,6 +138,7 @@ public abstract class Tutorial extends PlayNObject {
 		return actionIndex < actions.size() - 1;
 	}
 	
+	/** Starts the main tutorial. */
 	public static void start(final int themeColor, final int secondaryColor) {
 		if (instance != null) {
 			return;
@@ -151,9 +167,12 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	private void setText(String text) {
+		// load the text into lines
 		for (String line : text.split("\n")) {
+			// normalize line-ends
 			line = line.replace("\n", "").replace("\r", "");
 			if (!line.isEmpty()) {
+				// replace platform-specific text
 				line = line.replace("<click>", Constant.click());
 				line = line.replace("<clicking>", Constant.clicking());
 				line = line.replace("<mouse>", Constant.mouse());
@@ -178,8 +197,11 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 
+	// called when something happens that might
+	// advance the tutorial
 	private void triggerInstance(Trigger event) {
 		if (hasNext() && peek().trigger == event) {
+			// if the tirgger causes the next Action...
 			Action action = nextAction();
 			if (action instanceof Segue) {
 				String path = ((Segue) action).path;
@@ -192,17 +214,23 @@ public abstract class Tutorial extends PlayNObject {
 			}
 			canReshow = false;
 		} else if (canReshow && actionIndex >= 0 && action().trigger == event) {
+			// or reshow this action's message if the player has left the screen
+			// it was originally shown on and come back
 			tutorialLayer.showAction(action());
 			canReshow = false;
 		} else if (event != null && hasNext() && peek().skipTrigger == event) {
+			// sometimes we want to skip an Action if the next Action is ready
+			// (when players do things out of order) so we skip an Action
 			actions.remove(peek());
 			triggerInstance(event);
 			return;
 		} else if (event == Trigger.TextBoxFullyHidden && !hasNext()) {
+			// if this is the last Action and the textbox is hidden, end the tutorial
 			destroy();
 			return;
 		}
 		if (actionIndex >= 0) {
+			// refresh highlights
 			for (Highlightable highlightable : highlightables) {
 				highlightable.highlighter().setHighlighted(
 						highlightable.highlighter().hasTags(action().highlights));
@@ -216,6 +244,7 @@ public abstract class Tutorial extends PlayNObject {
 		clearIndicators();
 	}
 
+	// for segueing into a new tutorial 
 	protected Segue addSegue(Tutorial tutorial, String path, Trigger trigger) {
 		Segue segue = new Segue(tutorial, path);
 		segue.trigger = trigger;
@@ -223,6 +252,9 @@ public abstract class Tutorial extends PlayNObject {
 		return segue;
 	}
 
+	// for skipping part of a tutorial for testing
+	// i.e. don't use this in production
+	@Deprecated
 	protected void addStart() {
 		actions.clear();
 	}
@@ -232,10 +264,12 @@ public abstract class Tutorial extends PlayNObject {
 			tutorialLayer.clearIndicators();
 		}
 		if (actionIndex >= 0 && action().canRepeat) {
+			// alow the Action's message to be reshown, if applicable
 			canReshow = true;
 		}
 	}
 	
+	/** Called from {@link TuxBlocksGame#paint(float)} */
 	public static void paint(Clock clock) {
 		if (instance != null) {
 			instance.paintInstance(clock);
@@ -250,18 +284,21 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 
+	/** Called from {@link TuxBlocksGame#update(int)} */
 	public static void update(int delta) {
 		if (instance != null) {
 			instance.updateInstance(delta);
 		}
 	}
 
+	/** Indicate that a {@link Trigger} has occured in the game. */
 	public static void trigger(Trigger event) {
 		if (instance != null) {
 			instance.triggerInstance(event);
 		}
 	}
 	
+	/** Called when the player switches {@link Screen}s */
 	public static void clearIndicators() {
 		for (Highlightable highlightable : highlightables) {
 			highlightable.highlighter().setHighlighted(false);
@@ -272,6 +309,7 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 	
+	/** Register a {@link Highlightable} object on-screen */
 	public static void addHighlightable(Highlightable highlightable) {
 		highlightables.add(highlightable);
 		if (instance != null && instance.actionIndex >= 0 && 
@@ -280,6 +318,7 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 
+	/** Called at the beginning of the game to clear static fields */
 	public static void clear() {
 		if (instance != null) {
 			instance.destroy();
@@ -303,6 +342,7 @@ public abstract class Tutorial extends PlayNObject {
 		ButtonRight
 	}
 	
+	/** For segueing between tutorials */
 	protected class Segue extends Action {
 		public final Tutorial tutorial;
 		public final String path;
@@ -313,6 +353,7 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 	
+	/** Represents one segment of the tutorial, it's trigger and what it highlights. */
 	protected class Action { 
 		public Trigger trigger, skipTrigger;
 		public String message;
@@ -320,10 +361,12 @@ public abstract class Tutorial extends PlayNObject {
 		public List<Tag> highlights = new ArrayList<Tutorial.Tag>();
 		public boolean canRepeat = true;
 		
+		@Deprecated
 		public Action addIndicatorR(String name, int color, float x, float y, float width, float height) {
 			return addIndicatorR(name, color, x, y, width, height, Align.Center);
 		}
 		
+		@Deprecated
 		public Action addIndicatorR(String name, int color, float x, float y, float width, float height, Align align) {
 			Indicator indicator = new Indicator();
 			indicator.name = name;
@@ -358,6 +401,7 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 	
+	/** Currently not supported */
 	protected class Indicator {
 		public String name;
 		public float x, y, width, height;
@@ -365,6 +409,7 @@ public abstract class Tutorial extends PlayNObject {
 		public int color;
 	}
 
+	/** Called from {@link TutorialLayer} when the player reshows a message */
 	public static void messageRepeated() {
 		if (instance != null) {
 			instance.canReshow = false;

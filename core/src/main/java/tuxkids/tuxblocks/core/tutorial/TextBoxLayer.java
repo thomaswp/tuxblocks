@@ -24,11 +24,17 @@ import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
+/**
+ * A layer for displaying text on-screen during the tutorial.
+ */
 public class TextBoxLayer extends LayerWrapper {
 
-
-	private final float spHeight = 31; //constant based on Java dimensions that created the image.. oops
-	private final float spWidth = spHeight / 2;
+	// dimensions of the triangle corner of the speech bubble
+	// constant based on Java dimensions that created the ninepatch image.. oops
+	private final static float SPEECH_BUBBLE_CORNER_HEIGHT = 31; 
+	private final static float SPEECH_BUBBLE_CORNER_WIDTH = SPEECH_BUBBLE_CORNER_HEIGHT / 2;
+	
+	// the offset of the speech bubble when fully hidden
 	private final float hideHeight = graphics().height() * 0.15f;
 	
 	protected final GroupLayer layer, fadeInLayer;
@@ -51,7 +57,7 @@ public class TextBoxLayer extends LayerWrapper {
 		
 		padding = graphics().height() / 35;
 		format = createFormat(graphics().height() / 20)
-				.withWrapWidth(width - padding * 3 - spWidth);
+				.withWrapWidth(width - padding * 3 - SPEECH_BUBBLE_CORNER_WIDTH);
 
 		textLayer = graphics().createImageLayer();
 		
@@ -86,17 +92,21 @@ public class TextBoxLayer extends LayerWrapper {
 		tuxLayer.setTranslation(0, hideHeight);
 	}
 	
+	/** 
+	 * Pops up the speech bubble with the given text. 
+	 * Called from {@link TutorialLayer#showMessage(String)} 
+	 */
 	public void show(String text) {
 		
 		if (text != null) {
 			TextLayout layout = graphics().layoutText(text, format);
-			height = layout.height() + padding * 2 + spHeight;
+			height = layout.height() + padding * 2 + SPEECH_BUBBLE_CORNER_HEIGHT;
 			
 			CanvasImage textImage = graphics().createImage(layout.width(), layout.height());
 			textImage.canvas().setFillColor(Colors.BLACK);
 			textImage.canvas().fillText(layout, 0, 0);
 			textLayer.setImage(textImage);
-			textLayer.setTranslation(padding + spWidth, padding);
+			textLayer.setTranslation(padding + SPEECH_BUBBLE_CORNER_WIDTH, padding);
 			fadeInLayer.add(textLayer);
 			
 			fadeInLayer.setOrigin(0, height);
@@ -108,10 +118,14 @@ public class TextBoxLayer extends LayerWrapper {
 		hidden = false;
 	}
 	
+	/**
+	 * Hides the speech bubble with an animation.
+	 */
 	public void hide() {
 		hidden = true;
 	}
 	
+	/** Called from {@link TutorialLayer#paint(Clock)} */
 	public void paint(Clock clock) {
 		float speed = 0.5f;
 		if (!hidden) {
@@ -135,6 +149,8 @@ public class TextBoxLayer extends LayerWrapper {
 		}
 	}
 
+	// Used to create the ninepatch image used in the game.
+	// Exported using ImageSaver
 	@SuppressWarnings("unused")
 	private Image createSpeechBubble(float width, float height, float rad, 
 			float strokeWidth, float spWidth, float spHeight) {

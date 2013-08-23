@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.tutorial;
 
+/** Tutorial for Build mode */
 public class TutorialBuild extends Tutorial {
 
 	public TutorialBuild(int themeColor, int secondaryColor) {

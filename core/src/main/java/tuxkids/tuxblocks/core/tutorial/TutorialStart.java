@@ -2,6 +2,7 @@ package tuxkids.tuxblocks.core.tutorial;
 
 import tuxkids.tuxblocks.core.Constant;
 
+/** Start of both tutorials */
 public class TutorialStart extends Tutorial {
 
 	public TutorialStart(int themeColor, int secondaryColor) {

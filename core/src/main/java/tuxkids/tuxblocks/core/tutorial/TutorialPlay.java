@@ -1,6 +1,6 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-
+/** Tutorial for Play mode */
 public class TutorialPlay extends Tutorial {
 
 	public TutorialPlay(int themeColor, int secondaryColor) {
