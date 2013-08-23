@@ -2,8 +2,8 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.Persistable.Data;
-import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.ParseDataException;
 
 public abstract class ModifierBlock extends Block {
 	

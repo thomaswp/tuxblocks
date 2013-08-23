@@ -236,8 +236,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			if (m != upgrades) {
 				upgrades = m;
 				String text = "" + upgrades;
-				numberLayer.setImage(CanvasUtils.createString(
-						barTextFormat, text, ITEM_TEXT_COLOR));
+				numberLayer.setImage(CanvasUtils.createText(
+						text, barTextFormat, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
 				beatMS = BEAT_TIME;
 			}
@@ -313,8 +313,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 					Font font = Cache.getFont(tf.font.name(), tf.font.style(), tf.font.size() * 2f);
 					tf = tf.withFont(font);
 				}
-				numberLayer.setImage(CanvasUtils.createString(
-						tf, text, ITEM_TEXT_COLOR));
+				numberLayer.setImage(CanvasUtils.createText(
+						text, tf, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
 				if (beat) {
 					beatMS = BEAT_TIME;
@@ -369,8 +369,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		public void update(int delta) {
 			if (score != state.score()) {
 				score = state.score();
-				scoreLayer.setImage(CanvasUtils.createString(
-						scoreTextFormat, "" + score, Colors.BLACK));
+				scoreLayer.setImage(CanvasUtils.createText(
+						"" + score, scoreTextFormat, Colors.BLACK));
 				centerImageLayer(scoreLayer);
 				beatMS = BEAT_TIME;
 			}
@@ -414,8 +414,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			int l = state.lives();
 			if (l != lives) {
 				lives = l;
-				numberLayer.setImage(CanvasUtils.createString(
-						barTextFormat, "" + lives, ITEM_TEXT_COLOR));
+				numberLayer.setImage(CanvasUtils.createText(
+						"" + lives, barTextFormat, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
 				beatMS = BEAT_TIME;
 			}
@@ -455,8 +455,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			this.stat = stat;
 			this.color = state.themeColor();
 			
-			symbolLayer = graphics().createImageLayer(CanvasUtils.createString(
-					barTextFormat, stat.symbol(), Colors.BLACK));
+			symbolLayer = graphics().createImageLayer(CanvasUtils.createText(
+					stat.symbol(), barTextFormat, Colors.BLACK));
 			symbolLayer.setTranslation((TEXT_SPACE - symbolLayer.width()) / 2, (height - symbolLayer.height()) / 2);
 			layer.add(symbolLayer);
 			
@@ -482,8 +482,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			int l = state.getStatLevel(stat);
 			if (level != l) {
 				level = l;
-				levelLayer.setImage(CanvasUtils.createString(
-						barTextFormat, "" + level, Colors.BLACK));
+				levelLayer.setImage(CanvasUtils.createText(
+						"" + level, barTextFormat, Colors.BLACK));
 				levelLayer.setTranslation(width - TEXT_SPACE / 2, height / 2);
 				centerImageLayer(levelLayer);
 				beatMS = BEAT_TIME;

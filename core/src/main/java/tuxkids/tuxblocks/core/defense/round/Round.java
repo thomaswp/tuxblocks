@@ -7,7 +7,7 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
-import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public abstract class Round {
 	

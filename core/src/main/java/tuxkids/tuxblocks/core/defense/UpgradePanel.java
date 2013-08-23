@@ -178,8 +178,8 @@ public class UpgradePanel extends LayerWrapper {
 				numberLayer.setVisible(false);
 			} else {
 				numberLayer.setVisible(true);
-				numberLayer.setImage(CanvasUtils.createString(
-						format, "" + upgradeCost, Colors.BLACK));
+				numberLayer.setImage(CanvasUtils.createText(
+						"" + upgradeCost, format, Colors.BLACK));
 				centerImageLayer(numberLayer);
 			}
 		}

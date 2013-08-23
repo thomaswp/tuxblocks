@@ -1,12 +1,48 @@
-package tuxkids.tuxblocks.core.utils;
+package tuxkids.tuxblocks.core.utils.persist;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An interface for Objects which can be persisted into PlayN's storage,
+ * which consists of a list of name-value pairs. Objects which implement
+ * this interface can be persisted using {@link PersistUtils#persist(Persistable, String)}
+ * and read using {@link PersistUtils#fetch(Class, String)()};
+ * <p />
+ * <b>Note</b>: Any Object which implements this interface and might need to
+ * be constructed (which is likely), must register a {@link Constructor} with
+ * {@link PersistUtils}. It is possible to instead persist an object and manually
+ * supply a super-class to use for reconstruction. See {@link Data#persist(Persistable, Class)}.
+ */
 public interface Persistable {
 
+	/**
+	 * This method must enumerate any fields which must be persisted
+	 * by calling a variant of {@link Data#persist(boolean)}. The result of
+	 * that call <b>must</b> assigned <i>back</i> to the field. This allows the
+	 * persist method to be used both for reading and writing fields.  In the case of a 
+	 * read operation, the original value will be returned. For example:
+	 * 
+	 * <pre>
+	 * int x = 3;
+	 * String hello = "hi";
+	 * void persist(Data data) {
+	 *     x = data.persist(x);
+	 *     hello = data.persist(hello);
+	 * }
+	 * </pre>
+	 * 
+	 * In the case of final variables which are either Lists, arrays or {@link Persistable},
+	 * calling {@link Data#persist(Persistable)} will be enough, and no assignement is
+	 * necessary. The fields inside these members will be themselves reassigned.
+	 * <p />
+	 * If special action is required depending on whether the persist call is being
+	 * made for a read or write, this can be determined by calling {@link Data#readMode()}
+	 * and {@link Data#writeMode()}.
+	 */
 	void persist(Data data) throws ParseDataException, NumberFormatException;
 	
+	/** Thrown when a {@link Persistable} object is, for some reason, unreadable */
 	public class ParseDataException extends Exception {
 		private static final long serialVersionUID = 1L;
 		
@@ -23,25 +59,10 @@ public interface Persistable {
 		Persistable construct();
 	}
 	
-//	public enum Type {
-//		Int, Short, Long, Float, Double, Byte, Char, Boolean, String, Object
-//	}
-//	
-//	public interface Constructor {
-//		Type[] args();
-//		Object construct(Object[] args);
-//	}
-//	
-//	public abstract class NoArgsConstructor implements Constructor {
-//		protected abstract Object construct();
-//		
-//		public Type[] args() { return new Type[] { }; }
-//		
-//		public Object construct(Object[] args) {
-//			return construct();
-//		}
-//	}
-	
+	/**
+	 * This class is provided for {@link Persistable} Objects
+	 * to record their persistable fields. See {@link Persistable#persist(Data)}
+	 */
 	public class Data {
 		private final boolean writeMode;
 		
@@ -142,6 +163,7 @@ public interface Persistable {
 			return x;
 		}
 		
+		// Arrays are stored int the format "length{\n}1|2|3|4"
 		public int[] persistArray(int[] x) throws NumberFormatException, ParseDataException {
 			if (writeMode) {
 				int length = persist(x == null ? 0 : x.length);
@@ -177,6 +199,7 @@ public interface Persistable {
 			return persistList(x, null);
 		}
 		
+		/** Persists the list, using the provided class for reconstruction. See {@link Data#persist(Persistable, Class)} */
 		public <T extends Persistable> List<T> persistList(List<T> x, Class<? extends T> clazz) throws NumberFormatException, ParseDataException {
 			if (writeMode) {
 				persist(x == null ? -1 : x.size());
@@ -227,6 +250,12 @@ public interface Persistable {
 			return persist(x, null);
 		}
 		
+		/** 
+		 * Persists the given object, using the provided class to reconstruct the object. 
+		 * This is useful if the item's class is an anonymous or derived class that is not
+		 * registered with {@link PersistUtils}, but which does not itself have any important
+		 * persistent fields.
+		 */
 		@SuppressWarnings("unchecked")
 		public <T extends Persistable> T persist(T x, Class<? extends T> clazz) throws ParseDataException, NumberFormatException {
 			String type;

@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * A composite {@link List} which emulates containing the elements of
+ * each of its sub lists. This is essentially a way to flatten a list of lists.
+ */
 public class MultiList<T> implements Iterable<T> {
 	private List<List<? extends T>> lists = new ArrayList<List<? extends T>>();
 	
+	/** Provide a list of each list whose elements this list should encompass */
 	public MultiList(List<? extends T>... lists) {
 		for (List<? extends T> list : lists) this.lists.add(list);
 	}
 	
+	/** Returns the combined size of all the lists */
 	public int size() {
 		int size = 0;
 		for (List<?> list : lists) size += list.size();
@@ -26,14 +32,17 @@ public class MultiList<T> implements Iterable<T> {
 		return false;
 	}
 
+	/** Adds a List to the composite list */
 	public boolean add(List<T> e) {
 		return lists.add(e);
 	}
 
+	/** Removes a List from the composite list */
 	public boolean remove(List<T> o) {
 		return lists.remove(o);
 	}
 	
+	/** Removes the given element from the first list which contains it */
 	public boolean remove(T o) {
 		for (List<?> list : lists) {
 			if (list.remove(o)) return true;
@@ -41,10 +50,12 @@ public class MultiList<T> implements Iterable<T> {
 		return false;
 	}
 
+	/** Clears the list of lists (but not the lists themselves) */
 	public void clear() {
 		lists.clear();
 	}
 
+	/** Gets the element at the given index, assuming each list was flattened into one */
 	public T get(int index) {
 		for (int i = 0; i < lists.size(); i++) {
 			List<? extends T> list = lists.get(i);
@@ -54,6 +65,7 @@ public class MultiList<T> implements Iterable<T> {
 		throw new IndexOutOfBoundsException();
 	}
 
+	/** Gets an {@link Iterator} over each element in each list */
 	@Override
 	public Iterator<T> iterator() {
 		return new MultiIterator();

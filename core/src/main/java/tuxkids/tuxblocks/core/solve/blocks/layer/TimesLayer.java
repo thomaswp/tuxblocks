@@ -53,7 +53,7 @@ public class TimesLayer extends LayerWrapper implements BlockLayer {
 	}
 	
 	private void refreshTextLayer() {
-		textLayer.setImage(CanvasUtils.createString(format, text, Colors.BLACK));
+		textLayer.setImage(CanvasUtils.createText(text, format, Colors.BLACK));
 		centerImageLayer(textLayer);
 	}
 

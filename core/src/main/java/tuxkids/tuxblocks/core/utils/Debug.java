@@ -5,7 +5,7 @@ import playn.core.PlayN;
 
 /**
  * A class for centralizing debugging, so that it can be universally
- * enabled/disabled or redirected. Currently uses System.out for output.
+ * enabled/disabled or redirected. Currently uses {@link PlayN#log()} for output.
  */
 public class Debug {
 	/** Set to true to have Debug do output, and false to stifle it	 */
@@ -47,7 +47,6 @@ public class Debug {
 	 * 
 	 * @param text The text to be written.
 	 */
-	@SuppressWarnings("unused")
 	public static void write(String text) {
 		if (!DEBUG) return;
 		

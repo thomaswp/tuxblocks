@@ -2,19 +2,23 @@ package tuxkids.tuxblocks.core.utils;
 
 import playn.core.CanvasImage;
 import playn.core.Color;
+import playn.core.Font.Style;
 import playn.core.Image;
+import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-import playn.core.Font.Style;
-import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.Cache;
+import tuxkids.tuxblocks.core.Cache.Key;
 
+/**
+ * A utility class for creating {@link ImageLayer}s of text and common shapes.
+ */
 public class CanvasUtils extends PlayNObject {
 
 	public static final int TRANSPARENT = Color.argb(0, 0, 0, 0);
 	
+	// key for Caching rect Images
 	private static class RectKey extends Key {
 
 		protected float width, height, strokeWidth;
@@ -48,10 +52,12 @@ public class CanvasUtils extends PlayNObject {
 	
 	private static RectKey rectKey = new RectKey();
 	
+	/** Creates a solid rectangle with the given properties */
 	public static CanvasImage createRect(float width, float height, int fillColor) {
 		return createRect(width, height, fillColor, 0, 0);
 	}
 	
+	/** Creates a bordered rectangle with the given properties */
 	public static CanvasImage createRect(float width, float height, int fillColor, 
 			float strokeWidth, int strokeColor) {
 //		debug("createRect");
@@ -68,10 +74,12 @@ public class CanvasUtils extends PlayNObject {
 		return image;
 	}
 	
+	/** See {@link CanvasUtils#createRect(float, float, int)}. Caches the image after creation. */
 	public static Image createRectCached(float width, float height, int fillColor) {
 		return createRectCached(width, height, fillColor, 0, 0);
 	}
 	
+	/** See {@link CanvasUtils#createRect(float, float, int, float, int)}. Caches the image after creation. */
 	public static Image createRectCached(float width, float height, int fillColor, 
 			float strokeWidth, int strokeColor) {
 		rectKey.set(width, height, fillColor, strokeWidth, strokeColor);
@@ -80,6 +88,7 @@ public class CanvasUtils extends PlayNObject {
 		return Cache.putImage(rectKey, createRect(width, height, fillColor, strokeWidth, strokeColor));
 	}
 	
+	// key for caching round rect images
 	private static class RoundRectKey extends RectKey {
 		
 		protected float rad;
@@ -105,10 +114,12 @@ public class CanvasUtils extends PlayNObject {
 	}
 	private static RoundRectKey roundRectKey = new RoundRectKey();
 	
+	/** Creates a solid rounded rectangle with the given properties */
 	public static CanvasImage createRoundRect(float width, float height, float rad, int fillColor) {
 		return createRoundRect(width, height, rad, fillColor, 0, 0);
 	}
 	
+	/** Creates a bordered rounded rectangle with the given properties */
 	public static CanvasImage createRoundRect(float width, float height, float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
 //		debug("createRoundRect");
@@ -127,10 +138,12 @@ public class CanvasUtils extends PlayNObject {
 		return image;
 	}
 	
+	/** See {@link CanvasUtils#createRoundRect(float, float, float, int)}. Caches the image after creation. */
 	public static Image createRoundRectCached(float width, float height, float rad, int fillColor) {
 		return createRoundRectCached(width, height, rad, fillColor, 0, 0);
 	}
 	
+	/** See {@link CanvasUtils#createRoundRect(float, float, float, int, float, int)}. Caches the image after creation. */
 	public static Image createRoundRectCached(float width, float height, float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
 		roundRectKey.set(width, height, rad, fillColor, strokeWidth, strokeColor);
@@ -139,6 +152,7 @@ public class CanvasUtils extends PlayNObject {
 		return Cache.putImage(roundRectKey, createRoundRect(width, height, rad, fillColor, strokeWidth, strokeColor));
 	}
 
+	// key for caching circle images
 	private static class CircleKey extends Key {
 
 		protected float rad, strokeWidth;
@@ -169,10 +183,12 @@ public class CanvasUtils extends PlayNObject {
 	}
 	private static CircleKey circleKey = new CircleKey();
 
+	/** Creates a solid circle with the given properties. */
 	public static CanvasImage createCircle(float rad, int fillColor) {
 		return createCircle(rad, fillColor, 0, 0);
 	}
 	
+	/** Creates a bordered circle with the given properties. */
 	public static CanvasImage createCircle(float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
 //		debug("createCircle");
@@ -190,10 +206,12 @@ public class CanvasUtils extends PlayNObject {
 		return image;
 	}
 
+	/** See {@link CanvasUtils#createCircle(float, int)}. Caches the image after creation. */
 	public static Image createCircleCached(float rad, int fillColor) {
 		return createCircleCached(rad, fillColor, 0, 0);
 	}
 	
+	/** See {@link CanvasUtils#createCircle(float, int, float, int)}. Caches the image after creation. */
 	public static Image createCircleCached(float rad, int fillColor, 
 			float strokeWidth, int strokeColor) {
 		circleKey.set(rad, fillColor, strokeWidth, strokeColor);
@@ -202,6 +220,7 @@ public class CanvasUtils extends PlayNObject {
 		return Cache.putImage(circleKey, createCircle(rad, fillColor, strokeWidth, strokeColor));
 	}
 	
+	// key for caching text images
 	private static class TextKey extends Key {
 
 		protected String text, font;
@@ -244,6 +263,7 @@ public class CanvasUtils extends PlayNObject {
 	}
 	private static TextKey textKey = new TextKey();
 	
+	/** Creates an {@link ImageLayer} of the given text */
 	public static CanvasImage createText(String text,
 			TextFormat format, int color) {
 		if (text.isEmpty() || text == null) {
@@ -257,6 +277,7 @@ public class CanvasUtils extends PlayNObject {
 		return image;
 	}
 	
+	/** See {@link CanvasUtils#createText(String, TextFormat, int)}. Caches the image after creation. */
 	public static Image createTextCached(String text,
 			TextFormat format, int color) {
 		textKey.set(text, format, color);
@@ -265,10 +286,19 @@ public class CanvasUtils extends PlayNObject {
 		return Cache.putImage(textKey, createText(text, format, color));
 	}
 
+	/** 
+	 * Returns a version of the given image, tinted with the given color.
+	 * This tinting mimics the effect of tinting an {@link ImageLayer}.
+	 */
 	public static Image tintImage(Image image, int tint) {
 		return tintImage(image, tint, 1);
 	}
-
+	
+	/** 
+	 * Returns a version of the given image, tinted the given percent 
+	 * with the given color. This tinting mimics the effect of tinting 
+	 * an {@link ImageLayer}.
+	 */
 	public static Image tintImage(Image image, int tint, float perc) {
 		if (!image.isReady()) return null;
 
@@ -287,8 +317,10 @@ public class CanvasUtils extends PlayNObject {
 		return shifted;
 	}
 
+	/** See {@link PixelSetter} */
 	public static PixelSetter pixelSetter;
-
+	
+	/** Used on HTML platform for setting the pixels of an image because the 1.7 implementation is buggy */
 	public interface PixelSetter {
 		public void set(CanvasImage o, int x, int y, int width, int height, int[] rgb, int offset, int scanSize);
 	}
@@ -297,6 +329,7 @@ public class CanvasUtils extends PlayNObject {
 		return Formatter.format("[%d,%d,%d,%d]", Color.alpha(c), Color.red(c), Color.green(c), Color.blue(c));
 	}
 
+	/** Returns c1, tinted by c2 the given percent */
 	public static int blendTint(int c1, int c2, float perc) {
 		return Color.argb(Math.min(Color.alpha(c1), Color.alpha(c2)),
 				255 - Math.min((int)(255 - Color.red(c1) + (255 - Color.red(c2)) * perc), 255),
@@ -304,6 +337,7 @@ public class CanvasUtils extends PlayNObject {
 				255 - Math.min((int)(255 - Color.blue(c1) + (255 - Color.blue(c2)) * perc), 255));
 	}
 
+	/** Returns c1, with c2 addatively blended by the given percent */
 	public static int blendAddative(int c1, int c2, float perc) {
 		return Color.argb(Math.max(Color.alpha(c1), Color.alpha(c2)),
 				Math.min((int)(Color.red(c1) + Color.red(c2) * perc), 255),
@@ -311,6 +345,7 @@ public class CanvasUtils extends PlayNObject {
 				Math.min((int)(Color.blue(c1) +  Color.blue(c2) * perc), 255));
 	}
 
+	/** Returns the RGB color equivalent of the given HSV values */
 	public static int hsvToRgb(float hue, float saturation, float value) {
 		while (hue < 0) hue++;
 		int h = (int)(hue * 6) % 6;
@@ -330,6 +365,7 @@ public class CanvasUtils extends PlayNObject {
 		}
 	}
 
+	/** Stores the HSV color equivalent of the given RGB values in the given array */
 	public static void rgbToHsv(int color, float[] hsv){
 
 		int r = Color.red(color), g = Color.green(color), b = Color.blue(color);
@@ -373,17 +409,5 @@ public class CanvasUtils extends PlayNObject {
 
 	private static int rgbFloatToInt(float r, float g, float b) {
 		return Color.rgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
-	}
-
-	public static Image createString(TextFormat format, String text, int color) {
-		if (text == null) return null;
-		if (text.isEmpty()) PlayN.log().warn("Creating image with empty String.");
-		TextLayout layout =  graphics().layoutText(text, format);
-		float width = Math.max(layout.width(), 1);
-		float height = Math.max(layout.height(), 1);
-		CanvasImage image = graphics().createImage(width, height);
-		image.canvas().setFillColor(color);
-		image.canvas().fillText(layout, 0, 0);
-		return image;
 	}
 }

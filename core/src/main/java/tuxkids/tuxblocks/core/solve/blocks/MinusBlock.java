@@ -1,8 +1,8 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
 import playn.core.Color;
-import tuxkids.tuxblocks.core.utils.Persistable;
-import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 
 public class MinusBlock extends HorizontalModifierBlock {
 	

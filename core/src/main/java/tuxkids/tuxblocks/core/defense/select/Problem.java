@@ -3,7 +3,7 @@ package tuxkids.tuxblocks.core.defense.select;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
-import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public class Problem implements Persistable {
 	private Reward reward;

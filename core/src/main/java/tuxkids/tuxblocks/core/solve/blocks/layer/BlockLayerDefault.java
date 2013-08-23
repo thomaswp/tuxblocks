@@ -108,7 +108,7 @@ public class BlockLayerDefault extends LayerWrapper implements BlockLayer {
 	}
 	
 	protected void refreshTextLayer() {
-		textLayer.setImage(CanvasUtils.createString(textFormat, text, Colors.BLACK));
+		textLayer.setImage(CanvasUtils.createText(text, textFormat, Colors.BLACK));
 		centerImageLayer(textLayer);
 	}
 	

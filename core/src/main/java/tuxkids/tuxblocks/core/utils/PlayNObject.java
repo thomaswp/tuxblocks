@@ -21,6 +21,7 @@ import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
+import tuxkids.tuxblocks.core.widget.Button;
 
 /**
  * Base class, containing a number of useful methods so that they
@@ -176,8 +177,8 @@ public abstract class PlayNObject {
 			return ((Event) o).x();
 		} else if (o instanceof Layer) {
 			return ((Layer) o).tx();
-		} else if (o instanceof Positioned) {
-			return ((Positioned) o).x();
+		} else if (o instanceof Button) {
+			return ((Button) o).x();
 		}
 		return 0;
 	}
@@ -191,8 +192,8 @@ public abstract class PlayNObject {
 			return ((Event) o).y();
 		} else if (o instanceof Layer) {
 			return ((Layer) o).ty();
-		} else if (o instanceof Positioned) {
-			return ((Positioned) o).y();
+		} else if (o instanceof Button) {
+			return ((Button) o).y();
 		}
 		return 0;
 	}

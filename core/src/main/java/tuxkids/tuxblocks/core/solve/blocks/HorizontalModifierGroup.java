@@ -10,8 +10,8 @@ import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
-import tuxkids.tuxblocks.core.utils.Persistable;
-import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 
 public class HorizontalModifierGroup extends ModifierGroup {
 

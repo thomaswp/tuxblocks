@@ -7,9 +7,9 @@ import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.Persistable;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public class Equation extends PlayNObject implements Hashable, Persistable {
 

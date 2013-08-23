@@ -11,10 +11,10 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.solve.markup.TimesRenderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.Persistable;
-import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
-import tuxkids.tuxblocks.core.utils.Persistable.Data;
-import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.ParseDataException;
 
 public class VariableBlock extends BaseBlock {
 

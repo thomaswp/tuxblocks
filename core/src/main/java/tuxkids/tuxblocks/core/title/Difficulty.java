@@ -1,6 +1,6 @@
 package tuxkids.tuxblocks.core.title;
 
-import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public class Difficulty implements Persistable {
 

@@ -12,8 +12,8 @@ import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
-import tuxkids.tuxblocks.core.utils.Persistable.Data;
-import tuxkids.tuxblocks.core.utils.Persistable.ParseDataException;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.ParseDataException;
 
 public abstract class ModifierGroup extends Sprite implements Hashable, Simplifiable {
 

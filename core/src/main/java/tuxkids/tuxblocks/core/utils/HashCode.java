@@ -1,5 +1,15 @@
 package tuxkids.tuxblocks.core.utils;
 
+/**
+ * Class for the automatic generation of hash-codes, based
+ * on a list of values. It can also performs equality comparison
+ * based on the given fields. To use this functionality, a class
+ * should implement {@link Hashable}. For an example of using this
+ * class for equality comparison, see {@link PlayNObject#equals(Object)} .
+ * 
+ * All comparison is done without heap allocation or boxing/unboxing.
+ * Only primitive types are created.
+ */
 public class HashCode {
 	private final static int prime = 31;
 	private int result = 1;
@@ -8,6 +18,7 @@ public class HashCode {
 	private boolean inLeftEquals;
 	private boolean inRightEquals;
 	
+	// the last ___ added by the object
 	private Object lastObject;
 	private int lastInt;
 	private long lastLong;
@@ -18,11 +29,16 @@ public class HashCode {
 	private char lastChar;
 	private boolean lastBoolean;
 	
+	// used during equality comparison
 	private boolean equalSoFar;
+	// the index of the field we're comparing now
 	private int fieldIndex;
+	// the other HashCode we're comparing to
 	private HashCode compareTo;	
+	// the field we are attempting to read from a hash code
 	private int desiredFieldIndex;
 	
+	/** Creates this HashCode based on the given Hashable object */
 	public HashCode(Hashable hashable) {
 		this.hashable = hashable;
 	}
@@ -35,6 +51,8 @@ public class HashCode {
 		inHash = false;
 		return result;
 	}
+	
+	// methods for adding a field for hashcode generation
 	
 	private void addHash(Object o) {
 		result = prime * result + ((o == null) ? 0 : o.hashCode());
@@ -73,6 +91,9 @@ public class HashCode {
 	private void addHash(boolean b) {
 		result = prime * result + (b ? 1231 : 1237);
 	}
+	
+	// methods for reading a field from this HashCode's object
+	// for equality comparison
 	
 	private void addLeftEquals(Object o) {
 		if (!equalSoFar) return;
@@ -144,6 +165,8 @@ public class HashCode {
 		fieldIndex++;
 	}
 	
+	// methods for reading a field from another HashCode
+	
 	private void addRightEquals(Object o) {
 		if (desiredFieldIndex >= 0 && fieldIndex++ != desiredFieldIndex) return;
 		lastObject = o;
@@ -189,60 +212,73 @@ public class HashCode {
 		lastBoolean = b;
 	}
 	
+	/** Registers this value for hashing and equality checks */
 	public void addField(Object o) {
 		if (inHash) addHash(o);
 		if (inLeftEquals) addLeftEquals(o);
 		if (inRightEquals) addRightEquals(o);
 	}
-	
+
+	/** Registers this value for hashing and equality checks */
 	public void addField(int i) {
 		if (inHash) addHash(i);
 		if (inLeftEquals) addLeftEquals(i);
 		if (inRightEquals) addRightEquals(i);
 	}
-	
+
+	/** Registers this value for hashing and equality checks */
 	public void addField(long l) {
 		if (inHash) addHash(l);
 		if (inLeftEquals) addLeftEquals(l);
 		if (inRightEquals) addRightEquals(l);
 	}
-	
+
+	/** Registers this value for hashing and equality checks */
 	public void addField(short s) {
 		if (inHash) addHash(s);
 		if (inLeftEquals) addLeftEquals(s);
 		if (inRightEquals) addRightEquals(s);
 	}
-	
+
+	/** Registers this value for hashing and equality checks */
 	public void addField(float f) {
 		if (inHash) addHash(f);
 		if (inLeftEquals) addLeftEquals(f);
 		if (inRightEquals) addRightEquals(f);
 	}
-	
+
+	/** Registers this value for hashing and equality checks */
 	public void addField(double d) {
 		if (inHash) addHash(d);
 		if (inLeftEquals) addLeftEquals(d);
 		if (inRightEquals) addRightEquals(d);
 	}
-	
+
+	/** Registers this value for hashing and equality checks */
 	public void addField(byte b) {
 		if (inHash) addHash(b);
 		if (inLeftEquals) addLeftEquals(b);
 		if (inRightEquals) addRightEquals(b);
 	}
-	
+
+	/** Registers this value for hashing and equality checks */
 	public void addField(char c) {
 		if (inHash) addHash(c);
 		if (inLeftEquals) addLeftEquals(c);
 		if (inRightEquals) addRightEquals(c);
 	}
-	
+
+	/** Registers this value for hashing and equality checks */
 	public void addField(boolean b) {
 		if (inHash) addHash(b);
 		if (inLeftEquals) addLeftEquals(b);
 		if (inRightEquals) addRightEquals(b);
 	}
 	
+	// Iterates through the other hashable's fields
+	// until it reads the field with the desired index.
+	// The desired field, therefore, will be stored in one
+	// of the "lastXXX" fields of this class
 	private void populateField(int index) {
 		inRightEquals = true;
 		desiredFieldIndex = index;
@@ -251,15 +287,29 @@ public class HashCode {
 		inRightEquals = false;
 	}
 	
-	//TODO: support inheritance
+	/** 
+	 * Compares this HashCode to another, based on the fields added by
+	 * its Hashable
+	 */
 	public boolean equals(HashCode hash) {
+		//TODO: support inheritance.. maybe?
+		
+		// check for obvious incompatibility
 		if (hash == null) return false;
 		Hashable hashable = hash.hashable;
 		if (this.hashable == hashable) return true;
 		if (this.hashable == null || hashable == null) return false;
 		if (this.hashable.getClass() != hashable.getClass()) return false;
 		
+		// by definition, if the hashcodes aren't equal, nor are the fields 
 		if (hash.hashCode() != hashCode()) return false;
+		
+		// The process works by having our Hashable
+		// add each of its fields. After every one,
+		// we have the other Hashable add its fields
+		// but we only store the one that matches the field
+		// out Hashable just added. Then we compare them and repeat
+		// until we find an inequality or all the fields have been added.
 		
 		equalSoFar = true;
 		inLeftEquals = true;

@@ -2,11 +2,11 @@ package tuxkids.tuxblocks.core.defense.select;
 
 import playn.core.Canvas;
 import playn.core.CanvasImage;
+import playn.core.Font.Style;
 import playn.core.Image;
 import playn.core.Layer;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-import playn.core.Font.Style;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;

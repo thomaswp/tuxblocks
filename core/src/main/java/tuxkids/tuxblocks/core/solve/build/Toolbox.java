@@ -176,7 +176,7 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 	}
 	
 	private void refreshNumberSprite() {
-		numberLayer.setImage(CanvasUtils.createString(textFormat, "" + number, Colors.BLACK));
+		numberLayer.setImage(CanvasUtils.createText("" + number, textFormat, Colors.BLACK));
 		centerImageLayer(numberLayer);
 	}
 

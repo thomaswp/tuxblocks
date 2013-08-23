@@ -5,8 +5,8 @@ import java.util.HashMap;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
-import tuxkids.tuxblocks.core.utils.Persistable;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public class TowerState extends PlayNObject implements Persistable {
 	

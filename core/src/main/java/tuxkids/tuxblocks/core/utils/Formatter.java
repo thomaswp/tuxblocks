@@ -2,8 +2,13 @@ package tuxkids.tuxblocks.core.utils;
 
 import playn.core.PlayN;
 
+/**
+ * Used in lieu of {@link String#format(String, Object...)},
+ * which GWT does not support.
+ */
 public class Formatter {
 
+	/** Used in lieu of {@link String#format(String, Object...)}, which GWT does not support. */
 	public static String format(final String format, final Object... args) {
 		final StringBuffer msg = new StringBuffer();
 		int argIndex = 0;

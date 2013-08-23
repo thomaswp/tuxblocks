@@ -7,8 +7,8 @@ import tuxkids.tuxblocks.core.solve.blocks.layer.EmptyBlockLayer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.Persistable;
-import tuxkids.tuxblocks.core.utils.Persistable.Constructor;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 
 public class BlockHolder extends BaseBlock {
 

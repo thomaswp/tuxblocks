@@ -16,7 +16,7 @@ import tuxkids.tuxblocks.core.defense.walker.SpinWalker;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.Debug;
-import tuxkids.tuxblocks.core.utils.Persistable;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public abstract class Level implements Persistable {
 	

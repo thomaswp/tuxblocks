@@ -15,13 +15,12 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
-import tuxkids.tuxblocks.core.utils.Positioned;
 
 /**
  * A clickable wrapper for an {@link ImageLayer} with some
  * utility methods. Buttons always have their origin at their center.
  */
-public class Button extends PlayNObject implements Positioned, Highlightable {
+public class Button extends PlayNObject implements Highlightable {
 	
 	// default alpha for the button when it is unpressed
 	public final static float DEFAULT_UNPRESSED_ALPHA = 0.5f;
@@ -74,12 +73,10 @@ public class Button extends PlayNObject implements Positioned, Highlightable {
 		return imageLayer.image();
 	}
 	
-	@Override
 	public float x() {
 		return imageLayer.tx();
 	}
 
-	@Override
 	public float y() {
 		return imageLayer.ty();
 	}
