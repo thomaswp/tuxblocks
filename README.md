@@ -16,6 +16,7 @@ Platforms
 TuxBlocks has working versions on the following platforms:
  * Android 2.3+
  * [HTML5](http://tux-blocks.appspot.com/) (using both Canvas and WebGL)
+   + Currently Chrome, Firefox and Internet Explorer are supported (with Chrome preferred)
  
 An iOS version is currently being co-developed with the [PlayN-IOS](https://github.com/thomaswp/playn-ios) library, which will allow an iOS release without the use of the proprietary Xamarin Studio.
 
