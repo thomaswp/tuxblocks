@@ -85,9 +85,6 @@ public class TuxBlocksGameJava {
 		for (int i=0; i<len; i++) {
 			int pos=i<<2;
 			int texel=pixels[i];
-			if (texel != 0) {
-				System.out.println("!");
-			}
 			int a = (texel >> 24) & 0xff;
 			int r = (texel >> 16) & 0xff;
 			int g = (texel >> 8) & 0xff;

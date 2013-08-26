@@ -1,7 +1,7 @@
 TuxBlocks
 =========
 
-TuxBlocks is a cross-platform aglebra game, originally created for [Tux4Kids](http://tux4kids.alioth.debian.org/) during Google's Summer of code 2013. The game is built on top of the [PlayN](code.google.com/p/playn/) game engine. The game is currently in an open Beta, with full release pending.
+TuxBlocks is a cross-platform aglebra game, originally created for [Tux4Kids](http://tux4kids.alioth.debian.org/) during Google's Summer of code 2013. The game is built on top of the [PlayN](http://code.google.com/p/playn/) game engine. The game is currently in an open Beta, with full release pending.
 
 
 Concept
@@ -18,14 +18,14 @@ TuxBlocks has working versions on the following platforms:
  * [HTML5](http://tux-blocks.appspot.com/) (using both Canvas and WebGL)
    + Currently Chrome, Firefox and Internet Explorer are supported (with Chrome preferred)
  
-An iOS version is currently being co-developed with the [PlayN-IOS](https://github.com/thomaswp/playn-ios) library, which will allow an iOS release without the use of the proprietary Xamarin Studio.
+An iOS version is currently being co-developed with the [PlayN-IOS](http://github.com/thomaswp/playn-ios) library, which will allow an iOS release without the use of the proprietary Xamarin Studio.
 
 License
 -------
 
-TuxBlocks, as well as all of its visual art assets, are licensed under the Creative Commons Attribution-ShareAlike License ([CC BY-SA](http://creativecommons.org/licenses/by-sa/3.0/us/)). If you would like to release a version of TuxBlocks under a different open source license, please contact the developers.
+TuxBlocks, as well as all of its visual art assets, are licensed under the Creative Commons Attribution-ShareAlike License 3.0 ([CC BY-SA](http://creativecommons.org/licenses/by-sa/3.0/us/)). If you would like to release a version of TuxBlocks under a different open source license, please contact the developers.
 
-The game also uses Creative Commons licensed music and sounds by the following artists: [Rezoner](soundcloud.com/rezoner/), FoxSynergy, [David McKee (ViRiX)](soundcloud.com/virix), Lokif, [Kenny Vleugels](kenny.nl), Broumbroum, Neotone, Mojomills, m_O_m, klangfabrik, JoelAudio, SunnySideSound and Kastenfrosch.
+The game also uses Creative Commons licensed music and sounds by the following artists: [Rezoner](http://www.soundcloud.com/rezoner/), FoxSynergy, [David McKee (ViRiX)](http://www.soundcloud.com/virix), Lokif, [Kenny Vleugels](http://www.kenny.nl), Broumbroum, Neotone, Mojomills, m_O_m, klangfabrik, JoelAudio, SunnySideSound and Kastenfrosch.
 
 Development Environment
 -----------------------
@@ -91,7 +91,7 @@ Unlike with other App Engine projects, you must recompile TuxBlocks every time y
 	
 The run_html.bat combines these commands for your convenience. 
 
-You may also find it useful to have the [Google App Engine plugin](https://developers.google.com/appengine/docs/java/tools/eclipse) for eclipse. This will allow you to treat the project as a GAE project and deploy it to App Engine.
+You may also find it useful to have the [Google App Engine plugin](http://developers.google.com/appengine/docs/java/tools/eclipse) for eclipse. This will allow you to treat the project as a GAE project and deploy it to App Engine.
 
 #### HTML5 Caveats ####
 
@@ -99,7 +99,7 @@ The HTML5 backend for PlayN contains both an HTML5 Canvas graphics implementatio
 
 ### iOS ###
 
-The iOS build is still in development, but for more information on how to run a PlayN game on iOS, see [PlayN-IOS](https://github.com/thomaswp/playn-ios).
+The iOS build is still in development, but for more information on how to run a PlayN game on iOS, see [PlayN-IOS](http://github.com/thomaswp/playn-ios).
 
 Structure
 ---------
@@ -129,4 +129,4 @@ You may want to make use of these classes as you contribute to TuxBlocks. See th
 
 **ImageLayerTintable**: This class emulates the behavior of PlayN's ImageLayer interface but allows for tinting that works even on HTML5 Canvas backends. It works by overlaying a tinted version of the image on top of the original, and changing opacity to create variants in tint.
 
-**BaseScreen**: An extension of [TriplePlay](https://github.com/threerings/tripleplay)'s Screen class. This is the base of every screen you see in the game, which transition on- and off-screen by sliding into position.
+**BaseScreen**: An extension of [TriplePlay](http://github.com/threerings/tripleplay)'s Screen class. This is the base of every screen you see in the game, which transition on- and off-screen by sliding into position.
