@@ -190,7 +190,7 @@ public abstract class Tower extends DiscreteGridObject {
 			
 			@Override
 			public void onPointerEnd(Event event) {
-				Tower.this.grid.towerClicked(Tower.this);
+				Tower.this.grid.showUpgradePanel(Tower.this);
 			}
 			
 			@Override

@@ -9,6 +9,8 @@ import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Key;
+import playn.core.Keyboard.TypedEvent;
 import playn.core.Layer;
 import playn.core.Layer.HitTester;
 import playn.core.PlayN;
@@ -225,13 +227,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					if (selectedPoint != null && !hasCorrectAnswer()) {
-						buttonBack.setImage(backImageCancel);
-						Audio.se().play(Constant.SE_BACK);
-						madeMistake = true;
-					} else {
-						popThis();
-					}
+					tryAnswer();
 				}
 			}
 		});
@@ -254,6 +250,16 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		blankCenter.y += eqLayer.ty();
 		
 		layer.add(equationLayer);
+	}
+	
+	private void tryAnswer() {
+		if (selectedPoint != null && !hasCorrectAnswer()) {
+			buttonBack.setImage(backImageCancel);
+			Audio.se().play(Constant.SE_BACK);
+			madeMistake = true;
+		} else {
+			popThis();
+		}
 	}
 	
 	@Override
@@ -465,6 +471,46 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		}
 	}
 
+	@Override
+	public void onKeyTyped(TypedEvent event) {
+		super.onKeyTyped(event);
+		
+		Integer s = selectedAnswer();
+		int selected = s == null ? 0 : s;
+		
+		char c = event.typedChar();
+		if (c >= '0' && c <= '9') {
+			int digit = Integer.parseInt("" + c);
+			if (selected < 0) digit *= -1;
+			selected = selected * 10 + digit;
+			if (Math.abs(selected) < 1500) {
+				selectedPoint = getPoint(selected);
+				Tutorial.trigger(Trigger.Number_NumberSelected);
+			}
+		} else if (s != 0 && c == '-') {
+			selectedPoint = getPoint(-s); 
+			Tutorial.trigger(Trigger.Number_NumberSelected);
+		}
+	}
+	
+	@Override
+	public void onKeyDown(playn.core.Keyboard.Event event) {
+		super.onKeyDown(event);
+		
+		if (event.key() == Key.BACKSPACE) {
+			Integer s = selectedAnswer();
+			if (s == null) return;
+			int selected = s;
+			if (Math.abs(selected) < 10) {
+				selectedPoint = null;
+			} else {
+				selectedPoint = getPoint(selected / 10);
+			}
+		} else if (event.key() == Key.ENTER) {
+			tryAnswer();
+		}
+	}
+	
 	private final static int MAX_TRAIL = 10;
 	
 	@Override

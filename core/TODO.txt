@@ -1,10 +1,19 @@
-For Beta
+Suggestions from beta:
+-have a button to flip the sign of the selected number on the number select screen
+-more flexible tutorial (less dependency on player following directions)
+-stronger checks to prevent really high numbers in problems (specifically composites)
+-when a problem is solved, just exit the solve screen?
+-different font or text color for operators in modifier blocks (distinguish times and x)
+-"advanced" mode (without graphical solver)
 
 Bugs
+-text cut off on Android
+-flashing blocks on Android
+-more graphical bugs on older android devices
+-unsolvable problems (unconfirmed)
 
 For the future:
 -multiple grids
 -color/grid/#levels selection
 -high scores
--flip sign in number select
 -shuffle equations

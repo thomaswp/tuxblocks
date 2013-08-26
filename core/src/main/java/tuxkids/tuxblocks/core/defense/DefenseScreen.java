@@ -157,7 +157,8 @@ public class DefenseScreen extends GameScreen {
 //			menuSprite.setText(Formatter.format("Next round in %d...", nextRoundIn));
 			header.rightButton().layerAddable().setVisible(true);
 		}
-		header.leftButton().layerAddable().setVisible(!state.level().duringRound());
+		header.leftButton().layerAddable().setVisible(
+				!state.level().duringRound() && state.problems().size() > 0);
 		
 		if (!exiting() && state.lives() <= 0) {
 			GameEndMenuLayer.show(false, new Runnable() {

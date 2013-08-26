@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.tutorial;
 
+import playn.core.PlayN;
+
 /** Tutorial for Play mode */
 public class TutorialPlay extends Tutorial {
 
@@ -44,6 +46,10 @@ public class TutorialPlay extends Tutorial {
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.Number_Shown);
 		addAction(Trigger.TextBoxHidden);
+		addAction(Trigger.TextBoxHidden);
+		if (!PlayN.keyboard().hasHardwareKeyboard()) {
+			actions.remove(actions.size() - 1);
+		}
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.Number_NumberSelected)
 		.addHighlight(Tag.Number_Ok);

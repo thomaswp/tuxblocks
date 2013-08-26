@@ -31,6 +31,7 @@ public class UpgradePanel extends LayerWrapper {
 	protected final int color;
 	protected final TextFormat format;
 	
+	protected boolean lastCanUpgrade;
 	protected Tower tower;
 	protected float targetAlpha = 1;
 	
@@ -178,8 +179,9 @@ public class UpgradePanel extends LayerWrapper {
 				numberLayer.setVisible(false);
 			} else {
 				numberLayer.setVisible(true);
+				int color = canUpgrade() ? Colors.BLACK : Colors.DARK_GRAY;
 				numberLayer.setImage(CanvasUtils.createText(
-						"" + upgradeCost, format, Colors.BLACK));
+						"" + upgradeCost, format, color));
 				centerImageLayer(numberLayer);
 			}
 		}
@@ -196,10 +198,12 @@ public class UpgradePanel extends LayerWrapper {
 	}
 	
 	public void update(int delta) {
-		boolean canUpgrade = canUpgrade();
-		buttonUpgrade.setEnabled(canUpgrade);
-		buttonUpgrade.layerAddable().setAlpha(canUpgrade ? BUTTON_ALPHA : 0.2f);
-		numberLayer.setAlpha(buttonUpgrade.layerAddable().alpha());
+		if (lastCanUpgrade != canUpgrade()) {
+			lastCanUpgrade = canUpgrade();
+			buttonUpgrade.setEnabled(lastCanUpgrade);
+			buttonUpgrade.layerAddable().setAlpha(lastCanUpgrade ? BUTTON_ALPHA : 0.2f);
+			refreshNumberLayer();
+		}
 	}
 	
 	public void paint(Clock clock) {

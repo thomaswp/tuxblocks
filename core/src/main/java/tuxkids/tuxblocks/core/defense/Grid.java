@@ -61,9 +61,9 @@ public class Grid extends PlayNObject implements Highlightable {
 	private final Point walkerStart, walkerDestination;
 	private final Particles particles;
 	private final GameState state;
+	private final ImageLayer rangeIndicatorLayer;
 	
 	private Tower toPlace;
-	private ImageLayer toPlaceRadius;
 	private List<Point> currentPath;
 	private float targetAlpha = 1;
 	private int towerColor;
@@ -180,6 +180,10 @@ public class Grid extends PlayNObject implements Highlightable {
 		layer.add(selectorLayer);
 		
 		particles = new TuxParticles();
+		
+		rangeIndicatorLayer = graphics().createImageLayer();
+		rangeIndicatorLayer.setDepth(0);
+		gridLayer.add(rangeIndicatorLayer);
 	}
 
 	public Emitter createEmitter(int maxParticles, Image image) {
@@ -321,7 +325,7 @@ public class Grid extends PlayNObject implements Highlightable {
 						int cMax = cMin + tower.cols() - 1;
 						if (selectedPoint.x >= rMin && selectedPoint.x <= rMax &&
 								selectedPoint.y >= cMin && selectedPoint.y <= cMax) {
-							upgradePanel.setTower(tower);
+							showUpgradePanel(tower);
 							break;
 						}
 					}
@@ -348,10 +352,17 @@ public class Grid extends PlayNObject implements Highlightable {
 	
 	public void hideUpgradePanel() {
 		upgradePanel.setTower(null);
+		rangeIndicatorLayer.setImage(null);
 	}
 	
-	public void towerClicked(Tower tower) {
+	public void showUpgradePanel(Tower tower) {
 		upgradePanel.setTower(tower);
+
+		rangeIndicatorLayer.setImage(tower.createRadiusImage());
+		rangeIndicatorLayer.setTranslation(tower.position().x, tower.position().y);
+		rangeIndicatorLayer.setVisible(true);
+		rangeIndicatorLayer.setAlpha(0.5f);
+		centerImageLayer(rangeIndicatorLayer);
 	}
 
 	public Point getCell(float x, float y, Point point) {
@@ -388,12 +399,13 @@ public class Grid extends PlayNObject implements Highlightable {
 		overlayLayer.add(toPlace.layerAddable());
 		validPlacementMap.clear();
 
-		toPlaceRadius = graphics().createImageLayer(toPlace.createRadiusImage());
-		centerImageLayer(toPlaceRadius);
-		gridLayer.add(toPlaceRadius);
+		hideUpgradePanel();
+		
+		rangeIndicatorLayer.setImage(toPlace.createRadiusImage());
+		rangeIndicatorLayer.setAlpha(1);
+		centerImageLayer(rangeIndicatorLayer);
 		updateToPlace();
 		
-		upgradePanel.setTower(null);
 	}
 
 	public void updatePlacement(float globalX, float globalY) {
@@ -410,14 +422,12 @@ public class Grid extends PlayNObject implements Highlightable {
 		boolean canPlace = canPlace();
 		if (canPlace) {
 			placeTower(toPlace, toPlace.coordinates);
-			toPlaceRadius.destroy();
 			Tutorial.trigger(Trigger.Defense_TowerDropped);
 		} else if (toPlace != null) {
 			toPlace.layer().destroy();
 		}
 		toPlace = null;
-		toPlaceRadius.destroy();
-		toPlaceRadius = null;
+		rangeIndicatorLayer.setImage(null);
 		return canPlace;
 	}
 	
@@ -432,15 +442,14 @@ public class Grid extends PlayNObject implements Highlightable {
 	public void cancelPlacement() {
 		toPlace.layer().destroy();
 		toPlace = null;
-		toPlaceRadius.destroy();
-		toPlaceRadius = null;
+		rangeIndicatorLayer.setImage(null);
 	}
 
 	private void updateToPlace() {
 		if (toPlace == null) return;
 		toPlace.layer().setAlpha(canPlace() ? 1 : 0.5f);
-		toPlaceRadius.setTranslation(toPlace.position().x, toPlace.position().y);
-		toPlaceRadius.setVisible(toPlace.layer().visible() && toPlace.layer().alpha() == 1);
+		rangeIndicatorLayer.setTranslation(toPlace.position().x, toPlace.position().y);
+		rangeIndicatorLayer.setVisible(toPlace.layer().visible() && toPlace.layer().alpha() == 1);
 	}
 
 	private boolean canPlace() {

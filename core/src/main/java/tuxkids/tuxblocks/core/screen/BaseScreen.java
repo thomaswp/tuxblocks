@@ -182,7 +182,7 @@ public class BaseScreen extends Screen implements Listener {
 
 	@Override
 	public void onKeyDown(Event event) {
-		if (event.key() == Key.BACK || event.key() == Key.DOWN) {
+		if (event.key() == Key.BACK || event.key() == Key.B) {
 			if (MainMenuLayer.showing()) {
 				MainMenuLayer.toggle(this);
 			} else {

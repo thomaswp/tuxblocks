@@ -22,7 +22,7 @@ Now you can double-<click> to zoom back out.
 
 Place a few more Towers and you’ll be ready for your first Round. You can trigger the round early by hitting the Go button!
 
-You survived your first Round, but we’re going to need more Towers for the next one. You get more Towers by pressing the Plus button.
+You survived your first Round, but we’re going to need more Towers for the next one. After a round, you can get more Towers by pressing the Plus button.
 
 Each button here shows you a problem you can solve and the reward you’ll get for solving it. New problems appear after every round. You usually have limited time between rounds, so choose problems wisely. For now, try <clicking> on the first one.
 
@@ -37,6 +37,8 @@ There's a also a little gray circle that appeared between the [16] block and the
 This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 16/4. The problem is written at the top of the screen. This one's pretty simple, right?
 
 You can solve the problem by <clicking> on the right solution. If you don't see the number you want, you can pan around by dragging the screen. 
+
+For big numbers, you can also type in the answer.
 
 When you're looking for a number, remember that going up or down one row makes the number change by 10, and going right or left one column makes it change by 1. Now, try finding the correct answer.
 
@@ -84,7 +86,7 @@ As you level up, some problems will solve themselves, instead of making you go t
 
 In fact, if you've been following this tutorial exactly, you've probably already leveled up your division. If you try the next problem, you may find the easy division is solved automatically. Check that out if you'd like, and when you're done, come back to the Grid screen.
 
-Notice how you now have extra Pea Shooters from all the problems you solved!
+Notice how you now have extra Pea Shooters from all the problems you solved! And you're going to need them - later levels will have Blocks that are tougher, faster and even some that can fly over your Towers!
 
 That's about all for this Tutorial. You can start it over from Title screen, or learn about Build mode. You're welcome to keep playing this game, but you may want to start a new game with your choice of difficulty. 
 
