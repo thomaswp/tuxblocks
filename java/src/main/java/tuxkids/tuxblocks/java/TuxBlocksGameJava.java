@@ -37,8 +37,11 @@ public class TuxBlocksGameJava {
 		JavaPlatform.Config config = new JavaPlatform.Config();
 		config.width = 1000;
 		config.height = 620;
+		config.storageFileName = "TuxBlocks.dat";
 		// use config to customize the Java platform, if needed
-		JavaPlatform.register(config);
+		JavaPlatform platform = JavaPlatform.register(config);
+		// TODO: Display.setIcon()
+		platform.setTitle("TuxBlocks");
 		PlayN.run(new TuxBlocksGame());
 	}
 }

@@ -39,8 +39,14 @@ import tuxkids.tuxblocks.core.widget.menu.ContinueMenuLayer.ResponseListener;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
+/**
+ * Screen shown when the game first starts. Gives options to
+ * enter Play or Build modes.
+ */
 public class TitleScreen extends BaseScreen{
 
+	// Time after the title is first show to snap the
+	// TitleLayer into place
 	private static final int SNAP_TIME = 500;
 	
 	private int untilSnap;
@@ -61,14 +67,19 @@ public class TitleScreen extends BaseScreen{
 		titleLayer.setDepth(-1);
 		layer.add(titleLayer.layerAddable());
 		
+		// format for authors text
 		authorFormat = new TextFormat().withFont(graphics().createFont(
 				Constant.FONT_NAME, Style.PLAIN, (int)(height() / 25)))
 				.withAlignment(Alignment.CENTER);
+		// format for text about author text (like "by" and "menotred by")
 		superFormat = new TextFormat().withFont(graphics().createFont(
 				Constant.FONT_NAME, Style.PLAIN, (int)(height() / 35)))
 				.withAlignment(Alignment.CENTER);
+		// format for Play and Build buttons
 		optionFormat = new TextFormat().withFont(graphics().createFont(
 				Constant.FONT_NAME, Style.PLAIN, (int)(height() / 10)));
+		
+		// most elements fade in after the snap
 		fadeInLayer = graphics().createGroupLayer();
 		layer.add(fadeInLayer);
 		fadeInLayer.setAlpha(0);
@@ -76,6 +87,8 @@ public class TitleScreen extends BaseScreen{
 		titleLayer.image.addCallback(new Callback<Image>() {
 			@Override
 			public void onSuccess(Image result) {
+				// don't setup the title screen until we have
+				// the TitleLayer ready to load
 				setup();
 			}
 
@@ -163,6 +176,7 @@ public class TitleScreen extends BaseScreen{
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
+					// Give players the chance to continue from last game if it exists
 					if (!Tutorial.running() && PersistUtils.stored(Constant.KEY_GAME)) {
 						ContinueMenuLayer.show(new ResponseListener() {
 							@Override
@@ -175,6 +189,7 @@ public class TitleScreen extends BaseScreen{
 							}
 						});
 					} else {
+						// or if you're in the tutorial, just start a new one
 						toDifficultyScreen();
 					}
 				}
@@ -200,6 +215,7 @@ public class TitleScreen extends BaseScreen{
 			
 			@Override
 			public void onPointerEnd(Event event) { 
+				// open the Tux4Kids website when the Tux4Kids text is clicked
 				PlayN.openURL(Constant.TUX_URL);
 			}
 			
@@ -212,19 +228,28 @@ public class TitleScreen extends BaseScreen{
 	}
 	
 	private void toDifficultyScreen() {
+		// start a new game
 		Tutorial.trigger(Trigger.Title_Play);
 		DifficultyScreen ds = new DifficultyScreen(screens, background);
 		pushScreen(ds, screens.slide().left());
 	}
 	
 	private void continueGame() {
+		// load the game
 		GameState state = PersistUtils.fetch(GameState.class, Constant.KEY_GAME);
+		// clear the save file
 		PersistUtils.clear(Constant.KEY_GAME);
 		if (state == null) {
+			// if the load failed, start a new game
+			// (this might happen if the fields of the peristed
+			// objects changed since the last save, or if the save
+			// is corrupted)
 			toDifficultyScreen();
 			Debug.write("failed to load game!");
 			return;
-		} else
+		} 
+		
+		// otherwise, start the saved game
 		state.setBackground(background);
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());
@@ -250,6 +275,8 @@ public class TitleScreen extends BaseScreen{
 	@Override
 	public void wasAdded() {
 		super.wasAdded();
+		// when it's first added, start the snap timer
+		// for the TitleLayer
 		untilSnap = SNAP_TIME;
 	}
 	
@@ -266,8 +293,8 @@ public class TitleScreen extends BaseScreen{
 		}
 		
 		titleLayer.update(delta);
-		
 
+		// show the start tutorial button iff it's not running
 		if (!Tutorial.running()) {
 			if (tutorialButton != null) {
 				tutorialButton.layerAddable().setVisible(true);
@@ -282,12 +309,15 @@ public class TitleScreen extends BaseScreen{
 		super.paint(clock);
 		titleLayer.paint(clock);
 		if (untilSnap == 0) {
-			fadeInLayer.setAlpha(PlayNObject.lerpTime(fadeInLayer.alpha(), 1, 0.998f, clock.dt(), 0.01f));
+			// if we've snapped the TitleLayer, fade in the fadeInLayer
+			lerpAlpha(fadeInLayer, 1, 0.998f, clock.dt());
 		}
 	}
 	
 	@Override
 	protected void popThis() {
+		// only pop this screen if we're on Android and
+		// the player might be killing the game w/ the back button
 		if (PlayN.platformType() == Type.ANDROID) {
 			super.popThis();
 		}
