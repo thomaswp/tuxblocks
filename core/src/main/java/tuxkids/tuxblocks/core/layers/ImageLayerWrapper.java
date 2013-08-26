@@ -2,7 +2,9 @@ package tuxkids.tuxblocks.core.layers;
 
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Layer;
 import playn.core.Layer.HitTester;
+import pythagoras.f.Point;
 
 public class ImageLayerWrapper extends LayerWrapper implements ImageLayerLike {
 

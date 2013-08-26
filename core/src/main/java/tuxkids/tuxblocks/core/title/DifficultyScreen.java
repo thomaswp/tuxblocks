@@ -40,23 +40,24 @@ public class DifficultyScreen extends BaseScreen {
 	protected final DiscreteSlideLayer mathSlider, gameSlider, timeSlider;
 	protected final TextFormat promptFormat, descriptionFormat;
 	protected final float spacing;
+	protected final HeaderLayer header;
 	
 	public DifficultyScreen(ScreenStack screens, final GameBackgroundSprite background) {
 		super(screens, background);
 		
-		HeaderLayer menu = new HeaderLayer(width(), background.primaryColor());
-		layer.add(menu.layerAddable());
+		header = new HeaderLayer(width(), background.primaryColor());
+		layer.add(header.layerAddable());
 		
 		ImageLayer titleLayer = graphics().createImageLayer();
 		titleLayer.setImage(CanvasUtils.createTextCached("Choose Difficulty", 
-				Cache.createFormat(menu.height() * 0.5f), Colors.BLACK));
+				Cache.createFormat(header.height() * 0.5f), Colors.BLACK));
 		titleLayer.setDepth(1);
-		titleLayer.setTranslation(width() / 2, menu.height() / 2);
+		titleLayer.setTranslation(width() / 2, header.height() / 2);
 		PlayNObject.centerImageLayer(titleLayer);
 		layer.add(titleLayer);
 		
 		spacing = height() / 4.5f;
-		float offY = menu.height() * 0.95f;
+		float offY = header.height() * 0.95f;
 		
 		promptFormat = Cache.createFormat(height() / 22);
 		descriptionFormat = Cache.createFormat(height() / 35);
@@ -109,7 +110,7 @@ public class DifficultyScreen extends BaseScreen {
 		gameSlider.setStop(2, true);
 		timeSlider.setStop(2, true);
 		
-		Button buttonOk = menu.addRightButton(Constant.BUTTON_OK);
+		Button buttonOk = header.addRightButton(Constant.BUTTON_OK);
 		register(buttonOk, Tag.Difficulty_Start);
 		buttonOk.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -120,7 +121,7 @@ public class DifficultyScreen extends BaseScreen {
 			}
 		});
 		
-		Button buttonBack = menu.addLeftButton(Constant.BUTTON_BACK);
+		Button buttonBack = header.addLeftButton(Constant.BUTTON_BACK);
 		buttonBack.setNoSound();
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -186,6 +187,7 @@ public class DifficultyScreen extends BaseScreen {
 	@Override
 	public void update(int delta) {
 		super.update(delta);
+		header.update(delta);
 	}
 	
 	@Override

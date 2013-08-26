@@ -31,6 +31,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.HoverUtils;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.persist.PersistUtils;
 import tuxkids.tuxblocks.core.widget.Button;
@@ -278,6 +279,12 @@ public class TitleScreen extends BaseScreen{
 		// when it's first added, start the snap timer
 		// for the TitleLayer
 		untilSnap = SNAP_TIME;
+	}
+	
+	@Override
+	public void wasShown() {
+		super.wasShown();
+		HoverUtils.clear();
 	}
 	
 	@Override

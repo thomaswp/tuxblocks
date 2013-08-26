@@ -1,9 +1,9 @@
 package tuxkids.tuxblocks.core.layers;
 
 import playn.core.GroupLayer;
-import playn.core.Image;
 import playn.core.Layer;
 import playn.core.Pointer.Listener;
+import pythagoras.f.Point;
 
 public interface LayerLike {
 	public Layer layerAddable();
@@ -25,8 +25,11 @@ public interface LayerLike {
 	public void setOrigin(float x, float y);
 	public void setAlpha(float alpha);
 	
+	public Layer hitTest(Point p);
+	
 	public void addListener(Listener pointerListener);
 	
 	public void addToLayer(GroupLayer layer);
+	public boolean incorporatesLayer(Layer hit);
 	
 }

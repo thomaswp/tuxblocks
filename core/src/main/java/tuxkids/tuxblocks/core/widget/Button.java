@@ -14,6 +14,8 @@ import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
+import tuxkids.tuxblocks.core.utils.HoverUtils;
+import tuxkids.tuxblocks.core.utils.HoverUtils.HoverListener;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 /**
@@ -35,6 +37,7 @@ public class Button extends PlayNObject implements Highlightable {
 	private boolean pressed;
 	private int tint, tintPressed;
 	private boolean enabled = true;
+	private boolean hovering;
 	
 	// sound to play when the button is pressed
 	protected String soundPath = Constant.SE_OK;
@@ -254,11 +257,24 @@ public class Button extends PlayNObject implements Highlightable {
 				}
 			});
 		}
+		HoverUtils.registerListener(imageLayer, new HoverListener() {
+
+			@Override
+			public void hoverChanged(boolean hovering) {
+				if (hovering == Button.this.hovering) return;
+				Button.this.hovering = hovering;
+				refreshTint();
+			}
+		});
 	}
 	
 	private void refreshTint() {
 		int tint = pressed ? tintPressed : this.tint;
-		if (!enabled) tint = Colors.blend(tint, Color.withAlpha(Colors.BLACK, Color.alpha(tint)), 0.5f);
+		if (!enabled) {
+			tint = Colors.blend(tint, Color.withAlpha(Colors.BLACK, Color.alpha(tint)), 0.5f);
+		} else if (hovering) {
+			tint = Color.withAlpha(tint, 255 - (255 - Color.alpha(tint)) / 2);
+		}
 		imageLayer.setTint(tint);
 	}
 	

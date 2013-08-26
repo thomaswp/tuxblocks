@@ -9,6 +9,7 @@ import playn.core.Layer;
 import playn.core.Layer.HitTester;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
+import pythagoras.f.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.GLStatus;
@@ -167,5 +168,10 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 	@Override
 	public void setHitTester(HitTester tester) {
 		base.setHitTester(tester);
+	}
+
+	@Override
+	public Layer hitTest(Point p) {
+		return base.hitTest(p);
 	}
 }

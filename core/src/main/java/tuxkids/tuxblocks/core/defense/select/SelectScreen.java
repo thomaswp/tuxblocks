@@ -113,7 +113,7 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		final ProblemButton pb = new ProblemButton(problem, width, minHeight, state.themeColor());
 		problemLayer.add(pb.layerAddable());
 		pb.setPosition((col + 0.5f) * width() / COLS, aboveY + margin + pb.height() / 2);
-		pb.setTint(Color.withAlpha(Colors.WHITE, 225), Colors.LIGHT_GRAY);
+		pb.setTint(Colors.WHITE, Colors.LIGHT_GRAY);
 		pb.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {

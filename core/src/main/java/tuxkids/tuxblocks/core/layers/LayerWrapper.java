@@ -3,6 +3,7 @@ package tuxkids.tuxblocks.core.layers;
 import playn.core.GroupLayer;
 import playn.core.Layer;
 import playn.core.Pointer.Listener;
+import pythagoras.f.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
@@ -135,5 +136,21 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	@Override
 	public boolean destroyed() {
 		return layer.destroyed();
+	}
+
+	@Override
+	public Layer hitTest(Point p) {
+		return layer.hitTest(p);
+	}
+
+	@Override
+	public boolean incorporatesLayer(Layer hit) {
+		if (layer instanceof GroupLayer) {
+			GroupLayer groupLayer = (GroupLayer) layer;
+			for (int i = 0; i < groupLayer.size(); i++) {
+				if (groupLayer.get(i) == hit) return true;
+			}
+		}
+		return hit == layer;
 	}
 }

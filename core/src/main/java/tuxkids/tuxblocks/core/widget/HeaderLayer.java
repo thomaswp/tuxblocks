@@ -98,7 +98,8 @@ public class HeaderLayer extends LayerWrapper {
 	}
 	
 	public void update(int delta) {
-		
+//		if (leftButton != null) leftButton.update(delta);
+//		if (rightButton != null) rightButton.update(delta);
 	}
 	
 	public void paint(Clock clock) {

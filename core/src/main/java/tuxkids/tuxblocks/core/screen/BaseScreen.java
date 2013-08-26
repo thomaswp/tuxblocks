@@ -1,16 +1,14 @@
 package tuxkids.tuxblocks.core.screen;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.List;
 
 import playn.core.Graphics;
 import playn.core.Key;
-import playn.core.Layer;
 import playn.core.Keyboard.Event;
 import playn.core.Keyboard.Listener;
 import playn.core.Keyboard.TypedEvent;
+import playn.core.Layer;
 import playn.core.PlayN;
 import pythagoras.f.Vector;
 import tripleplay.game.Screen;
@@ -21,7 +19,6 @@ import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
@@ -172,9 +169,7 @@ public class BaseScreen extends Screen implements Listener {
 		}
 	}
 	
-	protected void onChildScreenFinished(BaseScreen screen) {
-		
-	}
+	protected void onChildScreenFinished(BaseScreen screen) { }
 	
 	protected interface OnScreenFinishedListener {
 		void onScreenFinished();
@@ -195,15 +190,9 @@ public class BaseScreen extends Screen implements Listener {
 	}
 
 	@Override
-	public void onKeyTyped(TypedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onKeyTyped(TypedEvent event) { }
 
 	@Override
-	public void onKeyUp(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onKeyUp(Event event) { }
 
 }
