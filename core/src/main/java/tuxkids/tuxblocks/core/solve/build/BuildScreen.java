@@ -52,7 +52,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 						}
 					}
 				});
-		register(header.rightButton(), Tag.Build_Ok);
+		registerHighlightable(header.rightButton(), Tag.Build_Ok);
 
 		header.addLeftButton(Constant.BUTTON_DOWN).setOnReleasedListener(
 				new OnReleasedListener() {
@@ -70,10 +70,10 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 		setEquation(Equation.NOOP);
 
 		toolbox = new Toolbox(controller, this, toolboxWidth(), height(), state.themeColor());
-		register(toolbox.buttonNumber, Tag.Build_NumberSelect);
-		register(toolbox.buttonMore, Tag.Build_NumberUp);
-		register(toolbox.buttonLess, Tag.Build_NumberDown);
-		register(toolbox, Tag.Build_LeftPanel);
+		registerHighlightable(toolbox.buttonNumber, Tag.Build_NumberSelect);
+		registerHighlightable(toolbox.buttonMore, Tag.Build_NumberUp);
+		registerHighlightable(toolbox.buttonLess, Tag.Build_NumberDown);
+		registerHighlightable(toolbox, Tag.Build_LeftPanel);
 		layer.add(toolbox.layerAddable());
 	}
 	

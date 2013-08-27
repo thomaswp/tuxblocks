@@ -93,7 +93,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		upgrade.setTranslation(itemCenter - itemSize * 4 / 3, 
 				height / 2);
 		layer.add(upgrade.layerAddable());
-		parent.register(upgrade, Tag.Menu_Upgrades);
+		parent.registerHighlightable(upgrade, Tag.Menu_Upgrades);
 		drawables.add(upgrade);
 	}
 	
@@ -102,7 +102,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		timer.setTranslation(itemCenter + itemSize * 4 / 3, 
 				height / 2);
 		layer.add(timer.layerAddable());
-		parent.register(timer, Tag.Menu_Countdown);
+		parent.registerHighlightable(timer, Tag.Menu_Countdown);
 		drawables.add(timer);
 	}
 	
@@ -111,7 +111,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		heart.setTranslation(itemCenter, 
 				height / 2);
 		layer.add(heart.layerAddable());
-		parent.register(heart, Tag.Menu_Lives);
+		parent.registerHighlightable(heart, Tag.Menu_Lives);
 		drawables.add(heart);
 	}
 	

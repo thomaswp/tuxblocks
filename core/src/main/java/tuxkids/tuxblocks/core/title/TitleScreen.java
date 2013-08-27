@@ -139,7 +139,7 @@ public class TitleScreen extends BaseScreen{
 		Button playButton = new Button(modeImage, false);
 		playButton.setPosition(width() / 5, midY);
 		playButton.setTint(tintPressed, tintUnpressed);
-		register(playButton, Tag.Title_Play);
+		registerHighlightable(playButton, Tag.Title_Play);
 		fadeInLayer.add(playButton.layerAddable());
 		
 		ImageLayer playText = graphics().createImageLayer();
@@ -151,7 +151,7 @@ public class TitleScreen extends BaseScreen{
 		Button buildButton = new Button(modeImage, false);
 		buildButton.setPosition(4 * width() / 5, midY);
 		buildButton.setTint(tintPressed, tintUnpressed);
-		register(buildButton, Tag.Title_Build);
+		registerHighlightable(buildButton, Tag.Title_Build);
 		fadeInLayer.add(buildButton.layerAddable());
 		
 		ImageLayer buildText = graphics().createImageLayer();

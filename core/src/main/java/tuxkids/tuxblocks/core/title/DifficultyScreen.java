@@ -127,7 +127,7 @@ public class DifficultyScreen extends BaseScreen {
 		
 		// add header buttons
 		Button buttonOk = header.addRightButton(Constant.BUTTON_OK);
-		register(buttonOk, Tag.Difficulty_Start);
+		registerHighlightable(buttonOk, Tag.Difficulty_Start);
 		buttonOk.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {

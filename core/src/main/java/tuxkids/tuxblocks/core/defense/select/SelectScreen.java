@@ -43,7 +43,7 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		
 		Button button = header.addRightButton(Constant.BUTTON_FORWARD);
 		button.setNoSound();
-		register(button, Tag.Select_Return);
+		registerHighlightable(button, Tag.Select_Return);
 		button.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -138,9 +138,9 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		}
 		
 		if (problemButtons.size() == 0) {
-			register(pb, Tag.Select_FirstButton);
+			registerHighlightable(pb, Tag.Select_FirstButton);
 		} else if (problemButtons.size() == 1) {
-			register(pb, Tag.Select_SecondButton);
+			registerHighlightable(pb, Tag.Select_SecondButton);
 		}
 		problemButtons.add(pb);
 	}

@@ -68,7 +68,7 @@ public class BaseScreen extends Screen implements Listener {
 		showing = true;
 	}
 	
-	public void register(Highlightable highlightable, Tag tag) {
+	public void registerHighlightable(Highlightable highlightable, Tag tag) {
 		if (highlightable == null) return;
 		highlightable.highlighter().addTag(tag);
 		if (!highlightables.contains(highlightable)) {

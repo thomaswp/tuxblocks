@@ -64,9 +64,9 @@ public class DefenseScreen extends GameScreen {
 				Tutorial.trigger(Trigger.Defense_GridZoom);
 			}
 		});
-		register(grid, Tag.Defense_Grid);
-		register(grid.upgradePanel().buttonUpgrade, Tag.Defense_UpgradeTower);
-		register(grid.upgradePanel().buttonDelete, Tag.Defense_DeleteTower);
+		registerHighlightable(grid, Tag.Defense_Grid);
+		registerHighlightable(grid.upgradePanel().buttonUpgrade, Tag.Defense_UpgradeTower);
+		registerHighlightable(grid.upgradePanel().buttonDelete, Tag.Defense_DeleteTower);
 		
 		maxScale = height() / grid.height();
 		float cornerX = gridHolder.tx() + grid.width();
@@ -113,7 +113,7 @@ public class DefenseScreen extends GameScreen {
 				}
 			}
 		});
-		register(buttonPlus, Tag.Defense_MoreTowers);
+		registerHighlightable(buttonPlus, Tag.Defense_MoreTowers);
 	}
 	
 	private void createStartButton() {
@@ -128,7 +128,7 @@ public class DefenseScreen extends GameScreen {
 				}
 			}
 		});
-		register(buttonStart, Tag.Defense_StartRound);
+		registerHighlightable(buttonStart, Tag.Defense_StartRound);
 	}
 	
 	@Override

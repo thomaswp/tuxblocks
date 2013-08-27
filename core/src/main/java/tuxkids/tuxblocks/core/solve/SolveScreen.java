@@ -10,26 +10,30 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
-import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.widget.Button;
-import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
+/** 
+ * Handles solving equations in-game.
+ */
 public class SolveScreen extends EquationScreen {
 	
 	private Button buttonBack;
 	private Image buttonImageOk, buttonImageBack;
 	
-	private SimplifyListener solveCallback;
-	private boolean solveCorrect;
-	private int solveLevel;
-	private Stat solveStat;
+	// remember attributes of a simplify operation so
+	// we can act on them when the player returns from the
+	// NumberSelectScreen
+	private SimplifyListener simplifyCallback;
+	private boolean simplifyCorrect;
+	private int simplifyLevel;
+	private Stat simplifyStat;
 	
 	@Override
 	protected float equationXPercent() {
@@ -44,6 +48,7 @@ public class SolveScreen extends EquationScreen {
 	public SolveScreen(final ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
 
+		// two images for the back button - one for if it's solved, one for not
 		buttonImageBack = PlayN.assets().getImage(Constant.BUTTON_DOWN);
 		buttonImageOk = PlayN.assets().getImage(Constant.BUTTON_OK);
 		buttonBack = header.addLeftButton(buttonImageBack);
@@ -54,12 +59,12 @@ public class SolveScreen extends EquationScreen {
 				if (inButton) popThis();
 			}
 		});
-		register(buttonBack, Tag.Solve_Ok);
+		registerHighlightable(buttonBack, Tag.Solve_Ok);
 		layer.add(buttonBack.layerAddable());
 		
 		Button buttonReset = header.addRightButton(Constant.BUTTON_RESET);
 		buttonReset.setPosition(width() - buttonReset.width() * 0.6f, header.height() / 2);
-		register(buttonReset, Tag.Solve_Reset);
+		registerHighlightable(buttonReset, Tag.Solve_Reset);
 		buttonReset.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -98,11 +103,15 @@ public class SolveScreen extends EquationScreen {
 	@Override
 	public void update(int delta) {
 		super.update(delta);
-		if (solveCorrect && !entering()) {
-			solveCallback.wasSimplified(true);
-			if (solveStat != null) {
-				state.addExpForSolving(solveStat, solveLevel);
+		if (simplifyCorrect && !entering()) {
+			// if we just correctly simplified and we're fully entered...
+			// tell the block it was simplified
+			simplifyCallback.wasSimplified(true);
+			if (simplifyStat != null) {
+				// add experience for the simplification
+				state.addExpForSolving(simplifyStat, simplifyLevel);
 			}
+			// can clear simplify state
 			clearSolve();
 		}
 		if (buttonBack.image() != buttonImageOk && controller.solved()) {
@@ -117,24 +126,28 @@ public class SolveScreen extends EquationScreen {
 	}
 	
 	private void clearSolve() {
-		solveCorrect = false;
-		solveCallback = null;
-		solveStat = null;
-		solveLevel = -1;
+		simplifyCorrect = false;
+		simplifyCallback = null;
+		simplifyStat = null;
+		simplifyLevel = -1;
 	}
 
+	// called from BlockController
 	@Override
 	public void showNumberSelectScreen(Renderer problem, int answer, int startNumber, 
 			Stat stat, int level, SimplifyListener callback) {
 		if (level > state.getStatLevel(stat)) {
+			// try to simplify
 			NumberSelectScreen nss = new NumberSelectScreen(screens, state, problem, answer);
 			nss.setFocusedNumber(startNumber);
-			solveCallback = callback;
-			solveCorrect = false;
-			solveStat = stat;
-			solveLevel = level;
+			// store the callback info for when the player returns
+			simplifyCallback = callback;
+			simplifyCorrect = false;
+			simplifyStat = stat;
+			simplifyLevel = level;
 			pushScreen(nss, screens.slide().left());
 		} else {
+			// if they're high enough level, simply solve the problem
 			callback.wasSimplified(true);
 		}
 	}
@@ -145,11 +158,13 @@ public class SolveScreen extends EquationScreen {
 		if (screen instanceof NumberSelectScreen) {
 			NumberSelectScreen nss = (NumberSelectScreen) screen;
 			if (nss.hasCorrectAnswer()) {
-				solveCorrect = true;
-				if (!nss.noMistakes()) solveStat = null;
+				simplifyCorrect = true;
+				// if they had a mistake when simplifying, don't give experience
+				if (!nss.noMistakes()) simplifyStat = null;
 				Tutorial.trigger(Trigger.Solve_SimplifiedSuccess);
 			} else {
-				solveCallback.wasSimplified(false);
+				// tell the blocks the simplify failed
+				simplifyCallback.wasSimplified(false);
 				clearSolve();
 			}
 		}

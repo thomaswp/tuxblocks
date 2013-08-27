@@ -149,9 +149,9 @@ public class Inventory extends PlayNObject {
 					image.height() - textHeight + ITEM_SPRITE_MARGIN / 2);
 			
 			final Button button = new Button(image, false);
-			screen.register(button, Tag.Defense_Towers);
+			screen.registerHighlightable(button, Tag.Defense_Towers);
 			if (towerType == TowerType.PeaShooter) {
-				screen.register(button, Tag.Defense_PeaShooter);
+				screen.registerHighlightable(button, Tag.Defense_PeaShooter);
 			}
 			
 			float x = getItemSpriteX(index);

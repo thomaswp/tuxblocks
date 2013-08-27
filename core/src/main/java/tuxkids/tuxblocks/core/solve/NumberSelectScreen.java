@@ -30,6 +30,7 @@ import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.layers.NumberLayer;
 import tuxkids.tuxblocks.core.layers.NumberLayer.NumberBitmapFont;
 import tuxkids.tuxblocks.core.screen.GameScreen;
+import tuxkids.tuxblocks.core.solve.build.BuildScreen;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
@@ -42,52 +43,77 @@ import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
 
+/**
+ * Screen for selecting numbers, usually as the answer to an arithmetic problem.
+ * Shown from {@link SolveScreen} and {@link BuildScreen}.
+ */
 public class NumberSelectScreen extends GameScreen implements Listener {
 	
-	private int SPACING = 150;
+	// spacing between numbers (not actually constant b/c it depends on screen size)
+	private int SPACING;
+	// max numbers rendered at a given time
 	private final static int MAX_NUMS = 70;
-	private final static int MAX_SPRITE_CREATE_PER_FRAME = 100;
+	// max number sprites allowed to be created per frame
+	private final static int MAX_SPRITE_CREATE_PER_FRAME = 100; // currently no real limit
+	// a value for "answer" that indicates any answer is premissible, and there is no "correct" one
 	public final static int ANY_ANSWER = Integer.MAX_VALUE;
 	
 	private TextFormat numberFormat, problemFormat;
-	private Point selectedPoint, possibleSelectedPoint;
-	private Vector velocity = new Vector();
-	private Vector position = new Vector(), lastPosition = new Vector();
-	private Vector dragOffset = new Vector();
-	private List<Vector> positionTrail = new ArrayList<Vector>();
-	private List<Double> timeTrail = new ArrayList<Double>();
 	
-	private GroupLayer foregroundLayer, backgroundLayer, equationLayer;
-	private int createsSpritesThisFrame;
+	// these points correspond to a row and column of numbers and equate with a selected answer
+	private Point selectedPoint, possibleSelectedPoint;
+	// pan velocity
+	private final Vector velocity = new Vector();
+	// position and last position of screen's offset
+	private final Vector position = new Vector(), lastPosition = new Vector();
+	// used to calculate relative movement during a drag
+	private final Vector dragOffset = new Vector();
+	
+	// trail of past positions/times while dragging (used for momentum calculation)
+	private final List<Vector> positionTrail = new ArrayList<Vector>();
+	private final List<Double> timeTrail = new ArrayList<Double>();
+	
+	private GroupLayer foregroundLayer, indicatorLayer, headerLayer;
+	private int createdSpritesThisFrame;
 	private int themeColor;
 	private Vector blankCenter;
-	private ImageLayer equationAnswer;
-	private Point equationAnswerPoint;
+	// displays the currently selected answer
+	private ImageLayer selectedAnswerLayer;
+	// the last selected problem answer
+	private Point lastSelectedPoint;
 	private Renderer problem;
 	private int answer;
 	private Button buttonBack, buttonCenter, buttonScratch, buttonClear;
 	private Image backImageOk, backImageBack, backImageCancel;
+	// point to go back to when buttonCenter is pressed
 	private Point recenterPoint = new Point();
+	// indicates if the player has guessed a wrong answer this showing
 	private boolean madeMistake;
 
+	// list of points and corresponding images shown on screen
 	private List<Point> numberPoints = new ArrayList<Point>();
 	private List<NumberLayer> numberImages = new ArrayList<NumberLayer>();
+	// redraws the selected number as colored
 	private NumberLayer selectedNumberLayer;
+	// BitmapFont used for displaying NumberLayers
 	private NumberBitmapFont bitmapFont, bitmapFontColored;
 	
 	private ScratchLayer scratchLayer;
 	private boolean scratchMode;
 	
+	/** Returns the currently selected answer, or null if none is selected */
 	public Integer selectedAnswer() {
 		if (selectedPoint == null) return null;
 		return getNumber(selectedPoint);
 	}
 	
+	/** Returns true if a correct answer is currently selected */
 	public boolean hasCorrectAnswer() {
 		Integer answer = selectedAnswer();
 		return answer != null && (answer == this.answer || this.answer == ANY_ANSWER);
 	}
 	
+	/** Sets the default selected value */
 	public void setFocusedNumber(int number) {
 		recenterPoint = getPoint(number);
 	}
@@ -98,6 +124,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		this.answer = answer;
 	}
 	
+	/** Returns true if the player has not selected any incorrect answer since this screen was shown */
 	public boolean noMistakes() {
 		return !madeMistake;
 	}
@@ -121,30 +148,24 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		bitmapFont = new NumberBitmapFont(numberFormat, Colors.WHITE);
 		bitmapFontColored = new NumberBitmapFont(numberFormat, themeColor);
 		
+		// adjust problem text size to be smaller if it has more lines
 		problemFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3 * 0.8f / problem.lines()));
-		backgroundLayer = graphics().createGroupLayer();
+		indicatorLayer = graphics().createGroupLayer();
 		
 		foregroundLayer = graphics().createGroupLayer();
 		layer.add(foregroundLayer);
 		PlayN.pointer().setListener(this);
-		createBackground();
-		createEquation(problem);
+		createIndicator();
+		createProblem(problem);
 		foregroundLayer.setOrigin(-width() / 2, -height() / 2 - header.height() / 2);
-		backgroundLayer.setTranslation(0, header.height() / 2);
+		indicatorLayer.setTranslation(0, header.height() / 2);
 		
 		selectedNumberLayer = new NumberLayer(bitmapFontColored);
 		selectedNumberLayer.setDepth(15);
 		foregroundLayer.add(selectedNumberLayer.layerAddable());
 		
 		madeMistake = false;
-		
-//		touchLayer = graphics().createImageLayer(
-//		CanvasUtils.createRect(1, 1, CanvasUtils.TRANSPARENT));
-//		touchLayer.addListener(this);
-//		touchLayer.setDepth(100);
-//		touchLayer.setSize(width(), height());
-//		layer.add(touchLayer);
 		
 		createScratch();
 		
@@ -166,6 +187,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		return Trigger.Number_Shown;
 	}
 	
+	// create and position the ScratchLayer and its corresponding Buttons
 	private void createScratch() {
 		buttonScratch = header.createButton(Constant.BUTTON_SCRATCH);
 		buttonScratch.setPosition(buttonScratch.width() * 0.6f, height() - buttonScratch.height() * 0.6f);
@@ -193,7 +215,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 				}
 			}
 		});
-		register(buttonScratch, Tag.Number_Scratch);
+		registerHighlightable(buttonScratch, Tag.Number_Scratch);
 		
 		buttonClear.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -203,15 +225,18 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 				}
 			}
 		});
-		register(buttonClear, Tag.Number_Clear);
+		registerHighlightable(buttonClear, Tag.Number_Clear);
 	}
 	
-	private void createEquation(Renderer renderer) {
+	// create the problem to be displayed on the header, and corresponding Buttons
+	private void createProblem(Renderer renderer) {
 		
+		// get the ExpressionWriter to draw the problem
 		ExpressionWriter equation = renderer.getExpressionWriter(problemFormat);
 		CanvasImage eqImage = graphics().createImage(equation.width(), equation.height());
 		ExpressionWriter.Config config = new ExpressionWriter.Config(Colors.BLACK, Colors.BLACK, themeColor);
 		equation.drawExpression(eqImage.canvas(), config);
+		// find the center of the blank in the expression, where the selected answer will be drawn
 		blankCenter = equation.blankCenter();
 		
 		ImageLayer eqLayer = graphics().createImageLayer(eqImage);
@@ -222,7 +247,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		backImageCancel = PlayN.assets().getImage(Constant.BUTTON_CANCEL);
 		buttonBack = header.addLeftButton(backImageBack);
 		buttonBack.setNoSound();
-		register(buttonBack, Tag.Number_Ok);
+		registerHighlightable(buttonBack, Tag.Number_Ok);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -240,18 +265,20 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			}
 		});
 		
-		equationLayer = graphics().createGroupLayer();
-		equationLayer.add(header.layerAddable());
-		equationLayer.add(eqLayer);
-		equationLayer.add(buttonBack.layerAddable());
-		equationLayer.add(buttonCenter.layerAddable());
+		headerLayer = graphics().createGroupLayer();
+		headerLayer.add(header.layerAddable());
+		headerLayer.add(eqLayer);
+		headerLayer.add(buttonBack.layerAddable());
+		headerLayer.add(buttonCenter.layerAddable());
 		
+		// adjust the blank center to screen coordinates
 		blankCenter.x += eqLayer.tx();
 		blankCenter.y += eqLayer.ty();
 		
-		layer.add(equationLayer);
+		layer.add(headerLayer);
 	}
 	
+	// try to go back, checking the selected answer, if any
 	private void tryAnswer() {
 		if (selectedPoint != null && !hasCorrectAnswer()) {
 			buttonBack.setImage(backImageCancel);
@@ -265,6 +292,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	@Override
 	protected void popThis() {
 		super.popThis();
+		// play the correct sound effect
 		if (hasCorrectAnswer()) {
 			if (answer != ANY_ANSWER) {
 				Audio.se().play(Constant.SE_SUCCESS);
@@ -277,28 +305,32 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	}
 	
 	private void updateEquationAnswer() {
-		if (selectedPoint == null && equationAnswer != null) {
-			equationLayer.remove(equationAnswer);
-			equationAnswer = null;
-			equationAnswerPoint = null;
+		if (selectedPoint == null && selectedAnswerLayer != null) {
+			// clear the selected answer in the problem's blank
+			headerLayer.remove(selectedAnswerLayer);
+			selectedAnswerLayer = null;
+			lastSelectedPoint = null;
 			buttonBack.setImage(backImageBack);
-		} else if (selectedPoint != null && !selectedPoint.equals(equationAnswerPoint)) {
-			equationAnswerPoint = new Point(selectedPoint);
-			if (equationAnswer != null) equationLayer.remove(equationAnswer);
-			
+		} else if (selectedPoint != null && !selectedPoint.equals(lastSelectedPoint)) {
+			// if the selected point has changed...
+			lastSelectedPoint = new Point(selectedPoint);
+			if (selectedAnswerLayer != null) headerLayer.remove(selectedAnswerLayer);
+
+			// redraw the answer in the problem's blank
 			String text = "" + getNumber(selectedPoint);
 			CanvasImage image = CanvasUtils.createText(text, problemFormat, Colors.BLACK);
-			equationAnswer = graphics().createImageLayer(image);
-			equationAnswer.setOrigin(equationAnswer.width() / 2, equationAnswer.height() / 2);
-			equationAnswer.setTranslation(blankCenter.x, blankCenter.y);
-			equationAnswer.setDepth(1);
-			equationLayer.add(equationAnswer);
+			selectedAnswerLayer = graphics().createImageLayer(image);
+			selectedAnswerLayer.setOrigin(selectedAnswerLayer.width() / 2, selectedAnswerLayer.height() / 2);
+			selectedAnswerLayer.setTranslation(blankCenter.x, blankCenter.y);
+			selectedAnswerLayer.setDepth(1);
+			headerLayer.add(selectedAnswerLayer);
 			buttonBack.setImage(backImageOk);
 		}
 	}
 	
-	private void createBackground() {
-		backgroundLayer.setDepth(-100);
+	// the circle, indicating the selected answer
+	private void createIndicator() {
+		indicatorLayer.setDepth(-100);
 		
 		CanvasImage circleImage = CanvasUtils.createCircle(SPACING / 2, 
 				Color.argb(0, 0, 0, 0), 20, Colors.WHITE);
@@ -308,25 +340,27 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		circle.setAlpha(0.7f);
 		circle.setDepth(0);
 		
-		backgroundLayer.add(circle);
-		layer.add(backgroundLayer);
+		indicatorLayer.add(circle);
+		layer.add(indicatorLayer);
 	}
 	
 	@Override
 	public void update(int delta) {
 		super.update(delta);
+
+		updateEquationAnswer();
 		
+		// get the visible numbers
 		int left = (int)((position.x - width() / 2) / SPACING - 0.5);
 		int right = (int)((position.x + width() / 2) / SPACING + 0.5);
 		int top = (int)((position.y - height() / 2) / SPACING - 0.5);
 		int bot = (int)((position.y + height() / 2) / SPACING + 0.5);
 		
-		updateEquationAnswer();
-		
-		createsSpritesThisFrame = 0;
+		createdSpritesThisFrame = 0;
 		Point p = new Point();
 		for (int i = left; i <= right; i++) {
 			for (int j = top; j <= bot; j++) {
+				// create the sprites (if they don't already exist)
 				p.setLocation(i, j);
 				createNumberSprite(p);
 			}
@@ -340,8 +374,6 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		state.background().scroll(lastPosition.x - position.x, lastPosition.y - position.y);
 		lastPosition.set(position);
 		
-		updateEquationAnswer();
-		
 		selectedNumberLayer.setVisible(false);
 		for (int i = 0; i < numberImages.size(); i++) {
 			NumberLayer layer = numberImages.get(i);
@@ -349,8 +381,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			float dx = position.x - p.x * SPACING;
 			float dy = position.y - p.y * SPACING;
 			float distance = FloatMath.sqrt(dx * dx + dy * dy);
-			float alpha = 1 - Math.min(distance / SPACING / 3.5f, 1);
 			if (p.equals(selectedPoint)) {
+				// hide the selected point and replace it with a colored version
 				selectedNumberLayer.setNumber(layer.number());
 				selectedNumberLayer.setTranslation(layer.tx(), layer.ty());
 				selectedNumberLayer.setOrigin(layer.width() / 2, layer.height() / 2);
@@ -359,31 +391,35 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			} else {
 				layer.setVisible(true);
 			}
-//			layer.setAlpha(PlayNObject.lerpTime(preAlpha, alpha, 0.995f, clock.dt()));
+			// set alpha based on distance from the center of the screen
+			float alpha = 1 - Math.min(distance / SPACING / 3.5f, 1);
 			layer.setAlpha(alpha);
 		}
 		
 		if (selectedPoint == null) {
+			// friction
 			position.x += velocity.x * clock.dt();
 			position.y += velocity.y * clock.dt();
 			velocity.x *= Math.pow(0.995, clock.dt());
 			velocity.y *= Math.pow(0.995, clock.dt());
 		} else {
+			// snap to selected point
 			PlayNObject.lerpTime(position, selectedPoint.x * SPACING, selectedPoint.y * SPACING, 
 					0.99f, clock.dt());
 		}
 		foregroundLayer.setTranslation(-position.x, -position.y);
 		
+		// show or hide the scratch layer
 		float targetScratchAlpha = scratchMode ? 1 : 0;
 		scratchLayer.setAlpha(PlayNObject.lerpTime(scratchLayer.alpha(), targetScratchAlpha, 0.99f, clock.dt(), 0.01f));
 		scratchLayer.setVisible(scratchLayer.alpha() > 0);
-//		buttonClear.layerAddable().setAlpha(scratchLayer.alpha() * Button.UNPRESSED_ALPHA);
 		buttonClear.layerAddable().setVisible(scratchMode);
 	}
 	
 	private NumberLayer createNumberSprite(Point p) {
 		int index = numberPoints.indexOf(p);
 		if (index >= 0) {
+			// if the image is in our list, bring it to the front
 			NumberLayer layer = numberImages.remove(index);
 			numberImages.add(layer);
 			Point point = numberPoints.remove(index);
@@ -391,10 +427,10 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			return layer;
 		}
 
-		if (createsSpritesThisFrame == MAX_SPRITE_CREATE_PER_FRAME) {
+		if (createdSpritesThisFrame == MAX_SPRITE_CREATE_PER_FRAME) {
 			return null;
 		}
-		createsSpritesThisFrame++;
+		createdSpritesThisFrame++;
 
 		p = p.clone();
 
@@ -404,6 +440,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		layer.setTranslation(p.x * SPACING, p.y * SPACING);
 		layer.addListener(new NumberListener(p));
 		layer.setAlpha(0);
+		// give it a wider-than-normal hit-tester, so they're easier to click on
 		layer.setHitTester(new HitTester() {
 			@Override
 			public Layer hitTest(Layer l, pythagoras.f.Point p) {
@@ -416,6 +453,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		numberPoints.add(p);
 		
 		if (numberImages.size() > MAX_NUMS) {
+			// remove the last used number sprites
 			NumberLayer rem = numberImages.remove(0);
 			numberPoints.remove(0);
 			rem.destroy();
@@ -424,10 +462,13 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		return layer;
 	}
 	
+	// the number corresponding to a given row-column in the grid
 	private int getNumber(Point p) {
 		return p.x - p.y * 10;
 	}
 	
+	// the row-column point associated with a given number
+	// (there are more than one correct mappings - this chooses one)
 	private Point getPoint(int number) {
 		if (number >= 0) {
 			return new Point(number % 10, -number / 10);
@@ -441,6 +482,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	public void onPointerStart(Event event) {
 		if (MainMenuLayer.showing()) return;
 		
+		// ignore if we're pressing a button or showing the scratch layer
 		if (buttonScratch.hit(event.x(), event.y()) || scratchMode) {
 			return;
 		}
@@ -458,6 +500,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		if (!dragging) return;
 		dragging = false;
 		if (positionTrail.size() > 1) {
+			// momentum
 			Vector last = positionTrail.get(0);
 			double lastTime = timeTrail.get(0);
 			
@@ -471,6 +514,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		}
 	}
 
+	// allow the player to use keyboard input
 	@Override
 	public void onKeyTyped(TypedEvent event) {
 		super.onKeyTyped(event);
@@ -511,12 +555,14 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		}
 	}
 	
+	// max length of the trail of positions/times
 	private final static int MAX_TRAIL = 10;
 	
 	@Override
 	public void onPointerDrag(Event event) {
 		if (MainMenuLayer.showing()) dragging = false;
 		if (!dragging) return;
+		// add to the trail for momenum calculations later
 		position.set(-event.x() + dragOffset.x, -event.y() + dragOffset.y);
 		positionTrail.add(position.clone());
 		timeTrail.add(event.time());
@@ -528,10 +574,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	}
 
 	@Override
-	public void onPointerCancel(Event event) {
-		
-	}
+	public void onPointerCancel(Event event) { }
 	
+	// when numbers are clicked
 	private class NumberListener implements Listener {
 
 		private Point point;
@@ -547,12 +592,16 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 					Math.abs(event.x() / width() - 0.5f) > 0.25f)) {
 				return;
 			}
+			// don't select the point immediately...
+			// note it for if this isn't a fast pan
 			possibleSelectedPoint = point;
 		}
 
 		@Override
 		public void onPointerEnd(Event event) { 
+			// if panning didn't cancel the selection
 			if (point.equals(possibleSelectedPoint)) {
+				// select the point
 				selectedPoint = point;
 				Audio.se().play(Constant.SE_TICK);
 				Tutorial.trigger(Trigger.Number_NumberSelected);
