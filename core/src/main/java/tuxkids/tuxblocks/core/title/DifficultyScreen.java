@@ -33,6 +33,10 @@ import tuxkids.tuxblocks.core.widget.DiscreteSlideLayer.StopChangedListener;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
+/**
+ * Screen for selecting the difficulty of a new game.
+ * Sets the properties of a new {@link Difficulty}.
+ */
 public class DifficultyScreen extends BaseScreen {
 	
 	
@@ -45,9 +49,11 @@ public class DifficultyScreen extends BaseScreen {
 	public DifficultyScreen(ScreenStack screens, final GameBackgroundSprite background) {
 		super(screens, background);
 		
+		// manually add in a header bar, since this isn't a GameScreen
 		header = new HeaderLayer(width(), background.primaryColor());
 		layer.add(header.layerAddable());
 		
+		// text prompt 
 		ImageLayer titleLayer = graphics().createImageLayer();
 		titleLayer.setImage(CanvasUtils.createTextCached("Choose Difficulty", 
 				Cache.createFormat(header.height() * 0.5f), Colors.BLACK));
@@ -56,20 +62,25 @@ public class DifficultyScreen extends BaseScreen {
 		PlayNObject.centerImageLayer(titleLayer);
 		layer.add(titleLayer);
 		
+		// spacing between slider bars
 		spacing = height() / 4.5f;
 		float offY = header.height() * 0.95f;
 		
+		// format for slider prompts
 		promptFormat = Cache.createFormat(height() / 22);
+		// and slider descriptions
 		descriptionFormat = Cache.createFormat(height() / 35);
 		
-		mathSlider = createSlideLyer("Math difficulty:", null, 0.5f * spacing + offY,
-				"1", "2", "3", "4", "5");
-		
+		// math difficulty slider
+		String[] mathDifficulties = new String[Difficulty.MAX_MATH_DIFFICULTY + 1];
+		for (int i = 0; i < mathDifficulties.length; i++) mathDifficulties[i] = "" + (i+1);
+		mathSlider = createSlideLyer("Math difficulty:", null, 0.5f * spacing + offY, mathDifficulties);
 
 		final ImageLayer descriptionLayer = graphics().createImageLayer();
 		descriptionLayer.setImage(CanvasUtils.createTextCached("Sample problem:", descriptionFormat, Colors.WHITE));
 		layer.add(descriptionLayer);
 		
+		// create the preview equation layer
 		final ImageLayer equationLayer = graphics().createImageLayer();
 		equationLayer.setTranslation(width() * 0.6f + descriptionLayer.width() / 2, 0.75f * spacing + mathSlider.ty());
 		equationLayer.setDepth(-1);
@@ -80,6 +91,7 @@ public class DifficultyScreen extends BaseScreen {
 			@Override
 			public void onStopChanged(int stop) {
 				Equation eq = EquationGenerator.generateSample(stop);
+				// make the equation text 
 				int size = Math.round(Math.min(height() / 16 / eq.renderer().lines(), height() / 18));
 				ExpressionWriter writer = eq.renderer().getExpressionWriter(Cache.createFormat(size));
 				float pad = height() / 40, rad = pad / 2;
@@ -94,11 +106,13 @@ public class DifficultyScreen extends BaseScreen {
 			}
 		});
 
+		// game difficulty slider
+		String[] gameDifficulties = new String[Difficulty.MAX_GAME_DIFFICULTY + 1];
+		for (int i = 0; i < gameDifficulties.length; i++) gameDifficulties[i] = "" + (i+1);
+		gameSlider = createSlideLyer("Game difficulty:", "How difficult Blocks are to destroy",
+				2f * spacing + offY, gameDifficulties);
 		
-		gameSlider = createSlideLyer("Game difficulty:",
-				"How difficult Blocks are to destroy",
-				2f * spacing + offY, "1", "2", "3", "4", "5");
-		
+		// time difficulty slider
 		String[] timeStops = new String[Difficulty.TIMES.length];
 		timeStops[0] = Constant.INFINITY_SYMBOL;
 		for (int i = 1; i < timeStops.length; i++) timeStops[i] = Difficulty.TIMES[i] + "s";
@@ -106,10 +120,12 @@ public class DifficultyScreen extends BaseScreen {
 				"How long you have to solve problems between rounds",
 				3f * spacing + offY, timeStops);
 		
+		// start sliders in the middle
 		mathSlider.setStop(2, true);
 		gameSlider.setStop(2, true);
 		timeSlider.setStop(2, true);
 		
+		// add header buttons
 		Button buttonOk = header.addRightButton(Constant.BUTTON_OK);
 		register(buttonOk, Tag.Difficulty_Start);
 		buttonOk.setOnReleasedListener(new OnReleasedListener() {
@@ -147,6 +163,7 @@ public class DifficultyScreen extends BaseScreen {
 	private void startGame() {
 		GameState state;
 		if (Tutorial.running()) {
+			// start a special GameState for the tutorial
 			state = new TutorialGameState();
 		} else {
 			Difficulty difficulty = new Difficulty(mathSlider.stop(), gameSlider.stop(), Difficulty.TIMES[timeSlider.stop()]);
@@ -156,10 +173,12 @@ public class DifficultyScreen extends BaseScreen {
 		
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());
+		// remove this screen from the stack - going back should lead to the TitleScreen
 		screens.remove(this);
 		Audio.bg().play(Constant.BG_GAME1);
 	}
 	
+	// convenience method for creating/sizing/positioning sliders with a prompt text
 	private DiscreteSlideLayer createSlideLyer(String prompt, String description, float height, String... stops) {
 		ImageLayer promptLayer = graphics().createImageLayer();
 		promptLayer.setImage(CanvasUtils.createTextCached(prompt, promptFormat, Colors.WHITE));

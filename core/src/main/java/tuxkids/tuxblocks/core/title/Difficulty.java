@@ -7,6 +7,7 @@ public class Difficulty implements Persistable {
 	public final static int ROUND_TIME_INFINITE = -1;
 	public final static int[] TIMES = new int[] { ROUND_TIME_INFINITE, 90, 70, 50, 30 };
 	public static final int MAX_MATH_DIFFICULTY = 4;
+	public static final int MAX_GAME_DIFFICULTY = 4;
 	
 	private static double rankN(double n) {
 		return Math.pow(Math.log(Math.abs(n) + 1), 2) / 3 + 1;

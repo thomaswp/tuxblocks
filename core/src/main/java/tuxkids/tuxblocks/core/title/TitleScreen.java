@@ -1,9 +1,8 @@
 package tuxkids.tuxblocks.core.title;
 
+import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Font.Style;
-import playn.core.Assets;
-import playn.core.CanvasImage;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
@@ -16,7 +15,6 @@ import playn.core.TextFormat.Alignment;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
-import tripleplay.game.ScreenStack.Transition;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
@@ -35,10 +33,10 @@ import tuxkids.tuxblocks.core.utils.HoverUtils;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.persist.PersistUtils;
 import tuxkids.tuxblocks.core.widget.Button;
+import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.menu.ContinueMenuLayer;
 import tuxkids.tuxblocks.core.widget.menu.ContinueMenuLayer.ResponseListener;
-import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
-import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
 /**
  * Screen shown when the game first starts. Gives options to

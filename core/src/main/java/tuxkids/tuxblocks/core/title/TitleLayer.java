@@ -235,10 +235,7 @@ public class TitleLayer extends LayerWrapper implements Listener {
 	}
 
 	@Override
-	public void onPointerEnd(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onPointerEnd(Event event) { }
 
 	@Override
 	public void onPointerDrag(Event event) {
@@ -246,8 +243,5 @@ public class TitleLayer extends LayerWrapper implements Listener {
 	}
 
 	@Override
-	public void onPointerCancel(Event event) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onPointerCancel(Event event) { }
 }

@@ -6,7 +6,6 @@ Suggestions from beta:
 -different font or text color for operators in modifier blocks (distinguish times and x)
 -"advanced" mode (without graphical solver)
 -solving groups of modifiers at once
--hovering over buttons causing highlight in web version
 
 Bugs
 -text cut off on Android
