@@ -47,7 +47,7 @@ public class TuxBlocksGame extends Game.Default {
 	}
 
 	@Override
-	public void init() {	
+	public void init() {		
 		//Clear static classes for Android because the JVM is maintained
 		Cache.clear();
 		Audio.clear();
