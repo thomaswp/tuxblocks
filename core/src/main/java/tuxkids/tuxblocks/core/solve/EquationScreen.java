@@ -25,7 +25,8 @@ public abstract class EquationScreen extends GameScreen implements Parent {
 	// one can cross-fade into the other
 	protected ImageLayer eqLayer, eqLayerOld;
 	protected Image lastEqImage;
-	
+
+	/** The x-percentage of the center of the displayed equation */
 	protected float equationXPercent() {
 		return 0.5f;
 	}

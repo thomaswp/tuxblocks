@@ -13,7 +13,6 @@ import playn.core.ImmediateLayer.Renderer;
 import playn.core.PlayN;
 import playn.core.Surface;
 import tripleplay.util.Destroyable;
-import tuxkids.tuxblocks.core.utils.GLStatus;
 
 /**
  * This class, as well as the other "Tux" particle classes allow for non-GL

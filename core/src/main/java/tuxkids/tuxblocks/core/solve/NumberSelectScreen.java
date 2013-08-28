@@ -42,6 +42,7 @@ import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
+import tuxkids.tuxblocks.core.widget.menu.MenuLayer;
 
 /**
  * Screen for selecting numbers, usually as the answer to an arithmetic problem.
@@ -518,6 +519,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	@Override
 	public void onKeyTyped(TypedEvent event) {
 		super.onKeyTyped(event);
+		if (MenuLayer.showing()) return;
 		
 		Integer s = selectedAnswer();
 		int selected = s == null ? 0 : s;
@@ -540,6 +542,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	@Override
 	public void onKeyDown(playn.core.Keyboard.Event event) {
 		super.onKeyDown(event);
+		if (MenuLayer.showing()) return;
 		
 		if (event.key() == Key.BACKSPACE) {
 			Integer s = selectedAnswer();

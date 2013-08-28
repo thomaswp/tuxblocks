@@ -8,7 +8,6 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
-import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.EquationScreen;
 import tuxkids.tuxblocks.core.solve.NumberSelectScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
@@ -20,9 +19,14 @@ import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
-import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
+
+/** 
+ * A screen that allows the player to build his or her own
+ * equations to practice solving on the {@link SolveScreen}.
+ */
 public class BuildScreen extends EquationScreen implements NumberSelectListener {
 
 	protected Toolbox toolbox;
@@ -41,6 +45,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 
 		solveScreen = new BuildSolveScreen(screens, state);
 
+		// create header buttons
 		header.setTx(toolboxWidth());
 		header.addRightButton(Constant.BUTTON_OK).setOnReleasedListener(
 				new OnReleasedListener() {
@@ -65,16 +70,20 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 				});
 		header.leftButton().setNoSound();
 
+		// set the offset of the equation blocks
 		controller.layer().setTx(toolboxWidth());
 		controller.layer().setDepth(1);
 		setEquation(Equation.NOOP);
 
+		// create the ToolBox
 		toolbox = new Toolbox(controller, this, toolboxWidth(), height(), state.themeColor());
+		layer.add(toolbox.layerAddable());
+		
+		// register the ToolBox's highlightable buttons
 		registerHighlightable(toolbox.buttonNumber, Tag.Build_NumberSelect);
 		registerHighlightable(toolbox.buttonMore, Tag.Build_NumberUp);
 		registerHighlightable(toolbox.buttonLess, Tag.Build_NumberDown);
 		registerHighlightable(toolbox, Tag.Build_LeftPanel);
-		layer.add(toolbox.layerAddable());
 	}
 	
 	@Override
@@ -85,6 +94,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 	@Override
 	public void showNumberSelectScreen(Renderer problem, int answer,
 			int startNumber, Stat stat, int level, SimplifyListener callback) {
+		// automatically simplify numbers if the player wants it
 		callback.wasSimplified(true);
 	}
 
@@ -107,6 +117,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 
 	@Override
 	public void selectNumber(int startNumber) {
+		// tell the nss that any answer will do
 		NumberSelectScreen nss = new NumberSelectScreen(screens, state, 
 				new BlankRenderer(), NumberSelectScreen.ANY_ANSWER);
 		nss.setFocusedNumber(startNumber);
@@ -119,6 +130,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 		if (screen instanceof NumberSelectScreen) {
 			Integer answer = ((NumberSelectScreen) screen).selectedAnswer();
 			if (answer != null) {
+				// if we have an answer, set the toolbox's number
 				toolbox.setNumber(answer);
 			}
 		}

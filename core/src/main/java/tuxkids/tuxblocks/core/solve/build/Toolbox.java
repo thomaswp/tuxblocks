@@ -3,37 +3,39 @@ package tuxkids.tuxblocks.core.solve.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;
-import playn.core.Font.Style;
 import playn.core.Pointer.Event;
 import playn.core.TextFormat;
 import playn.core.util.Clock;
-import tripleplay.ui.layout.AxisLayout.Horizontal;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
+import tuxkids.tuxblocks.core.solve.NumberSelectScreen;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.BlockController;
-import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
+import tuxkids.tuxblocks.core.solve.blocks.BlockController.BuildToolbox;
 import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.MinusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
+import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
 import tuxkids.tuxblocks.core.solve.blocks.PlusBlock;
-import tuxkids.tuxblocks.core.solve.blocks.BlockController.BuildToolbox;
-import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
-import tuxkids.tuxblocks.core.tutorial.Highlightable.ColorState;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
+/**
+ * A layer to display the {@link Block}s which can be dragged onto
+ * the {@link BuildScreen}.
+ */
 public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable {
 
 	protected GroupLayer layer;
@@ -43,6 +45,7 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 	protected BlockController controller;
 	protected List<Block> blocks = new ArrayList<Block>();
 	protected Button buttonNumber, buttonLess, buttonMore;
+	// the number for the NumberBlock and the ModifierBlocks to displays
 	protected int number = 1;
 	protected TextFormat textFormat;
 	protected NumberSelectListener listener;
@@ -61,22 +64,22 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		this.listener = numberSelectListener;
 		controller.setBuildToolbox(this);
 		
+		// create the solid background layer
 		backgroundLayer = new ImageLayerTintable();
 		backgroundLayer.setImage(CanvasUtils.createRect(width, height, Colors.LIGHT_GRAY, 1, Colors.DARK_GRAY));
 		backgroundLayer.setAlpha(0.75f);
 		layer.add(backgroundLayer.layerAddable());
 
+		// the starting y-coordinate of the Blocks
 		float blockStart = 2 * width / 3;
 		createButtons(blockStart, themeColor);
 		
+		// add each Block the player can select
 		VariableBlock variableBlock = new VariableBlock("x");
 		blocks.add(variableBlock);
 		
 		NumberBlock numberBlock = new NumberBlock(number);
 		blocks.add(numberBlock);
-		
-//		BlockHolder blockHolder = new BlockHolder();
-//		blocks.add(blockHolder);
 		
 		PlusBlock plusBlock = new PlusBlock(number);
 		blocks.add(plusBlock);
@@ -90,15 +93,21 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		OverBlock overBlock = new OverBlock(number);
 		blocks.add(overBlock);
 		
+		// initialize the Blocks
 		for (Block block : blocks) {
 			block.initSprite();
+			// the BlockController still handles their movement
 			block.addBlockListener(controller.blockListener());
+			// snap the blocks into place
 			block.interpolateDefaultRect(null);
 			layer.add(block.layer());
 		}
 
+		// how much vertical space each (group of) blocks takes up
 		float blockSeg = (height - blockStart) / 4;
+		// padding in between two modifier blocks in the same group
 		float barSpace = (Sprite.baseSize() - Sprite.modSize()) / 2;
+		// position all the blocks
 		variableBlock.layer().setTranslation((width - variableBlock.width()) / 2, blockStart + blockSeg * 0.5f - variableBlock.height() / 2);
 		numberBlock.layer().setTranslation((width - numberBlock.width()) / 2, blockStart + blockSeg * 1.5f - numberBlock.height() / 2);
 		plusBlock.layer().setTranslation(width / 2 - barSpace - plusBlock.width() / 2, blockStart + blockSeg * 2.5f - plusBlock.height() / 2);
@@ -108,7 +117,10 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 	}
 	
 	private void createButtons(float blockStart, int themeColor) {
+		// size of the number-select button
 		float circleSize = width * 0.6f;
+		
+		// create the number-select button
 		buttonNumber = new Button(Constant.BUTTON_CIRCLE, circleSize, circleSize, true);
 		buttonNumber.setPosition(width / 2, circleSize * 0.6f);
 		buttonNumber.setTint(themeColor);
@@ -120,6 +132,7 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		});
 		layer.add(buttonNumber.layerAddable());
 		
+		// create the decrease-number button
 		float arrowX = width / 10;
 		buttonLess = new Button(Constant.BUTTON_LESS, width / 6, width / 3, false);
 		buttonLess.setPosition(arrowX, buttonNumber.y());
@@ -135,6 +148,7 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		});
 		layer.add(buttonLess.layerAddable());
 		
+		// create the increase-number button
 		buttonMore = new Button(Constant.BUTTON_MORE, width / 6, width / 3, false);
 		buttonMore.setPosition(width - arrowX, buttonNumber.y());
 		buttonMore.setTint(themeColor);
@@ -157,7 +171,11 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		refreshNumberSprite();
 	}
 	
-	public void setNumber(int number) {
+	/** 
+	 * Called from {@link BuildScreen} when the {@link NumberSelectScreen}
+	 * returns a newly selected number. Resets the Blocks to show that number.
+	 */
+	protected void setNumber(int number) {
 		if (number == this.number) return;
 		this.number = number;
 		for (Block block : blocks) {
@@ -165,6 +183,7 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 				((NumberBlock) block).setValue(number);
 			} else if (block instanceof ModifierBlock) {
 				if (block instanceof HorizontalModifierBlock) {
+					// Plus- and MinusBlocks take a magnitude (you can't have --3 or +-3)
 					((ModifierBlock) block).setValue(Math.abs(number));	
 				} else {
 					((ModifierBlock) block).setValue(number);
@@ -174,29 +193,34 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		}
 		refreshNumberSprite();
 	}
-	
+
+	// redraw the number shown on the numberLayer
 	private void refreshNumberSprite() {
 		numberLayer.setImage(CanvasUtils.createText("" + number, textFormat, Colors.BLACK));
 		centerImageLayer(numberLayer);
 	}
 
+	// called from BuildScreen.update()
 	public void update(int delta) {
 		for (Block block : blocks) {
 			block.update(delta);
 		}
 	}
 	
+	// called from BuildScreen.paint()
 	public void paint(Clock clock) {
 		for (Block block : blocks) {
 			block.paint(clock);
 		}
 	}
 
+	// called from BlockController
 	@Override
 	public void wasGrabbed(Event event) {
 		wasMoved(event);
 	}
 
+	// called from BlockController
 	@Override
 	public void wasMoved(Event event) {
 		if (inRect(event)) {
@@ -206,22 +230,29 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		}
 	}
 
+	// called from BlockController
 	@Override
 	public boolean wasDropped(Event event) {
 		layer.setAlpha(1);
 		return inRect(event);
 	}
 
+	// returns true if the Event's coordinates are in the Toolbox
 	private boolean inRect(Event event) {
 		float x = event.x(), y = event.y();
 		return x >= layer.tx() && x < layer.tx() + width && 
 				y >= layer.ty() && y < layer.ty() + height;
 	}
 	
+	/**
+	 * Provide a callback for when a new number should be selected for the displayed Blocks 
+	 * This should display a new {@link NumberSelectScreen}.
+	 */
 	interface NumberSelectListener {
 		void selectNumber(int startNumber);
 	}
 
+	// for highlighting in the tutorial
 	private final Highlighter highlighter = new Highlighter() {
 		@Override
 		protected void setTint(int baseColor, int tintColor, float perc) {
