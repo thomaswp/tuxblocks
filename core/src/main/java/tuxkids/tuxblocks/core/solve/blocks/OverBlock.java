@@ -32,8 +32,7 @@ public class OverBlock extends VerticalModifierBlock {
 
 	@Override
 	protected int color() {
-//		return getColor(210);
-		return Color.rgb(0x03, 0xC6, 0x03);
+		return COLOR_OVER;
 	}
 	
 	public static Constructor constructor() {

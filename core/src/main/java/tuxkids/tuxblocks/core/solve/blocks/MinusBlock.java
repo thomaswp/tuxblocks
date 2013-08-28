@@ -21,8 +21,7 @@ public class MinusBlock extends HorizontalModifierBlock {
 
 	@Override
 	protected int color() {
-//		return getColor(180);
-		return Color.rgb(0x11, 0x4C, 0xA3);
+		return COLOR_MINUS;
 	}
 
 	@Override

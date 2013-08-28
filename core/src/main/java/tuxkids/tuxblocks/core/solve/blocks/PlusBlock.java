@@ -25,8 +25,7 @@ public class PlusBlock extends HorizontalModifierBlock {
 
 	@Override
 	protected int color() {
-//		return getColor(0);
-		return Color.rgb(0xF7, 0x04, 0x04);
+		return COLOR_PLUS;
 	}
 
 	@Override

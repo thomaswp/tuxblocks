@@ -2,9 +2,6 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
 
-import playn.core.Color;
-import playn.core.Pointer.Listener;
-import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayerDefault;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;
@@ -19,13 +16,14 @@ import tuxkids.tuxblocks.core.solve.markup.TimesRenderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.ParseDataException;
 
+/**
+ * A {@link BaseBlock} that is a single integer (positive or negative).
+ */
 public class NumberBlock extends BaseBlock implements Simplifiable {
 
 	protected int value;
+	// these are the only Blocks which can be simplified
 	protected SimplifyLayer simplifyLayer;
 	
 	@Override
@@ -37,6 +35,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		this.value = value;
 	}
 
+	/** Returns the number held by this NumberBlock */
 	public int value() {
 		return value;
 	}
@@ -52,11 +51,11 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	@Override
 	public int color() {
 		if (value == 0) {
-			return Colors.GRAY;
+			return COLOR_NEUTRAL;
 		} else if (value > 0) {
-			return Color.rgb(0xF7, 0x04, 0x04);
+			return COLOR_PLUS;
 		} else {
-			return Color.rgb(0x11, 0x4C, 0xA3);
+			return COLOR_MINUS;
 		}
 	}
 	
@@ -70,6 +69,14 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		return "" + value;
 	}
 
+	/** 
+	 * Returns a {@link HorizontalModifierBlock} that this blocks could be
+	 * the proxy for. This could occur if a HorizontalModifierBlock is turned
+	 * into a NumberBlock at some point; it is then stored as a proxy within that
+	 * NumberBlock. By default, this will just return a new ModifierBlock, but 
+	 * {@link NumberBlockProxy} actually stores an old HorizontalModifierBlock
+	 * and will return it. 
+	 */
 	public ModifierBlock proxyFor() {
 		ModifierBlock proxy;
 		if (value >= 0) {
@@ -81,6 +88,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		return proxy;
 	}
 	
+	/** Initializes a proxy block and aligns it into place */
 	protected ModifierBlock alignProxy(ModifierBlock proxy) {
 		if (hasSprite()) {
 			proxy.initSprite();
@@ -96,17 +104,25 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 
 	@Override
 	public void showInverse() {
-		if ((modifiers.modifiers == null || modifiers.modifiers.modifiers == null) && modifiers.children.size() == 0) {
+		// if there are no horizontal modifiers on this block...
+		if ((modifiers.modifiers == null || modifiers.modifiers.modifiers == null) 
+				&& modifiers.children.size() == 0) {
+			// get the vertical modifiers
 			ArrayList<VerticalModifierBlock> vMods = new ArrayList<VerticalModifierBlock>();
 			modifiers.addVerticalModifiersTo(vMods);
+
+			// if the last one is a "-"...
 			VerticalModifierBlock last = vMods.size() > 0 ? vMods.get(vMods.size() - 1) : null;
 			if (last != null && last instanceof TimesBlock && last.value == -1) {
+				// just pop it
 				modifiers.addNegative();
 			} else {
+				// otherwise, flip our sign
 				value = -value;
 				if (hasSprite()) ((BlockLayerDefault) layer).setText("" + value);
 			}
 		} else {
+			// otherwise, propagate upwards
 			super.showInverse();
 		}
 	}
@@ -119,17 +135,20 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	@Override
 	public void updateSimplify() {
 		if (modifiers.children.size() > 0) {
+			// simplify with the closest HorizontalModifierBlock
 			simplifyLayer.getSimplifyButton(modifiers.children.get(0))
 			.setTranslation(width(), height() / 2);
 		} else if (modifiers.modifiers != null) {
+			// or if there isn't one, simplify with any direct VerticalModifierBlock
 			VerticalModifierGroup mods = (VerticalModifierGroup) modifiers.modifiers;
 			if (mods.timesBlocks.size() > 0) {
 				simplifyLayer.getSimplifyButton(mods.timesBlocks.get(0))
 				.setTranslation(width() / 2, 0);
 			}
-			if (mods.divBlocks.size() > 0) {
-				if (value % mods.divBlocks.get(0).value == 0) {
-					simplifyLayer.getSimplifyButton(mods.divBlocks.get(0))
+			if (mods.overBlocks.size() > 0) {
+				if (value % mods.overBlocks.get(0).value == 0) {
+					// only add didisible OverBlocks
+					simplifyLayer.getSimplifyButton(mods.overBlocks.get(0))
 					.setTranslation(width() / 2, height());
 				}
 			}
@@ -137,14 +156,17 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	}
 
 	@Override
-	public void simplify(final ModifierBlock sprite, ModifierBlock pair) { //ignore pair
-		if (blockListener != null) {
-			final int answer;
-			boolean autoAnswer;
+	public void simplify(final ModifierBlock sprite, ModifierBlock pair) { //ignore pair argument
+		if (blockListener != null) { // again, not sure why this check is necessary but...
+
+			final int answer; // the answer to the problem 
+			boolean autoAnswer; // should this go to the NumberSelectScreen?
+			int level; // the level of the problem
+			Stat stat; // the stat of the problem
+			int start = value; // the start value for the NumberSelectScreen
+			
+			// create the renderer
 			Renderer renderer = new BaseRenderer("" + value);
-			int level;
-			Stat stat;
-			int start = value;
 			int[] operands = new int[] { sprite.value };
 			if (sprite instanceof TimesBlock) {
 				TimesBlock times = (TimesBlock) sprite;
@@ -170,8 +192,8 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				stat = plus.plusValue() >= 0 ? Stat.Plus : Stat.Minus;
 				level = Difficulty.rankPlus(value, plus.value);
 				autoAnswer = plus.value == 0 || -value == plus.plusValue();
-//				start = Math.abs(value) > Math.abs(plus.value) ? value : plus.plusValue();
 			} else {
+				// something went wrong
 				return;
 			}
 			
@@ -181,6 +203,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {
+						// change this block's value, remove the modifier
 						setValue(answer);
 						sprite.group.removeChild(sprite, true);
 						blockListener.wasSimplified();
