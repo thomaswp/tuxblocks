@@ -104,7 +104,7 @@ public abstract class BaseBlock extends Block {
 	}
 	
 	@Override
-	protected boolean shouldShowPreview(boolean openSpace) {
+	protected boolean shouldShowReleaseIndicator(boolean openSpace) {
 		return canMoveBase;
 	}
 	

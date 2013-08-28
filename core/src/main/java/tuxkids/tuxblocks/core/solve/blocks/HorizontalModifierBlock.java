@@ -32,8 +32,8 @@ public abstract class HorizontalModifierBlock extends ModifierBlock {
 	}
 	
 	@Override
-	protected boolean shouldShowPreview(boolean multiExpression) {
-		return group != null && super.shouldShowPreview(multiExpression);
+	protected boolean shouldShowReleaseIndicator(boolean multiExpression) {
+		return group != null && super.shouldShowReleaseIndicator(multiExpression);
 	}
 	
 	@Override
