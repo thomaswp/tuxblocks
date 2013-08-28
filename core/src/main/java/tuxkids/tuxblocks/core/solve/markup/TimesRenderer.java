@@ -6,6 +6,10 @@ import playn.core.TextFormat;
 import playn.core.Canvas.LineCap;
 import pythagoras.f.Vector;
 
+/** 
+ * Renders one base expression, multiplied by the supplied factors
+ * in the form f1*f2*f3(exp).
+ */
 public class TimesRenderer extends ModifierRenderer {
 	
 	public final static int UNKNOWN_NUMBER = Integer.MAX_VALUE;
@@ -31,6 +35,7 @@ public class TimesRenderer extends ModifierRenderer {
 		
 		return new ParentExpressionWriter(textFormat) {
 			
+			// the width of a parenthesis
 			float w;
 			
 			@Override
@@ -49,6 +54,7 @@ public class TimesRenderer extends ModifierRenderer {
 			
 			@Override
 			public void drawExpression(Canvas canvas) {
+				// draw the factors and the expression
 				super.drawExpression(canvas);
 
 				canvas.save();
@@ -58,15 +64,17 @@ public class TimesRenderer extends ModifierRenderer {
 				setColor(canvas, modifier.fullyHighlighted());
 				Path path = canvas.createPath();
 				
-				float height = childWriter.height(); 
+				float height = childWriter.height();
 				float x = factorWriter.width() + w * 0.5f, h = height * 0.9f;
 				float y = (height() - h) / 2;
 				canvas.translate(x, y);
 				
+				// draw left paren
 				path.moveTo(w, (h + height) / 2);
 				path.quadraticCurveTo(-w, height / 2, w, height - h);
 				canvas.strokePath(path);
 				
+				// draw right paren
 				path = canvas.createPath();
 				canvas.translate(childWriter.width() + w * 3, 0);
 				path.moveTo(-w, (h + height) / 2);

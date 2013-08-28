@@ -3,6 +3,11 @@ package tuxkids.tuxblocks.core.solve.markup;
 import playn.core.TextFormat;
 import pythagoras.f.Vector;
 
+/**
+ * A {@link ModifierRenderer} used specifically for added or subtracted
+ * terms. Renders the a base Renderer with the given addends added or subtracted
+ * from it.
+ */
 public class AddRenderer extends ModifierRenderer {
 
 	public AddRenderer(Renderer base, int[] operands) {

@@ -5,12 +5,17 @@ import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
 
+/**
+ * Renders a group of integers, added (or subtracted) together,
+ * depending on their sign.
+ */
 class AddGroupRenderer extends ModifierGroupRenderer {
 	
 	public AddGroupRenderer(int... operands) {
 		super(operands);
 	}
 	
+	/** Creates the renderer with the given terms highlighted as indicated */
 	public AddGroupRenderer(int[] operands, boolean[] highlights) {
 		super(operands, highlights);
 	}

@@ -1,5 +1,8 @@
 package tuxkids.tuxblocks.core.solve.markup;
 
+/**
+ * A composite Renderer of two others.
+ */
 abstract class ModifierRenderer extends Renderer {
 	protected Renderer base, modifier;
 	

@@ -6,10 +6,15 @@ import playn.core.TextLayout;
 import pythagoras.f.Vector;
 import tuxkids.tuxblocks.core.Constant;
 
+/**
+ * A {@link ModifierGroupRenderer} specifically for factors (times and divide).
+ * Both times and divide are rendered as multiplied terms (f1*f2) - divided
+ * terms simply go under the division bar.
+ */
 class FactorGroupRenderer extends ModifierGroupRenderer {
 	
+	/** Set this to true to turn a "-1" factor into a "-" */
 	protected boolean useNegatives;
-
 	
 	public FactorGroupRenderer(int... operands) {
 		super(operands);

@@ -5,6 +5,10 @@ import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
 
+/** 
+ * Simply renders a String. This is usually provided as a parameter to
+ * more complex Renders. 
+ */
 public class BaseRenderer extends Renderer {
 	private String text;
 	private boolean highlight;

@@ -7,6 +7,9 @@ import playn.core.Canvas;
 import playn.core.TextFormat;
 import pythagoras.f.Vector;
 
+/**
+ * Writes a group of other {@link ExpressionWriter}s in specific positions.
+ */
 abstract class ParentExpressionWriter extends ExpressionWriter {
 
 	private final List<ExpressionWriter> children = new ArrayList<ExpressionWriter>();
@@ -19,10 +22,12 @@ abstract class ParentExpressionWriter extends ExpressionWriter {
 		addChildren();
 	}
 	
+	/** Adds a child ExpressionWriter to be rendered at the given position */
 	protected void addChild(ExpressionWriter child, float x, float y) {
 		addChild(child, new Vector(x, y));
 	}
 	
+	/** See {@link ParentExpressionWriter#addChild(ExpressionWriter, float, float)} */
 	protected void addChild(ExpressionWriter child, Vector offset) {
 		children.add(child);
 		childOffsets.add(offset);
@@ -30,6 +35,7 @@ abstract class ParentExpressionWriter extends ExpressionWriter {
 
 	@Override
 	public void drawExpression(Canvas canvas) {
+		// draw child expressions
 		for (int i = 0; i < children.size(); i++) {
 			ExpressionWriter child = children.get(i);
 			Vector offset = childOffsets.get(i);
@@ -43,6 +49,8 @@ abstract class ParentExpressionWriter extends ExpressionWriter {
 	
 	@Override
 	public Vector blankCenter() {
+		// find a blank within the children, if any
+		// and return its blankCenter, offset by its position
 		for (int i = 0; i < children.size(); i++) {
 			ExpressionWriter child = children.get(i);
 			

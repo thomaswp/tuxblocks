@@ -5,6 +5,7 @@ import playn.core.TextFormat;
 import playn.core.Canvas.LineCap;
 import pythagoras.f.Vector;
 
+/** Renders a base Renderer, divided by the given divisors */
 public class OverRenderer extends ModifierRenderer {
 
 	public OverRenderer(Renderer base, int[] operands) {
@@ -21,6 +22,7 @@ public class OverRenderer extends ModifierRenderer {
 	
 	@Override
 	public int lines() {
+		// essentially the base's lines + 1
 		return base.lines() + modifier.lines();
 	}
 
@@ -40,13 +42,16 @@ public class OverRenderer extends ModifierRenderer {
 			@Override
 			protected void addChildren() {
 				addChild(childWriter, (width() - childWriter.width()) / 2, 0);
-				addChild(factorWriter, (width() - factorWriter.width()) / 2, childWriter.height() + 2 * spacing());
+				addChild(factorWriter, (width() - factorWriter.width()) / 2, 
+						childWriter.height() + 2 * spacing());
 			}
 			
 			@Override
 			public void drawExpression(Canvas canvas) {
+				// draw the base expression and divisors
 				super.drawExpression(canvas);
 				
+				// draw the division line
 				setColor(canvas, modifier.fullyHighlighted());
 				canvas.setStrokeWidth(textFormat.font.size() / 10);
 				canvas.setLineCap(LineCap.ROUND);

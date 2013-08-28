@@ -1,5 +1,9 @@
 package tuxkids.tuxblocks.core.solve.markup;
 
+/**
+ * A Renderer which renders a group of integer modifiers,
+ * modifying a base Renderer
+ */
 abstract class ModifierGroupRenderer extends Renderer {
 	
 	protected int[] operands;
@@ -11,7 +15,8 @@ abstract class ModifierGroupRenderer extends Renderer {
 		return true;
 	}
 	
-	public ModifierGroupRenderer setHighlight(int index, boolean highlight) {
+	/** Sets the given operand to render in the highlight color */
+	protected ModifierGroupRenderer setHighlight(int index, boolean highlight) {
 		highlights[index] = highlight;
 		return this;
 	}

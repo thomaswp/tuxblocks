@@ -5,6 +5,7 @@ import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
 
+/** Renders two terms, joined in the middle by a symbol, such as '=' or '+' */
 public class JoinRenderer extends Renderer {
 
 	private Renderer a, b;
@@ -47,6 +48,7 @@ public class JoinRenderer extends Renderer {
 			public void drawExpression(Canvas canvas) {			
 				super.drawExpression(canvas);
 				
+				// render the joining symbol
 				setColor(canvas, false);
 				canvas.fillText(layout, aWriter.width() + spacing(), (height() - layout.height()) / 2);
 			}

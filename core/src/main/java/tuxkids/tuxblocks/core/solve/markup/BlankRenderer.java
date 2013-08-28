@@ -5,7 +5,12 @@ import playn.core.Color;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
+import tuxkids.tuxblocks.core.solve.NumberSelectScreen;
 
+/**
+ * Renders a blank in an expression, used when creating problems to be
+ * solved on the {@link NumberSelectScreen}.
+ */
 public class BlankRenderer extends Renderer {
 
 	@Override
