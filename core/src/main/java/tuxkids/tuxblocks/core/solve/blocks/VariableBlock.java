@@ -94,7 +94,7 @@ public class VariableBlock extends BaseBlock {
 		return false;
 	}
 	
-	// removes all "x-1" modifiers from this block and returns the number
+	// removes all "x-1" modifiers from the given list and returns the number removed
 	private int removeNegatives(List<VerticalModifierBlock> modifiers) {
 		int count = 0;
 		for (int i = 0; i < modifiers.size(); i++) {
@@ -116,14 +116,17 @@ public class VariableBlock extends BaseBlock {
 			final TimesBlock myFactor;
 
 			verticalMods.clear();
+			// get this block's modifiers, sans negatives
 			modifiers.addVerticalModifiersTo(verticalMods);
 			int myNegatives = removeNegatives(verticalMods);
+			// myFactor is the first modifier
 			if (verticalMods.size() > 0) {
 				myFactor = (TimesBlock) verticalMods.get(0);
 			} else {
 				myFactor = null;
 			}
 
+			// same with the block to add
 			verticalMods.clear();
 			vBlock.modifiers.addVerticalModifiersTo(verticalMods);
 			int spriteNegatives = removeNegatives(verticalMods);
