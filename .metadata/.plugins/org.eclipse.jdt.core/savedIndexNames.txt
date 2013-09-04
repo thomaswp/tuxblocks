@@ -1,0 +1,14 @@
+INDEX VERSION 1.126+/afs/unity.ncsu.edu/users/t/twprice/git/tuxblocks/.metadata/.plugins/org.eclipse.jdt.core
+3421611052.index
+1580850431.index
+1481681510.index
+4283481814.index
+3480884635.index
+1501317170.index
+1346760340.index
+2268464613.index
+1189544457.index
+1266648557.index
+2921857115.index
+690271857.index
+680003802.index

@@ -16,9 +16,14 @@ import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
 import tuxkids.tuxblocks.core.utils.persist.Persistable.ParseDataException;
 
+/**
+ * Represents a variable in an equation.
+ */
 public class VariableBlock extends BaseBlock {
 
+	// the symbol for this variable - so far is always "x"
 	protected String symbol;
+	// temp variable for storing vertical modifiers
 	private final ArrayList<VerticalModifierBlock> verticalMods = new ArrayList<VerticalModifierBlock>();
 	
 	public VariableBlock(String symbol) {
@@ -47,10 +52,12 @@ public class VariableBlock extends BaseBlock {
 	
 	@Override
 	public boolean canAccept(Block sprite) {
+		// variables can accept modifier blocks like any BaseBlock 
 		if (super.canAccept(sprite)) {
 			return true;
 		}
 		
+		// they can also combine with other VariableBlocks
 		if (sprite instanceof VariableBlock) {
 			VariableBlock vBlock = (VariableBlock) sprite;
 			if (vBlock.modifiers.isModifiedHorizontally() || vBlock.modifiers.children.size() != 0) {
@@ -87,6 +94,7 @@ public class VariableBlock extends BaseBlock {
 		return false;
 	}
 	
+	// removes all "x-1" modifiers from this block and returns the number
 	private int removeNegatives(List<VerticalModifierBlock> modifiers) {
 		int count = 0;
 		for (int i = 0; i < modifiers.size(); i++) {
