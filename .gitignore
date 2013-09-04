@@ -2,6 +2,7 @@
 *.dll
 *.so
 *.gwt-log
+.metadata/*
 .DS_Store
 Thumbs.db
 ProgressLog.launch
