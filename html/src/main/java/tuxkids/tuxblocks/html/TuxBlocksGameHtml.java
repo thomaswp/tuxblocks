@@ -18,7 +18,7 @@ public class TuxBlocksGameHtml extends HtmlGame implements PixelSetter {
 		// use config to customize the HTML platform, if needed
 		platform = HtmlPlatform.register(config);
 		platform.assets().setPathPrefix("tuxblocks/");
-		CanvasUtils.pixelSetter = this;
+		//CanvasUtils.pixelSetter = this;
 		PlayN.run(new TuxBlocksGame());
 	}
 

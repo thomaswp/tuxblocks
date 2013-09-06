@@ -121,7 +121,7 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 				public void onFailure(Throwable cause) { }
 			});
 		} else {
-			layer.setTint(color);
+			base.setTint(color);
 		}
 	}
 	
@@ -141,7 +141,7 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 			});
 			top.setAlpha(1 - perc);
 		} else {
-			layer.setTint(Colors.blend(baseColor, tintColor, perc));
+			base.setTint(Colors.blend(baseColor, tintColor, perc));
 		}
 	}
 	

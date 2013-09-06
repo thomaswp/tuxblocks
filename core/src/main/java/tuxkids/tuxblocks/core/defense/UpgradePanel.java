@@ -154,6 +154,7 @@ public class UpgradePanel extends LayerWrapper {
 			Tutorial.trigger(Trigger.Defense_TowerSelected);
 		}
 		confirmLayer.setVisible(false);
+		lastCanUpgrade = !canUpgrade();
 	}
 	
 	private void refreshDots() {
