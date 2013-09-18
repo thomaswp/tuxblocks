@@ -2,9 +2,11 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.ParseDataException;
 
+/**
+ * A {@link Block} which modifies a {@link BaseBlock} with an
+ * operation, such as addition or multiplication.
+ */
 public abstract class ModifierBlock extends Block {
 	
 	protected ModifierGroup group;
@@ -14,6 +16,7 @@ public abstract class ModifierBlock extends Block {
 	protected abstract String operator();
 	protected abstract ModifierBlock inverseChild();
 	
+	/** Returns the ModifierGroup of which this Block is a part, or null if none. */
 	public ModifierGroup group() {
 		return group;
 	}
@@ -23,7 +26,7 @@ public abstract class ModifierBlock extends Block {
 		return inverse;
 	}
 	
-	public ModifierBlock(int value) {
+	protected ModifierBlock(int value) {
 		this.value = value;
 		inverse = inverseChild();
 	}

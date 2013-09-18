@@ -6,29 +6,37 @@ import java.util.List;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
-import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
-import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
-public class Equation extends PlayNObject implements Hashable, Persistable {
+/**
+ * Represents an equation as two lists of {@link BaseBlock},
+ * one on each side of the equals. Note that once these lists are
+ * provided they cannot be changed. If you wish to build an Equation,
+ * use the {@link Builder} class.
+ */
+public class Equation extends PlayNObject implements Persistable {
 
 	private final List<BaseBlock> leftSide, rightSide;
 	private Renderer renderer;
 	
+	/** Returns the left side of the equation. */
 	public List<BaseBlock> leftSide() {
 		return leftSide;
 	}
 	
+	/** Returns the right side of the equation. */
 	public List<BaseBlock> rightSide() {
 		return rightSide;
 	}
 	
+	/** Returns a {@link Renderer} for this Equation */
 	public Renderer renderer() {
 		if (renderer == null) renderer = createRenderer();
 		return renderer;
 	}
 	
+	/** Constructions an Equation from the given left and right sides */
 	public Equation(List<BaseBlock> leftSide, List<BaseBlock> rightSide) {
 		this.leftSide = leftSide;
 		this.rightSide = rightSide;
@@ -53,12 +61,8 @@ public class Equation extends PlayNObject implements Hashable, Persistable {
 		if (renderer == null) renderer = new BaseRenderer("0");
 		return renderer;
 	}
-	
-	@Override
-	public void addFields(HashCode hashCode) {
-		//TODO: should BaseBlockSprites == or equal...
-	}
 
+	/** Returns a deep copy of this Equation */
 	public Equation copy() {
 		Builder builder = new Builder();
 		for (BaseBlock block : leftSide) {
@@ -71,11 +75,19 @@ public class Equation extends PlayNObject implements Hashable, Persistable {
 	}
 	
 
+	/** An empty equation */
 	public static final Equation NOOP = new Builder()
 	.addLeft(new BlockHolder())
 	.addRight(new BlockHolder())
 	.createEquation();
 	
+	/** 
+	 * Helper class for building {@link Equation}s.
+	 * Use this class as follows:
+	 * <pre>
+	 * new Builder().addLeft(new Block()).addRight(new Block()).createEquation();
+	 * </pre> 
+	 */
 	public static class Builder {
 		private final List<BaseBlock> leftSide = new ArrayList<BaseBlock>(), 
 					rightSide = new ArrayList<BaseBlock>();

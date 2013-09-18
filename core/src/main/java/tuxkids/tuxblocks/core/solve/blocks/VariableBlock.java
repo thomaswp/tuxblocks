@@ -12,9 +12,6 @@ import tuxkids.tuxblocks.core.solve.markup.TimesRenderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.ParseDataException;
 
 /**
  * Represents a variable in an equation.

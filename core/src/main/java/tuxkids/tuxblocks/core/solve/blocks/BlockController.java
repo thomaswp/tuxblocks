@@ -5,18 +5,17 @@ import java.util.List;
 import java.util.Random;
 
 import playn.core.CanvasImage;
+import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Layer;
 import playn.core.PlayN;
-import playn.core.Font.Style;
 import playn.core.Pointer.Event;
 import playn.core.TextFormat;
 import playn.core.util.Clock;
 import tripleplay.particle.Emitter;
 import tripleplay.particle.Generator;
-import tripleplay.particle.Particles;
 import tripleplay.particle.TuxParticles;
 import tripleplay.particle.effect.Alpha;
 import tripleplay.particle.effect.Move;
@@ -30,7 +29,6 @@ import tripleplay.util.Randoms;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.effect.MissileExplosion;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
@@ -174,7 +172,7 @@ public class BlockController extends PlayNObject {
 	
 	private void addExpression(List<BaseBlock> side, BaseBlock expression, float x, float y, int index) {
 		expression.initSprite();
-		layer.addAt(expression.layerAddable(), x, y);
+		layer.addAt(expression.layer(), x, y);
 		expression.layer().setDepth(0);
 		side.add(index, expression);
 		expression.addBlockListener(listener);
@@ -204,7 +202,7 @@ public class BlockController extends PlayNObject {
 		if (dragging != null) return false;
 		int numbers = 0, variables = 0;
 		for (BaseBlock sprite : baseBlocks) {
-			if (!sprite.simplified()) return false;
+			if (!sprite.isUnmodified()) return false;
 			if (sprite instanceof NumberBlock) {
 				numbers++;
 			}

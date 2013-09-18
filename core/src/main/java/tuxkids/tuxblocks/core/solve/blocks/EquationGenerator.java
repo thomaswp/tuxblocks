@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import tuxkids.tuxblocks.core.defense.round.Level.Level1;
 import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
-import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
+/**
+ * Static class for procedurally generating {@link Equation}s. 
+ */
 public class EquationGenerator extends PlayNObject {
 
+	// allows us to create store our rules for generation
+	// as inner/anonymous classes
 	private static interface Generator {
 		public Equation generate();
 	}
 
+	// Generates equations with a since x and a given number
+	// of modifier blocks (the operations parameter).
 	private static class StandardGenerator implements Generator {
 
 		private final int operations;
@@ -29,6 +34,8 @@ public class EquationGenerator extends PlayNObject {
 		}
 	}
 
+	// Generates equations which are combinations of two other
+	// Standard equations with the same answer.
 	private static class CompositeGenerator implements Generator {
 		public final int minSteps, maxSteps, expressions;
 
@@ -44,6 +51,8 @@ public class EquationGenerator extends PlayNObject {
 		}
 	}
 
+	// Generators for the various advanced prestructured forms
+	
 	private static Generator gA1 = new Generator() {
 		@Override
 		public Equation generate() {
@@ -79,11 +88,14 @@ public class EquationGenerator extends PlayNObject {
 		}
 	};
 	
+	// Lists of generators for every difficulty level
 	public static Generator[][] generators = new Generator[][] {
+		// Level 1
 		new Generator[] {
 				new StandardGenerator(1),
 		},
 
+		// Level 2
 		new Generator[] {
 				new StandardGenerator(2),
 				new StandardGenerator(2),
@@ -91,6 +103,7 @@ public class EquationGenerator extends PlayNObject {
 				gA1,
 		},
 
+		// Level 3
 		new Generator[] {
 				new StandardGenerator(3),
 				new StandardGenerator(3),
@@ -98,6 +111,7 @@ public class EquationGenerator extends PlayNObject {
 				gA2, gA3,
 		},
 
+		// Level 4
 		new Generator[] {
 				new StandardGenerator(4),
 				new StandardGenerator(4),
@@ -105,6 +119,7 @@ public class EquationGenerator extends PlayNObject {
 				gA2, gA3, gB1,
 		},
 
+		// Level 5
 		new Generator[] {
 				new StandardGenerator(5),
 				new CompositeGenerator(3, 3, 2),
@@ -112,15 +127,22 @@ public class EquationGenerator extends PlayNObject {
 				gB1, gB2,
 		},
 	};
+	
+	// smallest factor to add to an equation
 	private final static int MIN_FACTOR = 2;
 
 	private static Random rand = new Random();
 
-	// I really should find a better way to pass this around
+	// These are our generation parameters
+	// TODO: I really should find a better way to pass them around
 	// but since everything's synchronous, it should work fine
-	private static int difficulty;
-	private static float percFinished;
+	private static int difficulty; // the difficulty of the problem to generate [1-5]
+	private static float percFinished; // the percentage through the game [0-1]
 
+	// These are upper bounds on various parts of the equation.
+	// Our bounds relax as the game goes on, creating harder problems
+	// with bigger numbers
+	
 	private static int maxFactor() {
 		return (int) (10 + 5 * percFinished + difficulty);
 	}
@@ -129,32 +151,42 @@ public class EquationGenerator extends PlayNObject {
 		return (int) (20 + 20 * percFinished + difficulty * 2);
 	}
 
+	// How large any given term in the equation can get at any
+	// point. Just because you start with small terms doesn't
+	// mean they can't combine to get much bigger. This is not
+	// an easy value to control for that reason.
 	private static int maxTerm() {
 		return (int) (200 + 200 * percFinished + difficulty * 100);
 	}
 
+	// Max value for X
 	private static int maxAnswer() {
 		return (int) (30 + 15 * percFinished + 5 * difficulty);
 	}
 
+	// creates a random factor for multiplication/division
 	private static int factor() {
 		return factor(maxFactor());
 	}
 	
+	// optionally with a max value
 	private static int factor(int cap) {
 		return rand(MIN_FACTOR, Math.min(cap, maxFactor()));
 	}
 
+	// or only a positive value
 	private static int factorSigned() {
 		return rand(MIN_FACTOR, maxFactor()) * randSign();
 	}
 
+	// or with a value that its guaranteed not to be
 	private static int factorNot(int not) {
 		int f = factor();
 		if (f == not) return factorNot(not);
 		return f;
 	}
 
+	// same deal with the adden, for addition or subtraction
 	private static int adden() {
 		return adden(maxAdden());
 	}
@@ -163,6 +195,11 @@ public class EquationGenerator extends PlayNObject {
 		return randNonZero(Math.min(maxAdden(), cap));
 	}
 
+	/** 
+	 * Procedurally generates an equation for the given difficulty and percent through
+	 * the game. The returned equation may be of higher or lower difficulty than
+	 * the request, but it should average out to the requested difficulty.
+	 */
 	public static Equation generate(int difficulty, float percFinished) {
 		EquationGenerator.percFinished = percFinished;
 		EquationGenerator.difficulty = difficulty;
@@ -171,15 +208,17 @@ public class EquationGenerator extends PlayNObject {
 		return gens[rand.nextInt(gens.length)].generate();
 	}
 	
+	/** 
+	 * Procedurally generates a sample equation for the given difficulty.
+	 * Unlike the {@link EquationGenerator#generate(int, int)} method,
+	 * this method guaranteed the returned Equation will be of the requested
+	 * difficulty.
+	 */
 	public static Equation generateSample(int difficulty) {
 		EquationGenerator.difficulty = difficulty;
 		Generator[] gens = generators[difficulty];
 		return gens[rand.nextInt(gens.length)].generate();
 		
-	}
-
-	public static Equation generate(Difficulty difficulty, int level) {
-		return generate(difficulty.mathDifficulty, level);
 	}
 
 	/** ax + b = cx + d */
@@ -274,7 +313,14 @@ public class EquationGenerator extends PlayNObject {
 	}
 
 
+	/**
+	 * Generates an equation with the given number of variable expressions, each with
+	 * between minSteps and maxSteps number of modifiers. 
+	 */
 	public static Equation generateComposite(int minSteps, int maxSteps, int expressions) {
+		// TODO: find a method for bounding term size while working these equations
+		// They have a tendency of producing giant terms >1000 that aren't fun to work with
+		
 		Builder builder = new Builder();
 		int rhs = 0;
 		int answer = generateAnswer() / 2;
@@ -303,26 +349,32 @@ public class EquationGenerator extends PlayNObject {
 		return generateStandard(generateAnswer(), steps);
 	}
 
+	// Generates a standard equation, with one X expression and the given number of steps
+	// needed to solve it. Most of the logic here is choosing nice orderings for
+	// the operations, so we don't get boring stuff like x+2+3-4.
 	private static Equation generateStandard(int answer, int steps) {
 		int rhs = answer;
 		BaseBlock lhs = new VariableBlock("x");
 		Operation lastOperation = null;
 		Operation lastOperationInv = null;
 		Integer lastTimes = null;
+		
+		// start with x = rhs and iteratively do some operation to both sides
+		
 		for (int i = 0; i < steps; i++) {
-			List<Integer> factors = getFactors(rhs);
-			if (lastTimes != null) factors.remove(lastTimes);
+			List<Integer> factors = getFactors(rhs); // get the factors of the right hand side
+			if (lastTimes != null) factors.remove(lastTimes); // don't repeat a divide operation
 
 			List<Operation> operations = new ArrayList<Operation>();
 			for (Operation operation : Operation.values()) operations.add(operation);
-			if (factors.isEmpty()) operations.remove(Operation.Over);
-			if (lastOperation != null) operations.remove(lastOperation);
+			if (factors.isEmpty()) operations.remove(Operation.Over); // can't divide if rhs isn't divisible by anything
+			if (lastOperation != null) operations.remove(lastOperation); // don't repeat an operator
 
 			int maxTimes = maxFactor();
 			if (rhs != 0) maxTimes = Math.min(maxTimes, Math.abs(maxTerm() / rhs));
-			if (maxTimes <= MIN_FACTOR) operations.remove(Operation.Times);
+			if (maxTimes <= MIN_FACTOR) operations.remove(Operation.Times); // remove time if we can't find a value
 
-			if (operations.size() > 1 && lastOperationInv != null)
+			if (operations.size() > 1 && lastOperationInv != null) // if we have the option, avoid doing a +/- or *// pair
 				operations.remove(lastOperationInv);
 
 			Operation operation = operations.get(rand.nextInt(operations.size()));
@@ -365,10 +417,13 @@ public class EquationGenerator extends PlayNObject {
 		return rand(1, maxMag) * randSign();
 	}
 
+	// returns -1 or 1
 	private static int randSign() {
 		return rand(0, 1) * 2 - 1;
 	}
 
+	// gets the prime factors of a number
+	// it's more complicated then that, but I honestly don't remember :)
 	public static List<Integer> getFactors(int n) {
 		List<Integer> factors = new ArrayList<Integer>();
 		n = Math.abs(n);

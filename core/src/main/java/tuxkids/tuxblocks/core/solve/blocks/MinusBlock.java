@@ -1,9 +1,10 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
-import playn.core.Color;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 
+/**
+ * A {@link ModifierBlock} representing a subtraction.
+ */
 public class MinusBlock extends HorizontalModifierBlock {
 	
 	public MinusBlock(int value) {
