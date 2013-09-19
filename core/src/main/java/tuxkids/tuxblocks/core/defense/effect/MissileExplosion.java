@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.effect;
+package tuxkids.tuxblocks.core.defense.effect;
 
 import java.util.Random;
 

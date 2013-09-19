@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.effect;
+package tuxkids.tuxblocks.core.defense.effect;
 
 import playn.core.GroupLayer;
 import playn.core.Layer;

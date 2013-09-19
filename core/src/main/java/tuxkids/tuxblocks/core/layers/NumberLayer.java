@@ -2,7 +2,6 @@ package tuxkids.tuxblocks.core.layers;
 
 import playn.core.GroupLayer;
 import playn.core.Image;
-import playn.core.ImageLayer;
 import playn.core.ImmediateLayer;
 import playn.core.ImmediateLayer.Renderer;
 import playn.core.Layer.HitTester;
@@ -11,6 +10,10 @@ import playn.core.Surface;
 import playn.core.TextFormat;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * Layer for efficiently displaying numbers. You must provide
+ * a {@link NumberBitmapFont} to display with.
+ */
 public class NumberLayer extends LayerWrapper {
 
 	protected GroupLayer layer;
@@ -20,21 +23,27 @@ public class NumberLayer extends LayerWrapper {
 	protected String text;
 	protected ImmediateLayer renderLayer;
 
+	/** Gets the width of the currently displayed number */
 	public float width() {
 		return width;
 	}
 
+	/** Gets the height of the currently displayed number */
 	public float height() {
 		return height;
 	}
 	
+	/** Gets the currently displayed number */
 	public int number() {
 		return number;
 	}
 	
+	/** Sets the currently displayed number */
 	public void setNumber(int number) {
 		this.number = number;
 		text = String.valueOf(number);
+		
+		// update size
 		width = 0; height = 0;
 		for (int i = 0; i < text.length(); i++) {
 			Image image = font.getImage(text.charAt(i));
@@ -66,6 +75,7 @@ public class NumberLayer extends LayerWrapper {
 		}
 	}
 	
+	/** Creates a set of Images for displaying numbers in the given {@link TextFormat} and color */
 	public static class NumberBitmapFont {
 
 		protected final String characters = "-.0123456789";
@@ -81,6 +91,7 @@ public class NumberLayer extends LayerWrapper {
 			}
 		}
 		
+		/** Gets the {@link Image} associated with the given char, or null of none exists */
 		public Image getImage(char symbol) {
 			int index = characters.indexOf(symbol);
 			return index >= 0 ? images[index] : null;

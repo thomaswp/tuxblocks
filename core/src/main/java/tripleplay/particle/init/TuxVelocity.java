@@ -1,6 +1,5 @@
 package tripleplay.particle.init;
 
-import static playn.core.PlayN.graphics;
 import pythagoras.f.FloatMath;
 import pythagoras.f.MathUtil;
 import pythagoras.f.Vector;
@@ -8,7 +7,6 @@ import tripleplay.particle.Initializer;
 import tripleplay.particle.ParticleBuffer;
 import tripleplay.particle.TuxParticles;
 import tripleplay.util.Randoms;
-import tuxkids.tuxblocks.core.utils.GLStatus;
 
 /**
  * A verion of the {@link Velocity} Initter, which works with {@link TuxParticles}

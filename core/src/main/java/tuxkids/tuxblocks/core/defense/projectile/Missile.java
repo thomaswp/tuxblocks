@@ -3,7 +3,7 @@ package tuxkids.tuxblocks.core.defense.projectile;
 import playn.core.Image;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.effect.MissileExplosion;
+import tuxkids.tuxblocks.core.defense.effect.MissileExplosion;
 
 public class Missile extends BodyProjectile {
 

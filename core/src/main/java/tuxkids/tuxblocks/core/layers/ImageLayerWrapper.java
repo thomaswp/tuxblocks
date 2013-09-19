@@ -2,10 +2,12 @@ package tuxkids.tuxblocks.core.layers;
 
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.Layer;
 import playn.core.Layer.HitTester;
-import pythagoras.f.Point;
 
+/**
+ * Default implementation of the {@link ImageLayerLike} interface,
+ * simply wraps the given {@link ImageLayer}.
+ */
 public class ImageLayerWrapper extends LayerWrapper implements ImageLayerLike {
 
 	private ImageLayer layer;

@@ -5,6 +5,10 @@ import playn.core.Layer;
 import playn.core.Pointer.Listener;
 import pythagoras.f.Point;
 
+/**
+ * An interface for classes which behave like a {@link Layer}
+ * but cannot extend any platform-dependent Layer class.
+ */
 public interface LayerLike {
 	public Layer layerAddable();
 	public GroupLayer parent();

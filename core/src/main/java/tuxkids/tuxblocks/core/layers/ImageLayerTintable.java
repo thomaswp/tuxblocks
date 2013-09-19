@@ -13,8 +13,14 @@ import pythagoras.f.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.GLStatus;
-import tuxkids.tuxblocks.core.utils.PlayNObject;
 
+/**
+ * An {@link ImageLayerLike} that wraps the functionality of an {@link ImageLayer}
+ * but allows for setting tint in a way that is compatible with HTML5 canvas.
+ * This is accomplished by layer one ImageLayer on top of another, tinting both
+ * and setting the alpha of one to blend colors. This allows for color transitions
+ * with only two expensive calls to {@link CanvasUtils#tintImage(Image, int)}.
+ */
 public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 	
 	private GroupLayer layer;
@@ -75,6 +81,8 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 	public void setSize(float width, float height) {
 		setSizeCallback.width = width;
 		setSizeCallback.height = height;
+		// use a callback because the image might not
+		// have loaded yet
 		baseImage.addCallback(setSizeCallback);
 	}
 
@@ -121,6 +129,7 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 				public void onFailure(Throwable cause) { }
 			});
 		} else {
+			// if we have GL support, just set the tint like normal
 			base.setTint(color);
 		}
 	}
@@ -129,6 +138,8 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 	public void setTint(final int baseColor, final int tintColor, float perc) {
 		tint = Colors.blend(baseColor, tintColor, perc);
 		if (!useGL()) {
+			// set one image to one color, the other to the other and
+			// ajust the alpha for the right blend
 			baseImage.addCallback(new Callback<Image>() {
 				@Override
 				public void onSuccess(Image result) {
@@ -141,6 +152,7 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 			});
 			top.setAlpha(1 - perc);
 		} else {
+			// if we have GL support, just set the tint like normal
 			base.setTint(Colors.blend(baseColor, tintColor, perc));
 		}
 	}
@@ -148,7 +160,6 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 	private Image getTintedImage(Integer color) {
 		Image mapped = tintMap.get(color);
 		if (mapped == null) {
-//			debug("Created: %d", color);
 			mapped = CanvasUtils.tintImage(baseImage, color, 1);
 			tintMap.put(color, mapped);
 		}

@@ -13,6 +13,12 @@ import tuxkids.tuxblocks.core.utils.persist.PersistUtils;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.menu.MenuLayer;
 
+/**
+ * Extension of the {@link BaseScreen} class, contains
+ * in-game-specific methods, such as handling the game menu,
+ * {@link HeaderLayer}s and returning to the {@link DefenseScreen}
+ * when time is up.
+ */
 public class GameScreen extends BaseScreen {
 	
 	protected GameState state;
@@ -48,10 +54,12 @@ public class GameScreen extends BaseScreen {
 	@Override
 	public void update(int delta) {
 		super.update(delta);
-		if (!exiting()) { //Prevent overlap
+		// Prevent overlap if this is called from multiple visible Screens
+		if (!exiting()) { 
 			header.update(delta);
 			if (!MenuLayer.showing()) {
 				state.update(delta);
+				// if we're close to the next round and not on the DefenseScreen, pop this Screen
 				if (state.difficulty().roundTime > 0 && !validDuringRound() && !entering()) {
 					if (state.level().duringRound() || 
 							state.level().timeUntilNextRound() < exitTime()) {
@@ -70,6 +78,7 @@ public class GameScreen extends BaseScreen {
 		}
 	}
 
+	/** Quits this game and persists its current state */
 	public void quit() {
 		PersistUtils.persist(state, Constant.KEY_GAME);
 		Screen popTo = screens.find(new Predicate() {
@@ -83,6 +92,7 @@ public class GameScreen extends BaseScreen {
 	}
 	
 
+	/** Returns true if the game is in a state where it can save */
 	public boolean canSave() {
 		return state.canSave();
 	}

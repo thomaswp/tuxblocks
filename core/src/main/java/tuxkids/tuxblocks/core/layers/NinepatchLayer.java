@@ -4,17 +4,21 @@ import java.util.ArrayList;
 
 import playn.core.GroupLayer;
 import playn.core.Image;
-import playn.core.Layer;
 import playn.core.Layer.HitTester;
 import playn.core.Pointer.Listener;
 import playn.core.util.Callback;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.utils.PlayNObject;
 
+/**
+ * Provides functionality akin to the Ninepatch images on the
+ * Android platform. This allows for an image with specified
+ * areas that should stretch (on both axes) and some that should not.
+ */
 public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 
 	private Factory factory;
 	private GroupLayer layer;
+	// split the image into sections, some of which stretch
 	private ImageLayerLike[][] imageLayers;
 	private boolean[][] touchDisabled;
 	private int[] widthDims, heightDims;
@@ -53,6 +57,10 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		setSize(width, height);
 	}
 	
+	/**
+	 * Sets the section of this layer specified to have touch
+	 * enbled or disabled.
+	 */
 	public void setTouchEnabled(int row, int col, boolean enabled) {
 		if (imageLayers[row][col] != null) {
 			imageLayers[row][col].setInteractive(enabled);
@@ -60,10 +68,20 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		touchDisabled[row][col] = !enabled;
 	}
 
+	/**
+	 * Loads the given Ninepath, reading section information from
+	 * the Image itself as defined by the Android standard.
+	 */
 	public NinepatchLayer(Factory factory, Image image) {
 		this(factory, image, null, null);
 	}
 	
+	/**
+	 * Creates a Ninepath Image, dividing the image up according to the supplied
+	 * widthDims and heightDims arrays. Each array should specify widths and heights
+	 * of sections, forming a grid over the image. The first section is not stretched,
+	 * and the following sections alternate between stretching and not stretching.
+	 */
 	public NinepatchLayer(Factory factory, Image image, final int[] widthDims, final int[] heightDims) {
 		super(graphics().createGroupLayer());
 		layer = (GroupLayer) layerAddable();
@@ -86,11 +104,15 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 	}
 	
 	private void load(Image image, int[] widthDims, int[] heightDims) {
+		
 		imageWidth = (int)image.width();
 		imageHeight = (int)image.height();
 		
 		float xOffset = 0, yOffset = 0;
 		if (widthDims == null || heightDims == null) {
+			// determine the dimensions based on the image itself
+			
+			// ignore the borders in the actual displayed image
 			imageWidth -= 2;
 			imageHeight -= 2;
 			
@@ -110,6 +132,7 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		this.widthDims = widthDims;
 		this.heightDims = heightDims;
 		
+		// split the image into sections
 		imageLayers = new ImageLayerLike[heightDims.length][widthDims.length];
 		touchDisabled = new boolean[heightDims.length][widthDims.length];
 		int y = 0;
@@ -133,6 +156,7 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		}
 	}
 	
+	// adjust the size of each section when the size changes
 	private void onSizeChanged() {
 		float w = 0, h = 0;
 		float x = 0, y = 0;
@@ -170,6 +194,8 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		
 	}
 	
+	// gets the length of the given section (width or height), given
+	// the list of dimensions and the total width
 	private float getLength(int index, float total, int[] dims) {
 		if (index % 2 == 1) {
 			float d = total;
@@ -179,6 +205,7 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		return dims[index];
 	}
 	
+	// get the dimensions from a .9.png file
 	private int[] getDims(int[] pixels) {
 		int black = Colors.BLACK;
 		ArrayList<Integer> dims = new ArrayList<Integer>();
@@ -199,6 +226,8 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		return dimsArray;
 	}
 
+	// everything has to be done to each layer
+	
 	@Override
 	public void setTint(int tint) {
 		for (int i = 0; i < heightDims.length; i++) {

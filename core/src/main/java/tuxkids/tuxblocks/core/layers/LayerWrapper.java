@@ -7,6 +7,11 @@ import pythagoras.f.Point;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
+/**
+ * Default implementation for a {@link LayerLike} which simply
+ * wraps the functionality of the provided {@link Layer}. This allows
+ * actual Layers to be passed as parameters to function that require a LayerLike.
+ */
 public class LayerWrapper extends PlayNObject implements LayerLike {
 	private Layer layer;
 	
@@ -44,6 +49,10 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 		layer.setTint(tint);
 	}
 
+	/**
+	 * Sets the tint of this ImageLayer as the combination of baseColor
+	 * and tintColor with the given percent tinted. 
+	 */
 	@Override
 	public void setTint(int baseColor, int tintColor, float perc) {
 		setTint(Colors.blend(baseColor, tintColor, perc));

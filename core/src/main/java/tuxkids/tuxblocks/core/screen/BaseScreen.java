@@ -23,6 +23,10 @@ import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
 
+/** 
+ * Extension of the {@link Screen} class that contains Tux-specific
+ * methods for handling menus and the {@link GameBackgroundSprite}.
+ */
 public class BaseScreen extends Screen implements Listener {
 
 	protected ScreenStack screens;
@@ -43,18 +47,22 @@ public class BaseScreen extends Screen implements Listener {
 		return background;
 	}
 	
+	/** Returns true if this Screen is exiting */
 	public boolean exiting() {
 		return exiting;
 	}
 	
+	/** Returns true if this Screen is entering */
 	public boolean entering() {
 		return entering;
 	}
 	
+	/** Returns the number of screen in the {@link ScreenStack} */
 	public int screenDepth() {
 		return depth;
 	}
 	
+	/** Should return a {@link Trigger} that should be triggered when this screen is shown */
 	protected Trigger wasShownTrigger() {
 		return null;
 	}
@@ -68,6 +76,7 @@ public class BaseScreen extends Screen implements Listener {
 		showing = true;
 	}
 	
+	/** Registers {@link Highlightable}s for the {@link Tutorial}. */
 	public void registerHighlightable(Highlightable highlightable, Tag tag) {
 		if (highlightable == null) return;
 		highlightable.highlighter().addTag(tag);
@@ -114,6 +123,8 @@ public class BaseScreen extends Screen implements Listener {
 		return PlayN.graphics();
 	}
 	
+	// emulate some of PlayNObject's methods
+	
 	protected static float lerp(float x0, float x1, float perc) {
 		return PlayNObject.lerp(x0, x1, perc);
 	}
@@ -130,10 +141,12 @@ public class BaseScreen extends Screen implements Listener {
 		PlayNObject.lerpAlpha(layer, target, base, dt);
 	}
 	
+	/** Pushes the given Screen with the default {@link Transition} */
 	protected final void pushScreen(GameScreen screen) {
 		pushScreen(screen, screens.slide().left());
 	}
 	
+	/** Pushes the given Screen with the given Transition */
 	public void pushScreen(final BaseScreen screen, Transition transition) {
 		Tutorial.clearIndicators();
 		screen.onScreenFinishedListener = new OnScreenFinishedListener() {
@@ -163,12 +176,14 @@ public class BaseScreen extends Screen implements Listener {
 	public void update(int delta) {
 		super.update(delta);
 		if (exiting()) {
+			// scroll the background layer
 			background.scroll(layer.tx() - lastTx, layer.ty() - lastTy);
 			lastTx = layer.tx();
 			lastTy = layer.ty();
 		}
 	}
 	
+	/** Called when a Screen finishes such that this Screen will be shown */
 	protected void onChildScreenFinished(BaseScreen screen) { }
 	
 	protected interface OnScreenFinishedListener {
@@ -178,6 +193,7 @@ public class BaseScreen extends Screen implements Listener {
 	@Override
 	public void onKeyDown(Event event) {
 		if (event.key() == Key.BACK || event.key() == Key.B) {
+			// back button (mainly for Android support)
 			if (MainMenuLayer.showing()) {
 				MainMenuLayer.toggle(this);
 			} else {
@@ -185,6 +201,7 @@ public class BaseScreen extends Screen implements Listener {
 			}
 		}
 		if (event.key() == Key.MENU || event.key() == Key.ESCAPE) {
+			// menu button
 			MainMenuLayer.toggle(this);
 		}
 	}
