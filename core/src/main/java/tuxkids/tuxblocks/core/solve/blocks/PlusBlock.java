@@ -1,8 +1,11 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
-import playn.core.Color;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
+/**
+ * A {@link ModifierBlock} that represents addition of
+ * an integer.
+ */
 public class PlusBlock extends HorizontalModifierBlock {
 
 	public PlusBlock(int value) {

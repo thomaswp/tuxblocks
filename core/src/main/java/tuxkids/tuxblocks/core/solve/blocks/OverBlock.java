@@ -1,12 +1,17 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
-import playn.core.Color;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 
+/**
+ * A {@link ModifierBlock} that represents division
+ * by an integer.
+ */
 public class OverBlock extends VerticalModifierBlock {
 
+	// There is absolutely nothing interesting here.
+	// For once.
+	
 	public OverBlock(int value) {
 		super(value);
 	}
