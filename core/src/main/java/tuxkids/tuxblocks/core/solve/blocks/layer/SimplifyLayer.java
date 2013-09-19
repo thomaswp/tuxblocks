@@ -17,10 +17,15 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
+import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * Layer which handles the display of the simplify buttons between
+ * {@link Block}s.
+ */
 public class SimplifyLayer extends LayerWrapper {
 
 	private GroupLayer layer;
@@ -47,14 +52,22 @@ public class SimplifyLayer extends LayerWrapper {
 		public void onPointerCancel(Event event) { }
 	};
 	
+	/** See {@link SimplifyLayer#getSimplifyButton(ModifierBlock, ModifierBlock, int)} */
 	public ImageLayer getSimplifyButton(ModifierBlock sprite) {
 		return getSimplifyButton(sprite, null, 0);
 	}
 	
+	/** See {@link SimplifyLayer#getSimplifyButton(ModifierBlock, ModifierBlock, int)} */
 	public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair) {
 		return getSimplifyButton(sprite, pair, 0);
 	}
 	
+	/** 
+	 * Returns an ImageLayer of a simplify button. If the player presses
+	 * this button the {@link Simplifiable#simplify(ModifierBlock, ModifierBlock)}
+	 * method will be called with the provided sprite and pair. Optionally sets the
+	 * depths of the returned layer.
+	 */
 	public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair, int depth) {
 		while (simplifyButtons.size() <= simplifyMap.size()) { 
 			addSimplifyButton();
@@ -72,6 +85,7 @@ public class SimplifyLayer extends LayerWrapper {
 			float radius = Sprite.modSize() * 0.35f;
 			Image image = CanvasUtils.createCircleCached(radius, Colors.GRAY, 1, Colors.BLACK);
 			if (PlayN.touch().hasTouch()) {
+				// add extra transparent area around the button to catch inaccurate touches
 				Key key = Key.fromClass(SimplifyLayer.class, radius);
 				simplifyImage = Cache.getImage(key);
 				if (simplifyImage == null) {
@@ -112,8 +126,14 @@ public class SimplifyLayer extends LayerWrapper {
 	}
 	
 	public interface Simplifiable {
+		/** 
+		 * Called once per update. This is the time to call 
+		 * {@link SimplifyLayer#getSimplifyButton(ModifierBlock, ModifierBlock, int)} 
+		 */
 		void updateSimplify();
+		/** See {@link SimplifyLayer#getSimplifyButton(ModifierBlock, ModifierBlock, int)} */
 		void simplify(ModifierBlock sprite, ModifierBlock pair);
+		/** Should return true if the {@link SimplifyLayer} should show its buttons */
 		boolean showSimplify();
 	}
 }

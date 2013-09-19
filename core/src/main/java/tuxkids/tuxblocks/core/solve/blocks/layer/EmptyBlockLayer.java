@@ -6,9 +6,12 @@ import playn.core.ImageLayer;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Cache.Key;
+import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.HashCode;
 
+/**
+ * {@link BlockLayer} used with {@link BlockHolder}s.
+ */
 public class EmptyBlockLayer extends BlockLayerDefault {
 
 	private static Key hKey = Key.fromClass(EmptyBlockLayer.class, "h");
@@ -24,6 +27,7 @@ public class EmptyBlockLayer extends BlockLayerDefault {
 	protected void createBorderLayers() {
 		float length = 14;
 		
+		// thicker, dashed borders
 		Image hImage = Cache.getImage(hKey);
 		if (hImage == null) {
 			CanvasImage hBorderImage = CanvasUtils.createRect(length, 1, Colors.BLACK);

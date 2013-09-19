@@ -14,8 +14,13 @@ import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.layers.NinepatchLayer;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite;
+import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * A special {@link BlockLayer} for {@link TimesBlock}s that shows
+ * the wrapping edges.
+ */
 public class TimesLayer extends LayerWrapper implements BlockLayer {
 
 	protected final GroupLayer layer;
@@ -57,6 +62,7 @@ public class TimesLayer extends LayerWrapper implements BlockLayer {
 		centerImageLayer(textLayer);
 	}
 
+	// create a Ninepatch layer to represent the shape
 	private NinepatchLayer createNinepatch() {
 		int legs = Sprite.wrapSize();
 		int sides = 3;
@@ -73,7 +79,7 @@ public class TimesLayer extends LayerWrapper implements BlockLayer {
 			float hlw = 0;//0.5f;
 			float pWidth = width - 1;
 			float pHeight = height - 1;
-			float lx, ly;
+			float lx, ly; // since we always move at right angles, store the last x/y value
 		
 			CanvasImage image = graphics().createImage(width, height);
 			

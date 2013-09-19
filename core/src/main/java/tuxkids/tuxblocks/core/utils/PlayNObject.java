@@ -120,6 +120,8 @@ public abstract class PlayNObject {
 		v0.y = lerp(v0.y, y1, perc);
 	}
 	
+	/** Linearly interpolates, but uses an elapsed time instead of a factor, 
+	 * making the interpolation smoother if the frames aren't consistent. */
 	public static float lerpTime(float x0, float x1, float base, float dt) {
 		float perc = 1 - FloatMath.pow(base, dt);
 		return lerp(x0, x1, perc);

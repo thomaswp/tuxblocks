@@ -8,6 +8,8 @@ import tuxkids.tuxblocks.core.utils.persist.Persistable;
  */
 public class PlusBlock extends HorizontalModifierBlock {
 
+	// Nothing to see here, move along.
+	
 	public PlusBlock(int value) {
 		super(value);
 	}

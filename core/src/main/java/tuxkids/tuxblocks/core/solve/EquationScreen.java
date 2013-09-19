@@ -33,7 +33,7 @@ public abstract class EquationScreen extends GameScreen implements Parent {
 	
 	public void setEquation(Equation equation) {
 		this.originalEquation = equation;
-		controller.addEquation(equation.copy());
+		controller.setEquation(equation.copy());
 	}
 	
 	public boolean solved() {
@@ -76,8 +76,7 @@ public abstract class EquationScreen extends GameScreen implements Parent {
 	
 	/** Reset the current equation to it's original state */
 	protected void reset() {
-		controller.clear();
-		controller.addEquation(originalEquation.copy());
+		controller.setEquation(originalEquation.copy());
 	}
 	
 	@Override

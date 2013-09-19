@@ -12,9 +12,14 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
+import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * Default implementation of the {@link BlockLayer}, used to display {@link Block}s 
+ * as it allows for efficient resizing of rectangles with borders.
+ */
 public class BlockLayerDefault extends LayerWrapper implements BlockLayer {
 
 	protected static TextFormat textFormat;
@@ -86,19 +91,23 @@ public class BlockLayerDefault extends LayerWrapper implements BlockLayer {
 			textFormat = new TextFormat().withFont(font);
 		}
 		
+		// text
 		textLayer = graphics().createImageLayer();
 		textLayer.setDepth(1);
 		layer.add(textLayer);
 		refreshTextLayer();
 		
+		// resizing borders
 		createBorderLayers();
 		
+		// colored background
 		centerLayer = new ImageLayerTintable(CanvasUtils.createRectCached(1, 1, Colors.WHITE));
 		centerLayer.layerAddable().setDepth(-1);
 		layer.add(centerLayer.layerAddable());
 	}
 	
 	protected void createBorderLayers() {
+		// borders are just points stretched in one direction or another
 		Image borderImage = CanvasUtils.createRectCached(1, 1, Colors.BLACK);
 		borderLayers = new ImageLayer[4];
 		for (int i = 0; i < 4; i++) {
