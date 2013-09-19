@@ -11,8 +11,12 @@ import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 
+/**
+ * A {@link ModifierGroup} consisting of {@link HorizontalModifierBlock}s.
+ * Handles special horizontal interactions such as adding a {@link NumberBlock} with
+ * modifiers to another {@link BaseBlock}. 
+ */
 public class HorizontalModifierGroup extends ModifierGroup {
 
 	@Override
@@ -46,37 +50,55 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	public ModifierBlock addExpression(NumberBlock sprite, boolean snap) {	
 		List<VerticalModifierBlock> sharedMods = getSharedModifiersForAdd(sprite);
 		if (sharedMods == null) {
+			// if the NumberBlock isn't modified, we can
+			// just add it as a regular modifier block
 			return super.addExpression(sprite, snap);
 		}
 		
 		List<ModifierBlock> outsideModifiers = null;
 		if (sprite.modifiers.modifiers != null &&
 				sprite.modifiers.modifiers.modifiers != null) {
+			// extra horizontal modifier that can be popped off and re-added
+			// at the end, once the two block have been merged
 			outsideModifiers = sprite.modifiers.modifiers.modifiers.children;
 		}
 		
 		ModifierBlock proxy;
+		// if we have no modifiers, or all the same vertical modifiers
 		if (modifiers == null || sharedMods.size() == modifiers.children.size()) {
+			// just add the the block and all its horizontal children
 			addChild(proxy = sprite.proxyFor());
 			for (ModifierBlock mod : sprite.modifiers.children) addChild(mod);
 		} else {
+			// try adding propagating upwards
 			ModifierBlock superMod = super.addExpression(sprite, snap);
 			if (superMod != null) {
+				// return if it's successful
 				return superMod;
 			}
 			
+			// replace our modifier's horizontal modifiers with a new one...
 			ModifierGroup modMods = modifiers.removeModifiers();
 			modifiers.addNewModifiers();
+			// and add the block to it...
 			modifiers.modifiers.addChild(proxy = sprite.proxyFor());
 			for (ModifierBlock mod : sprite.modifiers.children) {
+				// and all it's horizontal children
 				modifiers.modifiers.addChild(mod);
 			}
+			
+			//now move all the shared modifiers to modify that new horizontal group
 			modifiers.modifiers.addNewModifiers();
 			for (VerticalModifierBlock sharedMod : sharedMods) {		
 				ModifierBlock m = modifiers.removeChild(sharedMod);
 				modifiers.modifiers.modifiers.addChild(m);
 			}
+			// and tack our old modifier's modifiers onto the end
 			modifiers.modifiers.modifiers.setModifiers(modMods);
+			
+			// PS if you don't understand any of this, just smile and nod and be glad it works
+			// PPS if you think there's one too many/few "modifier.", that's
+			// perfectly natural, but I think you're probably wrong
 		}
 		
 		if (outsideModifiers != null) {
@@ -99,6 +121,10 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		return super.canAddExpression(sprite);
 	}
 	
+	// Returns the vertical modifiers this group shares with a NumberBlock
+	// such that they could theoretically by combined underneath them
+	// for example 3(x + 2) and 3(4) can be combined into 3(x + 2 + 4).
+	// Returns null if this block cannot be added (not the empty list)
 	private List<VerticalModifierBlock> getSharedModifiersForAdd(NumberBlock sprite) {
 		if (modifiers != null || sprite.modifiers.modifiers == null) {
 			
@@ -146,6 +172,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 
 	@Override
 	public void updateSimplify() {
+		// all horizontal children can simplify (a + b - c can all combine)
 		for (int i = 1; i < children.size(); i++) {
 			ModifierBlock sprite = children.get(i);
 			simplifyLayer.getSimplifyButton(sprite, children.get(i - 1)).setTranslation(sprite.x(), sprite.centerY());
@@ -157,10 +184,12 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		HorizontalModifierBlock hSprite = (HorizontalModifierBlock) sprite;
 		final HorizontalModifierBlock before = (HorizontalModifierBlock) pair;
 		if (sprite.inverse().equals(before)) {
+			// if the two are inverses (2 - 2) just simplify
 			removeChild(sprite, true);
 			removeChild(before, true);
 			blockListener.wasSimplified();
 		} else {
+			// create a problem to combine the two blocks
 			Renderer problem = new JoinRenderer(
 					new JoinRenderer(new BaseRenderer("" + before.plusValue()), 
 							new BaseRenderer("" + hSprite.value), hSprite instanceof PlusBlock ? "+" : "-"), 
@@ -168,11 +197,13 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			final int answer = before.plusValue() + hSprite.plusValue();
 			Stat stat = hSprite.plusValue() >= 0 ? Stat.Plus : Stat.Minus;
 			int level = Difficulty.rankPlus(before.plusValue(), hSprite.plusValue());
-			int start = before.plusValue(); //before.value > hSprite.value ? before.plusValue() : hSprite.plusValue();
+			int start = before.plusValue();
+			// show it to the player
 			blockListener.wasReduced(problem, answer, start, stat, level, new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {
+						// and if the succeed, remove the modifier block and add it to the other one
 						before.setPlusValue(answer);
 						removeChild(sprite, true);
 						blockListener.wasSimplified();
@@ -185,6 +216,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	@Override
 	public void simplifyModifiers() {
 		super.simplifyModifiers();
+		// combine all children into one + or - block
 		int total = 0;
 		while (!children.isEmpty()) {
 			HorizontalModifierBlock child = (HorizontalModifierBlock) children.get(0);
@@ -199,6 +231,8 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	
 	@Override
 	public void addNegative() {
+		// Essentially, propagate upward.
+		// Forcibly.
 		if (modifiers != null) {
 			modifiers.addNegative();
 		} else {
@@ -212,6 +246,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		if (children.size() != 0) {
 			int[] operands = new int[children.size()];
 			boolean[] highlights = new boolean[operands.length];
+			// add all children to the renderer
 			for (int i = 0; i < operands.length; i++) {
 				operands[i] = ((HorizontalModifierBlock) children.get(i)).plusValue();
 				highlights[i] = children.get(i).previewAdd();

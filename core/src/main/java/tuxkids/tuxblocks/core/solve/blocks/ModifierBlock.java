@@ -13,7 +13,9 @@ public abstract class ModifierBlock extends Block {
 	protected int value;
 	protected ModifierBlock inverse;
 	
+	/** Returns the character that represents this modifier's operator */
 	protected abstract String operator();
+	/** Returns a new instance of this block's inverse block type (ie [+] => [-]) */
 	protected abstract ModifierBlock inverseChild();
 	
 	/** Returns the ModifierGroup of which this Block is a part, or null if none. */
@@ -31,6 +33,11 @@ public abstract class ModifierBlock extends Block {
 		inverse = inverseChild();
 	}
 	
+	/** 
+	 * Constructs this modifier block with the given inverse
+	 * This constructor should be used when creating inverses
+	 * so that those inverses don't then create more inverses.
+	 */
 	protected ModifierBlock(ModifierBlock inverse) {
 		this.value = inverse.value;
 		this.inverse = inverse;
@@ -84,11 +91,16 @@ public abstract class ModifierBlock extends Block {
 		return operator() + value;
 	}
 	
+	/** Returns true if this modifier block can be simplified by cancellation */
 	public boolean canSimplify() {
 		if (group == null) return false;
 		return group.children.contains(inverse);
 	}
 
+	/** 
+	 * Returns true if this block should have it's inverse added to each term in the equation
+	 * when double clicked. This is only called for {@link VerticalModifierBlock}s. 
+	 */
 	public boolean canAddInverse() {
 		if (group == null) return false;
 		return !canSimplify() && group.modifiers == null;
@@ -99,6 +111,7 @@ public abstract class ModifierBlock extends Block {
 		hashCode.addField(value);
 	}
 	
+	/** Destroys this block and optionally destroys its inverse as well. */
 	protected void destroy(boolean destroyInverse) {
 		super.destroy();
 		if (destroyInverse && inverse != null && !inverse.destroyed()) {
@@ -111,6 +124,7 @@ public abstract class ModifierBlock extends Block {
 		destroy(true);
 	}
 	
+	/** Sets the numeric value of this modifier and updates the sprite accordingly */
 	public void setValue(int value) {
 		if (this.value == value) return;
 		this.value = value;

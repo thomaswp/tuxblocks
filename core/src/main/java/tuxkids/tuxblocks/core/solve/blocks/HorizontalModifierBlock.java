@@ -2,6 +2,10 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a horizontally stacked {@link ModifierBlock}, such as
+ * a {@link PlusBlock} or {@link MinusBlock}.
+ */
 public abstract class HorizontalModifierBlock extends ModifierBlock {
 
 	protected abstract void setPlusValue(int value);
@@ -39,12 +43,18 @@ public abstract class HorizontalModifierBlock extends ModifierBlock {
 	@Override
 	protected Block getDraggingSprite() {
 		if (group != null && group.isModifiedVertically()) {
+			// if we need to turn this modifier into a NumberBlock...
 			return getProxy(true);
 		} else {
 			return this;
 		}
 	}
 	
+	/** 
+	 * Returns a {@link NumberBlock} equivalent of this modifier with
+	 * the appropriate modifiers. Optionally snaps the NumberBlock to this
+	 * blocks size.
+	 */
 	protected NumberBlockProxy getProxy(boolean snapToMySize) {
 		NumberBlockProxy sprite = new NumberBlockProxy(plusValue(), this);
 		if (hasSprite()) {
@@ -67,6 +77,8 @@ public abstract class HorizontalModifierBlock extends ModifierBlock {
 	@Override
 	public void setValue(int value) {
 		if (value < 0) {
+			// instead of having +-3 or --3, we convert to a minus block
+			// or vice versa
 			super.setValue(-value);
 			showInverse();
 			if (group != null) {

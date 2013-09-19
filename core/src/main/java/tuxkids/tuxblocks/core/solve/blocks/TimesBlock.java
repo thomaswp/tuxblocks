@@ -5,6 +5,9 @@ import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
 import tuxkids.tuxblocks.core.solve.blocks.layer.TimesLayer;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
+/**
+ * A {@link ModifierBlock} that represents a multiplication.
+ */
 public class TimesBlock extends VerticalModifierBlock{
 	
 	public TimesBlock(int value) {
@@ -26,6 +29,7 @@ public class TimesBlock extends VerticalModifierBlock{
 	
 	@Override
 	public int color() {
+		// special color for *-1 (which is just a negative sign)
 		if (value == -1) {
 			return COLOR_NEUTRAL;
 		} else {
@@ -35,6 +39,7 @@ public class TimesBlock extends VerticalModifierBlock{
 	
 	@Override
 	public String text() {
+		// show *-1 as a negative sign (-)
 		if (value == -1) {
 			return "-";
 		} else {
@@ -46,6 +51,8 @@ public class TimesBlock extends VerticalModifierBlock{
 	public boolean canSimplify() {
 		if (value == -1) {
 			if (group == null) return false;
+			// we can simplify if there are multiple negatives
+			// (if there was one, the first and last index would be the same)
 			return group.children.lastIndexOf(inverse) != group.children.indexOf(inverse);
 		}
 		return super.canSimplify();
@@ -63,6 +70,7 @@ public class TimesBlock extends VerticalModifierBlock{
 
 	@Override
 	protected ModifierBlock inverseChild() {
+		// a negative's inverse is another negative
 		if (value == -1) return new TimesBlock(this);
 		return new OverBlock(this);
 	}
