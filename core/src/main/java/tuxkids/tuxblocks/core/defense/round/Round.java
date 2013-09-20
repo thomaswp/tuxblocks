@@ -5,15 +5,18 @@ import java.util.List;
 
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.GridObject;
-import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
-import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
+/**
+ * Represents on round in a {@link Level}, consisting of
+ * multiple {@link Wave}s of {@link Walker}.
+ *
+ */
 public abstract class Round {
 	
 	private List<Wave> waves = new ArrayList<Wave>();
+	// times in between waves
 	private List<Integer> waitTimes = new ArrayList<Integer>();
-//	private List<Reward> rewards = new ArrayList<Reward>();
 	private float percFinished;
 	
 	private int timer;
@@ -30,25 +33,34 @@ public abstract class Round {
 		populateRound();
 	}
 	
+	/** Called in the {@link Round#populateRound()} method to add a Wave */
 	protected void addWave(Wave wave, int waitTime) {
 		waves.add(wave);
 		waitTimes.add(waitTime);
 	}
 	
-//	protected void addReward(Reward reward) {
-//		rewards.add(reward);
-//	}
-	
+	/** 
+	 * Called in the {@link Round#populateRound()} method to add a 
+	 * {@link Reward} for completing the Round 
+	 */
 	protected void addRandomReward(float percFinished) {
 		this.percFinished = percFinished;
 	}
 	
+	/**
+	 * Indicates that this Round has been successfully completed
+	 * and the {@link Reward}s should be added to the given GameSate.
+	 */
 	public void winRound(GameState gameState) {
 		for (int i = 0; i < 2; i++) {
 			gameState.addProblemWithReward(percFinished);
 		}
 	}
 	
+	/**
+	 * Updates the Round and returns a Walker if one
+	 * should be spawned.
+	 */
 	public Walker update(int delta) {
 		if (finished()) return null;
 		if (currentWave != null) {
@@ -69,6 +81,9 @@ public abstract class Round {
 		return null;
 	}
 	
+	/**
+	 * Returns true if this round is completed.
+	 */
 	public boolean finished() {
 		return waves.size() == 0 && currentWave == null;
 	}

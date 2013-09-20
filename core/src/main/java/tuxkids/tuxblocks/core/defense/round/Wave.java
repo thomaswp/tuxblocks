@@ -2,6 +2,11 @@ package tuxkids.tuxblocks.core.defense.round;
 
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 
+/**
+ * Component of a {@link Round} which contains a group of a single type of 
+ * {@link Walker}s which spawn one after another without a break. 
+ * A Round might have multiple Waves with a different Walker type. 
+ */
 public class Wave {
 	private Walker walker;
 	private int interval;
@@ -26,7 +31,8 @@ public class Wave {
 		if (timer > interval) {
 			timer -= interval;
 			produced++;
-			return walker.copy();
+			// don't return the original as it will be put on the Grid
+			return walker.copy(); 
 		}
 		return null;
 	}

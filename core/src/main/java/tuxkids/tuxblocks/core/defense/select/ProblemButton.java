@@ -16,6 +16,10 @@ import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter.Config;
 import tuxkids.tuxblocks.core.widget.Button;
 
+/**
+ * A special {@link Button} for displaying {@link Problem}s
+ * on the {@link SelectScreen}.
+ */
 public class ProblemButton extends Button {
 
 	public final static int MARGIN = 10;
@@ -38,18 +42,22 @@ public class ProblemButton extends Button {
 		setTop(top);
 	}
 
+	/** Sets the ProblemButton this button should position itself below */
 	public void setAbove(ProblemButton above) {
 		this.above = above;
 	}
 	
+	/** Sets the ProblemButton this button should position itself above */
 	public void setBelow(ProblemButton below) {
 		this.below = below;
 	}
 	
+	/** Sets the ProblemButton above this one in the chain */
 	public ProblemButton above() {
 		return above;
 	}
 	
+	/** Sets the ProblemButton below this one in the chain */
 	public ProblemButton below() {
 		return below;
 	}
@@ -58,6 +66,7 @@ public class ProblemButton extends Button {
 		return problem;
 	}
 	
+	/** Returns true if this Button has faded out to near 0 alpha */
 	public boolean fadedOut() {
 		return targetAlpha == 0 && layerAddable().alpha() < 0.03f;
 	}
@@ -78,7 +87,7 @@ public class ProblemButton extends Button {
 		float eqTextSize = (minHeight - padding * 2) * 0.25f;
 		
 		TextFormat textFormat = new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, eqTextSize));
-		ExpressionWriter writer = problem.equation().renderer().getExpressionWriter(textFormat);
+		ExpressionWriter writer = problem.equation().renderer().getExpressionWriter(textFormat); // for drawing the equation
 		
 		float eqWidth = writer.width(); 
 		float eqHeight = writer.height();
@@ -95,24 +104,30 @@ public class ProblemButton extends Button {
 		canvas.setStrokeColor(Colors.DARK_GRAY);
 		canvas.setStrokeWidth(strokeWidth);
 
+		// button's bg
 		canvas.fillRoundRect(strokeWidth / 2, strokeWidth / 2, width - strokeWidth, height - strokeWidth, rectRad);
 		canvas.strokeRoundRect(strokeWidth / 2, strokeWidth / 2, width - strokeWidth, height - strokeWidth, rectRad);
 		
-		TowerType reward = problem.reward().tower;
+		// draw the Tower reward
+		TowerType reward = problem.reward().tower();
 		Image rewardImage = reward.instance().createImage(cellSize, towerColor);
 		float rewardImageX = width - padding - (rewardImageSize + rewardImage.width()) / 2;
 		float rewardImageY = padding + (rewardImageSize - rewardImage.height()) / 2;
 		canvas.drawImage(rewardImage, rewardImageX, rewardImageY);
 
+		// draw the count for the reward
 		canvas.setFillColor(Colors.BLACK);
 		TextFormat countFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, rewardImageSize / 5));
-		TextLayout countLayout = graphics().layoutText("x" + problem.reward().count, countFormat);
+		TextLayout countLayout = graphics().layoutText("x" + problem.reward().count(), countFormat);
 		canvas.fillText(countLayout, width - padding - rewardImageSize, padding);
 		
+		// draw the bar between the equation and reward
 		float lineX = width - padding * 2 - rewardImageSize;
 		canvas.drawLine(lineX, 0, lineX, height);
 
+		// draw the equation
+		// TODO: do something with too-large equations to crop/shrink them
 		canvas.setStrokeWidth(1);
 		canvas.setFillColor(Colors.BLACK);
 		canvas.setStrokeColor(Colors.BLACK);

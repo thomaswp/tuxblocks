@@ -2,8 +2,12 @@ package tuxkids.tuxblocks.core.defense.projectile;
 
 import playn.core.Image;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * The {@link BodyProjectile} fired from {@link PeaShooter}s.
+ */
 public class Pea extends BodyProjectile {
 
 	@Override

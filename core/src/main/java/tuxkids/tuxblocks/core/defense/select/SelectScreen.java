@@ -3,7 +3,6 @@ package tuxkids.tuxblocks.core.defense.select;
 import java.util.ArrayList;
 import java.util.List;
 
-import playn.core.Color;
 import playn.core.GroupLayer;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
@@ -23,14 +22,18 @@ import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
+/**
+ * A {@link GameScreen} for displaying {@link Problem}s for the player
+ * to choose to solve.
+ */
 public class SelectScreen extends GameScreen implements ProblemsChangedListener {
 
 	private final static int COLS = 2;
 	
 	private GroupLayer problemLayer;
-	private ProblemButton selectedProblem;
+	private ProblemButton selectedProblem; // button of the Problem currently being solved
 	private List<ProblemButton> problemButtons = new ArrayList<ProblemButton>();
-	private ProblemButton bottomLeft, bottomRight;
+	private ProblemButton bottomLeft, bottomRight; // bottom-most left and right column buttons
 	private SolveScreen solveScreen;
 	
 	@Override
@@ -42,7 +45,7 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		super(screens, gameState);
 		
 		Button button = header.addRightButton(Constant.BUTTON_FORWARD);
-		button.setNoSound();
+		button.setNoSound(); // no sound because going back already makes a sound
 		registerHighlightable(button, Tag.Select_Return);
 		button.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -52,10 +55,6 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 				}
 			}
 		});		
-		
-//		ImageLayer bg = graphics().createImageLayer(CanvasUtils.createRect(width(), height(), Colors.WHITE));
-//		bg.setDepth(-10);
-//		layer.add(bg);
 		
 		problemLayer = graphics().createGroupLayer();
 		problemLayer.setTy(header.height());
@@ -90,6 +89,7 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		Audio.se().play(Constant.SE_BACK);
 	}
 	
+	// position and add a new ProblemButton
 	private void addProblemButton(Problem problem) {
 		int margin = ProblemButton.MARGIN;
 		int width = (int)((width() - margin * (COLS + 1)) / COLS);
@@ -106,10 +106,12 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 			}
 		}
 		
+		// add to the column with fewer buttons
 		int col = leftButtons <= rightButtons ? 0 : 1;
 		ProblemButton above = col == 0 ? bottomLeft : bottomRight;
 		float aboveY = above == null ? 0 : above.bottom();
 		
+		// create and position
 		final ProblemButton pb = new ProblemButton(problem, width, minHeight, state.themeColor());
 		problemLayer.add(pb.layerAddable());
 		pb.setPosition((col + 0.5f) * width() / COLS, aboveY + margin + pb.height() / 2);
@@ -121,27 +123,32 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 					selectedProblem = pb;
 					solveScreen.setEquation(pb.equation());
 					pushScreen(solveScreen, screens.slide().down());
-//					removeProblem(pb, true); // for auto-solving
+//					removeProblem(pb, true); // for auto-solving to test thing
 				}
 			}
 		});
 		pb.fadeIn(1);
 		
+		// doubly-linked list
 		if (above != null) {
 			above.setBelow(pb);
 			pb.setAbove(above);
 		}
+		
+		// if this is the first button in the column, set this as the bottom-most
 		if (col == 0) {
 			bottomLeft = pb;
 		} else {
 			bottomRight = pb;
 		}
 		
+		// for the Tutorial
 		if (problemButtons.size() == 0) {
 			registerHighlightable(pb, Tag.Select_FirstButton);
 		} else if (problemButtons.size() == 1) {
 			registerHighlightable(pb, Tag.Select_SecondButton);
 		}
+		
 		problemButtons.add(pb);
 	}
 	
@@ -151,6 +158,8 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 			selectedProblem = null;
 		}
 		button.destroy();
+		
+		// close up the linked list
 		if (button.above() != null) {
 			button.above().setBelow(button.below());
 		}
@@ -166,6 +175,7 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		super.paint(clock);
 		
 		if (entering()) return;
+		// don't fade in/out buttons while transitioning
 		for (ProblemButton problem : problemButtons) {
 			problem.paint(clock);
 		}
@@ -186,7 +196,9 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 	@Override
 	protected void onChildScreenFinished(BaseScreen screen) {
 		super.onChildScreenFinished(screen);
+		// return from SolveScreen
 		if (screen instanceof SolveScreen) {
+			// update and possibly solve the equation
 			selectedProblem.setEquation(((SolveScreen) screen).equation());
 			if (((SolveScreen) screen).solved()) {
 				selectedProblem.setEnabled(false);
@@ -195,11 +207,13 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		}
 	}
 
+	// Called when the GameState has a problem added
 	@Override
 	public void onProblemAdded(Problem problem) {
 		addProblemButton(problem);
 	}
 
+	// Called when the GameState has a problem removed
 	@Override
 	public void onProblemRemoved(Problem problem) {
 		for (ProblemButton button : problemButtons) {

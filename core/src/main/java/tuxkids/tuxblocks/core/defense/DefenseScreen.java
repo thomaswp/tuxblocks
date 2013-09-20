@@ -147,16 +147,7 @@ public class DefenseScreen extends GameScreen {
 		super.update(delta);
 		grid.update(delta);
 		Level level = grid.level();
-		header.rightButton().layerAddable().setVisible(false);
-		if (level.finished()) {
-//			menuSprite.setText("Level Complete!");
-		} if (level.duringRound()) {
-//			menuSprite.setText("Round " + level.round());
-		} else {
-//			int nextRoundIn = grid.level().timeUntilNextRound() / 1000 + 1;
-//			menuSprite.setText(Formatter.format("Next round in %d...", nextRoundIn));
-			header.rightButton().layerAddable().setVisible(true);
-		}
+		header.rightButton().layerAddable().setVisible(!level.duringRound());
 		header.leftButton().layerAddable().setVisible(
 				!state.level().duringRound() && state.problems().size() > 0);
 		

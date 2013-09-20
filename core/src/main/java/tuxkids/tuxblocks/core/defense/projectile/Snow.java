@@ -5,12 +5,17 @@ import playn.core.Image;
 import playn.core.util.Callback;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.Grid;
+import tuxkids.tuxblocks.core.defense.tower.Freezer;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * The {@link BodyProjectile} fired from {@link Freezer}s.
+ */
 public class Snow extends BodyProjectile {
 
+	// only create the image once
 	private static Image image;
 	
 	@Override

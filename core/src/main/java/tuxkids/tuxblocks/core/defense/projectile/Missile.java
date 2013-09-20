@@ -4,7 +4,11 @@ import playn.core.Image;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.effect.MissileExplosion;
+import tuxkids.tuxblocks.core.defense.tower.BigShooter;
 
+/**
+ * The {@link BodyProjectile} fired from {@link BigShooter}s.
+ */
 public class Missile extends BodyProjectile {
 
 	private int level;

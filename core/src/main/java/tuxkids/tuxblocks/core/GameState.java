@@ -192,9 +192,9 @@ public class GameState implements Persistable {
 
 	/** Adds the given Reward to the player's inventory */
 	public void addReward(Reward reward) {
-		if (reward.tower != null) {
-			towerCounts()[reward.tower.index()] += reward.count;
-			onInventoryChanged(reward.tower.index());
+		if (reward.tower() != null) {
+			towerCounts()[reward.tower().index()] += reward.count();
+			onInventoryChanged(reward.tower().index());
 		}
 	}
 	

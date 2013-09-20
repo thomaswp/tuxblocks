@@ -3,9 +3,16 @@ package tuxkids.tuxblocks.core.defense.round;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
+/**
+ * A reward for finishing a {@link Round} which consists of a
+ * {@link TowerType} and a count.
+ */
 public class Reward implements Persistable {
-	public TowerType tower;
-	public int count;
+	private TowerType tower;
+	private int count;
+	
+	public TowerType tower() { return tower; }
+	public int count() { return count; }
 	
 	public Reward(TowerType tower, int count) {
 		this.tower = tower;

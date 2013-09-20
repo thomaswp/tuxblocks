@@ -5,12 +5,17 @@ import playn.core.Image;
 import playn.core.Path;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Cache;
-import tuxkids.tuxblocks.core.Cache.Key;
+import tuxkids.tuxblocks.core.defense.tower.Zapper;
 
+/**
+ * A {@link ConnectionProjectile} fired from {@link Zapper}s.
+ */
 public class Lightning extends ChainProjectile {
 
+	// only create the image once
 	private static Image image;
+	private int flip = 1;
+	private int flipTimer = 0;
 	
 	public Lightning(int hits, float damageReduceFactor, float rangeReduceFactor) {
 		super(hits, damageReduceFactor, rangeReduceFactor);
@@ -24,6 +29,7 @@ public class Lightning extends ChainProjectile {
 	@Override
 	public Image createImage() {
 		if (image == null) {
+			// create the zig-zag image
 			CanvasImage cImage = graphics().createImage(100, 10);
 			Path path = cImage.canvas().createPath();
 			int n = 5;
@@ -41,16 +47,15 @@ public class Lightning extends ChainProjectile {
 		return image;
 	}
 	
-	int t = 1;
-	int timer = 0;
 	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
-		layer.transform().setScaleY(layer.transform().scaleY() * t);
-		timer += clock.dt();
-		if (timer > 50) {
-			timer -= 50;
-			t *= -1;
+		layer.transform().setScaleY(layer.transform().scaleY() * flip);
+		flipTimer += clock.dt();
+		if (flipTimer > 50) {
+			// flip the lightning every 50ms
+			flipTimer -= 50;
+			flip *= -1;
 		}
 	}
 
