@@ -6,8 +6,12 @@ import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 
+/**
+ * A {@link Projectile} that connects two objects before damaging the target.
+ */
 public abstract class ConnectionProjectile extends Projectile {
 
+	/** Returns the duration that the connection should last before damage is dealt */
 	protected abstract int duration();
 	
 	protected Vector direction = new Vector();
@@ -39,6 +43,7 @@ public abstract class ConnectionProjectile extends Projectile {
 
 	@Override
 	public void paint(Clock clock) {
+		// orient the ImageLayer so it connects sourcePosition() and target.position()
 		layer.setTranslation(sourcePosition().x, sourcePosition().y);
 		direction.set(target.position());
 		direction.subtract(sourcePosition(), direction);

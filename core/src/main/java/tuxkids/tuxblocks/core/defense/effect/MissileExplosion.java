@@ -16,8 +16,12 @@ import tripleplay.util.Colors;
 import tripleplay.util.Interpolator;
 import tripleplay.util.Randoms;
 import tuxkids.tuxblocks.core.defense.Grid;
+import tuxkids.tuxblocks.core.defense.projectile.Missile;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * Explosion that occurs when a {@link Missile} makes contact.
+ */
 public class MissileExplosion {
 	
 	public MissileExplosion(Grid grid, Vector position, int level) {

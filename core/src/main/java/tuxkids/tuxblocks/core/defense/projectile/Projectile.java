@@ -9,12 +9,17 @@ import tuxkids.tuxblocks.core.defense.GridObject;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 
+/**
+ * Abstract class representing the projectiles fired from
+ * {@link Tower}s at {@link Walker}. These are kept track
+ * of by the {@link Grid}.
+ */
 public abstract class Projectile extends GridObject {
 
 	protected ImageLayer layer;
-	protected Walker target;
-	protected float damage;
-	protected Tower source;
+	protected Walker target; // walker to damage
+	protected float damage; // damage to deal
+	protected Tower source; // tower that fired it
 	
 	public abstract Image createImage();
 	
@@ -36,6 +41,7 @@ public abstract class Projectile extends GridObject {
 		this.source = source;
 		this.damage = source.damage();
 		layer = graphics().createImageLayer(createImage());
+		// make sure it's in front of all Walkers
 		layer.setDepth(grid.rows() * grid.cols() * MAX_BASE_DEPTH);
 	}
 	
@@ -58,6 +64,7 @@ public abstract class Projectile extends GridObject {
 		grid.dealDamage(source, target, damage, getHitPosition());
 	}
 	
+	/** Returns the taget position */
 	protected Vector getHitPosition() {
 		return target.position();
 	}

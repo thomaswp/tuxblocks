@@ -6,6 +6,10 @@ import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 
+/**
+ * Abstract class for {@link Projectile} that have a discrete
+ * position and velocity and follow a target. 
+ */
 public abstract class BodyProjectile extends Projectile {
 	
 	protected Vector position;
@@ -30,19 +34,23 @@ public abstract class BodyProjectile extends Projectile {
 	public boolean doUpdate(int delta) {
 		Walker hit = grid.getHitWalker(position);
 		if (hit != null) {
+			// hit!
 			dealDamage();
 			return true;
 		}
 		if (grid.isOutOfBounds(position)) {
+			// give up
 			return true;
 		}
 		if (target.isAlive()) {
+			// chase the target
 			target.position().subtract(position, temp);
 			temp.normalizeLocal();
 			layer.setRotation(temp.angle());
 			velocity.addScaled(temp, acceleration() * delta * 30, velocity);
 			if (velocity.length() > maxSpeed()) velocity.scale(maxSpeed() / velocity.length(), velocity);
 		} else if (velocity.length() == 0) {
+			// if the target it dead and we're not moving, give up
 			return true;
 		}
 		return false;
