@@ -11,8 +11,14 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Cache.Key;
 import tuxkids.tuxblocks.core.defense.projectile.Lightning;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
+import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.utils.HashCode;
 
+/**
+ * The most powerful Tower in the game, it shoots a chaining
+ * {@link Lightning} projectile that deals damage to a string
+ * of {@link Walker}.
+ */
 public class Zapper extends Tower {
 
 	private Vector projectileStart = new Vector();
@@ -40,6 +46,7 @@ public class Zapper extends Tower {
 
 	@Override
 	public int fireRate() {
+		// decreases with level
 		return 1750 - 200 * (upgradeLevel - 1);
 	}
 
@@ -50,6 +57,7 @@ public class Zapper extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
+		// hits, range and damage factors increase with level
 		return new Lightning(3 + upgradeLevel, 
 				0.5f + 0.1f * upgradeLevel, 
 				0.5f + 0.1f * upgradeLevel);
@@ -69,11 +77,6 @@ public class Zapper extends Tower {
 	public int cost() {
 		return 3;
 	}
-
-	@Override
-	public int commonness() {
-		return 1;
-	}
 	
 	@Override
 	public Vector projectileStart() {
@@ -85,6 +88,7 @@ public class Zapper extends Tower {
 	public Image createImage(float cellSize, int color) {
 		Image cached = Cache.getImage(key.set(cellSize, color));
 		
+		// special stacked tower image
 		if (cached == null) {
 			int width = (int)(cellSize * cols()), height = (int)(cellSize * rows() * 1.3f);
 			int padding = (int)(cellSize * 0.1f); 
@@ -115,7 +119,9 @@ public class Zapper extends Tower {
 		return cached;
 	}
 
-	
+	// used to identify the image in the cache
+	// cannot just store it statically, as it is dependent
+	// on Grid size and color
 	private static class ImageKey extends Key {
 
 		private float cellSize;

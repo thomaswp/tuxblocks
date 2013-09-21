@@ -1,6 +1,5 @@
 package tuxkids.tuxblocks.core.defense.tower;
 
-import playn.core.Color;
 import playn.core.Image;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
@@ -10,9 +9,12 @@ import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.projectile.Snow;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.defense.walker.buff.Buff;
-import tuxkids.tuxblocks.core.defense.walker.buff.Frozen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
+/**
+ * A mid-grade utility Tower with low range that slows {@link Walker}s
+ * when it hits them with its {@link Snow} projectile.
+ */
 public class Freezer extends Tower {
 
 	@Override
@@ -64,19 +66,16 @@ public class Freezer extends Tower {
 	public int cost() {
 		return 2;
 	}
-
-	@Override
-	public int commonness() {
-		return 3;
-	}
 	
 	@Override
 	public float splashRadius() {
+		// small splash, increases with level
 		return 0.5f + 0.2f * upgradeLevel;
 	}
 
 	@Override
 	public void addBuffs(Walker walker) {
+		// slow increases with level
 		final float mod = 0.65f - 0.10f * (upgradeLevel - 1);
 		walker.addBuff(new Buff(this) {
 			@Override
@@ -95,6 +94,12 @@ public class Freezer extends Tower {
 	public int upgradeCost() {
 		return 2;
 	}
+	
+	/*
+	 * Because the Freezer fires so quickly, rather than firing the sound effect
+	 * every time it fires, it simply starts it playing and then stops it when
+	 * it stops firing.
+	 */
 	
 	private static int winds;
 	private int windTime;

@@ -3,6 +3,10 @@ package tuxkids.tuxblocks.core.defense.tower;
 import tuxkids.tuxblocks.core.defense.projectile.Missile;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 
+/** 
+ * A 2x2 mid-level Tower which shoots exploding {@link Missile}s
+ * that deal splash damage. 
+ */
 public class BigShooter extends Tower {
 
 	@Override
@@ -27,6 +31,7 @@ public class BigShooter extends Tower {
 
 	@Override
 	public int fireRate() {
+		// decreases with level
 		return 1000 - (upgradeLevel - 1) * 150;
 	}
 
@@ -54,14 +59,10 @@ public class BigShooter extends Tower {
 	public int cost() {
 		return 2;
 	}
-
-	@Override
-	public int commonness() {
-		return 3;
-	}
 	
 	@Override
 	public float splashRadius() {
+		// increases with level
 		return 1.5f + 0.5f * upgradeLevel;
 	}
 

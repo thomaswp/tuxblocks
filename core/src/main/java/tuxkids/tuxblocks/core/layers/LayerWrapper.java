@@ -19,11 +19,18 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 		this.layer = layer;
 	}
 	
+	/**
+	 * Because this is not actually a {@link Layer}, you must pass this
+	 * as the parameter to methods such as {@link GroupLayer#add(Layer)}.
+	 */
 	@Override
 	public Layer layerAddable() {
 		return layer;
 	}
 	
+	/**
+	 * Adds the {@link LayerWrapper#layerAddable()} to the given GroupLayer.
+	 */
 	@Override
 	public void addToLayer(GroupLayer layer) {
 		layer.add(layerAddable());

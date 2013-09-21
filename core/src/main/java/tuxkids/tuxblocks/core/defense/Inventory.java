@@ -6,9 +6,9 @@ import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.TextFormat;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
+import playn.core.TextFormat;
 import playn.core.TextLayout;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
@@ -20,7 +20,6 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
-import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
 public class Inventory extends PlayNObject {
 	

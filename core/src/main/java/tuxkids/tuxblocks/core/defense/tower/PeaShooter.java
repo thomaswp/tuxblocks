@@ -5,6 +5,10 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.defense.projectile.Pea;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 
+/**
+ * Most basic Tower that shoots a quick, low-damage {@link Pea}
+ * projectile.
+ */
 public class PeaShooter extends Tower {
 
 	@Override
@@ -29,6 +33,7 @@ public class PeaShooter extends Tower {
 
 	@Override
 	public int fireRate() {
+		// decreases with level
 		return 500 - (upgradeLevel - 1) * 150;
 	}
 
@@ -58,11 +63,6 @@ public class PeaShooter extends Tower {
 	}
 
 	@Override
-	public int commonness() {
-		return 5;
-	}
-
-	@Override
 	public int upgradeCost() {
 		return 1;
 	}
@@ -72,6 +72,8 @@ public class PeaShooter extends Tower {
 	protected boolean fire() {
 		boolean fire = super.fire();
 		if (fire) {
+			// we have a few separate pop SEs, which we alternate
+			// between so multiple can play at once
 			Audio.se().play(Constant.SEPop(pop++), 0.5f);
 			pop %= 2;
 		}

@@ -2,6 +2,9 @@ package tuxkids.tuxblocks.core.defense.tower;
 
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 
+/**
+ * Non-damaging 3x1 Tower that is used for mazing.
+ */
 public class VerticalWall extends Tower {
 
 	@Override
@@ -52,11 +55,6 @@ public class VerticalWall extends Tower {
 	@Override
 	public int cost() {
 		return 2;
-	}
-
-	@Override
-	public int commonness() {
-		return 1;
 	}
 	
 	@Override
