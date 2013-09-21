@@ -2,6 +2,9 @@ package tuxkids.tuxblocks.core.defense.walker;
 
 import pythagoras.f.FloatMath;
 
+/**
+ * Walker that spins as it moves from cell to cell.
+ */
 public class SpinWalker extends BasicWalker {
 
 	public SpinWalker(int maxHp, int walkCellTime) {

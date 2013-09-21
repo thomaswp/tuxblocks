@@ -3,6 +3,11 @@ package tuxkids.tuxblocks.core.defense.walker;
 import pythagoras.f.FloatMath;
 import pythagoras.i.Point;
 
+/**
+ * Walker that moves from cell to cell by shrinking into
+ * nothingness and the "popping" into existence in the new
+ * cell.
+ */
 public class ShrinkWalker extends BasicWalker {
 
 	public ShrinkWalker(int maxHp, int walkCellTime) {

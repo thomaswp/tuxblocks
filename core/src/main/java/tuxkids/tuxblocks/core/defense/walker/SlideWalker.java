@@ -1,5 +1,9 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
+/**
+ * Most basic Walker animation, simply slides smoothly from
+ * one cell to the next.
+ */
 public class SlideWalker extends BasicWalker {
 
 	public SlideWalker(int maxHp, int walkCellTime) {

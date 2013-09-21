@@ -1,5 +1,10 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
+/**
+ * Walker that moves from cell to cell by stretching into the next
+ * cell and then shrinking its tail back to take up only one cell.
+ * Like an inch worm.
+ */
 public class InchWalker extends BasicWalker {
 
 	public InchWalker(int maxHp, int walkCellTime) {

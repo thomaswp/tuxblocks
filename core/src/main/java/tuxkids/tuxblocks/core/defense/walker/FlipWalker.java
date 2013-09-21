@@ -2,6 +2,9 @@ package tuxkids.tuxblocks.core.defense.walker;
 
 import pythagoras.f.FloatMath;
 
+/**
+ * Walker that moves by flipping over into the next cell.
+ */
 public class FlipWalker extends BasicWalker {
 	
 	public FlipWalker(int maxHp, int walkCellTime) {

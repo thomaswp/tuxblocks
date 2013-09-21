@@ -4,7 +4,13 @@ import pythagoras.f.FloatMath;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.Pathing;
+import tuxkids.tuxblocks.core.defense.tower.Tower;
 
+/**
+ * Special Walker that flies over {@link Tower}s rather than
+ * following the maze. Moves from cell to cell in a lazy floating
+ * circular pattern.
+ */
 public class FlyWalker extends BasicWalker {
 	
 	public FlyWalker(int maxHp, int walkCellTime) {
@@ -20,11 +26,13 @@ public class FlyWalker extends BasicWalker {
 
 	@Override
 	public int exp() {
+		// give some extra exp, cause that's hard to beat
 		return super.exp() * 3 / 2;
 	}
 	
 	@Override
 	public void refreshPath() {
+		// the last argument says ignore obstacless
 		path = Pathing.getPath(grid, coordinates, destination, true);
 		path.remove(0);
 	}

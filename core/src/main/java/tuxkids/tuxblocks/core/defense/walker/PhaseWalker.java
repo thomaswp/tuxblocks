@@ -1,5 +1,9 @@
 package tuxkids.tuxblocks.core.defense.walker;
 
+/**
+ * Walker that moves from cell to cell by fading out
+ * and fading back in at the new cell location.
+ */
 public class PhaseWalker extends BasicWalker {
 
 	public PhaseWalker(int maxHp, int walkCellTime) {
