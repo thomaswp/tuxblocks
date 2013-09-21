@@ -3,15 +3,21 @@ package tuxkids.tuxblocks.core.defense;
 import java.util.HashMap;
 
 import pythagoras.i.Point;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
+/**
+ * Used to persist the {@link Grid} while only saving the relevant information
+ * of {@link Tower} types, positions and levels. Used by {@link GameState}.
+ */
 public class TowerState extends PlayNObject implements Persistable {
 	
 	HashMap<Point, Tower> towerMap = new HashMap<Point, Tower>();
 
+	/** Creates a TowerState based of the given Grid */
 	public TowerState(Grid grid) {
 		if (grid != null) {
 			for (Tower tower : grid.towers) {
@@ -20,6 +26,7 @@ public class TowerState extends PlayNObject implements Persistable {
 		}
 	}
 	
+	/** Sets the given Grid to this Tower state. Assumes an empty Grid. */
 	public void set(Grid grid) {
 		for (Point point : towerMap.keySet()) {
 			grid.placeTower(towerMap.get(point), point);

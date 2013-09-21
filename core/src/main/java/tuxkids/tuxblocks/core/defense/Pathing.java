@@ -8,20 +8,37 @@ import java.util.List;
 
 import pythagoras.f.FloatMath;
 import pythagoras.i.Point;
+import tuxkids.tuxblocks.core.defense.walker.Walker;
 
+/**
+ * Static class for finding paths from one point to another on
+ * the {@link Grid}, avoid impassable areas. Used to find paths
+ * for {@link Walker}s.
+ */
 public class Pathing {
 
+	// represents the 4 directions a Walker can move
 	private final static int[] offRows = new int[] {0, 1, 0, -1};
 	private final static int[] offCols = new int[] {1, 0, -1, 0};
-//	private final static int[] offRows = new int[] {0, 1, 0, -1, 0, 2, 0, -2};
-//	private final static int[] offCols = new int[] {1, 0, -1, 0, 2, 0, -2, 0};
 	
-	
+	/**
+	 * Returns a list of coordinates from the "from" to the "to" points,
+	 * avoiding impassable regions of the grid.
+	 */
 	public static List<Point> getPath(Grid grid, Point from, Point to) {
 		return getPath(grid, from, to, false);
 	}
 	
+	/**
+	 * Returns a list of coordinates from the "from" to the "to" points,
+	 * avoiding impassable regions of the grid. Optionally assumes the
+	 * {@link Walker} in question can fly and go over impassable regions.
+	 */
 	public static List<Point> getPath(Grid grid, Point from, Point to, boolean canFly) {
+		// use a basic A* grid search
+		// This being living proof that a real application actually uses something
+		// from your algorithms class. So there.
+		
 		List<Point> closedSet = new ArrayList<Point>(),
 				openSet = new ArrayList<Point>();
 		HashMap<Point, Point> cameFrom = new HashMap<Point, Point>();
