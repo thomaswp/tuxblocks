@@ -193,8 +193,8 @@ public class GameState implements Persistable {
 	/** Adds the given Reward to the player's inventory */
 	public void addReward(Reward reward) {
 		if (reward.tower() != null) {
-			towerCounts()[reward.tower().index()] += reward.count();
-			onInventoryChanged(reward.tower().index());
+			towerCounts()[reward.tower().ordinal()] += reward.count();
+			onInventoryChanged(reward.tower().ordinal());
 		}
 	}
 	
@@ -281,7 +281,7 @@ public class GameState implements Persistable {
 
 	/** Adds a tower of the given type and count to the player's inventory */
 	public void addItem(TowerType type, int count) {
-		int index = type.index();
+		int index = type.ordinal();
 		towerCounts[index] += count;
 		onInventoryChanged(index);
 	}
