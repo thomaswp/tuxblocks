@@ -18,6 +18,7 @@ import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.defense.round.Round;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
@@ -29,9 +30,21 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
+/**
+ * Special {@link HeaderLayer} displayed during the game. Contains a number
+ * of widgets that can be optionally displayed, depending on the screen. These
+ * include:
+ * <ul>
+ * <li> {@link Bar}s, created with the {@link GameHeaderLayer#createBars()} method
+ * <li> {@link Heart}, created with the {@link GameHeaderLayer#createHeart()} method
+ * <li> {@link Score}, created with the {@link GameHeaderLayer#createScore()} method
+ * <li> {@link Timer}, created with the {@link GameHeaderLayer#createTimer()} method
+ * <li> {@link Upgrade}, created with the {@link GameHeaderLayer#createUpgrades()} method
+ * </ul>
+ */
 public abstract class GameHeaderLayer extends HeaderLayer {
 
-	private final static int BEAT_TIME = 300;
+	private final static int BEAT_TIME = 300; // ms that a pulse lasts when a value changes
 	private final static float ITEM_ALPHA = (1 + Button.DEFAULT_UNPRESSED_ALPHA) / 2;
 	private final static int ITEM_TEXT_COLOR = Colors.BLACK;
 	
@@ -39,7 +52,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 	private final TextFormat scoreTextFormat;
 	private final int itemSize;
 	private final GameState state;
-	private final List<Drawable> drawables = new ArrayList<GameHeaderLayer.Drawable>();
+	private final List<Widget> widgets = new ArrayList<GameHeaderLayer.Widget>();
 	private final float barCenter, itemCenter;
 	private final GameScreen parent;
 
@@ -49,11 +62,12 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 	private Timer timer;
 	private Upgrade upgrade;
 	
-	protected interface Drawable {
+	private interface Widget {
 		void update(int delta);
 		void paint(Clock clock);
 	}
 	
+	/** Use this method to create your desired widgets from the list in {@link GameHeaderLayer}. */
 	protected abstract void createWidgets();
 	
 	public GameHeaderLayer(GameScreen parent, float width) {
@@ -73,6 +87,9 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		createWidgets();
 	}
 
+	/**
+	 * Creates all widgets listed in {@link GameHeaderLayer}.
+	 */
 	protected void createAll() {
 		createBars();
 		createHeart();
@@ -81,40 +98,45 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		createScore();
 	}
 	
+	/** Creates a {@link Score} widget and adds it to this header */
 	protected void createScore() {
 		score = new Score(height);
 		score.setTranslation(width / 2, 0);
 		layer.add(score.layerAddable());
-		drawables.add(score);
+		widgets.add(score);
 	}
 	
+	/** Creates an {@link Upgrade} widget and adds it to this header */
 	protected void createUpgrades() {
 		upgrade = new Upgrade(itemSize, itemSize);
 		upgrade.setTranslation(itemCenter - itemSize * 4 / 3, 
 				height / 2);
 		layer.add(upgrade.layerAddable());
 		parent.registerHighlightable(upgrade, Tag.Menu_Upgrades);
-		drawables.add(upgrade);
+		widgets.add(upgrade);
 	}
 	
+	/** Creates a {@link Timer} widget and adds it to this header */
 	protected void createTimer() {
 		timer = new Timer(itemSize, itemSize);
 		timer.setTranslation(itemCenter + itemSize * 4 / 3, 
 				height / 2);
 		layer.add(timer.layerAddable());
 		parent.registerHighlightable(timer, Tag.Menu_Countdown);
-		drawables.add(timer);
+		widgets.add(timer);
 	}
 	
+	/** Creates a {@link Heart} widget and adds it to this header */
 	protected void createHeart() {
 		heart = new Heart(itemSize, itemSize);
 		heart.setTranslation(itemCenter, 
 				height / 2);
 		layer.add(heart.layerAddable());
 		parent.registerHighlightable(heart, Tag.Menu_Lives);
-		drawables.add(heart);
+		widgets.add(heart);
 	}
 	
+	/** Creates 4 {@link Bar} widgets and adds them to this header */
 	protected void createBars() {
 		bars = new Bar[4];
 		int index = 0;
@@ -126,11 +148,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			int row = index;
 			int col = 0;
 			bar.setTranslation(barIndent + barWidth * col, height / 5 * (row + 0.5f));
-//			int row = index / 2;
-//			int col = index % 2;
-//			bar.setTranslation(barIndent + barWidth * col, height / 5 * (row + 0.5f) * 2);
 			layer.add(bar.layerAddable());
-			drawables.add(bar);
+			widgets.add(bar);
 			
 			bars[index++] = bar;
 		}
@@ -139,20 +158,21 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 	@Override
 	public void update(int delta) {
 		super.update(delta);
-		for (Drawable drawable : drawables) {
-			if (drawable != null) drawable.update(delta);
+		for (Widget widget : widgets) {
+			if (widget != null) widget.update(delta);
 		}
 	}
 	
 	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
-		for (Drawable drawable : drawables) {
-			if (drawable != null) drawable.paint(clock);
+		for (Widget widget : widgets) {
+			if (widget != null) widget.paint(clock);
 		}
 	}
 	
-	private void updateBeat(int ms, Layer layer) {
+	// used to update the size of layers that "beat" when a value changes
+	private void updateBeatSize(int ms, Layer layer) {
 		if (ms > 0) {
 			float perc = (float)ms / BEAT_TIME;
 			float scale = 1 + 0.3f * FloatMath.sin(perc * FloatMath.PI);
@@ -162,7 +182,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private void updateAlpha(int ms, LayerLike layer) {
+	// used to update the alpha of layers that "beat" when a value changes
+	private void updateBeatAlpha(int ms, LayerLike layer) {
 		if (ms > 0) {
 			float perc = (float)ms / BEAT_TIME;
 			layer.setAlpha(lerp(ITEM_ALPHA, 1, perc));
@@ -171,8 +192,9 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private abstract class LayerWrapperHighlightable extends LayerWrapper 
-	implements  Highlightable, Drawable {
+	// allows the Widgets to be Highlightable in the Tutorial
+	private abstract class HighlightableWidget extends LayerWrapper 
+	implements  Highlightable, Widget {
 
 		protected abstract ImageLayerTintable highlightLayer();
 		
@@ -193,7 +215,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			}
 		};
 		
-		public LayerWrapperHighlightable(Layer layer) {
+		public HighlightableWidget(Layer layer) {
 			super(layer);
 		}
 
@@ -203,7 +225,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private class Upgrade extends LayerWrapperHighlightable {
+	/** Widget that displays the number of Upgrades the player has */
+	private class Upgrade extends HighlightableWidget {
 
 		private final GroupLayer layer;
 		private final ImageLayerTintable plusLayer;
@@ -239,17 +262,14 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 				numberLayer.setImage(CanvasUtils.createText(
 						text, barTextFormat, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
-				beatMS = BEAT_TIME;
+				beatMS = BEAT_TIME; // start the "beat"
 			}
 		}
 		
 		public void paint(Clock clock) {
-			updateBeat(beatMS, layer);
-			updateAlpha(beatMS, plusLayer);
+			updateBeatSize(beatMS, layer);
+			updateBeatAlpha(beatMS, plusLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
-//			if (state.upgrades() == 0) {
-//				plusLayer.setAlpha(plusLayer.alpha() * 0.5f);
-//			}
 		}
 
 		@Override
@@ -258,7 +278,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private class Timer extends LayerWrapperHighlightable {
+	/** Widget that shows the amount of time until the next {@link Round} */
+	private class Timer extends HighlightableWidget {
 
 		private final static int DURING_ROUND = Difficulty.ROUND_TIME_INFINITE - 1;
 		
@@ -289,35 +310,39 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 		
 		public void update(int delta) {
-			int l;
-			boolean beat = true;
+			int nextRound; // time until next round (or a special state indicator if negative)
+			boolean beat = true; // do we beat this frame?
 			if (state.level().duringRound()) {
-				l = DURING_ROUND;
+				nextRound = DURING_ROUND; // special value to indicate the middle of a round
 			} else {
-				l = state.level().timeUntilNextRound();
-				if (l > 0) l /= 1000;
-				beat = l <= 5;
+				// could return -1 to indicate infinite time
+				nextRound = state.level().timeUntilNextRound();
+				if (nextRound > 0) nextRound /= 1000; // convert ms -> seconds
+				beat = nextRound <= 5; // beat for the last 5 seconds
 			}
-			if (l != time) {
-				time = l;
+			if (nextRound != time) { // if our state changed
+				time = nextRound;
 				String text;
 				if (time == Difficulty.ROUND_TIME_INFINITE) {
-					text = Constant.INFINITY_SYMBOL;
+					text = Constant.INFINITY_SYMBOL; // infinite time
 				} else if (time == DURING_ROUND) {
-					text = "Round " + state.level().roundNumber();
+					text = "Round " + state.level().roundNumber(); // during round
 				} else {
-					text = "" + time;
+					text = "" + time; // waiting for next round
 				}
+				
 				TextFormat tf = barTextFormat;
 				if (time == Difficulty.ROUND_TIME_INFINITE) {
+					// double the size for the infinity because its such a tiny character
 					Font font = Cache.getFont(tf.font.name(), tf.font.style(), tf.font.size() * 2f);
 					tf = tf.withFont(font);
 				}
-				numberLayer.setImage(CanvasUtils.createText(
-						text, tf, ITEM_TEXT_COLOR));
+				
+				numberLayer.setImage(CanvasUtils.createText(text, tf, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
+				
 				if (beat) {
-					beatMS = BEAT_TIME;
+					beatMS = BEAT_TIME; // start a beat
 					if (time != DURING_ROUND && time != Difficulty.ROUND_TIME_INFINITE) {
 						Audio.se().play(Constant.SE_PITCH);
 					}
@@ -326,11 +351,12 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 		
 		public void paint(Clock clock) {
-			updateBeat(beatMS, layer);
+			updateBeatSize(beatMS, layer);
 			if (beatMS > 0) {
 				beatMS -= clock.dt();
-				updateAlpha(beatMS, hourglassLayer);
+				updateBeatAlpha(beatMS, hourglassLayer);
 			} else {
+				// if during a round, fade in/out the hourglass image
 				if (state.level().duringRound()) {
 					hourglassLayer.setAlpha(lerpTime(hourglassLayer.alpha(), 
 							0, 0.995f, clock.dt(), 0.01f));
@@ -347,7 +373,10 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private class Score extends LayerWrapper implements Drawable {
+	/**
+	 * Widget for displaying the player's score
+	 */
+	private class Score extends LayerWrapper implements Widget {
 
 		private final static int BEAT_TIME = 300;
 		
@@ -377,12 +406,15 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 		
 		public void paint(Clock clock) {
-			updateBeat(beatMS, scoreLayer);
+			updateBeatSize(beatMS, scoreLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
 		}
 	}
 
-	private class Heart extends LayerWrapperHighlightable {
+	/**
+	 * Widget for displaying the player's current lives
+	 */
+	private class Heart extends HighlightableWidget {
 		private final static int BEAT_TIME = 300;
 
 		private final GroupLayer layer;
@@ -422,8 +454,8 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 		
 		public void paint(Clock clock) {
-			updateBeat(beatMS, layer);
-			updateAlpha(beatMS, heartLayer);
+			updateBeatSize(beatMS, layer);
+			updateBeatAlpha(beatMS, heartLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
 		}
 
@@ -433,7 +465,11 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 	}
 	
-	private class Bar extends LayerWrapper implements Drawable {
+	/**
+	 * Widget for displaying the player's experience for any
+	 * of the given {@link Stat} values.
+	 */
+	private class Bar extends LayerWrapper implements Widget {
 
 		private float TEXT_SPACE = barTextFormat.font.size();
 		
@@ -443,7 +479,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		private ImageLayer symbolLayer, levelLayer, barBG, barFill;
 		private int level = -1;
 		private int color;
-		private int strokWidth;
+		private int strokeWidth;
 		private float barPerc;
 		private int beatMS;
 		
@@ -455,6 +491,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			this.stat = stat;
 			this.color = state.themeColor();
 			
+			// the stat's symbol
 			symbolLayer = graphics().createImageLayer(CanvasUtils.createText(
 					stat.symbol(), barTextFormat, Colors.BLACK));
 			symbolLayer.setTranslation((TEXT_SPACE - symbolLayer.width()) / 2, (height - symbolLayer.height()) / 2);
@@ -463,14 +500,16 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			levelLayer = graphics().createImageLayer();
 			layer.add(levelLayer);
 			
-			strokWidth = 3;
+			// the "container" for the experience bar (this is static)
+			strokeWidth = 3;
 			barBG = graphics().createImageLayer(CanvasUtils.createRoundRectCached(width - TEXT_SPACE * 2, 
-					height, height * 0.2f, Color.argb(0, 0, 0, 0), strokWidth, Colors.BLACK));
+					height, height * 0.2f, Color.argb(0, 0, 0, 0), strokeWidth, Colors.BLACK));
 			barBG.setTranslation(TEXT_SPACE, (height - barBG.height()) / 2);
 			layer.add(barBG);
 			
-			barFill = graphics().createImageLayer(CanvasUtils.createRect(5, height - strokWidth * 2, color));
-			barFill.setTranslation(barBG.tx() + strokWidth, barBG.ty() + strokWidth);
+			// the "fill" of the experience bar (this changes sizes to indicate exp)
+			barFill = graphics().createImageLayer(CanvasUtils.createRect(5, height - strokeWidth * 2, color));
+			barFill.setTranslation(barBG.tx() + strokeWidth, barBG.ty() + strokeWidth);
 			barFill.setDepth(-1);
 			barFill.setAlpha(ITEM_ALPHA);
 			layer.add(barFill);
@@ -491,7 +530,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		}
 		
 		public void paint(Clock clock) {
-			updateBeat(beatMS, levelLayer);
+			updateBeatSize(beatMS, levelLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
 
 			float target = state.getStatPerc(stat);
@@ -499,7 +538,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			barPerc = lerpTime(barPerc, target, 0.995f, clock.dt(), 0.01f);
 			if (barPerc >= 1f) barPerc--; //causes wrap around
 
-			barFill.setWidth(barPerc * (barBG.width() - strokWidth * 2));
+			barFill.setWidth(barPerc * (barBG.width() - strokeWidth * 2));
 		}
 		
 	}

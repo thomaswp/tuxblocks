@@ -39,11 +39,23 @@ import tuxkids.tuxblocks.core.utils.MultiList;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
 
+/**
+ * The game grid, upon which the player places {@link Tower}s and which
+ * {@link Walker}s try to cross from one side to the other. This class keeps
+ * track of both of these, along with the {@link UpgradePanel} and the placing
+ * of new {@link Tower}s.
+ * <p/>
+ * A note about <b>Grid coordinates</b>: they are often represented as {@link Point}s, 
+ * and when they are, the x-coordinate of the Point represents the row, and 
+ * y-coordinate the columns. This may be counter-intuitive for some, as the
+ * row corresponds to a y-value in pixels, and vice versa.
+ */
 public class Grid extends PlayNObject implements Highlightable {
 
+	/** Draw actual grid lines on the Grid */
 	private final static boolean SHOW_GRID = false;
-	private final static int DOUBLE_CLICK = 300;
-	private final static int LONG_CLICK = 400;
+	private final static int DOUBLE_CLICK = 300; // max ms between a double-click
+	private final static int LONG_CLICK = 400; // how long (in ms) a click has to be to be "long"
 
 	private final int cellSize;
 	private final int rows, cols;
@@ -56,46 +68,46 @@ public class Grid extends PlayNObject implements Highlightable {
 	private final List<Projectile> projectiles = new ArrayList<Projectile>();
 	protected final List<Tower> towers = new ArrayList<Tower>();
 	private final List<Effect> effects = new ArrayList<Effect>();
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") // cumulative list of all the GridObjects 
 	private final MultiList<GridObject> gridObjects = new MultiList<GridObject>(walkers, projectiles, towers, effects);
-	private final Point walkerStart, walkerDestination;
-	private final Particles particles;
+	private final Point walkerStart, walkerDestination; // the Walkers try to go from the former to the latter
+	private final Particles particles; // for managing Missile explosions
 	private final GameState state;
 	private final ImageLayer rangeIndicatorLayer;
 	
-	private Tower toPlace;
+	private Tower toPlace; // tower currently being placed
 	private List<Point> currentPath;
-	private float targetAlpha = 1;
-	private int towerColor;
-	private DoubleClickListener doubleClickListener;
-	private boolean holdingClick;
-	private int startLongClick;
-	private Point selectedPoint = new Point();
+	
+	private DoubleClickListener doubleClickListener; // for when the Grid is double-clicked
+	private boolean holdingClick; // is the player holding down a click
+	private int startLongClick; // when did the player start holding a long click
+	private Point selectedPoint = new Point(); // location when holding down a click to select a Tower
 	
 	public UpgradePanel upgradePanel() {
 		return upgradePanel;
 	}
 	
+	/** Sets a listener for when the Grid is double-clicked */
 	public void setDoubleClickListener(DoubleClickListener doubleClickListener) {
 		this.doubleClickListener = doubleClickListener;
 	}
 
-	public Particles particles() {
-		return particles;
-	}
-	
-	public Level level() {
+	// the current level
+	private Level level() {
 		return state.level();
 	}
 
+	/** The primary {@link Tower} color on this Grid */
 	public int towerColor() {
-		return towerColor;
+		return state.themeColor();
 	}
 
+	/** The Grid's width in pixels */
 	public int width() {
 		return cols * cellSize;
 	}
 
+	/** The Grid's height in pixels */
 	public int height() {
 		return rows * cellSize;
 	}
@@ -108,6 +120,7 @@ public class Grid extends PlayNObject implements Highlightable {
 		return cols;
 	}
 
+	/** The current shortest path from the grid's start to end location */
 	public List<Point> currentPath() {
 		return currentPath;
 	}
@@ -116,35 +129,30 @@ public class Grid extends PlayNObject implements Highlightable {
 		return layer;
 	}
 
+	/** Gets the Grid's passability matrix */
 	public boolean[][] getPassability() {
 		return passability;
 	}
 
+	/** Gets the size (in pixels) of one cell of the Grid */
 	public float cellSize() {
 		return cellSize;
 	}
 
+	/** Gets the GameState associated with this Grid */
 	public GameState gameState() {
 		return state;
-	}
-
-	public void setTowerColor(int themeColor) {
-		this.towerColor = themeColor;
 	}
 
 	public Grid(GameState gameState, int rows, int cols, int maxWidth, int maxHeight) {
 		this.state = gameState;
 		this.rows = rows; this.cols = cols;
 		
-		passability = new boolean[rows][cols];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				passability[i][j] = true;
-			}
-		}
+		// determine cellSize
 		int maxRowSize = maxHeight / rows, maxColSize = maxWidth / cols;
 		cellSize = Math.min(maxRowSize, maxColSize);
 		
+		// create group layers
 		layer = graphics().createGroupLayer();
 		gridLayer = graphics().createGroupLayer();
 		layer.add(gridLayer);
@@ -152,10 +160,19 @@ public class Grid extends PlayNObject implements Highlightable {
 		overlayLayer.setDepth(1);
 		layer.add(overlayLayer);
 
+		// init UpgradePanel
 		upgradePanel = new UpgradePanel(this, cellSize, state.themeColor());
 		upgradePanel.setDepth(10);
 		layer.add(upgradePanel.layerAddable());
 		
+		// init passability matrix
+		passability = new boolean[rows][cols];
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				passability[i][j] = true;
+			}
+		}
+		// make the borders of the Grid impassable
 		walkerStart = new Point(rows / 2, 0);
 		walkerDestination = new Point(rows / 2, cols - 1);
 		for (int i = 0; i < rows; i++) {
@@ -168,9 +185,11 @@ public class Grid extends PlayNObject implements Highlightable {
 			passability[0][i] = false;
 			passability[rows - 1][i] = false;
 		}
-		refreshPath();
+		refreshPath(); // create the first path
+		
 		gridSprite = createGridSprite();
 
+		// create the selectorLayer for when the player drags a click to select a Tower
 		selectorLayer = graphics().createImageLayer();
 		selectorLayer.setImage(CanvasUtils.createCircle(cellSize, Color.argb(0, 0, 0, 0), cellSize / 3, Colors.GRAY));
 		selectorLayer.setAlpha(0.75f);
@@ -181,51 +200,49 @@ public class Grid extends PlayNObject implements Highlightable {
 		
 		particles = new TuxParticles();
 		
+		// indicates a Tower's range when its clicked on
 		rangeIndicatorLayer = graphics().createImageLayer();
 		rangeIndicatorLayer.setDepth(0);
 		gridLayer.add(rangeIndicatorLayer);
 	}
 
+	/** Creates an {@link Emitter} for this Grid's {@link Particles} */
 	public Emitter createEmitter(int maxParticles, Image image) {
 		Emitter e = particles.createEmitter(maxParticles, image, overlayLayer);
 		return e;
 	}
 
-	public void fadeIn(float targetAlpha) {
-		this.targetAlpha = targetAlpha;
-		layer.setAlpha(0);
-	}
-
 	public void update(int delta) {
 		if (MainMenuLayer.showing()) return;
-		
-		if (layer.alpha() < targetAlpha * 0.99f) {
-			layer.setAlpha(lerpTime(layer.alpha(), targetAlpha, 0.99f, delta));
-		} else {
-			layer.setAlpha(targetAlpha);
-		}
 
 		if (level().waitingForFinish() && walkers.size() == 0) {
+			// if we're waiting for the player to kill all the Walkers
+			// and they have, tell the Level that
 			onRoundCompleted(level().currentRound());
 			level().finishRound();
 			state.finishRound();
 			Audio.se().play(Constant.SE_SUCCESS_SPECIAL);
 		}
+		
+		// spawn a new Walker if we need to
 		Walker walker = level().popWalker();
 		if (walker != null) {
 			addWalker(walker.place(this, walkerStart, walkerDestination, 0));
 		}
 
-		int nObjects = gridObjects.size();
+		// update the GridObjects and remove those that are destroyed
+		int nObjects = gridObjects.size(); // size is a non-trivial calculation, so cache it
 		for (int i = 0; i < nObjects; i++) {
 			GridObject gridObject = gridObjects.get(i);
 			if (gridObject.update(delta)) {
+				// returning true indicates that an Object is destroyed
 				gridObjects.remove(gridObject);
 				i--; nObjects--;
 				continue;
 			}
 		}
 
+		// update the player's placement of a new Tower
 		updateToPlace();
 		
 		upgradePanel.update(delta);
@@ -234,6 +251,7 @@ public class Grid extends PlayNObject implements Highlightable {
 	public void paint(Clock clock) {
 		if (MainMenuLayer.showing()) return;
 		
+		// paint All the Things
 		int nObjects = gridObjects.size();
 		for (int i = 0; i < nObjects; i++) {
 			GridObject gridObject = gridObjects.get(i);
@@ -244,8 +262,10 @@ public class Grid extends PlayNObject implements Highlightable {
 		updateSelecting();
 	}
 	
+	// update the player's selection of a Tower by clicking and dragging
 	private void updateSelecting() {
 		if (holdingClick && PlayN.tick() - startLongClick > LONG_CLICK) {
+			// if they're holding down a click, update it
 			selectorLayer.setVisible(true);
 			selectorLayer.setTranslation((selectedPoint.y + 0.5f) * cellSize, 
 					(selectedPoint.x + 0.5f) * cellSize);
@@ -254,32 +274,32 @@ public class Grid extends PlayNObject implements Highlightable {
 		}
 	}
 
+	// recalculates the path from start to destination
 	private void refreshPath() {
 		currentPath = Pathing.getPath(this, walkerStart, walkerDestination);
 	}
 
+	/** Adds the given walker to this Grid */
 	public void addWalker(Walker walker) {
 		walkers.add(walker);
 		gridLayer.add(walker.layerAddable());
 	}
 
+	// creates the background sprite for the Grid
 	private ImageLayerTintable createGridSprite() {
-
-		//List<Point> path = Pathing.getPath(this, new Point(0, 0), new Point(rows - 1, cols - 1));
 
 		CanvasImage image = graphics().createImage(width(), height());
 		Canvas canvas = image.canvas();
 		canvas.setFillColor(Colors.WHITE);
 		canvas.fillRect(0, 0, width(), height());
 		canvas.setStrokeColor(Colors.BLACK);
+		
+		// indicate walls that are impassable
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				int x = j * cellSize;
 				int y = i * cellSize;
 				canvas.setFillColor(Colors.WHITE);
-				//				if (path != null && path.contains(new Point(i,j))) {
-				//					canvas.setFillColor(Colors.BLUE);
-				//				} else 
 				if (!passability[i][j]) {
 					canvas.setFillColor(Colors.GRAY);
 				}
@@ -287,17 +307,20 @@ public class Grid extends PlayNObject implements Highlightable {
 				if (SHOW_GRID) canvas.strokeRect(x, y, cellSize, cellSize);
 			}
 		}
+		
+		// create the Layer
 		ImageLayerTintable gridSprite = new ImageLayerTintable(image);
-		//gridSprite.setAlpha(0.2f);
 		gridLayer.add(gridSprite.layerAddable());
 		gridSprite.setDepth(-1);
 		
+		// add a double-click/long-click listener
 		gridSprite.addListener(new Listener() {
 			private int lastClick;
 			
 			@Override
 			public void onPointerStart(Event event) { 
 				hideUpgradePanel();
+				// start a potential click
 				startLongClick = PlayN.tick();
 				holdingClick = true;
 				updateDragPos(event);
@@ -307,6 +330,7 @@ public class Grid extends PlayNObject implements Highlightable {
 			public void onPointerEnd(Event event) {
 				int time = PlayN.tick();
 				if (time - lastClick < DOUBLE_CLICK) {
+					// we have ourselves a double-click
 					lastClick = 0;
 					if (doubleClickListener != null) {
 						doubleClickListener.wasDoubleClicked();
@@ -314,10 +338,12 @@ public class Grid extends PlayNObject implements Highlightable {
 				} else {
 					lastClick = time;
 				}
+				
 				hideUpgradePanel();
 				holdingClick = false;
 				
 				if (time - startLongClick > LONG_CLICK) {
+					// select a tower if we finished a long-click
 					for (Tower tower : towers) {
 						int rMin = tower.coordinates().x;
 						int rMax = rMin + tower.rows() - 1;
@@ -350,11 +376,13 @@ public class Grid extends PlayNObject implements Highlightable {
 		return gridSprite;
 	}
 	
+	/** Hides the {@link UpgradePanel} and deselects its {@link Tower} */
 	public void hideUpgradePanel() {
 		upgradePanel.setTower(null);
 		rangeIndicatorLayer.setImage(null);
 	}
 	
+	/** Shows the {@link UpgradePanel} with the given Tower selected */
 	public void showUpgradePanel(Tower tower) {
 		upgradePanel.setTower(tower);
 
@@ -365,6 +393,7 @@ public class Grid extends PlayNObject implements Highlightable {
 		centerImageLayer(rangeIndicatorLayer);
 	}
 
+	/** Sets the given Point to the row and column of this (x,y) position */
 	public Point getCell(float x, float y, Point point) {
 		int r = Math.min(Math.max((int)y / cellSize, 0), rows - 1);
 		int c = Math.min(Math.max((int)x / cellSize, 0), cols - 1);
@@ -372,14 +401,22 @@ public class Grid extends PlayNObject implements Highlightable {
 		return point;
 	}
 	
+	/** Returns a new Point, the row and column of which are set to the give (x,y) position */
 	public Point getCell(float x, float y) {
 		return getCell(x, y, new Point());
 	}
 
+	/**
+	 * Calls {@link Grid#getCell(float, float)}, but adjusts the given x and y with the
+	 * given width and height such that the Point returned will be the center of the rect
+	 * made up of x, y, width and height.
+	 */
 	public Point getCell(float x, float y, float width, float height) {
 		return getCell(x - width / 2 + cellSize() / 2, y - height / 2 + cellSize() / 2);
 	}
 
+	// converts "global" touch x and y coordinates to Grid coordinates
+	
 	private float getPlaceX(float globalX) {
 		float placeX = (globalX - getGlobalTx(gridLayer)) / getGlobalScaleX(gridLayer);
 		if (PlayN.platform().touch().hasTouch()) placeX -= cellSize() * 1.5;
@@ -392,15 +429,17 @@ public class Grid extends PlayNObject implements Highlightable {
 		return  placeY;
 	}
 
+	/** Starts the placement of the given Tower on the Grid */
 	public void startPlacement(Tower toPlace) {
 		this.toPlace = toPlace;
-		toPlace.preview(this);
-		toPlace.layer().setVisible(false);
+		toPlace.preview(this); // let the Tower know it's tied to this Grid
+		toPlace.layer().setVisible(false); // don't show it until its over the Grid
 		overlayLayer.add(toPlace.layerAddable());
-		validPlacementMap.clear();
+		validPlacementMap.clear(); // reset our map of valid position to place a Tower
 
 		hideUpgradePanel();
 		
+		// show the range indicator
 		rangeIndicatorLayer.setImage(toPlace.createRadiusImage());
 		rangeIndicatorLayer.setAlpha(1);
 		centerImageLayer(rangeIndicatorLayer);
@@ -408,16 +447,19 @@ public class Grid extends PlayNObject implements Highlightable {
 		
 	}
 
+	/** Updates the current {@link Tower}'s placement to the given position */
 	public void updatePlacement(float globalX, float globalY) {
 		float placeX = getPlaceX(globalX), placeY = getPlaceY(globalY);
 		if (toPlace != null) {
 			Point cell = getCell(placeX, placeY, toPlace.baseWidth(), toPlace.baseHeight());
 			toPlace.setCoordinates(cell);
+			// make the Tower invisible if it's out of bounds
 			toPlace.layer().setVisible(!isOutOfBounds(placeX, placeY));
 			updateToPlace();
 		}
 	}
 
+	/** Finishes the placement of the current {@link Tower} */
 	public boolean endPlacement(float globalX, float globalY) {
 		boolean canPlace = canPlace();
 		if (canPlace) {
@@ -432,6 +474,7 @@ public class Grid extends PlayNObject implements Highlightable {
 	}
 	
 
+	/** Adds the given Tower to this Grid at the given coordinates */
 	public void placeTower(Tower tower, Point point) {
 		tower.place(this, point);
 		gridLayer.add(tower.layerAddable());
@@ -439,12 +482,14 @@ public class Grid extends PlayNObject implements Highlightable {
 		refreshPath();
 	}
 
+	/** Cancels the placement of the current {@link Tower} */
 	public void cancelPlacement() {
 		toPlace.layer().destroy();
 		toPlace = null;
 		rangeIndicatorLayer.setImage(null);
 	}
 
+	// updates placement positions and alpha
 	private void updateToPlace() {
 		if (toPlace == null) return;
 		toPlace.layer().setAlpha(canPlace() ? 1 : 0.5f);
@@ -452,16 +497,19 @@ public class Grid extends PlayNObject implements Highlightable {
 		rangeIndicatorLayer.setVisible(toPlace.layer().visible() && toPlace.layer().alpha() == 1);
 	}
 
+	// returns true if the Tower currently being placed can be placed at its current location
 	private boolean canPlace() {
 		if (toPlace == null) return false;
 
 		Point p = toPlace.coordinates();
 		int rows = toPlace.rows(), cols = toPlace.cols();
 
+		// if it's out of the grid, return false
 		if (p.x < 0 || p.x + rows > this.rows || p.y < 0 || p.y + cols > this.cols){
 			return false;
 		}
 
+		// can't place on top of a Walker on the Grid
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				for (Walker walker : walkers) {
@@ -473,6 +521,10 @@ public class Grid extends PlayNObject implements Highlightable {
 			}
 		}
 
+		// check if this position would cut off all valid paths to the goal
+		// and return false if so
+		
+		// cache results in the validPlacementMap
 		if (validPlacementMap.containsKey(p)) return validPlacementMap.get(p);
 		boolean canPlace = canPlaceStatic(p);
 		validPlacementMap.put(p.clone(), canPlace);
@@ -481,37 +533,52 @@ public class Grid extends PlayNObject implements Highlightable {
 	}
 
 	private HashMap<Point, Boolean> validPlacementMap = new HashMap<Point, Boolean>();
+	
+	// returns true if the given point is valid for the placement of the current Tower
+	// these values are "static" in the sense that they do no change until another 
+	// Tower is placed
 	private boolean canPlaceStatic(Point p) {
 
 		int rows = toPlace.rows(), cols = toPlace.cols();
 
 		if (p.equals(walkerStart)) return false;
 
+		// return false if any of the tower's would be cells are already occupied
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				if (!passability[p.x+i][p.y+j]) return false;
 			}
 		}
 
+		// temporarily set the tower's cells to impassable
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				passability[p.x+i][p.y+j] = false;
 			}
 		}
+		// try to find a valid path
 		List<Point> path = Pathing.getPath(this, walkerStart, walkerDestination);
+		// and set them back
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				passability[p.x+i][p.y+j] = true;
 			}
 		}
+		
+		// return true if we found a valid path
 		return path != null;
-		//		return true;
 	}
 
+	/** 
+	 * Fires a {@link Projectile} from the given {@link Tower} if there
+	 * is a valid {@link Walker} in range to fire at 
+	 */
 	public boolean fireProjectile(Tower tower) {
 		if (walkers.size() == 0) return false;
 		Walker target = null;
 		float targetDis = Float.MAX_VALUE;
+		
+		// find the closest Walker
 		for (Walker walker : walkers) {
 			if (!walker.isAlive()) continue;
 			float dis = walker.position().distance(tower.position());
@@ -526,8 +593,11 @@ public class Grid extends PlayNObject implements Highlightable {
 				}
 			}
 		}
+		
+		// FIRE!
 		tower.setLastTarget(target);
-		if (target == null) return false;
+		if (target == null) return false; // or not...
+		
 		Projectile p = tower.createProjectile();
 		p.place(this, target, tower);
 		if (!p.layer().destroyed()) {
@@ -537,9 +607,12 @@ public class Grid extends PlayNObject implements Highlightable {
 		return true;
 	}
 
+	/** Chains the given link ChainProjectile and fires a new sub-projectile */
 	public boolean fireProjectile(ChainProjectile from) {
 		if (walkers.size() == 0) return false;
 		Walker target = null;
+		
+		// find the closest Walker that's not already been hit
 		float targetDis = Float.MAX_VALUE;
 		for (Walker walker : walkers) {
 			if (!walker.isAlive()) continue;
@@ -551,6 +624,8 @@ public class Grid extends PlayNObject implements Highlightable {
 			}
 		}
 		if (target == null) return false;
+		
+		// FIRE!
 		ChainProjectile p = from.createProjectile();
 		p.place(this, target, from);
 		gridLayer.add(p.layer());
@@ -558,11 +633,16 @@ public class Grid extends PlayNObject implements Highlightable {
 		return true;
 	}
 
+	/** 
+	 * Deals damage from the given Tower's {@link Projectile} to the given Walker and calculates
+	 * the appropriate splash damage 
+	 */
 	public void dealDamage(Tower source, Walker target, float damage, Vector hit) {
 		if (source.splashRadius() == 0) {
 			target.damage(damage);
 			source.addBuffs(target);
 		} else {
+			// deal splash damage according to distance from the hit
 			float actualRadius = source.splashRadius() * cellSize;
 			for (Walker walker : walkers) {
 				float distance = walker.position().distance(hit);
@@ -576,6 +656,7 @@ public class Grid extends PlayNObject implements Highlightable {
 		}
 	}
 
+	/** Returns the Walker (if any) that would be hit by a {@link Projectile} at this position */
 	public Walker getHitWalker(Vector position) {
 		for (Walker walker : walkers) {
 			if (!walker.isAlive()) continue;
@@ -588,33 +669,40 @@ public class Grid extends PlayNObject implements Highlightable {
 		return null;
 	}
 
+	/** Returns true if the given position is off the Grid */
 	public boolean isOutOfBounds(Vector position) {
 		return isOutOfBounds(position.x, position.y);
 	}
 
+	/** Returns true if the given position is off the Grid */
 	public boolean isOutOfBounds(float x, float y) {
 		return x < 0 || y < 0 || x >= width() || y >= height();
 	}
 
+	/** Adds the given Effect to the Grid, which will manage it */
 	public void addEffect(Effect effect) {
 		effects.add(effect);
 		effect.layer().setDepth(5);
 		gridLayer.add(effect.layer());
 	}
 
-	public void onRoundCompleted(Round round) {
+	// called when the Round is over
+	private void onRoundCompleted(Round round) {
 		round.winRound(state);
 		Tutorial.trigger(Trigger.Defense_RoundOver);
 	}
 
+	/** Causes the player to lose a life */
 	public void loseLife() {
 		state.loseLife();
 	}
 
+	/** Adds the given number of points to the player's score */
 	public void addPoints(int points) {
 		state.addPoints(points);
 	}
 	
+	/** Listener for when the Grid is double-clicked */
 	public interface DoubleClickListener {
 		void wasDoubleClicked();
 	}
