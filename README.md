@@ -130,3 +130,8 @@ You may want to make use of these classes as you contribute to TuxBlocks. See th
 **ImageLayerTintable**: This class emulates the behavior of PlayN's ImageLayer interface but allows for tinting that works even on HTML5 Canvas backends. It works by overlaying a tinted version of the image on top of the original, and changing opacity to create variants in tint.
 
 **BaseScreen**: An extension of [TriplePlay](http://github.com/threerings/tripleplay)'s Screen class. This is the base of every screen you see in the game, which transition on- and off-screen by sliding into position.
+
+Future Work
+-----------
+
+A list of intended improvements and bug fixes can be found in the [TODO](TODO.md) file.
