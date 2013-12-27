@@ -1,0 +1,20 @@
+{
+
+"title" : {
+	"a-tux4kids-game" : "a Tux4Kids game",
+	"by" : "by",
+	"mentored-by" : "mentored by",
+	"play" : "Play",
+	"build" : "Build"
+},
+
+"difficulty" : {
+	"math-difficulty" : "Math difficulty:",
+	"sample-problem" : "Sample problem:",
+	"game-difficulty" : "Game difficulty:",
+	"game-difficulty-desc" : "How difficult Blocks are to destroy",
+	"solve-time" : "Solve time:",
+	"solve-time-desc" : "How long you have to solve problems between rounds"	
+}
+
+}

@@ -8,6 +8,7 @@ import playn.core.util.Callback;
 import playn.core.util.Clock;
 import tripleplay.game.Screen;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
@@ -148,7 +149,7 @@ public abstract class Tutorial extends PlayNObject {
 	
 	private static void start(final Tutorial tutorial, final String path) {
 		instance = tutorial;
-		assets().getText(path, new Callback<String>() {
+		Lang.getText(path, new Callback<String>() {
 			@Override
 			public void onSuccess(String result) {
 				tutorial.setText(result);

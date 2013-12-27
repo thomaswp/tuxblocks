@@ -6,15 +6,15 @@ import java.util.List;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.PlayN;
-import playn.core.TextFormat;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
+import playn.core.TextFormat;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
@@ -73,7 +73,7 @@ public class AboutScreen extends BaseScreen {
 			public void onPointerCancel(Event event) { }
 		});
 		
-		PlayN.assets().getText(Constant.TEXT_ABOUT, new Callback<String>() {
+		Lang.getText(Constant.TEXT_ABOUT, new Callback<String>() {
 
 			@Override
 			public void onSuccess(String result) {
