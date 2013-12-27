@@ -46,6 +46,11 @@ public class DifficultyScreen extends BaseScreen {
 	protected final float spacing;
 	protected final HeaderLayer header;
 	
+	@Override
+	protected String getScreenName() {
+		return "difficulty";
+	}
+	
 	public DifficultyScreen(ScreenStack screens, final GameBackgroundSprite background) {
 		super(screens, background);
 		
@@ -74,10 +79,10 @@ public class DifficultyScreen extends BaseScreen {
 		// math difficulty slider
 		String[] mathDifficulties = new String[Difficulty.MAX_MATH_DIFFICULTY + 1];
 		for (int i = 0; i < mathDifficulties.length; i++) mathDifficulties[i] = "" + (i+1);
-		mathSlider = createSlideLyer("Math difficulty:", null, 0.5f * spacing + offY, mathDifficulties);
+		mathSlider = createSlideLyer(getString("math-difficulty"), null, 0.5f * spacing + offY, mathDifficulties);
 
 		final ImageLayer descriptionLayer = graphics().createImageLayer();
-		descriptionLayer.setImage(CanvasUtils.createTextCached("Sample problem:", descriptionFormat, Colors.WHITE));
+		descriptionLayer.setImage(CanvasUtils.createTextCached(getString("sample-problem"), descriptionFormat, Colors.WHITE));
 		layer.add(descriptionLayer);
 		
 		// create the preview equation layer
@@ -109,15 +114,14 @@ public class DifficultyScreen extends BaseScreen {
 		// game difficulty slider
 		String[] gameDifficulties = new String[Difficulty.MAX_GAME_DIFFICULTY + 1];
 		for (int i = 0; i < gameDifficulties.length; i++) gameDifficulties[i] = "" + (i+1);
-		gameSlider = createSlideLyer("Game difficulty:", "How difficult Blocks are to destroy",
+		gameSlider = createSlideLyer(getString("game-difficulty"), getString("game-difficulty-desc"),
 				2f * spacing + offY, gameDifficulties);
 		
 		// time difficulty slider
 		String[] timeStops = new String[Difficulty.TIMES.length];
 		timeStops[0] = Constant.INFINITY_SYMBOL;
 		for (int i = 1; i < timeStops.length; i++) timeStops[i] = Difficulty.TIMES[i] + "s";
-		timeSlider = createSlideLyer("Solve time:", 
-				"How long you have to solve problems between rounds",
+		timeSlider = createSlideLyer(getString("solve-time"), getString("solve-time-desc"),
 				3f * spacing + offY, timeStops);
 		
 		// start sliders in the middle

@@ -19,6 +19,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
@@ -42,7 +43,7 @@ import tuxkids.tuxblocks.core.widget.menu.ContinueMenuLayer.ResponseListener;
  * Screen shown when the game first starts. Gives options to
  * enter Play or Build modes.
  */
-public class TitleScreen extends BaseScreen{
+public class TitleScreen extends BaseScreen {
 
 	// Time after the title is first show to snap the
 	// TitleLayer into place
@@ -57,6 +58,8 @@ public class TitleScreen extends BaseScreen{
 	
 	private Button tutorialButton;
 	private ImageLayerTintable startHere;
+	
+	private boolean loaded = false;
 	
 	public TitleScreen(ScreenStack screens, GameBackgroundSprite background) {
 		super(screens, background);
@@ -86,8 +89,6 @@ public class TitleScreen extends BaseScreen{
 		titleLayer.image.addCallback(new Callback<Image>() {
 			@Override
 			public void onSuccess(Image result) {
-				// don't setup the title screen until we have
-				// the TitleLayer ready to load
 				setup();
 			}
 
@@ -96,13 +97,37 @@ public class TitleScreen extends BaseScreen{
 				cause.printStackTrace();
 			}
 		});
+		
+		Lang.setLanguage(Lang.FR, new Callback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				setup();
+			}
+			
+			@Override
+			public void onFailure(Throwable cause) {
+				cause.printStackTrace();
+			}
+		});
+	}
+	
+	@Override
+	protected String getScreenName() {
+		return "title";
 	}
 	
 	private void setup() {
-		ImageLayer tuxLayer = createTextLayer("a Tux4Kids game", width() / 5);
-		createSuperTextLayer("by", width() / 2);
+		if (!loaded) {
+			// this is called after images and language are loaded, so the first
+			// time we set a flag, return and wait for the other asset to load
+			loaded = true;
+			return;
+		}
+		
+		ImageLayer tuxLayer = createTextLayer(getString("a-tux4kids-game"), width() / 5);
+		createSuperTextLayer(getString("by"), width() / 2);
 		createTextLayer("Thomas Price", width() / 2);
-		createSuperTextLayer("mentored by", 4 * width() / 5);
+		createSuperTextLayer(getString("mentored-by"), 4 * width() / 5);
 		createTextLayer("Aaditya Maheshwari", 4 * width() / 5);
 		
 		float midY = (height() + titleLayer.height()) / 2 + authorFormat.font.size();
@@ -143,7 +168,7 @@ public class TitleScreen extends BaseScreen{
 		fadeInLayer.add(playButton.layerAddable());
 		
 		ImageLayer playText = graphics().createImageLayer();
-		playText.setImage(CanvasUtils.createText("Play", optionFormat, Colors.WHITE));
+		playText.setImage(CanvasUtils.createText(getString("play"), optionFormat, Colors.WHITE));
 		playText.setTranslation(playButton.x(), playButton.y());
 		PlayNObject.centerImageLayer(playText);
 		fadeInLayer.add(playText);
@@ -155,7 +180,7 @@ public class TitleScreen extends BaseScreen{
 		fadeInLayer.add(buildButton.layerAddable());
 		
 		ImageLayer buildText = graphics().createImageLayer();
-		buildText.setImage(CanvasUtils.createText("Build", optionFormat, Colors.WHITE));
+		buildText.setImage(CanvasUtils.createText(getString("build"), optionFormat, Colors.WHITE));
 		buildText.setTranslation(buildButton.x(), buildButton.y());
 		PlayNObject.centerImageLayer(buildText);
 		fadeInLayer.add(buildText);

@@ -14,6 +14,7 @@ import pythagoras.f.Vector;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.ScreenStack.Transition;
+import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.tutorial.Highlightable;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
@@ -27,7 +28,7 @@ import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
  * Extension of the {@link Screen} class that contains Tux-specific
  * methods for handling menus and the {@link GameBackgroundSprite}.
  */
-public class BaseScreen extends Screen implements Listener {
+public abstract class BaseScreen extends Screen implements Listener {
 
 	protected ScreenStack screens;
 	protected final GameBackgroundSprite background;
@@ -121,6 +122,14 @@ public class BaseScreen extends Screen implements Listener {
 	
 	protected static Graphics graphics() {
 		return PlayN.graphics();
+	}
+	
+	protected String getScreenName() {
+		return null;
+	}
+	
+	protected String getString(String key) {
+		return Lang.getString(getScreenName(), key);
 	}
 	
 	// emulate some of PlayNObject's methods

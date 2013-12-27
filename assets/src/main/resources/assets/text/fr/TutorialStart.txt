@@ -1,0 +1,5 @@
+Bienvenu à TuxBlocks – the game with all the right angles! My name is Tux, and I'll be teaching you how to play. You can <click> anywhere on the screen to continue. 
+
+If you you ever need me to repeat something, just <click> the Repeat button at the bottom of the screen. If you want to quit the tutorial, <click> the Cancel button next to it, and <click> again to confirm.
+
+This is the main menu, where you can choose Play mode or Build mode. Choose one and the tutorial will start. I'd recommend starting with Play.
