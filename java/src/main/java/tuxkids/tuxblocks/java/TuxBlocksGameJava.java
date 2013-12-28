@@ -59,6 +59,9 @@ public class TuxBlocksGameJava {
 			e.printStackTrace();
 		}
 		platform.setTitle("TuxBlocks");
+		
+		platform.graphics().registerFont("Raavi", "fonts/RAAVI.ttf");
+		
 		PlayN.run(new TuxBlocksGame());
 	}
 
