@@ -42,8 +42,8 @@ public class GameEndMenuLayer extends MenuLayer {
 		super(gWidth() * 0.5f, gHeight() * 0.5f);
 		
 		TextFormat format = createFormat(height * 0.2f);
-		gameOverImage = CanvasUtils.createText("Game Over", format, Colors.BLACK);
-		victoryImage = CanvasUtils.createText("Victory!", format, Colors.BLACK);
+		gameOverImage = CanvasUtils.createText(getString("game-over"), format, Colors.BLACK);
+		victoryImage = CanvasUtils.createText(getString("victory"), format, Colors.BLACK);
 		
 		textImageLayer = graphics().createImageLayer();
 		textImageLayer.setTranslation(0, -0.2f * height);
@@ -52,7 +52,7 @@ public class GameEndMenuLayer extends MenuLayer {
 		continueButton = new Button(null, false);
 		continueButton.setPosition(0, height * 0.2f);
 		layer.add(continueButton.layerAddable());
-		setButton(continueButton, width * 0.6f, "Continue", height * 0.15f, new OnReleasedListener() {
+		setButton(continueButton, width * 0.6f, getString("continue"), height * 0.15f, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {

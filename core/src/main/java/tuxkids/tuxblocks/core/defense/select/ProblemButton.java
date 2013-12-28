@@ -86,7 +86,7 @@ public class ProblemButton extends Button {
 		float rectRad = strokeWidth * 1.5f;
 		float eqTextSize = (minHeight - padding * 2) * 0.25f;
 		
-		TextFormat textFormat = new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, eqTextSize));
+		TextFormat textFormat = new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, eqTextSize));
 		ExpressionWriter writer = problem.equation().renderer().getExpressionWriter(textFormat); // for drawing the equation
 		
 		float eqWidth = writer.width(); 
@@ -118,7 +118,7 @@ public class ProblemButton extends Button {
 		// draw the count for the reward
 		canvas.setFillColor(Colors.BLACK);
 		TextFormat countFormat = new TextFormat().withFont(
-				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, rewardImageSize / 5));
+				graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, rewardImageSize / 5));
 		TextLayout countLayout = graphics().layoutText("x" + problem.reward().count(), countFormat);
 		canvas.fillText(countLayout, width - padding - rewardImageSize, padding);
 		

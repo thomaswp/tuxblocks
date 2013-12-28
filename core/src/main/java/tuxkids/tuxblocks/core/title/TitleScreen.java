@@ -53,13 +53,12 @@ public class TitleScreen extends BaseScreen {
 
 	private final TitleLayer titleLayer;
 	private final GroupLayer fadeInLayer;
-	private final TextFormat authorFormat, superFormat, optionFormat;
 	private final GameBackgroundSprite background;
-	
+
+	private TextFormat authorFormat, superFormat, optionFormat;
 	private Button tutorialButton;
 	private ImageLayerTintable startHere;
-	
-	private boolean loaded = false;
+	private LanguageLayer languageLayer;
 	
 	public TitleScreen(ScreenStack screens, GameBackgroundSprite background) {
 		super(screens, background);
@@ -69,17 +68,8 @@ public class TitleScreen extends BaseScreen {
 		titleLayer.setDepth(-1);
 		layer.add(titleLayer.layerAddable());
 		
-		// format for authors text
-		authorFormat = new TextFormat().withFont(graphics().createFont(
-				Constant.FONT_NAME, Style.PLAIN, (int)(height() / 25)))
-				.withAlignment(Alignment.CENTER);
-		// format for text about author text (like "by" and "menotred by")
-		superFormat = new TextFormat().withFont(graphics().createFont(
-				Constant.FONT_NAME, Style.PLAIN, (int)(height() / 35)))
-				.withAlignment(Alignment.CENTER);
-		// format for Play and Build buttons
-		optionFormat = new TextFormat().withFont(graphics().createFont(
-				Constant.FONT_NAME, Style.PLAIN, (int)(height() / 10)));
+
+		languageLayer = new LanguageLayer(background().ternaryColor(), screens);
 		
 		// most elements fade in after the snap
 		fadeInLayer = graphics().createGroupLayer();
@@ -98,17 +88,6 @@ public class TitleScreen extends BaseScreen {
 			}
 		});
 		
-		Lang.setLanguage(Lang.FR, new Callback<Void>() {
-			@Override
-			public void onSuccess(Void result) {
-				setup();
-			}
-			
-			@Override
-			public void onFailure(Throwable cause) {
-				cause.printStackTrace();
-			}
-		});
 	}
 	
 	@Override
@@ -116,13 +95,28 @@ public class TitleScreen extends BaseScreen {
 		return "title";
 	}
 	
+	public void reload() {
+		fadeInLayer.clear();
+		fadeInLayer.setAlpha(0);
+		setup();
+	}
+	
 	private void setup() {
-		if (!loaded) {
-			// this is called after images and language are loaded, so the first
-			// time we set a flag, return and wait for the other asset to load
-			loaded = true;
-			return;
-		}
+
+		// format for authors text
+		authorFormat = new TextFormat().withFont(graphics().createFont(
+				Lang.font(), Style.PLAIN, (int)(height() / 25)))
+				.withAlignment(Alignment.CENTER);
+		// format for text about author text (like "by" and "menotred by")
+		superFormat = new TextFormat().withFont(graphics().createFont(
+				Lang.font(), Style.PLAIN, (int)(height() / 35)))
+				.withAlignment(Alignment.CENTER);
+		// format for Play and Build buttons
+		optionFormat = new TextFormat().withFont(graphics().createFont(
+				Lang.font(), Style.PLAIN, (int)(height() / 10)));
+		
+		languageLayer.setTranslation(width() / 2, height() * 0.97f);
+		fadeInLayer.add(languageLayer.layerAddable());
 		
 		ImageLayer tuxLayer = createTextLayer(getString("a-tux4kids-game"), width() / 5);
 		createSuperTextLayer(getString("by"), width() / 2);
@@ -140,11 +134,11 @@ public class TitleScreen extends BaseScreen {
 		fadeInLayer.add(tutorialButton.layerAddable());
 		
 		startHere = new ImageLayerTintable();
-		startHere.setImage(PlayN.assets().getImage(Constant.IMAGE_START));
-		startHere.image().addCallback(new Callback<Image>() {
+		Lang.getImage(Constant.IMAGE_START_LOCAL, new Callback<Image>() {
 			@Override
 			public void onSuccess(Image result) {
-				startHere.setScale(1f * buttonSize / startHere.width());
+				startHere.setImage(result);
+				startHere.setScale(0.8f * buttonSize / startHere.height());
 				startHere.setOrigin(result.width() * 0.8f, result.height());
 				startHere.setTranslation(tutorialButton.x() + tutorialButton.width() * 0.5f, 
 						tutorialButton.y() - tutorialButton.height() * 0.5f);
@@ -161,6 +155,8 @@ public class TitleScreen extends BaseScreen {
 		float size = (height() - titleLayer.height()) / 1.8f;
 		CanvasImage modeImage = CanvasUtils.createRoundRect(size, size, size / 10, Color.argb(0, 255, 255, 255), size / 10, Colors.WHITE);
 		
+		float buttonTextMaxWidth = size * 0.7f;
+		
 		Button playButton = new Button(modeImage, false);
 		playButton.setPosition(width() / 5, midY);
 		playButton.setTint(tintPressed, tintUnpressed);
@@ -170,6 +166,7 @@ public class TitleScreen extends BaseScreen {
 		ImageLayer playText = graphics().createImageLayer();
 		playText.setImage(CanvasUtils.createText(getString("play"), optionFormat, Colors.WHITE));
 		playText.setTranslation(playButton.x(), playButton.y());
+		if (playText.width() > buttonTextMaxWidth) playText.setScale(buttonTextMaxWidth / playText.width());
 		PlayNObject.centerImageLayer(playText);
 		fadeInLayer.add(playText);
 		
@@ -182,6 +179,7 @@ public class TitleScreen extends BaseScreen {
 		ImageLayer buildText = graphics().createImageLayer();
 		buildText.setImage(CanvasUtils.createText(getString("build"), optionFormat, Colors.WHITE));
 		buildText.setTranslation(buildButton.x(), buildButton.y());
+		if (buildText.width() > buttonTextMaxWidth) buildText.setScale(buttonTextMaxWidth / buildText.width());
 		PlayNObject.centerImageLayer(buildText);
 		fadeInLayer.add(buildText);
 
@@ -249,6 +247,8 @@ public class TitleScreen extends BaseScreen {
 			@Override
 			public void onPointerCancel(Event event) { }
 		});
+		
+		
 	}
 	
 	private void toDifficultyScreen() {
@@ -342,6 +342,7 @@ public class TitleScreen extends BaseScreen {
 			// if we've snapped the TitleLayer, fade in the fadeInLayer
 			lerpAlpha(fadeInLayer, 1, 0.998f, clock.dt());
 		}
+		languageLayer.paint(clock);
 	}
 	
 	@Override

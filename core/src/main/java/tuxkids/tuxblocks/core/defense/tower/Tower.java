@@ -11,6 +11,7 @@ import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
@@ -51,19 +52,23 @@ public abstract class Tower extends DiscreteGridObject {
 	public abstract Projectile createProjectile();
 	/** Creates a basic copy of this Tower, without copying fields */
 	public abstract Tower copy();
-	/** The human-readble name for this Tower */
-	public abstract String name();
 	/** Essentially a quantifier of the goodness of this tower, used in game calculations */
 	public abstract int cost();
 	/** The cost in upgrade points to upgrade this Tower */
 	public abstract int upgradeCost();
 	/** The {@link TowerType} label for this Tower */
 	public abstract TowerType type();
-
 	/** Base damage for this Tower before factoring its level */
 	protected abstract float baseDamage();
 	/** Damage increase per level for this Tower */
 	protected abstract float damagePerLevel();
+	/** Key for the localized name of this tower */
+	protected abstract String nameKey();
+
+	/** The human-readable name for this Tower */
+	public final String name() {
+		return Lang.getString("tower", nameKey());
+	}
 	
 	/** The level to which this tower has been upgraded */
 	public int upgradeLevel() {

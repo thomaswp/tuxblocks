@@ -14,6 +14,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.GameState.InventoryChangedListener;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
@@ -38,7 +39,7 @@ public class Inventory extends PlayNObject {
 	private int width, height;
 	private ImageLayer countSprites[];
 	private Button itemButtons[];
-	private TextFormat textFormat;
+	private final TextFormat textFormat, numberFormat;
 	private DefenseScreen screen;
 	
 	public GroupLayer layer() {
@@ -90,7 +91,9 @@ public class Inventory extends PlayNObject {
 		this.height = height;
 		
 		textFormat = new TextFormat().withFont(
-				graphics().createFont(Constant.FONT_NAME, Style.BOLD, getItemSpriteSize() / 7));
+				graphics().createFont(Lang.font(), Style.BOLD, getItemSpriteSize() / 7));
+		numberFormat = new TextFormat().withFont(
+				graphics().createFont(Constant.NUMBER_FONT, Style.BOLD, getItemSpriteSize() / 7));
 		createSelectionSprites();
 		createCountSprites();
 		
@@ -128,7 +131,7 @@ public class Inventory extends PlayNObject {
 	private void refreshCountSprite(int index) {
 		// draw the text in the form xn, where n is the number; eg x3
 		String text = "x" + towerCounts()[index];
-		CanvasImage image = CanvasUtils.createText(text, textFormat, Colors.BLACK);
+		CanvasImage image = CanvasUtils.createText(text, numberFormat, Colors.BLACK);
 		countSprites[index].setImage(image);
 		itemButtons[index].setEnabled(towerCounts()[index] > 0);
 	}

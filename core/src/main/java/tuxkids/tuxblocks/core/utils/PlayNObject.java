@@ -99,6 +99,10 @@ public abstract class PlayNObject {
 		return Cache.createFormat(size);
 	}
 	
+	public static TextFormat createNumberFormat(float size) {
+		return Cache.createNumberFormat(size);
+	}
+	
 	public static TextFormat createFormat(String name, Style style, float size) {
 		return Cache.createFormat(name, style, size);
 	}

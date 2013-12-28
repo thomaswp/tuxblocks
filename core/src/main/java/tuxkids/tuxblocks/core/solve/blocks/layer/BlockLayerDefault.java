@@ -87,7 +87,7 @@ public class BlockLayerDefault extends LayerWrapper implements BlockLayer {
 	
 	private void createLayers() {
 		if (textFormat == null) {
-			Font font = graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, Sprite.textSize());
+			Font font = graphics().createFont(Constant.NUMBER_FONT, Font.Style.PLAIN, Sprite.textSize());
 			textFormat = new TextFormat().withFont(font);
 		}
 		

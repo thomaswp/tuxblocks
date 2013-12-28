@@ -48,8 +48,8 @@ public class HorizontalWall extends Tower {
 	}
 
 	@Override
-	public String name() {
-		return "Horizontal Wall";
+	public String nameKey() {
+		return "horizontal-wall";
 	}
 
 	@Override

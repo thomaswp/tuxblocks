@@ -58,8 +58,8 @@ public class Freezer extends Tower {
 	}
 
 	@Override
-	public String name() {
-		return "Freezer";
+	public String nameKey() {
+		return "freezer";
 	}
 
 	@Override

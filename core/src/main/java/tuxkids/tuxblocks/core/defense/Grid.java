@@ -41,7 +41,7 @@ import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
 
 /**
  * The game grid, upon which the player places {@link Tower}s and which
- * {@link Walker}s try to cross from one side to the other. This class keeps
+ * {@link Walker}s try to cross from one side to the other. This class keep 
  * track of both of these, along with the {@link UpgradePanel} and the placing
  * of new {@link Tower}s.
  * <p/>

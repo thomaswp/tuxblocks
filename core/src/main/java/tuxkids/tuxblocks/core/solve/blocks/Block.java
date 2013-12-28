@@ -61,7 +61,7 @@ public abstract class Block extends Sprite implements Hashable {
 	
 	public Block() {
 		if (textFormat == null) {
-			Font font = PlayN.graphics().createFont(Constant.FONT_NAME, Font.Style.PLAIN, textSize());
+			Font font = PlayN.graphics().createFont(Constant.NUMBER_FONT, Font.Style.PLAIN, textSize());
 			textFormat = new TextFormat().withFont(font);
 		}
 	}

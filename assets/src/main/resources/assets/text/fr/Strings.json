@@ -2,19 +2,20 @@
 
 "title" : {
 	"a-tux4kids-game" : "Un Jeu de Tux4Kids",
-	"by" : "de",
+	"by" : "créé par",
 	"mentored-by" : "avec conseils de",
 	"play" : "Jouer",
 	"build" : "Créer"
 },
 
 "difficulty" : {
+	"choose-difficulty" : "Choisissez la Difficulté",
 	"math-difficulty" : "Difficulté des maths:",
 	"sample-problem" : "Échantillon:",
 	"game-difficulty" : "Difficulté de jeu:",
 	"game-difficulty-desc" : "La difficulté de detruir des Blocks",
 	"solve-time" : "Temps pour résoudre:",
-	"solve-time-desc" : "Combien de temps on a pour résoudre les problèmes entre les tours"	
+	"solve-time-desc" : "Combien de temps on a pour résoudre des problèmes entre les tours"	
 }
 
 }

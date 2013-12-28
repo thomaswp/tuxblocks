@@ -51,8 +51,8 @@ public class BigShooter extends Tower {
 	}
 
 	@Override
-	public String name() {
-		return "B.I.G. Shooter";
+	public String nameKey() {
+		return "big-shooter";
 	}
 
 	@Override

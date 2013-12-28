@@ -45,11 +45,15 @@ public class Cache {
 	}
 	
 	public static TextFormat createFormat(float size) {
-		return createFormat(Constant.FONT_NAME, Style.PLAIN, size);
+		return createFormat(Lang.font(), Style.PLAIN, size);
+	}
+	
+	public static TextFormat createNumberFormat(float size) {
+		return createFormat(Constant.NUMBER_FONT, Style.PLAIN, size);
 	}
 	
 	public static TextFormat createFormat(String name, Style style, float size) {
-		return new TextFormat().withFont(getFont(Constant.FONT_NAME, style, size));
+		return new TextFormat().withFont(getFont(name, style, size));
 	}
 	
 	/**

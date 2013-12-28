@@ -145,13 +145,13 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		position.set(recenterPoint.x * SPACING, recenterPoint.y * SPACING);
 		lastPosition.set(position);
 		numberFormat = new TextFormat().withFont(
-				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3));
+				graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, SPACING / 3));
 		bitmapFont = new NumberBitmapFont(numberFormat, Colors.WHITE);
 		bitmapFontColored = new NumberBitmapFont(numberFormat, themeColor);
 		
 		// adjust problem text size to be smaller if it has more lines
 		problemFormat = new TextFormat().withFont(
-				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, SPACING / 3 * 0.8f / problem.lines()));
+				graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, SPACING / 3 * 0.8f / problem.lines()));
 		indicatorLayer = graphics().createGroupLayer();
 		
 		foregroundLayer = graphics().createGroupLayer();

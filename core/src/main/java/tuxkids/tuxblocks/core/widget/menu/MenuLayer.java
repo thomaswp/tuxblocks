@@ -15,6 +15,7 @@ import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
@@ -169,4 +170,7 @@ public abstract class MenuLayer extends LayerWrapper {
 		}
 	}
 	
+	protected String getString(String key) {
+		return Lang.getString("menu", key);
+	}
 }

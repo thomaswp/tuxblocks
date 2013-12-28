@@ -285,7 +285,7 @@ public class CanvasUtils extends PlayNObject {
 		if (image != null) return image;
 		return Cache.putImage(textKey, createText(text, format, color));
 	}
-
+	
 	/** 
 	 * Returns a version of the given image, tinted with the given color.
 	 * This tinting mimics the effect of tinting an {@link ImageLayer}.

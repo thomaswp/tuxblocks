@@ -76,9 +76,9 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		this.parent = parent;
 		
 		barTextFormat = new TextFormat().withFont(
-				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, height * 0.18f));
+				graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, height * 0.18f));
 		scoreTextFormat = new TextFormat().withFont(
-				graphics().createFont(Constant.FONT_NAME, Style.PLAIN, height * 0.4f));
+				graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, height * 0.4f));
 		itemSize = (int) (2 * height / 3);
 		
 		barCenter = width * 0.26f;

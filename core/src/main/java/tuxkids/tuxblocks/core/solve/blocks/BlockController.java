@@ -153,7 +153,7 @@ public class BlockController extends PlayNObject {
 		this.height = height;
 		layer = graphics().createGroupLayer();
 		equals = graphics().createImageLayer(CanvasUtils.createTextCached("=", 
-				new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, 20)), Colors.WHITE));
+				new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, 20)), Colors.WHITE));
 		centerImageLayer(equals);
 		layer.add(equals);
 	}
@@ -243,7 +243,7 @@ public class BlockController extends PlayNObject {
 		
 		// adjust the text size for the number of lines 
 		float textSize = equationImageHeight * 0.6f / Math.max(3, equation.lines());
-		TextFormat format = new TextFormat().withFont(graphics().createFont(Constant.FONT_NAME, Style.PLAIN, textSize));
+		TextFormat format = new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, textSize));
 		ExpressionWriter writer = equation.getExpressionWriter(format);
 		
 		CanvasImage image = graphics().createImage(writer.width(), writer.height());

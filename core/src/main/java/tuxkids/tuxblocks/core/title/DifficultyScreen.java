@@ -58,9 +58,10 @@ public class DifficultyScreen extends BaseScreen {
 		header = new HeaderLayer(width(), background.primaryColor());
 		layer.add(header.layerAddable());
 		
+		
 		// text prompt 
 		ImageLayer titleLayer = graphics().createImageLayer();
-		titleLayer.setImage(CanvasUtils.createTextCached("Choose Difficulty", 
+		titleLayer.setImage(CanvasUtils.createTextCached(getString("choose-difficulty"), 
 				Cache.createFormat(header.height() * 0.5f), Colors.BLACK));
 		titleLayer.setDepth(1);
 		titleLayer.setTranslation(width() / 2, header.height() / 2);
@@ -98,7 +99,7 @@ public class DifficultyScreen extends BaseScreen {
 				Equation eq = EquationGenerator.generateSample(stop);
 				// make the equation text 
 				int size = Math.round(Math.min(height() / 16 / eq.renderer().lines(), height() / 18));
-				ExpressionWriter writer = eq.renderer().getExpressionWriter(Cache.createFormat(size));
+				ExpressionWriter writer = eq.renderer().getExpressionWriter(Cache.createNumberFormat(size));
 				float pad = height() / 40, rad = pad / 2;
 				CanvasImage image = CanvasUtils.createRoundRect(writer.width() + pad * 2, writer.height() + pad * 2, rad, 
 						Color.withAlpha(Colors.WHITE, 200), pad / 2, Colors.GRAY);
@@ -186,8 +187,13 @@ public class DifficultyScreen extends BaseScreen {
 	private DiscreteSlideLayer createSlideLyer(String prompt, String description, float height, String... stops) {
 		ImageLayer promptLayer = graphics().createImageLayer();
 		promptLayer.setImage(CanvasUtils.createTextCached(prompt, promptFormat, Colors.WHITE));
-		promptLayer.setTranslation(width() * 0.025f + promptLayer.width() / 2, height);
-		PlayNObject.centerImageLayer(promptLayer);
+		promptLayer.setTranslation(width() * 0.025f, height - promptLayer.height() / 2);
+		
+		float maxPromptWidth = width() * 0.2f;
+		if (promptLayer.width() > maxPromptWidth) {
+			promptLayer.setScale(maxPromptWidth / promptLayer.width());
+		}
+		
 		layer.add(promptLayer);
 		
 		if (description != null) {
@@ -202,6 +208,7 @@ public class DifficultyScreen extends BaseScreen {
 				height() / 6, background.primaryColor(), stops);
 		slider.centerLayer();
 		slider.setTranslation(width() * 0.6f, height);
+		
 		layer.add(slider.layerAddable());
 		slideLayers.add(slider);
 		return slider;

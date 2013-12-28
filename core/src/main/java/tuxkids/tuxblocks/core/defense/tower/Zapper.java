@@ -69,8 +69,8 @@ public class Zapper extends Tower {
 	}
 
 	@Override
-	public String name() {
-		return "Zapper";
+	public String nameKey() {
+		return "zapper";
 	}
 
 	@Override

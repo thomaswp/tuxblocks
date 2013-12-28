@@ -164,7 +164,7 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 		layer.add(buttonMore.layerAddable());
 		
 		textFormat = new TextFormat().withFont(graphics().createFont(
-				Constant.FONT_NAME, Style.PLAIN, buttonNumber.height() / 3));
+				Constant.NUMBER_FONT, Style.PLAIN, buttonNumber.height() / 3));
 		numberLayer = graphics().createImageLayer();
 		numberLayer.setTranslation(buttonNumber.x(), buttonNumber.y());
 		layer.add(numberLayer);

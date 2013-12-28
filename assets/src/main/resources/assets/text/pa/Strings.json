@@ -1,8 +1,8 @@
 {
 
 "menu" : {
-	"about-tuxblocks" : "About TuxBlocks",
-	"music-volume" : "Music Volume",
+	"about-tuxblocks" : "TuxBlocks ਬਾਰੇ",
+	"music-volume" : "ਸੰਗੀਤ ਵਾਲੀਅਮ",
 	"effects-volume" : "Effects Volume",
 	"save-and-quit" : "Save and Quit",
 	"game-over" : "Game Over",
@@ -13,7 +13,7 @@
 },
 
 "tower" : {
-	"pea-shooter" : "Pea Shooter",
+	"pea-shooter" : "ਮਟਰ ਨਿਸ਼ਾਨੇਬਾਜ਼",
 	"big-shooter" : "B.I.G. Shooter",
 	"freezer" : "Freezer",
 	"zapper" : "Zapper",
@@ -22,11 +22,11 @@
 },
 
 "title" : {
-	"a-tux4kids-game" : "a Tux4Kids game",
+	"a-tux4kids-game" : "ਇੱਕ Tux4Kids ਖੇਡ ਹੈ",
 	"by" : "by",
 	"mentored-by" : "mentored by",
-	"play" : "Play",
-	"build" : "Build"
+	"play" : "ਖੇਡਣ",
+	"build" : "ਬਣਾਉਣ"
 },
 
 "difficulty" : {

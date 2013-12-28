@@ -1,33 +1,69 @@
 package tuxkids.tuxblocks.core;
 
+import playn.core.Image;
 import playn.core.PlayN;
 import playn.core.Json.Object;
 import playn.core.json.JsonParserException;
 import playn.core.util.Callback;
+import tuxkids.tuxblocks.core.utils.Formatter;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public class Lang extends PlayNObject {
 	
-	public final static String EN = "en";
-	public final static String FR = "fr";
+	public enum Langauge {
+		EN("English", "en"), 
+		FR("Français", "fr"), 
+		PA("ਪੰਜਾਬੀ", "pa", "Raavi");
+
+		private String name, code, font;
+		
+		private Langauge(String name, String code) {
+			this(name, code, "Arial");
+		}
+		
+		private Langauge(String name, String code, String font) {
+			this.name = name;
+			this.code = code;
+			this.font = font;
+		}
+		
+		public String fullName() { return name; }		
+		public String code() { return code; }
+		public String font() { return font; }
+
+		@Override
+		public String toString() {
+			return code;
+		}
+	}
 	
 	private final static String TEXT_PATH = "text/";
 	private final static String STRINGS_PATH = "Strings.json";
-	private final static String DEFAULT_LANGUAGE = EN;
+	private final static Langauge DEFAULT_LANGUAGE = Langauge.EN;
 	
-	private static String language = DEFAULT_LANGUAGE;
+	private static Langauge language = DEFAULT_LANGUAGE;
 	private static Object dictionary;
 	private static Object defaultDictionary;
 	
-	public static String language() {
+	public static Langauge language() {
 		return language;
+	}
+
+	public static String font() {
+		return language.font;
 	}
 	
 	public static boolean loaded() {
 		return dictionary != null;
 	}
 	
-	public static void setLanguage(final String language, final Callback<Void> callback) {
+	public static void clear() {
+		language = DEFAULT_LANGUAGE;
+		dictionary = null;
+		defaultDictionary = null;
+	}
+	
+	public static void setLanguage(final Langauge language, final Callback<Void> callback) {
 		dictionary = null;
 		if (defaultDictionary == null) {
 			loadLangauge(DEFAULT_LANGUAGE, new Callback<Object>() {
@@ -66,7 +102,7 @@ public class Lang extends PlayNObject {
 		}
 	}
 	
-	private static void loadLangauge(final String language, final Callback<Object> callback) {
+	private static void loadLangauge(final Langauge language, final Callback<Object> callback) {
 		assets().getText(TEXT_PATH + language + "/" + STRINGS_PATH, new Callback<String>() {
 			@Override
 			public void onSuccess(String result) {
@@ -106,7 +142,13 @@ public class Lang extends PlayNObject {
 	public static String getString(String domain, String key) {
 		String result = getString(dictionary, domain, key);
 		if (result != null) return result;
-		return getString(defaultDictionary, domain, key);
+		result = getString(defaultDictionary, domain, key);
+		if (result == null) {
+			PlayN.log().warn(Formatter.format(
+					"No value found for key '%s%s' in '%s%s/Strings.json' or the default '%s%s/Strings.json'.", 
+					domain == null ? "" : domain + ":", key, TEXT_PATH, language, TEXT_PATH, DEFAULT_LANGUAGE));
+		}
+		return result;
 	}
 	
 	private static String getString(Object dictionary, String domain, String key) {
@@ -118,5 +160,20 @@ public class Lang extends PlayNObject {
 			if (dic == null) return null;
 			return dic.getString(key);
 		}
+	}
+	
+	public static void getImage(final String path, final Callback<Image> callback) {
+		Image image = assets().getImage(Constant.IMAGE_PATH + language + "/" + path);
+		image.addCallback(new Callback<Image>() {
+			@Override
+			public void onSuccess(Image result) {
+				callback.onSuccess(result);
+			}
+
+			@Override
+			public void onFailure(Throwable cause) {
+				assets().getImage(Constant.IMAGE_PATH + DEFAULT_LANGUAGE + "/" + path).addCallback(callback);
+			}
+		});
 	}
 }

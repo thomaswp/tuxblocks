@@ -54,7 +54,7 @@ public class DiscreteSlideLayer extends SlideLayer {
 		this.stops = stops;
 		
 		float h = height / 3;
-		TextFormat format = createFormat(h * 0.7f);
+		TextFormat format = createNumberFormat(h * 0.7f);
 		stopLayers = new ImageLayer[stops.length];
 		for (int i = 0; i < stops.length; i++) {
 			ImageLayer stopLayer = graphics().createImageLayer();

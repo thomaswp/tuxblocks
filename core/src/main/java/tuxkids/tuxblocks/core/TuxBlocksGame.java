@@ -7,7 +7,10 @@ import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Game;
 import playn.core.ImageLayer;
+import playn.core.PlayN;
+import playn.core.util.Callback;
 import tripleplay.game.ScreenStack;
+import tuxkids.tuxblocks.core.Lang.Langauge;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.utils.SolidClock;
@@ -46,13 +49,18 @@ public class TuxBlocksGame extends Game.Default {
 		instance = this;
 	}
 
-	@Override
-	public void init() {		
+	private static void reset() {
 		//Clear static classes for Android because the JVM is maintained
 		Cache.clear();
 		Audio.clear();
 		MenuLayer.clear();
 		Tutorial.clear();
+		Lang.clear();
+	}
+	
+	@Override
+	public void init() {	
+		reset();
 		
 		Constant.preloadImages();
 		Constant.preloadAudio();
@@ -62,8 +70,29 @@ public class TuxBlocksGame extends Game.Default {
 		background = new GameBackgroundSprite();
 		background.layer().setDepth(-10);
 		graphics().rootLayer().add(background.layer());
+
+		Langauge langauge = Langauge.EN;
+		String lang = PlayN.storage().getItem(Constant.KEY_LANG);
+		if (lang != null) {
+			try {
+				langauge = Langauge.valueOf(lang);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
-		screens.push(new TitleScreen(screens, background));
+		Lang.setLanguage(langauge, new Callback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+
+				screens.push(new TitleScreen(screens, background));
+			}
+			
+			@Override
+			public void onFailure(Throwable cause) {
+				cause.printStackTrace();
+			}
+		});
 		
 	}
 	

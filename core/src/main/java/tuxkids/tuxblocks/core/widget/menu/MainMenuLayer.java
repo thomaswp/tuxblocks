@@ -57,7 +57,7 @@ public class MainMenuLayer extends MenuLayer {
 	public MainMenuLayer() {
 		super(gWidth() * 0.7f, gHeight() * 0.7f);
 		
-		slideBG = createSlider("Music Volume", 0);
+		slideBG = createSlider(getString("music-volume"), 0);
 		slideBG.setFillListener(new FillListener() {
 			@Override
 			public void onFillChanged(float fill) {
@@ -65,7 +65,7 @@ public class MainMenuLayer extends MenuLayer {
 			}
 		});
 		
-		slideSE = createSlider("Effects Volume", 0.3f * height);
+		slideSE = createSlider(getString("effects-volume"), 0.3f * height);
 		slideSE.setFillListener(new FillListener() {
 			@Override
 			public void onFillChanged(float fill) {
@@ -126,7 +126,7 @@ public class MainMenuLayer extends MenuLayer {
 	}
 	
 	protected void createMenuButton() {
-		setButton(buttonExit, width * 0.8f, "About TuxBlocks", buttonTextSize, new OnReleasedListener() {
+		setButton(buttonExit, width * 0.8f, getString("about-tuxblocks"), buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {

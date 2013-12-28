@@ -72,8 +72,9 @@ public class Constant {
 	public static final String IMAGE_HOURGLASS = preloadImage(IMAGE_PATH + "hourglass.png");
 	public static final String IMAGE_UPGRADE = preloadImage(IMAGE_PATH + "upgrade.png");
 	public static final String IMAGE_LOGO = preloadImage(IMAGE_PATH + "logo.png");
-	public static final String IMAGE_START = preloadImage(IMAGE_PATH + "start.png");
 	public static final String IMAGE_TUX = preloadImage(IMAGE_PATH + "tux.png");
+	
+	public static final String IMAGE_START_LOCAL = "start.png";
 	
 	public final static String NINEPATCH_BUBBLE = preloadImage(NINEPATCH_PATH + "bubble.9.png");
 	
@@ -105,13 +106,13 @@ public class Constant {
 		return SE_PATH + "pop" + n;
 	}
 	
-	public static final String FONT_NAME = "Arial";
-	
 	// unicode symbols
 	public static final String TIMES_SYMBOL = "\u00D7";
 	public static final String DIVIDE_SYMBOL = "\u00F7";
 	public static final String DOT_SYMBOL = "\u00B7";
 	public static final String INFINITY_SYMBOL = "\u221E";
+	
+	public static final String NUMBER_FONT = "Arial";
 	
 	public static final String TUX_URL = "http://tux4kids.alioth.debian.org/";
 	
@@ -140,5 +141,6 @@ public class Constant {
 	
 	public final static String KEY_BG_VOLUME = "bg-volume";
 	public final static String KEY_SE_VOLUME = "se-volume";
+	public final static String KEY_LANG = "lang";
 	public static final String KEY_GAME = "<game>";
 }
