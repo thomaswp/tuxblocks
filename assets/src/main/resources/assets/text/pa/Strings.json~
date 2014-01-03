@@ -2,13 +2,13 @@
 
 "menu" : {
 	"about-tuxblocks" : "TuxBlocks ਬਾਰੇ",
-	"music-volume" : "ਸੰਗੀਤ ਦੀ ਆਵਾਜ਼ ",
-	"effects-volume" : "ਸੰਗੀਤ ਦੀਆਂ ਧੁਨੀਆਂ",
+	"music-volume" : "ਸੰਗੀਤ ਵਾਲੀਅਮ",
+	"effects-volume" : "Effects Volume",
 	"save-and-quit" : "ਸੇਵ ਕਰੋ ਅਤੇ ਬਾਹਰ ਜਾਓ",
 	"game-over" : "ਖੇਡ ਖਤਮ ਹੋ ਗਈ ਹੈ ",
 	"victory" : "ਜਿੱਤ ",
 	"continue" : "ਜਾਰੀ ਰਖੋ ",
-	"continue-from-save" : "ਸੇਵ ਤੋਂ  ਚਾਲੂ ਕਰਨਾ ਚਾਹੋਗੇ ",
+	"continue-from-save" : "ਸੇਵ ਤੋ ਚਾਲੂ ਕਰਨਾ ਚਾਹੋਗੇ ",
 	"start-over" : "ਸੁਰੂ  ਤੋਂ ਚਲਾਓ "
 },
 
@@ -30,13 +30,13 @@
 },
 
 "difficulty" : {
-	"choose-difficulty" : "ਕਠਿਨਾਈ ",
-	"math-difficulty" : "ਗਣਿਤ ਦੀ ਕਠਿਨਾਈ ",
-	"sample-problem" : "ਉਦਾਹਰਣ ",
-	"game-difficulty" : "ਖੇਡ ਦੀ ਕਠਿਨਾਈ",
-	"game-difficulty-desc" : "ਬਲਾਕ ਤੋੜਨੇ ਕਿੰਨੇ ਔਖੇ ਹਨ ",
-	"solve-time" : "ਹੱਲ ਕਰਨ ਦਾ ਸਮਾਂ",
-	"solve-time-desc" : "ਤੁਹਾਨੂੰ ਹੱਲ ਕਰਨ ਲਈ ਕਿੰਨਾ ਸਮਾਂ ਲੱਗੇਗਾ "	
+	"choose-difficulty" : "Choose Difficulty",
+	"math-difficulty" : "Math difficulty:",
+	"sample-problem" : "Sample problem:",
+	"game-difficulty" : "Game difficulty:",
+	"game-difficulty-desc" : "How difficult Blocks are to destroy",
+	"solve-time" : "Solve time:",
+	"solve-time-desc" : "How long you have to solve problems between rounds"	
 }
 
 }
