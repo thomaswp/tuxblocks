@@ -14,8 +14,8 @@ public class Lang extends PlayNObject {
 		EN("English", "en"), 
 		FR("Français", "fr"), 
 		PA("ਪੰਜਾਬੀ", "pa", "Raavi"),
-		HI("हिंदी ","hi","Mangal");
-		
+		HI("हिंदी", "hi", "Akshar");
+
 		private String name, code, font;
 		
 		private Langauge(String name, String code) {
