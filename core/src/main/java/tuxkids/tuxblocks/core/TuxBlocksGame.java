@@ -10,7 +10,7 @@ import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.util.Callback;
 import tripleplay.game.ScreenStack;
-import tuxkids.tuxblocks.core.Lang.Langauge;
+import tuxkids.tuxblocks.core.Lang.Language;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.utils.SolidClock;
@@ -71,11 +71,11 @@ public class TuxBlocksGame extends Game.Default {
 		background.layer().setDepth(-10);
 		graphics().rootLayer().add(background.layer());
 
-		Langauge langauge = Langauge.EN;
+		Language langauge = Language.EN;
 		String lang = PlayN.storage().getItem(Constant.KEY_LANG);
 		if (lang != null) {
 			try {
-				langauge = Langauge.valueOf(lang);
+				langauge = Language.valueOf(lang);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
