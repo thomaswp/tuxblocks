@@ -55,8 +55,10 @@ public class TitleScreen extends BaseScreen {
 	private final GroupLayer fadeInLayer;
 	private final GameBackgroundSprite background;
 
+
 	private TextFormat authorFormat, superFormat, optionFormat;
 	private Button tutorialButton;
+	private Button muteButton;
 	private ImageLayerTintable startHere;
 	private LanguageLayer languageLayer;
 	
@@ -132,7 +134,10 @@ public class TitleScreen extends BaseScreen {
 		tutorialButton.setPosition(width() / 2, midY);
 		tutorialButton.setTint(tintPressed, tintUnpressed);
 		fadeInLayer.add(tutorialButton.layerAddable());
-		
+		muteButton = new Button(Constant.IMAGE_MUTE, buttonSize, buttonSize, true);
+		muteButton.setPosition(width()/20, midY);
+		muteButton.setTint(tintPressed, tintUnpressed);
+		fadeInLayer.add(muteButton.layerAddable());
 		startHere = new ImageLayerTintable();
 		Lang.getImage(Constant.IMAGE_START_LOCAL, new Callback<Image>() {
 			@Override
@@ -353,4 +358,6 @@ public class TitleScreen extends BaseScreen {
 			super.popThis();
 		}
 	}
+ 
+
 }

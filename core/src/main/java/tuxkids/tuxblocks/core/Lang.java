@@ -13,8 +13,9 @@ public class Lang extends PlayNObject {
 	public enum Langauge {
 		EN("English", "en"), 
 		FR("Français", "fr"), 
-		PA("ਪੰਜਾਬੀ", "pa", "Raavi");
-
+		PA("ਪੰਜਾਬੀ", "pa", "Raavi"),
+		HI("हिंदी ","hi","Mangal");
+		
 		private String name, code, font;
 		
 		private Langauge(String name, String code) {

@@ -23,7 +23,8 @@ public class LanguageLayer extends LayerWrapper {
 	public static String[] welcomes = new String[] {
 		"Welcome!",
 		"Bienvenu!",
-		"ਨੂੰ ਦਾ ਸੁਆਗਤ"
+		"ਜੀ ਆਇਆ ਨੂੰ ",
+		"स्वागतम "
 	};
 	
 	protected final GroupLayer groupLayer;
