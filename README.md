@@ -131,6 +131,11 @@ You may want to make use of these classes as you contribute to TuxBlocks. See th
 
 **BaseScreen**: An extension of [TriplePlay](http://github.com/threerings/tripleplay)'s Screen class. This is the base of every screen you see in the game, which transition on- and off-screen by sliding into position.
 
+Localization
+------------
+
+To support for a new language...
+
 Future Work
 -----------
 

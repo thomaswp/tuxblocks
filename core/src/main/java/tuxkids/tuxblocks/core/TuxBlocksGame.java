@@ -13,6 +13,7 @@ import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.Lang.Language;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.SolidClock;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 import tuxkids.tuxblocks.core.widget.menu.MenuLayer;
@@ -38,15 +39,22 @@ public class TuxBlocksGame extends Game.Default {
     
 	private static TuxBlocksGame instance;
 	private GameBackgroundSprite background;
+	private String languageCode;
 	
 	/** Returns the number of screen showing. Called from the Android activity */
 	public static int screenDepth() {
 		return instance.screens.size();
 	}
 	
-	public TuxBlocksGame() {
+	public TuxBlocksGame(String languageCode) {
 		super(UPDATE_RATE);
 		instance = this;
+		this.languageCode = languageCode;
+		Debug.write("Setting default language to: " + languageCode);
+	}
+	
+	public TuxBlocksGame() {
+		this(null);
 	}
 
 	private static void reset() {
@@ -71,7 +79,14 @@ public class TuxBlocksGame extends Game.Default {
 		background.layer().setDepth(-10);
 		graphics().rootLayer().add(background.layer());
 
-		Language langauge = Language.EN;
+		Language langauge = Lang.DEFAULT_LANGUAGE;
+		if (languageCode != null) {
+			for (Language lang : Language.values()) {
+				if (lang.code().equalsIgnoreCase(languageCode)) {
+					langauge = lang;
+				}
+			}
+		}
 		String lang = PlayN.storage().getItem(Constant.KEY_LANG);
 		if (lang != null) {
 			try {

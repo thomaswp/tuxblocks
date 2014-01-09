@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
@@ -59,8 +60,13 @@ public class TuxBlocksGameJava {
 			e.printStackTrace();
 		}
 		platform.setTitle("TuxBlocks");
+		
+		// currently we don't register fonts on Java because it cannot handle the variants (eg Bold) 
+//		JavaGraphics graphics = platform.graphics();
+//		graphics.registerFont("Raavi", "fonts/RAAVI.TTF");
+//		graphics.registerFont("Mangal", "fonts/MANGAL.TTF");
 	
-		PlayN.run(new TuxBlocksGame());
+		PlayN.run(new TuxBlocksGame(Locale.getDefault().getLanguage()));
 	}
 
 	// modified from: http://www.jpct.net/forum2/index.php?topic=795.0

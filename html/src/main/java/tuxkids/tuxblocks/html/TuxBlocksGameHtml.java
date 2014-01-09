@@ -4,9 +4,12 @@ import playn.core.CanvasImage;
 import playn.core.PlayN;
 import playn.html.HtmlGame;
 import playn.html.HtmlPlatform;
+import tuxkids.tuxblocks.core.Lang.Language;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
-import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.CanvasUtils.PixelSetter;
+
+import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.i18n.client.LocalizedNames;
 
 public class TuxBlocksGameHtml extends HtmlGame implements PixelSetter {
 
@@ -19,7 +22,22 @@ public class TuxBlocksGameHtml extends HtmlGame implements PixelSetter {
 		platform = HtmlPlatform.register(config);
 		platform.assets().setPathPrefix("tuxblocks/");
 		//CanvasUtils.pixelSetter = this;
-		PlayN.run(new TuxBlocksGame());
+		
+		// GWT localization: a work in progress
+		LocalizedNames locales = LocaleInfo.getCurrentLocale().getLocalizedNames();
+		String[] langs = locales.getLikelyRegionCodes();
+		String language = null;
+		for (String lang : langs) {
+			lang = lang.toLowerCase();
+			for (Language acceptedLang : Language.values()) {
+				if (lang.contains(acceptedLang.code().toLowerCase())) {
+					language = acceptedLang.code();
+					break;
+				}
+			}
+			if (language != null) break;
+		}
+		PlayN.run(new TuxBlocksGame(language));
 	}
 
 	@Override

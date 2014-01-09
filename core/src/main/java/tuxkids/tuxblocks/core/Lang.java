@@ -42,7 +42,7 @@ public class Lang extends PlayNObject {
 	
 	private final static String TEXT_PATH = "text/";
 	private final static String STRINGS_PATH = "Strings.json";
-	private final static Language DEFAULT_LANGUAGE = Language.EN;
+	public final static Language DEFAULT_LANGUAGE = Language.EN;
 	
 	private static Language language = DEFAULT_LANGUAGE;
 	private static Object dictionary;
