@@ -135,6 +135,34 @@ Localization
 ------------
 
 To support for a new language...
+Tuxblocks also support different Languages.Tuxblocks is translated in four languages. Presently it is running English as a default language and three others are French,Hindi and Punjabi.(Hindi and Punjabi are Indian languages)
+For the translation of Tuxblocks Game in your desired language you can follow the following steps:
+Step1:Strings Translation-
+Look for the following files in Source directory. 
+/tuxblocks/assets/src/main/resources/assets/text/en/About.txt
+/tuxblocks/assets/src/main/resources/assets/text/en/Strings.json
+/tuxblocks/assets/src/main/resources/assets/text/en/TutorialBuild.txt
+/tuxblocks/assets/src/main/resources/assets/text/en/TutorialPlay.txt
+/tuxblocks/assets/src/main/resources/assets/text/en/TutorialStart.txt
+First you have to translate .txt files in your desired  language and make new directory in location"/assets/text/<NEWDIR>" put all translated files in it.you can see dirrecotry "en" is for english files and "fr","pa","hi" for French,Punjabi and Hindi respectivly.
+
+Step2:Add Fonts-
+Add two font files of your language(one for plain and other for bold text) in location "/tuxblocks/assets/src/main/resources/assets/fonts/yourfontfile.TTF" 
+Step3:Change in core file(Lang.java)-
+Now this step assume that you have translated all the files and have put them in newly created directory.("/assets/text/<NEWDIR>")
+Look for the "core/src/main/java/tuxkids/tuxblocks/core/Lang.java" file and add your language name,directory name(that you created in  "/assets/text/" location) and Welcome message and font name.(Which is Raavi for Punjabi and Mangal for Hindi)
+
+Example code:
+public enum Language {
+		EN("English", "en", "Welcome"), 
+		FR("Français", "fr", "Bienvenu"), 
+		PA("ਪੰਜਾਬੀ", "pa", "ਜੀ ਆਇਆ ਨੂੰ ", "Raavi"),
+		HI("हिंदी ","hi", "स्वागतम ", "Mangal");
+}
+Step4:Font Registration-
+Now it is last step for the font registration on different platforms.this feature is under development but you can try it on and let us know about results.
+Here is the wikki link for font registration and registerfontmetrics method:
+https://code.google.com/p/playn/wiki/CustomFonts
 
 Future Work
 -----------
