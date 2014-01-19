@@ -134,35 +134,29 @@ You may want to make use of these classes as you contribute to TuxBlocks. See th
 Localization
 ------------
 
-To support for a new language...
-Tuxblocks also support different Languages.Tuxblocks is translated in four languages. Presently it is running English as a default language and three others are French,Hindi and Punjabi.(Hindi and Punjabi are Indian languages)
-For the translation of Tuxblocks Game in your desired language you can follow the following steps:
-Step1:Strings Translation-
-Look for the following files in Source directory. 
-/tuxblocks/assets/src/main/resources/assets/text/en/About.txt
-/tuxblocks/assets/src/main/resources/assets/text/en/Strings.json
-/tuxblocks/assets/src/main/resources/assets/text/en/TutorialBuild.txt
-/tuxblocks/assets/src/main/resources/assets/text/en/TutorialPlay.txt
-/tuxblocks/assets/src/main/resources/assets/text/en/TutorialStart.txt
-First you have to translate .txt files in your desired  language and make new directory in location"/assets/text/<NEWDIR>" put all translated files in it.you can see dirrecotry "en" is for english files and "fr","pa","hi" for French,Punjabi and Hindi respectivly.
+Tuxblocks includes languages support. Presently there are four supported languages:
+* English (the default lanugage)
+* French
+* Hindi 
+* Punjabi
 
-Step2:Add Fonts-
-Add two font files of your language(one for plain and other for bold text) in location "/tuxblocks/assets/src/main/resources/assets/fonts/yourfontfile.TTF" 
-Step3:Change in core file(Lang.java)-
-Now this step assume that you have translated all the files and have put them in newly created directory.("/assets/text/<NEWDIR>")
-Look for the "core/src/main/java/tuxkids/tuxblocks/core/Lang.java" file and add your language name,directory name(that you created in  "/assets/text/" location) and Welcome message and font name.(Which is Raavi for Punjabi and Mangal for Hindi)
+To add a new supported lanugage to Tuxblocks, perform the following steps:
 
-Example code:
-public enum Language {
-		EN("English", "en", "Welcome"), 
-		FR("Français", "fr", "Bienvenu"), 
-		PA("ਪੰਜਾਬੀ", "pa", "ਜੀ ਆਇਆ ਨੂੰ ", "Raavi"),
-		HI("हिंदी ","hi", "स्वागतम ", "Mangal");
-}
-Step4:Font Registration-
-Now it is last step for the font registration on different platforms.this feature is under development but you can try it on and let us know about results.
-Here is the wikki link for font registration and registerfontmetrics method:
-https://code.google.com/p/playn/wiki/CustomFonts
+1. **Add you language folder to the [Text Assets](/assets/src/main/resources/assets/text/) folder.** Make sure to name the folder according its [ISO Language Code](http://www.loc.gov/standards/iso639-2/php/code_list.php). Then copy the contents of the [en](assets/src/main/resources/assets/text/en/) folder to you new folder. These are the text assets you will need to translate.
+
+2. **Translate the game strings.** These are text strings that appear in-game. They are contained in the Strings.json files you just copied over. The strings are organized by where they appear in the game. Each translation consists of a string/string pair, such as: "round":"Round". Simply replace the string on the right side with the correct translation. Make sure not to delete any commas by accident. Any missing translations will simply use the default language instead.
+
+3. **Translate the About and Tutorial files.** These can be found in the About.txt, TutorialBuild.txt, TutorialPlay.txt and TutorialStart.txt files. Simple translate them directly. In the About.txt file, a newline represents a new page, and a "\b" represents a line break. In the tutorial files, a double line break represents a new paragraph. You can change the layout of the About.txt, but make sure to keep the paragraphs the same in the tutorial. If you do not plan to translate any of these files, simply omit them, and the game will default to English.
+
+4. **Add Fonts.** By default, TuxBlocks displays all text in Arial, which can only display latin languages. If your language is non-latin, make sure to register appropriate font files.
+ * First, add the truetype (.TTF) font files of your language to the [fonts](assets/src/main/resources/assets/fonts/) folder. Preferably, add a regular and bold variant.
+ * In the android project, open the  [TuxBlocksGameActivity.java](android/src/main/java/tuxkids/tuxblocks/android/TuxBlocksGameActivity.java) class and add your font registration to the existing fonts. Again, make sure to register both regular and bold variants. If you have no bold variant, register the regular .TTF for both variants.
+ 
+5. **Add you language to the [Lang.java](core/src/main/java/tuxkids/tuxblocks/core/Lang.java) class.** Find the Langauge enum and add an entry for your language. The arguments are the languages name, the name of the directory where you stored your language files (which should be the country code), the word for "Welcome" in you language, and optionally the name of the font needed for your langauge (without the file extension), if different than Arial. For instance:
+    
+        EN("English", "en", "Welcome")
+    
+6. **HTML5 Font Registration.** This is an experimental feature under development, but you can try it on and let us know about results. In the [TuxBlocksGameHtml.java](html/src/main/java/tuxkids/tuxblocks/html/TuxBlocksGameHtml.java) class, you can use the platform object to register the metrics for your font, so it will render more appropriately on the HTML5 platform. For more see [here](https://code.google.com/p/playn/wiki/CustomFonts).
 
 Future Work
 -----------
