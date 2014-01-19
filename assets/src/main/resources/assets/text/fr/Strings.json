@@ -1,21 +1,43 @@
 {
 
+"menu" : {
+	"round":"Série",
+	"about-tuxblocks" : "de TuxBlocks",
+	"music-volume" : "Volume de Musique",
+	"effects-volume" : "Volume des effets",
+	"save-and-quit" : "Enregistrez et Quittez",
+	"game-over" : "Fin de Jeu",
+	"victory" : "Victoire!",
+	"continue" : "Continue",
+	"continue-from-save" : "Continuez?",
+	"start-over" : "Recommencez"
+},
+
+"tower" : {
+	"pea-shooter" : "Pea Shooter",
+	"big-shooter" : "B.I.G. Shooter",
+	"freezer" : "Freezer",
+	"zapper" : "Zapper",
+	"vertical-wall" : "Mur Vertical",
+	"horizontal-wall" : "Mur Horizontal"
+},
+
 "title" : {
 	"a-tux4kids-game" : "Un Jeu de Tux4Kids",
-	"by" : "créé par",
-	"mentored-by" : "avec conseils de",
-	"play" : "Jouer",
-	"build" : "Créer"
+    "by" : "créé par",
+    "mentored-by" : "avec conseils de",
+    "play" : "Jouer",
+    "build" : "Créer"
 },
 
 "difficulty" : {
-	"choose-difficulty" : "Choisissez la Difficulté",
-	"math-difficulty" : "Difficulté des maths:",
-	"sample-problem" : "Échantillon:",
-	"game-difficulty" : "Difficulté de jeu:",
-	"game-difficulty-desc" : "La difficulté de detruir des Blocks",
-	"solve-time" : "Temps pour résoudre:",
-	"solve-time-desc" : "Combien de temps on a pour résoudre des problèmes entre les tours"	
+    "choose-difficulty" : "Choisissez la Difficulté",
+    "math-difficulty" : "Difficulté des maths:",
+    "sample-problem" : "Échantillon:",
+    "game-difficulty" : "Difficulté de jeu:",
+    "game-difficulty-desc" : "La difficulté de detruir des Blocks",
+    "solve-time" : "Temps pour résoudre:",
+    "solve-time-desc" : "Combien de temps on a pour résoudre des problèmes entre les tours"
 }
 
 }

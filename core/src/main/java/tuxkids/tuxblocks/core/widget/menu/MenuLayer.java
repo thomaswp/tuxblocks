@@ -118,14 +118,16 @@ public abstract class MenuLayer extends LayerWrapper {
 	}
 	
 	/** Sets the given button with the given attributes and creates a background of the appropriate size. */
-	protected void setButton(Button button, float width, String text, float textSize, OnReleasedListener action) {
+	protected void setButton(Button button, float minWidth, String text, float textSize, OnReleasedListener action) {
 		TextFormat buttonFormat = createFormat(textSize);
 		float height = buttonFormat.font.size() * 1.5f;
-		float rad = gHeight() * 0.008f, border = gHeight() * 0.008f;
-		CanvasImage image = CanvasUtils.createRoundRect(width, height, rad, 
-				Color.argb(100, 255, 255, 255), border, BACKGROUND_BORDER_COLOR);
-		image.canvas().setFillColor(Colors.BLACK);
 		TextLayout layout = graphics().layoutText(text, buttonFormat);
+		minWidth = Math.max(minWidth, layout.width() * 1.1f);
+		float rad = gHeight() * 0.008f, border = gHeight() * 0.008f;
+		CanvasImage image = CanvasUtils.createRoundRect(minWidth, height, rad, 
+				Colors.blend(BACKGROUND_BORDER_COLOR, Colors.WHITE, 0.4f), 
+				border, BACKGROUND_BORDER_COLOR);
+		image.canvas().setFillColor(Colors.BLACK);
 		image.canvas().fillText(layout, (image.width() - layout.width()) / 2, 
 				(image.height() - layout.height()) / 2);
 		button.setImage(image);
