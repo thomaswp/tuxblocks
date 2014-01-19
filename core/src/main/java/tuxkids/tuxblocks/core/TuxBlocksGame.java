@@ -50,7 +50,7 @@ public class TuxBlocksGame extends Game.Default {
 		super(UPDATE_RATE);
 		instance = this;
 		this.languageCode = languageCode;
-		Debug.write("Setting default language to: " + languageCode);
+//		Debug.write("Setting default language to: " + languageCode);
 	}
 	
 	public TuxBlocksGame() {

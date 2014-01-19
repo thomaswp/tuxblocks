@@ -49,8 +49,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 	private final static float ITEM_ALPHA = (1 + Button.DEFAULT_UNPRESSED_ALPHA) / 2;
 	private final static int ITEM_TEXT_COLOR = Colors.BLACK;
 	
-	private final TextFormat barTextFormat;
-	private final TextFormat scoreTextFormat;
+	private final TextFormat barNumberFormat, barTextFormat, scoreTextFormat;
 	private final int itemSize;
 	private final GameState state;
 	private final List<Widget> widgets = new ArrayList<GameHeaderLayer.Widget>();
@@ -76,8 +75,10 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 		state = parent.state();
 		this.parent = parent;
 		
-		barTextFormat = new TextFormat().withFont(
+		barNumberFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, height * 0.18f));
+		barTextFormat = new TextFormat().withFont(
+				graphics().createFont(Lang.font(), Style.PLAIN, barNumberFormat.font.size()));
 		scoreTextFormat = new TextFormat().withFont(
 				graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, height * 0.4f));
 		itemSize = (int) (2 * height / 3);
@@ -261,7 +262,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 				upgrades = m;
 				String text = "" + upgrades;
 				numberLayer.setImage(CanvasUtils.createText(
-						text, barTextFormat, ITEM_TEXT_COLOR));
+						text, barNumberFormat, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
 				beatMS = BEAT_TIME; // start the "beat"
 			}
@@ -324,15 +325,16 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			if (nextRound != time) { // if our state changed
 				time = nextRound;
 				String text;
+				TextFormat tf = barNumberFormat;
 				if (time == Difficulty.ROUND_TIME_INFINITE) {
 					text = Constant.INFINITY_SYMBOL; // infinite time
 				} else if (time == DURING_ROUND) {
 					text = Lang.getString("menu","round") +" "+state.level().roundNumber(); // during round
+					tf = barTextFormat;
 				} else {
 					text = "" + time; // waiting for next round
 				}
 				
-				TextFormat tf = barTextFormat;
 				if (time == Difficulty.ROUND_TIME_INFINITE) {
 					// double the size for the infinity because its such a tiny character
 					Font font = Cache.getFont(tf.font.name(), tf.font.style(), tf.font.size() * 2f);
@@ -448,7 +450,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			if (l != lives) {
 				lives = l;
 				numberLayer.setImage(CanvasUtils.createText(
-						"" + lives, barTextFormat, ITEM_TEXT_COLOR));
+						"" + lives, barNumberFormat, ITEM_TEXT_COLOR));
 				centerImageLayer(numberLayer);
 				beatMS = BEAT_TIME;
 			}
@@ -472,7 +474,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 	 */
 	private class Bar extends LayerWrapper implements Widget {
 
-		private float TEXT_SPACE = barTextFormat.font.size();
+		private float TEXT_SPACE = barNumberFormat.font.size();
 		
 		private GroupLayer layer;
 		private float width, height;
@@ -494,7 +496,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			
 			// the stat's symbol
 			symbolLayer = graphics().createImageLayer(CanvasUtils.createText(
-					stat.symbol(), barTextFormat, Colors.BLACK));
+					stat.symbol(), barNumberFormat, Colors.BLACK));
 			symbolLayer.setTranslation((TEXT_SPACE - symbolLayer.width()) / 2, (height - symbolLayer.height()) / 2);
 			layer.add(symbolLayer);
 			
@@ -523,7 +525,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			if (level != l) {
 				level = l;
 				levelLayer.setImage(CanvasUtils.createText(
-						"" + level, barTextFormat, Colors.BLACK));
+						"" + level, barNumberFormat, Colors.BLACK));
 				levelLayer.setTranslation(width - TEXT_SPACE / 2, height / 2);
 				centerImageLayer(levelLayer);
 				beatMS = BEAT_TIME;

@@ -349,6 +349,10 @@ public class TitleScreen extends BaseScreen {
 			// if we've snapped the TitleLayer, fade in the fadeInLayer
 			lerpAlpha(fadeInLayer, 1, 0.998f, clock.dt());
 		}
+		float targetHeight = height() * 0.97f;
+		if (Tutorial.running()) targetHeight += languageLayer.height();
+		languageLayer.setTy(PlayNObject.lerpTime(
+				languageLayer.ty(), targetHeight, 0.995f, clock.dt(), 0.1f));
 		languageLayer.paint(clock);
 	}
 	

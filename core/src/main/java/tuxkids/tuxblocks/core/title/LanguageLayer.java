@@ -25,6 +25,7 @@ public class LanguageLayer extends LayerWrapper {
 	protected final ImageLayer[] imageLayers;
 	protected int showingIndex;
 	protected float sinceLastFlip;
+	protected float height;
 
 	public LanguageLayer(int themeColor, final ScreenStack screens) {
 		super(graphics().createGroupLayer());
@@ -53,6 +54,7 @@ public class LanguageLayer extends LayerWrapper {
 		Button button = new Button(buttonImage, false);
 		button.setTint(Colors.WHITE, Color.rgb(200, 200, 200));
 		groupLayer.add(button.layerAddable());
+		this.height = buttonImage.height();
 		
 		button.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -90,5 +92,9 @@ public class LanguageLayer extends LayerWrapper {
 				layer.setTy(-height);
 			}
 		}
+	}
+
+	public float height() {
+		return height;
 	}
 }
