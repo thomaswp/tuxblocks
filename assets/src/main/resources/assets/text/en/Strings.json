@@ -1,6 +1,7 @@
 {
 
 "menu" : {
+	"round":"Round",
 	"about-tuxblocks" : "About TuxBlocks",
 	"music-volume" : "Music Volume",
 	"effects-volume" : "Effects Volume",
