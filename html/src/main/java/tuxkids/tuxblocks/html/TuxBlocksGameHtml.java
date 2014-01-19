@@ -1,5 +1,5 @@
 package tuxkids.tuxblocks.html;
-
+import playn.core.Font;
 import playn.core.CanvasImage;
 import playn.core.PlayN;
 import playn.html.HtmlGame;
@@ -21,6 +21,9 @@ public class TuxBlocksGameHtml extends HtmlGame implements PixelSetter {
 		// use config to customize the HTML platform, if needed
 		platform = HtmlPlatform.register(config);
 		platform.assets().setPathPrefix("tuxblocks/");
+		 platform.graphics().registerFontMetrics("Raavi", Font.Style.PLAIN, 0,0);
+		platform.graphics().registerFontMetrics("Mangal", Font.Style.PLAIN, 0,0);
+
 		//CanvasUtils.pixelSetter = this;
 		
 		// GWT localization: a work in progress

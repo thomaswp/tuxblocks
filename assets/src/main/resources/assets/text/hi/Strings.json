@@ -1,6 +1,7 @@
 {
 
 "menu" : {
+	"round":"पड़ाव ",
 	"about-tuxblocks" : "TuxBlocks के बारे में ",
 	"music-volume" : "संगीत वॉल्यूम ",
 	"effects-volume" : "संगीत के स्वर ",

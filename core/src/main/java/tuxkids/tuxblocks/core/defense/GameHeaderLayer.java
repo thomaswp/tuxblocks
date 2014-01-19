@@ -14,6 +14,7 @@ import playn.core.util.Clock;
 import pythagoras.f.FloatMath;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
+import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
@@ -326,7 +327,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 				if (time == Difficulty.ROUND_TIME_INFINITE) {
 					text = Constant.INFINITY_SYMBOL; // infinite time
 				} else if (time == DURING_ROUND) {
-					text = "Round " + state.level().roundNumber(); // during round
+					text = Lang.getString("menu","round") +" "+state.level().roundNumber(); // during round
 				} else {
 					text = "" + time; // waiting for next round
 				}
