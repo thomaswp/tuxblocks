@@ -3,6 +3,10 @@
   <head>
     <title>TuxBlocks</title>
     <style>
+@font-face {
+        font-family: "Raavi";
+        src: url(/tuxblocks/assets/src/main/resources/assets/fonts/RAAVI.TTF);
+      }
 
 	  #playn-root {
 	    height: 600px;
@@ -16,6 +20,9 @@
   <body bgcolor="black">
     <script src="tuxblocks/tuxblocks.nocache.js"></script>
 
-    <div id="playn-root"></div>
+    <div id="playn-root">
+<!-- cause the browser to preload our custom fonts -->
+      <span style="font-family: 'Raavi'">.</span>
+</div>
   </body>
 </html>
