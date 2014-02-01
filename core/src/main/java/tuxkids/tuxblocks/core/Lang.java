@@ -11,6 +11,7 @@ import tuxkids.tuxblocks.core.utils.PlayNObject;
 public class Lang extends PlayNObject {
 	
 	public enum Language {
+		
 		EN("English", "en", "Welcome"), 
 		FR("Français", "fr", "Bienvenu"), 
 		PA("ਪੰਜਾਬੀ", "pa", "ਜੀ ਆਇਆ ਨੂੰ ", "Raavi"),
@@ -39,6 +40,9 @@ public class Lang extends PlayNObject {
 			return code;
 		}
 	}
+	
+	private static final String DEVICE_PC = "pc";
+	private static final String DEVICE_MOBILE = "mobile";
 	
 	private final static String TEXT_PATH = "text/";
 	private final static String STRINGS_PATH = "Strings.json";
@@ -178,5 +182,14 @@ public class Lang extends PlayNObject {
 				assets().getImage(Constant.IMAGE_PATH + DEFAULT_LANGUAGE + "/" + path).addCallback(callback);
 			}
 		});
+	}
+	
+	private static String getPlatformTextPostfix() {
+		return "-" + (PlayN.touch().hasTouch() ? DEVICE_MOBILE : DEVICE_PC);
+	}
+	
+	public static String getDeviceString(String domain, String key) {
+		if (key == null) return null;
+		return getString(domain, key + getPlatformTextPostfix());
 	}
 }

@@ -120,23 +120,11 @@ public class Constant {
 	public static final String TUTORIAL_BUILD_PATH = "TutorialBuild.txt";
 	
 	public static final String TEXT_ABOUT = "About.txt";
-
-	// functions for swapping out touch-specific words on Android/iOS
-	public static String click() {
-		return PlayN.touch().hasTouch() ? "tap" : "click";
-	}
-
-	public static CharSequence clicking() {
-		return PlayN.touch().hasTouch() ? "tapping" : "clicking";
-	}
-
-	public static CharSequence mouse() {
-		return PlayN.touch().hasTouch() ? "finger" : "mouse";
-	}
 	
-	public static CharSequence menu() { 
-		return PlayN.touch().hasTouch() ? "the Android menu button" : "the Esc button on the keyboard";
-	}
+	public final static String TUTORIAL_TEXT_CLICK = "click";
+	public final static String TUTORIAL_TEXT_CLICKING = "clicking";
+	public final static String TUTORIAL_TEXT_MOUSE = "mouse";
+	public final static String TUTORIAL_TEXT_MENU = "menu";
 	
 	public final static String KEY_BG_VOLUME = "bg-volume";
 	public final static String KEY_SE_VOLUME = "se-volume";

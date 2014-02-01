@@ -38,6 +38,17 @@
 	"game-difficulty-desc" : "How difficult Blocks are to destroy",
 	"solve-time" : "Solve time:",
 	"solve-time-desc" : "How long you have to solve problems between rounds"	
+},
+
+"tutorial" : {
+	"click-pc" : "click",
+	"click-mobile" : "tap",
+	"clicking-pc" : "clicking",
+	"clicking-mobile" : "tapping",
+	"mouse-pc" : "mouse",
+	"mouse-mobile" : "finger",
+	"menu-pc" : "the Esc button on the keyboard",
+	"menu-mobile" : "the Android menu button"
 }
 
 }
