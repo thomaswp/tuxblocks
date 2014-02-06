@@ -14,7 +14,7 @@ Platforms
 ---------
 
 TuxBlocks has working versions on the following platforms:
- * Android 2.3+
+ * [Android 2.3+](https://play.google.com/store/apps/details?id=tuxkids.tuxblocks.android)
  * [HTML5](http://tux-blocks.appspot.com/) (using both Canvas and WebGL)
    + Currently Chrome, Firefox and Internet Explorer are supported (with Chrome preferred)
  
