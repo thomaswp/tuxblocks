@@ -2,6 +2,7 @@
 *.dll
 *.so
 *.gwt-log
+*~
 .metadata/*
 .DS_Store
 Thumbs.db
@@ -11,6 +12,9 @@ objc/*
 html/gwt-unitCache/*
 html/war/*
 android/assets
+android/bin/*
+android/.settings
+android/gen
 ios/assets/*
 cmd.exe.lnk
 android/pw.txt
