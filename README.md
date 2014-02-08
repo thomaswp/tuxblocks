@@ -32,7 +32,7 @@ Development Environment
 
 TuxBlocks is built on top of PlayN and can be set up using the instructions in their [getting started guide](http://code.google.com/p/playn/wiki/GettingStarted). The only difference is that you will be using the contents of this repository instead of the playn-samples. The project is designed for development with the [Eclipse](http://eclipse.org/) IDE, so make sure you have Eclipse set up and follow the appropriate instructions on the guide.
 
-As explained in the getting started guide, TuxBlocks requires [Apache Maven](http://maven.apache.org/) 3.05 or newer, and the [m2eclipse plugin](http://m2eclipse.codehaus.org/) is recommended. Newer versions of Maven may work, but some problems have arisen running the Android project with newer versions. Once you have the m2eclipse plugin installed, you can import the  **android**, **assets**, **core**, **html** and **java** projects into eclispe, using the instructions in the getting started guide (you may import the **flash** and **ios** projects as well, but they are not in current use). If you get errors during the import process, choose to "Resolve Later" and continue. They should not be a problem.
+As explained in the getting started guide, TuxBlocks requires [Apache Maven](http://maven.apache.org/) 3.05, and the [m2eclipse plugin](http://m2eclipse.codehaus.org/) is recommended. Newer versions of Maven may work, but some problems have arisen running the Android project with newer versions. Once you have the m2eclipse plugin installed, you can import the  **android**, **assets**, **core**, **html** and **java** projects into eclispe, using the instructions in the getting started guide (you may import the **flash** and **ios** projects as well, but they are not in current use). If you get errors during the import process, choose to "Resolve Later" and continue. They should not be a problem.
 
 It is recommended that you unpack the TuxBlocks repository in a folder with no spaces in its path, for instance:
 
@@ -81,8 +81,7 @@ This will install the game on any connected Android device; however, it will not
 
 If you run into the error
 
-    [ERROR] Failed to execute goal com.jayway.maven.plugins.android.generation2:android-maven-plugin:3.6.0:generate-sources
-(default-generate-sources) on project tuxblocks-android
+    [ERROR] Failed to execute goal com.jayway.maven.plugins.android.generation2:android-maven-plugin:3.6.0:generate-sources (default-generate-sources) on project tuxblocks-android
 
 try again using Maven 3.0.5. This should resolve the issue.
 
