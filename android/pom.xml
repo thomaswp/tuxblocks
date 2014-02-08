@@ -19,7 +19,7 @@
     <!-- you can pass these on the command line as -Dkeystore.password=foo etc. -->
     <keystore.password></keystore.password>
     <key.password></key.password>
-	  <android.maven.version>3.6.0</android.maven.version>
+	  <android.maven.version>3.0.5</android.maven.version>
   </properties>
 
   <dependencies>
@@ -85,7 +85,6 @@
           <assetsDirectory>${project.basedir}/assets</assetsDirectory>
           <resourceDirectory>${project.basedir}/res</resourceDirectory>
           <sdk>
- <path>/home/honey/android-sdk/</path>
             <platform>11</platform>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
