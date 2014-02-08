@@ -1,15 +1,16 @@
 package tuxkids.tuxblocks.core.title;
 
-import playn.core.Font.Style;
-import playn.core.Pointer.Event;
 import playn.core.Color;
+import playn.core.Font.Style;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Pointer.Event;
 import playn.core.TextFormat;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
+import tuxkids.tuxblocks.core.Lang.Language;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
@@ -19,32 +20,26 @@ import tuxkids.tuxblocks.core.widget.menu.LanguageMenu;
 public class LanguageLayer extends LayerWrapper {
 	
 	private final static int FLIP_TIME = 5000;
-	
-	public static String[] welcomes = new String[] {
-		"Welcome!",
-		"Bienvenu!",
-		"ਨੂੰ ਦਾ ਸੁਆਗਤ"
-	};
-	
+		
 	protected final GroupLayer groupLayer;
 	protected final ImageLayer[] imageLayers;
 	protected int showingIndex;
 	protected float sinceLastFlip;
+	protected float height;
 
 	public LanguageLayer(int themeColor, final ScreenStack screens) {
 		super(graphics().createGroupLayer());
 		
 		groupLayer = (GroupLayer) layerAddable();
-		imageLayers = new ImageLayer[welcomes.length];
-		
-		TextFormat format = createFormat("Raavi", Style.PLAIN, graphics().height() / 20);
+		imageLayers = new ImageLayer[Language.values().length];
 		
 		int i = 0;
 		float width = 0;
 		float height = 0;
-		for (String lang : welcomes) {
+		for (Language language : Language.values()) {
+			TextFormat format = createFormat(language.font(), Style.PLAIN, graphics().height() / 20);
 			ImageLayer imageLayer = graphics().createImageLayer();
-			imageLayer.setImage(CanvasUtils.createTextCached(lang, format, themeColor));
+			imageLayer.setImage(CanvasUtils.createTextCached(language.welcome(), format, themeColor));
 			centerImageLayer(imageLayer);
 			imageLayer.setAlpha(0);
 			width = Math.max(width, imageLayer.width());
@@ -59,6 +54,7 @@ public class LanguageLayer extends LayerWrapper {
 		Button button = new Button(buttonImage, false);
 		button.setTint(Colors.WHITE, Color.rgb(200, 200, 200));
 		groupLayer.add(button.layerAddable());
+		this.height = buttonImage.height();
 		
 		button.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -96,5 +92,9 @@ public class LanguageLayer extends LayerWrapper {
 				layer.setTy(-height);
 			}
 		}
+	}
+
+	public float height() {
+		return height;
 	}
 }

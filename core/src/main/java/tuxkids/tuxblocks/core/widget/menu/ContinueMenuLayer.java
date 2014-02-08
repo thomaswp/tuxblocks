@@ -34,6 +34,8 @@ public class ContinueMenuLayer extends MenuLayer {
 	public ContinueMenuLayer() {
 		super(gWidth() * 0.5f, gHeight() * 0.4f);
 		
+		float buttonWidth = width * 0.4f;
+		
 		TextFormat format = createFormat(height / 6);
 		textLayer = graphics().createImageLayer();
 		textLayer.setImage(CanvasUtils.createText(getString("continue-from-save"), format, Colors.BLACK));

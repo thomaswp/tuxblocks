@@ -1,42 +1,54 @@
 {
 
 "menu" : {
+	"round":"ਪੜਾਅ",
 	"about-tuxblocks" : "TuxBlocks ਬਾਰੇ",
-	"music-volume" : "ਸੰਗੀਤ ਵਾਲੀਅਮ",
-	"effects-volume" : "Effects Volume",
-	"save-and-quit" : "Save and Quit",
-	"game-over" : "Game Over",
-	"victory" : "Victory!",
-	"continue" : "Continue",
-	"continue-from-save" : "Continue from save?",
-	"start-over" : "Start Over"
+	"music-volume" : "ਸੰਗੀਤ ਦੀ ਆਵਾਜ਼ ",
+	"effects-volume" : "ਸੰਗੀਤ ਦੀਆਂ ਧੁਨੀਆਂ",
+	"save-and-quit" : "ਸੇਵ ਕਰੋ ਅਤੇ ਬਾਹਰ ਜਾਓ",
+	"game-over" : "ਖੇਡ ਖਤਮ ਹੋ ਗਈ ਹੈ ",
+	"victory" : "ਜਿੱਤ ",
+	"continue" : "ਜਾਰੀ ਰਖੋ ",
+	"continue-from-save" : "ਸੇਵ ਤੋਂ  ਚਾਲੂ ਕਰਨਾ ਚਾਹੋਗੇ ",
+	"start-over" : "ਸੁਰੂ  ਤੋਂ ਚਲਾਓ "
 },
 
 "tower" : {
-	"pea-shooter" : "ਮਟਰ ਨਿਸ਼ਾਨੇਬਾਜ਼",
-	"big-shooter" : "B.I.G. Shooter",
-	"freezer" : "Freezer",
-	"zapper" : "Zapper",
-	"vertical-wall" : "Vertical Wall",
-	"horizontal-wall" : "Horizontal Wall"
+	"pea-shooter" : "ਛੋਟੀ ਬੰਦੂਖ ",
+	"big-shooter" : "ਵੱਡੀ ਬੰਦੂਖ ",
+	"freezer" : "ਜਮਾਉਣ ਵਾਲਾ ",
+	"zapper" : "ਪਿਸਤੌਲ ",
+	"vertical-wall" : "ਵਰਟੀਕਲ ਕੰਧ",
+	"horizontal-wall" : "ਹੋਰੀਜੋਟਲ ਕੰਧ  "
 },
 
 "title" : {
-	"a-tux4kids-game" : "ਇੱਕ Tux4Kids ਖੇਡ ਹੈ",
-	"by" : "by",
-	"mentored-by" : "mentored by",
-	"play" : "ਖੇਡਣ",
-	"build" : "ਬਣਾਉਣ"
+	"a-tux4kids-game" : "ਇਹ Tux4Kids ਦੀ ਬਣਾਈ ਖੇਡ ਹੈ",
+	"by" : "ਦੁਆਰਾ ",
+	"mentored-by" : "ਸਿੱਖਿਅਕ ",
+	"play" : "ਖੇਡੋ ",
+	"build" : "ਬਣਾਓ"
 },
 
 "difficulty" : {
-	"choose-difficulty" : "Choose Difficulty",
-	"math-difficulty" : "Math difficulty:",
-	"sample-problem" : "Sample problem:",
-	"game-difficulty" : "Game difficulty:",
-	"game-difficulty-desc" : "How difficult Blocks are to destroy",
-	"solve-time" : "Solve time:",
-	"solve-time-desc" : "How long you have to solve problems between rounds"	
+	"choose-difficulty" : "ਕਠਿਨਾਈ ",
+	"math-difficulty" : "ਗਣਿਤ ਦੀ ਕਠਿਨਾਈ ",
+	"sample-problem" : "ਉਦਾਹਰਣ ",
+	"game-difficulty" : "ਖੇਡ ਦੀ ਕਠਿਨਾਈ",
+	"game-difficulty-desc" : "ਬਲਾਕ ਤੋੜਨੇ ਕਿੰਨੇ ਔਖੇ ਹਨ ",
+	"solve-time" : "ਹੱਲ ਕਰਨ ਦਾ ਸਮਾਂ",
+	"solve-time-desc" : "ਤੁਹਾਨੂੰ ਹੱਲ ਕਰਨ ਲਈ ਕਿੰਨਾ ਸਮਾਂ ਲੱਗੇਗਾ "	
+},
+"tutorial" : {
+	"click-pc" : "ਕਲਿਕ",
+	"click-mobile" : "ਟੈਪ",
+	"clicking-pc" : "ਕਲੀਕਿੰਗ",
+	"clicking-mobile" : "ਟੈਪਿੰਗ",
+	"mouse-pc" : "ਮਾਓਸ",
+	"mouse-mobile" : "ਉਂਗਲੀ",
+	"menu-pc" : "ਕੀਬੋਰਡ  ਤੇ  Esc ਬਟਨ ",
+	"menu-mobile" : "ਮੇਨ ਮੀਨੁ "
 }
+
 
 }

@@ -10,26 +10,30 @@ import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 public class Lang extends PlayNObject {
 	
-	public enum Langauge {
-		EN("English", "en"), 
-		FR("Français", "fr"), 
-		PA("ਪੰਜਾਬੀ", "pa", "Raavi");
-
-		private String name, code, font;
+	public enum Language {
 		
-		private Langauge(String name, String code) {
-			this(name, code, "Arial");
+		EN("English", "en", "Welcome"), 
+//		FR("Français", "fr", "Bienvenu"), 
+		PA("ਪੰਜਾਬੀ", "pa", "ਜੀ ਆਇਆ ਨੂੰ ", "Raavi"),
+		HI("हिंदी ","hi", "स्वागतम ", "Mangal");
+		
+		private String name, code, font, welcome;
+		
+		private Language(String name, String code, String welcome) {
+			this(name, code, welcome, "Arial");
 		}
 		
-		private Langauge(String name, String code, String font) {
+		private Language(String name, String code, String welcome, String font) {
 			this.name = name;
 			this.code = code;
+			this.welcome = welcome;
 			this.font = font;
 		}
 		
 		public String fullName() { return name; }		
 		public String code() { return code; }
 		public String font() { return font; }
+		public String welcome() { return welcome; }
 
 		@Override
 		public String toString() {
@@ -37,15 +41,18 @@ public class Lang extends PlayNObject {
 		}
 	}
 	
+	private static final String DEVICE_PC = "pc";
+	private static final String DEVICE_MOBILE = "mobile";
+	
 	private final static String TEXT_PATH = "text/";
 	private final static String STRINGS_PATH = "Strings.json";
-	private final static Langauge DEFAULT_LANGUAGE = Langauge.EN;
+	public final static Language DEFAULT_LANGUAGE = Language.EN;
 	
-	private static Langauge language = DEFAULT_LANGUAGE;
+	private static Language language = DEFAULT_LANGUAGE;
 	private static Object dictionary;
 	private static Object defaultDictionary;
 	
-	public static Langauge language() {
+	public static Language language() {
 		return language;
 	}
 
@@ -63,7 +70,7 @@ public class Lang extends PlayNObject {
 		defaultDictionary = null;
 	}
 	
-	public static void setLanguage(final Langauge language, final Callback<Void> callback) {
+	public static void setLanguage(final Language language, final Callback<Void> callback) {
 		dictionary = null;
 		if (defaultDictionary == null) {
 			loadLangauge(DEFAULT_LANGUAGE, new Callback<Object>() {
@@ -102,7 +109,7 @@ public class Lang extends PlayNObject {
 		}
 	}
 	
-	private static void loadLangauge(final Langauge language, final Callback<Object> callback) {
+	private static void loadLangauge(final Language language, final Callback<Object> callback) {
 		assets().getText(TEXT_PATH + language + "/" + STRINGS_PATH, new Callback<String>() {
 			@Override
 			public void onSuccess(String result) {
@@ -175,5 +182,14 @@ public class Lang extends PlayNObject {
 				assets().getImage(Constant.IMAGE_PATH + DEFAULT_LANGUAGE + "/" + path).addCallback(callback);
 			}
 		});
+	}
+	
+	private static String getPlatformTextPostfix() {
+		return "-" + (PlayN.touch().hasTouch() ? DEVICE_MOBILE : DEVICE_PC);
+	}
+	
+	public static String getDeviceString(String domain, String key) {
+		if (key == null) return null;
+		return getString(domain, key + getPlatformTextPostfix());
 	}
 }

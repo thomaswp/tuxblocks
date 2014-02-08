@@ -140,7 +140,7 @@ public class MainMenuLayer extends MenuLayer {
 	}
 	
 	protected void createGameButton() {
-		setButton(buttonExit, width * 0.8f, "Save and Quit", buttonTextSize, new OnReleasedListener() {
+		setButton(buttonExit, width * 0.8f, getString("save-and-quit"), buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {

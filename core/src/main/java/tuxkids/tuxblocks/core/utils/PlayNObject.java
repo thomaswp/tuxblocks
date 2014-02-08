@@ -238,6 +238,13 @@ public abstract class PlayNObject {
 		}
 	}
 	
+	public static void resizeLayer(ImageLayer layer, float maxWidth, float maxHeight) {
+		float scale = 1;
+		if (layer.width() * scale > maxWidth) scale = maxWidth / layer.width();
+		if (layer.height() * scale > maxHeight) scale = maxHeight / layer.height();
+		layer.setScale(scale);
+	}
+	
 	/** Get the global x-coordinate of this Layer on the screen */
 	public static float getGlobalTx(Layer layer) {
 		Layer parent = layer;

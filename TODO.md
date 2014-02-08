@@ -34,3 +34,4 @@ These are the developer's goals for the future:
 * Create a high scores screen.
 * After an equation is generated, shuffle the expressions around so that all expressions of a given form don't look the same.
 * There are a number of TODO's in the code, many of which really should be addressed for readability, stability or efficiency. Some should probably be dismissed and deleted.
+* Add documentation of how to add additional languages

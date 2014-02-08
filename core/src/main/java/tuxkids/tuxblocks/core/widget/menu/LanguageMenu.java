@@ -13,7 +13,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Lang;
-import tuxkids.tuxblocks.core.Lang.Langauge;
+import tuxkids.tuxblocks.core.Lang.Language;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
@@ -45,14 +45,14 @@ public class LanguageMenu extends MenuLayer {
 	public LanguageMenu() {
 		super(graphics().width() * 0.7f, graphics().height() * 0.7f);
 		
-		buttons = new Button[Langauge.values().length];
+		buttons = new Button[Language.values().length];
 		
 		int index = 0;
 		int col = 0;
 		float rowHeight = 0, rowY = -height * 0.4f;
 		float textSize = height * 0.07f;
 		float border = textSize * 0.2f;
-		for (Langauge lang : Langauge.values()) {
+		for (Language lang : Language.values()) {
 			float x = ((col + 1) / (COLS + 1f) - 0.5f) * width * 1.2f;
 			TextFormat format = createFormat(lang.font(), Style.PLAIN, textSize);
 			TextLayout layout = graphics().layoutText(lang.fullName(), format);
@@ -116,7 +116,7 @@ public class LanguageMenu extends MenuLayer {
 		}
 
 		closing = true;
-		Lang.setLanguage(Langauge.values()[selectedIndex], new Callback<Void>() {
+		Lang.setLanguage(Language.values()[selectedIndex], new Callback<Void>() {
 
 			@Override
 			public void onSuccess(Void result) {

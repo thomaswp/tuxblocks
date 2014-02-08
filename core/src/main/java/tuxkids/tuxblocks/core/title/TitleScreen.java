@@ -55,8 +55,10 @@ public class TitleScreen extends BaseScreen {
 	private final GroupLayer fadeInLayer;
 	private final GameBackgroundSprite background;
 
+
 	private TextFormat authorFormat, superFormat, optionFormat;
 	private Button tutorialButton;
+//	private Button muteButton;
 	private ImageLayerTintable startHere;
 	private LanguageLayer languageLayer;
 	
@@ -132,6 +134,11 @@ public class TitleScreen extends BaseScreen {
 		tutorialButton.setPosition(width() / 2, midY);
 		tutorialButton.setTint(tintPressed, tintUnpressed);
 		fadeInLayer.add(tutorialButton.layerAddable());
+		
+//		muteButton = new Button(Constant.IMAGE_MUTE, buttonSize, buttonSize, true);
+//		muteButton.setPosition(width()/20, midY);
+//		muteButton.setTint(tintPressed, tintUnpressed);
+//		fadeInLayer.add(muteButton.layerAddable());
 		
 		startHere = new ImageLayerTintable();
 		Lang.getImage(Constant.IMAGE_START_LOCAL, new Callback<Image>() {
@@ -342,6 +349,10 @@ public class TitleScreen extends BaseScreen {
 			// if we've snapped the TitleLayer, fade in the fadeInLayer
 			lerpAlpha(fadeInLayer, 1, 0.998f, clock.dt());
 		}
+		float targetHeight = height() * 0.97f;
+		if (Tutorial.running()) targetHeight += languageLayer.height();
+		languageLayer.setTy(PlayNObject.lerpTime(
+				languageLayer.ty(), targetHeight, 0.995f, clock.dt(), 0.1f));
 		languageLayer.paint(clock);
 	}
 	
@@ -353,4 +364,6 @@ public class TitleScreen extends BaseScreen {
 			super.popThis();
 		}
 	}
+ 
+
 }
