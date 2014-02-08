@@ -101,15 +101,20 @@ public class TextBoxLayer extends LayerWrapper {
 	public void show(String text) {
 		
 		if (text != null) {
-			TextLayout[] layouts = graphics().layoutText(text, format, 
-					new TextWrap(width - padding * 3 - SPEECH_BUBBLE_CORNER_WIDTH));
-			TextBlock textBlock = new TextBlock(layouts);
-			height = textBlock.bounds.height() + padding * 2 + SPEECH_BUBBLE_CORNER_HEIGHT;
+			try {
+				TextLayout[] layouts = graphics().layoutText(text, format, 
+						new TextWrap(width - padding * 3 - SPEECH_BUBBLE_CORNER_WIDTH));
+				TextBlock textBlock = new TextBlock(layouts);
+				height = textBlock.bounds.height() + padding * 2 + SPEECH_BUBBLE_CORNER_HEIGHT;
+				
+				
+				CanvasImage textImage = textBlock.toImage(Align.LEFT, Colors.BLACK);
+				textLayer.setImage(textImage);
+				textLayer.setTranslation(padding + SPEECH_BUBBLE_CORNER_WIDTH, padding);
+			} catch (Exception e) {
+				debug("Could not show: %s" + text);
+			}
 			
-			
-			CanvasImage textImage = textBlock.toImage(Align.LEFT, Colors.BLACK);
-			textLayer.setImage(textImage);
-			textLayer.setTranslation(padding + SPEECH_BUBBLE_CORNER_WIDTH, padding);
 			fadeInLayer.add(textLayer);
 			
 			fadeInLayer.setOrigin(0, height);
