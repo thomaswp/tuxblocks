@@ -69,6 +69,8 @@ The game should run successfully after this, and continue to work. If you run a 
 
 To set up an Android build, first make sure you have the [Android SDK](http://developer.android.com/sdk/index.html) installed, along with your target API (TuxBlocks currently targets v11, Andriod 3.0).
 
+You also have to setup your android device with your operating system. You can follow [this guide](http://developer.android.com/tools/device.html)for setting up android device.
+
 Next, follow the instructions on [this guide](http://code.google.com/p/playn/wiki/MavenAndroidBuild) to set up your SDK path with Maven.
 
 You should be able to run TuxBlock on Android by executing the following command in the root directory of this repository:

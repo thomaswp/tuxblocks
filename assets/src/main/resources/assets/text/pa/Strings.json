@@ -38,6 +38,17 @@
 	"game-difficulty-desc" : "ਬਲਾਕ ਤੋੜਨੇ ਕਿੰਨੇ ਔਖੇ ਹਨ ",
 	"solve-time" : "ਹੱਲ ਕਰਨ ਦਾ ਸਮਾਂ",
 	"solve-time-desc" : "ਤੁਹਾਨੂੰ ਹੱਲ ਕਰਨ ਲਈ ਕਿੰਨਾ ਸਮਾਂ ਲੱਗੇਗਾ "	
+},
+"tutorial" : {
+	"click-pc" : "ਕਲਿਕ",
+	"click-mobile" : "ਟੈਪ",
+	"clicking-pc" : "ਕਲੀਕਿੰਗ",
+	"clicking-mobile" : "ਟੈਪਿੰਗ",
+	"mouse-pc" : "ਮਾਓਸ",
+	"mouse-mobile" : "ਉਂਗਲੀ",
+	"menu-pc" : "ਕੀਬੋਰਡ  ਤੇ  Esc ਬਟਨ ",
+	"menu-mobile" : "ਮੇਨ ਮੀਨੁ "
 }
+
 
 }

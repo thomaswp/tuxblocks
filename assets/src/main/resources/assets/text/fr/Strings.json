@@ -38,6 +38,17 @@
     "game-difficulty-desc" : "La difficulté de detruir des Blocks",
     "solve-time" : "Temps pour résoudre:",
     "solve-time-desc" : "Combien de temps on a pour résoudre des problèmes entre les tours"
-}
+},
 
+"tutorial" : {
+	"click-pc" : "clique",
+	"click-mobile" : "tapote",
+	"clicking-pc" : "clic",
+	"clicking-mobile" :"tapotement",
+	"mouse-pc" : "souris",
+	"mouse-mobile" :"doigt",
+	"menu-pc" :  "échap",
+	"menu-mobile" : "bouton menu anroid"
+
+}
 }

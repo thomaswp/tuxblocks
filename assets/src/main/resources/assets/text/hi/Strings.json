@@ -38,6 +38,17 @@
 	"game-difficulty-desc" : "ब्लॉक्स तोडना कितना मुश्किल  है ",
 	"solve-time" : "हल करने का समय",
 	"solve-time-desc" : "आपको हल करने के लिए कितना समय लगेगा "	
-}
+},
 
+"tutorial" : {
+	"click-pc" : "क्लिक",
+	"click-mobile" : "टैप",
+	"clicking-pc" : "क्लिकिंग",
+	"clicking-mobile" : "टैपिंग ",
+	"mouse-pc" : "माऊस",
+	"mouse-mobile" : "ऊँगली",
+	"menu-pc" : "कीबोर्ड पे Esc बटन",
+	"menu-mobile" : "मेनू बटन"
+}
+ 
 }
