@@ -1,8 +1,10 @@
 package tripleplay.particle.init;
 
+import playn.core.Color;
 import tripleplay.particle.Effector;
 import tripleplay.util.Colors;
 import tripleplay.util.Interpolator;
+import tuxkids.tuxblocks.core.utils.Debug;
 import static tripleplay.particle.ParticleBuffer.*;
 
 /**
@@ -31,9 +33,11 @@ public abstract class ColorEffector extends Effector {
 			@Override public void apply (int index, float[] data, int start, float now, float dt) {
 				this.perc = getPerc(data, start, now);
 				int color = Colors.blend(startColor, endColor, 1 - perc);
-				data[start + RED] = playn.core.Color.red(color) / 255f;
-				data[start + GREEN] = playn.core.Color.green(color) / 255f;
-				data[start + BLUE] = playn.core.Color.blue(color) / 255f;
+				
+				Debug.write("Encoded: %d %d %d %d", Color.alpha(color), Color.red(color), Color.green(color), Color.blue(color));
+				
+				data[start + ALPHA_RED] = Color.encode(playn.core.Color.alpha(color) / 255f, playn.core.Color.red(color) / 255f);
+				data[start + GREEN_BLUE] = Color.encode(playn.core.Color.green(color) / 255f, playn.core.Color.blue(color) / 255f);
 			}
 
 			@Override

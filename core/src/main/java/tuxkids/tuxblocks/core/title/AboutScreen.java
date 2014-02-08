@@ -11,6 +11,7 @@ import playn.core.Pointer.Listener;
 import playn.core.TextFormat;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
+import playn.core.util.TextBlock.Align;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
@@ -81,11 +82,10 @@ public class AboutScreen extends BaseScreen {
 				float border = height() / 30;
 				float y = border;
 				TextFormat format = PlayNObject.createFormat(height() / 15);
-				format = format.withWrapWidth(width() - border * 2);
 				for (String line : lines) {
 					//use "\b" to make a newline, since \n indicates a split in the section 
 					line = line.replace("\\b", "\n");
-					Image image = CanvasUtils.createText(line, format, Colors.WHITE);
+					Image image = CanvasUtils.createText(line, format, Colors.WHITE, Align.LEFT, width() - border * 2);
 					ImageLayer imageLayer = graphics().createImageLayer(image);
 					imageLayer.setTranslation(border, y);
 					scrollGroup.add(imageLayer);

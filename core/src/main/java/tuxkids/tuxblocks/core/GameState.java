@@ -144,6 +144,7 @@ public class GameState implements Persistable {
 		level = Level.generate(difficulty.roundTime);
 		// start with 3 PeaShooters and 2 problems to solve
 		addItem(TowerType.PeaShooter, 3);
+		addItem(TowerType.BigShooter, 3);
 		for (int i = 0; i < 2; i++) {
 			addProblemWithReward(0);
 		}

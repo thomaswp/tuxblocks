@@ -11,9 +11,9 @@ import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.Pointer.Listener;
 import playn.core.TextFormat;
-import playn.core.TextFormat.Alignment;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
+import playn.core.util.TextBlock.Align;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
@@ -98,7 +98,7 @@ public class TitleScreen extends BaseScreen {
 	}
 	
 	public void reload() {
-		fadeInLayer.clear();
+		fadeInLayer.removeAll();
 		fadeInLayer.setAlpha(0);
 		setup();
 	}
@@ -107,12 +107,10 @@ public class TitleScreen extends BaseScreen {
 
 		// format for authors text
 		authorFormat = new TextFormat().withFont(graphics().createFont(
-				Lang.font(), Style.PLAIN, (int)(height() / 25)))
-				.withAlignment(Alignment.CENTER);
+				Lang.font(), Style.PLAIN, (int)(height() / 25)));
 		// format for text about author text (like "by" and "menotred by")
 		superFormat = new TextFormat().withFont(graphics().createFont(
-				Lang.font(), Style.PLAIN, (int)(height() / 35)))
-				.withAlignment(Alignment.CENTER);
+				Lang.font(), Style.PLAIN, (int)(height() / 35)));
 		// format for Play and Build buttons
 		optionFormat = new TextFormat().withFont(graphics().createFont(
 				Lang.font(), Style.PLAIN, (int)(height() / 10)));
@@ -288,7 +286,7 @@ public class TitleScreen extends BaseScreen {
 	}
 	
 	private ImageLayer createSuperTextLayer(String text, float x) {
-		ImageLayer layer = graphics().createImageLayer(CanvasUtils.createText(text, superFormat, Colors.WHITE));
+		ImageLayer layer = graphics().createImageLayer(CanvasUtils.createText(text, superFormat, Colors.WHITE, Align.CENTER));
 		layer.setTranslation(x, titleLayer.height() + superFormat.font.size());
 		PlayNObject.centerImageLayer(layer);
 		fadeInLayer.add(layer);
@@ -296,7 +294,7 @@ public class TitleScreen extends BaseScreen {
 	}
 	
 	private ImageLayer createTextLayer(String text, float x) {
-		ImageLayer layer = graphics().createImageLayer(CanvasUtils.createText(text, authorFormat, Colors.WHITE));
+		ImageLayer layer = graphics().createImageLayer(CanvasUtils.createText(text, authorFormat, Colors.WHITE, Align.CENTER));
 		layer.setTranslation(x, titleLayer.height() + superFormat.font.size() + authorFormat.font.size());
 		PlayNObject.centerImageLayer(layer);
 		fadeInLayer.add(layer);

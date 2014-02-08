@@ -426,7 +426,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 				}
 				// TODO: check for memory leaks here... I'm not sure why the layer 
 				// might have children in the first place.. but it does sometimes
-				modifiers.layer.clear();
+				modifiers.layer.removeAll();
 				modifiers.layer().destroy();
 				modifiers = newMods;
 			}

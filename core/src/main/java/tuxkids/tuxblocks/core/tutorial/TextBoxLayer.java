@@ -13,8 +13,11 @@ import playn.core.Path;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import playn.core.TextWrap;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
+import playn.core.util.TextBlock;
+import playn.core.util.TextBlock.Align;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
@@ -56,8 +59,7 @@ public class TextBoxLayer extends LayerWrapper {
 		layer.add(fadeInLayer);
 		
 		padding = graphics().height() / 35;
-		format = createFormat(graphics().height() / 20)
-				.withWrapWidth(width - padding * 3 - SPEECH_BUBBLE_CORNER_WIDTH);
+		format = createFormat(graphics().height() / 20);
 
 		textLayer = graphics().createImageLayer();
 		
@@ -99,12 +101,13 @@ public class TextBoxLayer extends LayerWrapper {
 	public void show(String text) {
 		
 		if (text != null) {
-			TextLayout layout = graphics().layoutText(text, format);
-			height = layout.height() + padding * 2 + SPEECH_BUBBLE_CORNER_HEIGHT;
+			TextLayout[] layouts = graphics().layoutText(text, format, 
+					new TextWrap(width - padding * 3 - SPEECH_BUBBLE_CORNER_WIDTH));
+			TextBlock textBlock = new TextBlock(layouts);
+			height = textBlock.bounds.height() + padding * 2 + SPEECH_BUBBLE_CORNER_HEIGHT;
 			
-			CanvasImage textImage = graphics().createImage(layout.width(), layout.height());
-			textImage.canvas().setFillColor(Colors.BLACK);
-			textImage.canvas().fillText(layout, 0, 0);
+			
+			CanvasImage textImage = textBlock.toImage(Align.LEFT, Colors.BLACK);
 			textLayer.setImage(textImage);
 			textLayer.setTranslation(padding + SPEECH_BUBBLE_CORNER_WIDTH, padding);
 			fadeInLayer.add(textLayer);
