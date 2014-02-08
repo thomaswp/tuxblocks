@@ -172,7 +172,7 @@ public abstract class Tutorial extends PlayNObject {
 		for (String line : text.split("\n")) {
 			// normalize line-ends
 			line = line.replace("\n", "").replace("\r", "");
-			if (!line.isEmpty()) {
+			if (!line.replace(" ", "").isEmpty()) {
 				String domain = "tutorial";
 				// replace platform-specific text
 				line = line.replace("<click>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICK));

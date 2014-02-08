@@ -13,7 +13,7 @@ public class Lang extends PlayNObject {
 	public enum Language {
 		
 		EN("English", "en", "Welcome"), 
-		FR("Français", "fr", "Bienvenu"), 
+//		FR("Français", "fr", "Bienvenu"), 
 		PA("ਪੰਜਾਬੀ", "pa", "ਜੀ ਆਇਆ ਨੂੰ ", "Raavi"),
 		HI("हिंदी ","hi", "स्वागतम ", "Mangal");
 		
