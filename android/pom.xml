@@ -86,6 +86,8 @@
           <resourceDirectory>${project.basedir}/res</resourceDirectory>
           <sdk>
             <platform>11</platform>
+ <!-- in the following line remove three dots between path tag and insert android sdk location path-->	
+<path>...</path>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
