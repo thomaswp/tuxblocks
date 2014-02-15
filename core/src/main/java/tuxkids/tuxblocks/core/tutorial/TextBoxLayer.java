@@ -13,11 +13,8 @@ import playn.core.Path;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-import playn.core.TextWrap;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
-import playn.core.util.TextBlock;
-import playn.core.util.TextBlock.Align;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.ImageLayerLike;
@@ -36,33 +33,34 @@ public class TextBoxLayer extends LayerWrapper {
 	// constant based on Java dimensions that created the ninepatch image.. oops
 	private final static float SPEECH_BUBBLE_CORNER_HEIGHT = 31; 
 	private final static float SPEECH_BUBBLE_CORNER_WIDTH = SPEECH_BUBBLE_CORNER_HEIGHT / 2;
-	
+
 	// the offset of the speech bubble when fully hidden
 	private final float hideHeight = graphics().height() * 0.15f;
-	
+
 	protected final GroupLayer layer, fadeInLayer;
 	protected final TextFormat format;
 	protected final ImageLayer textLayer, tuxLayer;
 	protected final ImageLayerLike backgroundLayer;
 	protected final float padding;
 	protected final float width;
-	
+
 	protected float height;
 	protected boolean hidden;
-	
+
 	public TextBoxLayer(float width) {
 		super(graphics().createGroupLayer());
 		layer = (GroupLayer) layerAddable();
 		this.width = width;
-		
+
 		fadeInLayer = graphics().createGroupLayer();
 		layer.add(fadeInLayer);
-		
+
 		padding = graphics().height() / 35;
-		format = createFormat(graphics().height() / 20);
+		format = createFormat(graphics().height() / 20)
+				.withWrapWidth(width - padding * 3 - SPEECH_BUBBLE_CORNER_WIDTH);
 
 		textLayer = graphics().createImageLayer();
-		
+
 		backgroundLayer = new NinepatchLayer(new Factory() {
 			@Override
 			public ImageLayerLike create(Image image) {
@@ -71,7 +69,7 @@ public class TextBoxLayer extends LayerWrapper {
 		}, assets().getImage(Constant.NINEPATCH_BUBBLE));
 		backgroundLayer.setDepth(-1);
 		backgroundLayer.addToLayer(fadeInLayer);
-		
+
 		tuxLayer = graphics().createImageLayer();
 		tuxLayer.setImage(assets().getImage(Constant.IMAGE_TUX));
 		layer.add(tuxLayer);
@@ -87,52 +85,52 @@ public class TextBoxLayer extends LayerWrapper {
 				cause.printStackTrace();
 			}
 		});
-		
+
 		hidden = true;
 		setVisible(false);
 		fadeInLayer.setAlpha(0);
 		tuxLayer.setTranslation(0, hideHeight);
 	}
-	
+
 	/** 
 	 * Pops up the speech bubble with the given text. 
 	 * Called from {@link TutorialLayer#showMessage(String)} 
 	 */
 	public void show(String text) {
-		
+
 		if (text != null) {
+
 			try {
-				TextLayout[] layouts = graphics().layoutText(text, format, 
-						new TextWrap(width - padding * 3 - SPEECH_BUBBLE_CORNER_WIDTH));
-				TextBlock textBlock = new TextBlock(layouts);
-				height = textBlock.bounds.height() + padding * 2 + SPEECH_BUBBLE_CORNER_HEIGHT;
-				
-				
-				CanvasImage textImage = textBlock.toImage(Align.LEFT, Colors.BLACK);
+				TextLayout layout = graphics().layoutText(text, format);
+				height = layout.height() + padding * 2 + SPEECH_BUBBLE_CORNER_HEIGHT;
+
+				CanvasImage textImage = graphics().createImage(layout.width(), layout.height());
+				textImage.canvas().setFillColor(Colors.BLACK);
+				textImage.canvas().fillText(layout, 0, 0);
 				textLayer.setImage(textImage);
 				textLayer.setTranslation(padding + SPEECH_BUBBLE_CORNER_WIDTH, padding);
+				fadeInLayer.add(textLayer);
+
+				fadeInLayer.setOrigin(0, height);
+
+				backgroundLayer.setSize(width, height);
+
 			} catch (Exception e) {
 				debug("Could not show: %s" + text);
 			}
-			
-			fadeInLayer.add(textLayer);
-			
-			fadeInLayer.setOrigin(0, height);
-			
-			backgroundLayer.setSize(width, height);
 		}
-		
+
 		setVisible(true);
 		hidden = false;
 	}
-	
+
 	/**
 	 * Hides the speech bubble with an animation.
 	 */
 	public void hide() {
 		hidden = true;
 	}
-	
+
 	/** Called from {@link TutorialLayer#paint(Clock)} */
 	public void paint(Clock clock) {
 		float speed = 0.5f;
@@ -165,16 +163,16 @@ public class TextBoxLayer extends LayerWrapper {
 		width = Math.round(width); height = Math.round(height);
 		CanvasImage image = PlayN.graphics().createImage(width, height);
 		Canvas canvas = image.canvas();
-		
+
 		canvas.setFillColor(Color.withAlpha(Colors.WHITE, 235));
 		canvas.setStrokeColor(Colors.GRAY);
 		canvas.setStrokeWidth(strokeWidth);
 		canvas.setLineCap(LineCap.ROUND);
 		canvas.setLineJoin(LineJoin.ROUND);
-		
+
 		canvas.save();
 		canvas.translate(spWidth, 0);
-		
+
 		float rectHeight = height - spHeight;
 		float rectWidth = width - spWidth;
 		canvas.fillRoundRect(strokeWidth / 2, strokeWidth / 2, 
@@ -182,16 +180,16 @@ public class TextBoxLayer extends LayerWrapper {
 		int indent = Math.round(strokeWidth / 2); 
 		canvas.strokeRoundRect(indent, indent, 
 				rectWidth - indent * 2 - 1, rectHeight - indent * 2 - 1, rad);
-		
+
 		canvas.restore();
-		
+
 		Path path = canvas.createPath();
 		path.moveTo(indent + spWidth, rectHeight - rad * 3);
 		path.lineTo(indent + spWidth, rectHeight - rad * 2);
 		path.lineTo(indent, height - strokeWidth / 2);
 		path.lineTo(indent + spWidth + rad * 2, rectHeight - indent - 1);
 		path.lineTo(indent + spWidth + rad * 3, rectHeight - indent - 1);
-		
+
 		// the clipping here is to support HTML5, where Composite.SRC seems not to work correctly
 		// still not perfect on Firefox
 		canvas.save();
@@ -200,7 +198,7 @@ public class TextBoxLayer extends LayerWrapper {
 		canvas.fillRect(0, rectHeight - rad * 4, indent + spWidth + rad * 4, height - (rectHeight - rad * 4));
 		canvas.restore();
 		canvas.strokePath(path);
-		
+
 		return image;
 	}
 }

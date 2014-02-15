@@ -3,14 +3,11 @@ package tuxkids.tuxblocks.core.utils;
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Font.Style;
-import playn.core.util.TextBlock;
-import playn.core.util.TextBlock.Align;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
-import playn.core.TextWrap;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Cache.Key;
 
@@ -269,34 +266,15 @@ public class CanvasUtils extends PlayNObject {
 	/** Creates an {@link ImageLayer} of the given text */
 	public static CanvasImage createText(String text,
 			TextFormat format, int color) {
-		if (text == null || text.isEmpty() || (text.length() < 3 && text.replace(" ", "").length() == 0)) {
-			CanvasImage image = PlayN.graphics().createImage(1, format.font.size());
-			return image;
+		if (text.isEmpty() || text == null) {
+			text = " ";
 		}
+//		debug("createText");
 		TextLayout layout = PlayN.graphics().layoutText(text, format);
 		CanvasImage image = PlayN.graphics().createImage(layout.width(), layout.height());
 		image.canvas().setFillColor(color);
 		image.canvas().fillText(layout, 0, 0);
 		return image;
-	}
-	
-	/** Creates an {@link ImageLayer} of the given text */
-	public static CanvasImage createText(String text,
-			TextFormat format, int color, Align align) {
-		return createText(text, format, color, align, -1);
-	}
-	
-	/** Creates an {@link ImageLayer} of the given text */
-	public static CanvasImage createText(String text,
-			TextFormat format, int color, Align align, float wrapWidth) {
-		if (text == null || text.isEmpty() || (text.length() < 3 && text.replace(" ", "").length() == 0)) {
-			CanvasImage image = PlayN.graphics().createImage(1, format.font.size());
-			return image;
-		}
-		TextWrap wrap = wrapWidth <= 0 ? TextWrap.MANUAL : new TextWrap(wrapWidth);
-		TextLayout[] layouts = PlayN.graphics().layoutText(text, format, wrap);
-		TextBlock block = new TextBlock(layouts);
-		return block.toImage(align, color);
 	}
 	
 	/** See {@link CanvasUtils#createText(String, TextFormat, int)}. Caches the image after creation. */

@@ -46,7 +46,7 @@ public class ContinueMenuLayer extends MenuLayer {
 		float buttonTextSize = height / 8f;
 		buttonContinue = new Button(null, false);
 		buttonContinue.setPosition(width * -0.25f, height * 0.2f);
-		setButton(buttonContinue, buttonWidth, getString("continue"), buttonTextSize, new OnReleasedListener() {
+		setButton(buttonContinue, width * 0.4f, getString("continue"), buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton && listener != null) {
@@ -59,7 +59,7 @@ public class ContinueMenuLayer extends MenuLayer {
 		
 		buttonStartOver = new Button(null, false);
 		buttonStartOver.setPosition(width * 0.25f, height * 0.2f);
-		setButton(buttonStartOver, buttonWidth, getString("start-over"), buttonTextSize, new OnReleasedListener() {
+		setButton(buttonStartOver, width * 0.4f, getString("start-over"), buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton && listener != null) {

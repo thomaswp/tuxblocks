@@ -59,7 +59,7 @@ public abstract class Audio extends PlayNObject {
 				e.printStackTrace();
 			}
 		} else {
-			setVolume(0.3f);
+			setVolume(0.5f);
 		}
 	}
 	
