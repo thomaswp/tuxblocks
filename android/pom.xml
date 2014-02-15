@@ -19,7 +19,7 @@
     <!-- you can pass these on the command line as -Dkeystore.password=foo etc. -->
     <keystore.password></keystore.password>
     <key.password></key.password>
-	  <android.maven.version>3.0.5</android.maven.version>
+	  <android.maven.version>3.6.0</android.maven.version>
   </properties>
 
   <dependencies>
@@ -86,8 +86,6 @@
           <resourceDirectory>${project.basedir}/res</resourceDirectory>
           <sdk>
             <platform>11</platform>
- <!-- in the following line remove three dots between path tag and insert android sdk location path-->	
-<path>...</path>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
