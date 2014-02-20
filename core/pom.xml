@@ -6,7 +6,7 @@
   <parent>
     <groupId>tuxkids</groupId>
     <artifactId>tuxblocks</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2</version>
   </parent>
 
   <artifactId>tuxblocks-core</artifactId>

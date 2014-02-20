@@ -1,0 +1,4 @@
+Things should work mostly on their own. 
+If you need to select a WAR directory (for the GWT plugin) use src/main/webapp.
+Before uploading, make sure to delete the gwt-unitCache directory.
+If you get a 404 after uploading, try copying the contents of the /src/main/webapp folder into the /war foler (don't bother with WEB-INF, though).
