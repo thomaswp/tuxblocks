@@ -37,6 +37,7 @@ import tuxkids.tuxblocks.core.widget.HeaderLayer;
  * Screen for selecting the difficulty of a new game.
  * Sets the properties of a new {@link Difficulty}.
  */
+
 public class DifficultyScreen extends BaseScreen {
 	
 	
