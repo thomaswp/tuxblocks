@@ -135,9 +135,15 @@ public class TitleScreen extends BaseScreen {
 		
 		//buttons to mute and unmute sound comes by key pressing
 		
-		//soundmuteButton = new Button(Constant.soundmute_Button, buttonSize, buttonSize, true);
-		//soundmuteButton.setPosition(10*width()/11, midY);
-		//fadeInLayer.add(soundmuteButton.layerAddable());
+		soundmuteButton = new Button(Constant.soundmute_Button, buttonSize, buttonSize, true);
+		soundmuteButton.setPosition(10*width()/11, midY);
+		soundmuteButton.setTint(tintPressed, tintUnpressed);
+		fadeInLayer.add(soundmuteButton.layerAddable());
+		
+		sound_unmuteButton = new Button(Constant.soundunmute_Button, buttonSize, buttonSize,true);
+		sound_unmuteButton.setPosition(10*width()/11,midY);
+		sound_unmuteButton.setTint(tintPressed,tintUnpressed);
+		
 		
 		//buttons to mute and unmute bg music
 		
@@ -150,7 +156,7 @@ public class TitleScreen extends BaseScreen {
 		
 		
 		
-		bgmuteButton.setOnReleasedListener(new OnReleasedListener() {
+		 bgmuteButton.setOnReleasedListener(new OnReleasedListener() {
 			
 		@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -162,7 +168,7 @@ public class TitleScreen extends BaseScreen {
 
 				}
 			}
-		});
+	});
 		
 		bg_unmuteButton.setOnReleasedListener(new OnReleasedListener() {
 			
@@ -175,6 +181,34 @@ public class TitleScreen extends BaseScreen {
 					fadeInLayer.add(bgmuteButton.layerAddable());
 					fadeInLayer.remove(bg_unmuteButton.layerAddable());
 					
+				}
+			}
+		});
+
+
+		soundmuteButton.setOnReleasedListener(new OnReleasedListener() {
+			
+		@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					
+					Audio.se().setVolume(0.000f);
+					fadeInLayer.add(sound_unmuteButton.layerAddable());
+					fadeInLayer.remove(soundmuteButton.layerAddable());
+
+				}
+			}
+		});
+		sound_unmuteButton.setOnReleasedListener(new OnReleasedListener() {
+			
+		@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					
+					Audio.se().setVolume(0.3f);
+					fadeInLayer.add(soundmuteButton.layerAddable());
+					fadeInLayer.remove(sound_unmuteButton.layerAddable());
+
 				}
 			}
 		});
