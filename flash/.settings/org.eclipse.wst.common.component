@@ -4,10 +4,10 @@
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-        <dependent-module archiveName="tuxblocks-core-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/tuxblocks-core/tuxblocks-core">
+        <dependent-module archiveName="tuxblocks-core-1.2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/tuxblocks-core/tuxblocks-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="tuxblocks-assets-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/tuxblocks-assets/tuxblocks-assets">
+        <dependent-module archiveName="tuxblocks-assets-1.2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/tuxblocks-assets/tuxblocks-assets">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="tuxblocks-flash"/>

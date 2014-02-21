@@ -156,7 +156,7 @@ public class TitleScreen extends BaseScreen {
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					
-					Audio.bg().stop();
+					Audio.bg().setVolume(0.000f);
 					fadeInLayer.add(bg_unmuteButton.layerAddable());
 					fadeInLayer.remove(bgmuteButton.layerAddable());
 
@@ -170,7 +170,7 @@ public class TitleScreen extends BaseScreen {
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					
-					Audio.bg().restart();
+					Audio.bg().setVolume(0.3f);
 					
 					fadeInLayer.add(bgmuteButton.layerAddable());
 					fadeInLayer.remove(bg_unmuteButton.layerAddable());
