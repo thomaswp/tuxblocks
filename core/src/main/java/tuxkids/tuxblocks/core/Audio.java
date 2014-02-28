@@ -47,11 +47,13 @@ public abstract class Audio extends PlayNObject {
 			new HashMap<String, Playable>();
 	
 	protected Playable lastPlayed;
+	protected static boolean muted;
 	
 	private Audio() {
 		soundboard = new SoundBoard();
 		//load previous volume
 		String volume = PlayN.storage().getItem(volumeKey());
+		String muted = PlayN.storage().getItem(Constant.KEY_MUTED);
 		if (volume != null) {
 			try {
 				setVolume(Float.parseFloat(volume));
@@ -61,6 +63,27 @@ public abstract class Audio extends PlayNObject {
 		} else {
 			setVolume(0.3f);
 		}
+		if (muted != null && muted.equals("true")) {
+			soundboard.muted.update(true);
+			Audio.muted = true;
+		}
+	}
+	
+	public static boolean muted() {
+		return muted;
+	}
+
+	public static void setMuted(boolean muted) {
+		if (muted != Audio.muted) {
+			if (bg != null) bg.soundboard.muted.update(muted);
+			if (se != null) se.soundboard.muted.update(muted);
+			Audio.muted = muted;
+			PlayN.storage().setItem(Constant.KEY_MUTED, "" + muted);
+		}
+	}
+	
+	public static void toggleMuted() {
+		setMuted(!muted());
 	}
 	
 	public float volume() {
@@ -120,7 +143,7 @@ public abstract class Audio extends PlayNObject {
 		public void play(String path) {
 			// fade out other background music before playing
 			for (Playable p : cache.values()) {
-				if (p.isPlaying()) {
+				if (soundboard.muted.get() || p.isPlaying()) {
 					((Loop) p).fadeOut(1000);
 				}
 			}

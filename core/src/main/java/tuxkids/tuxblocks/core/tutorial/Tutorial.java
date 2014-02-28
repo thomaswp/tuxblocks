@@ -73,6 +73,8 @@ public abstract class Tutorial extends PlayNObject {
 	public enum Tag {
 		
 		Tutorial_Repeat,
+		Tutorial_Cancel,
+		
 		Title_Play,
 		Title_Build,
 		

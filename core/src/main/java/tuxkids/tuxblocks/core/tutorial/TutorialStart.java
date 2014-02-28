@@ -12,9 +12,10 @@ public class TutorialStart extends Tutorial {
 	@Override
 	protected void addActions() {
 		addAction(null);
-		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.TextBoxHidden)
 		.addHighlight(Tag.Tutorial_Repeat)
+		.addHighlight(Tag.Tutorial_Cancel);
+		addAction(Trigger.TextBoxHidden)
 		.addHighlight(Tag.Title_Play)
 		.addHighlight(Tag.Title_Build);
 		addSegue(new TutorialPlay(themeColor, secondaryColor), Constant.TUTORIAL_PLAY_PATH, Trigger.Title_Play)

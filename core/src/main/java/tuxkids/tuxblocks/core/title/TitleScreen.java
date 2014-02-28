@@ -57,7 +57,8 @@ public class TitleScreen extends BaseScreen {
 
 
 	private TextFormat authorFormat, superFormat, optionFormat;
-	private Button tutorialButton, soundmuteButton, sound_unmuteButton, bgmuteButton, bg_unmuteButton;
+	private Button tutorialButton, muteButton;
+	private Image imageMute, imageUnmute;
 	private ImageLayerTintable startHere;
 	private LanguageLayer languageLayer;
 	
@@ -133,86 +134,23 @@ public class TitleScreen extends BaseScreen {
 		fadeInLayer.add(tutorialButton.layerAddable());
 		
 		
-		//buttons to mute and unmute sound comes by key pressing
+		//buttons to mute and unmute sounds
 		
-		soundmuteButton = new Button(Constant.soundmute_Button, buttonSize, buttonSize, true);
-		soundmuteButton.setPosition(10*width()/11, midY);
-		soundmuteButton.setTint(tintPressed, tintUnpressed);
-		fadeInLayer.add(soundmuteButton.layerAddable());
+		imageMute = PlayN.assets().getImage(Constant.BUTTON_MUTE_MUSIC);
+		imageUnmute = PlayN.assets().getImage(Constant.BUTTON_UNMUTE_MUSIC);
+		muteButton = new Button(imageMute, buttonSize / 2, buttonSize / 2, true);
+		muteButton.setPosition(muteButton.width() * 0.6f, height() - muteButton.height() * 0.6f);
+		fadeInLayer.add(muteButton.layerAddable());
 		
-		sound_unmuteButton = new Button(Constant.soundunmute_Button, buttonSize, buttonSize,true);
-		sound_unmuteButton.setPosition(10*width()/11,midY);
-		sound_unmuteButton.setTint(tintPressed,tintUnpressed);
-		
-		
-		//buttons to mute and unmute bg music
-		
-		bgmuteButton = new Button(Constant.Mute_Button, buttonSize, buttonSize, true);
-		bgmuteButton.setPosition(width()/20, midY);
-		fadeInLayer.add(bgmuteButton.layerAddable());
-		
-		bg_unmuteButton = new Button(Constant.UNMute_Button,buttonSize,buttonSize, true);
-		bg_unmuteButton.setPosition(width()/20,midY);
-		
-		
-		
-		 bgmuteButton.setOnReleasedListener(new OnReleasedListener() {
-			
-		@Override
+		muteButton.setOnReleasedListener(new OnReleasedListener() {
+			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					
-					Audio.bg().setVolume(0.000f);
-					fadeInLayer.add(bg_unmuteButton.layerAddable());
-					fadeInLayer.remove(bgmuteButton.layerAddable());
-
-				}
-			}
-	});
-		
-		bg_unmuteButton.setOnReleasedListener(new OnReleasedListener() {
-			
-		@Override
-			public void onRelease(Event event, boolean inButton) {
-				if (inButton) {
-					
-					Audio.bg().setVolume(0.3f);
-					
-					fadeInLayer.add(bgmuteButton.layerAddable());
-					fadeInLayer.remove(bg_unmuteButton.layerAddable());
-					
+					Audio.toggleMuted();
+					updateMuteButton();
 				}
 			}
 		});
-
-
-		soundmuteButton.setOnReleasedListener(new OnReleasedListener() {
-			
-		@Override
-			public void onRelease(Event event, boolean inButton) {
-				if (inButton) {
-					
-					Audio.se().setVolume(0.000f);
-					fadeInLayer.add(sound_unmuteButton.layerAddable());
-					fadeInLayer.remove(soundmuteButton.layerAddable());
-
-				}
-			}
-		});
-		sound_unmuteButton.setOnReleasedListener(new OnReleasedListener() {
-			
-		@Override
-			public void onRelease(Event event, boolean inButton) {
-				if (inButton) {
-					
-					Audio.se().setVolume(0.3f);
-					fadeInLayer.add(soundmuteButton.layerAddable());
-					fadeInLayer.remove(sound_unmuteButton.layerAddable());
-
-				}
-			}
-		});
-
 		
 		startHere = new ImageLayerTintable();
 		Lang.getImage(Constant.IMAGE_START_LOCAL, new Callback<Image>() {
@@ -222,7 +160,7 @@ public class TitleScreen extends BaseScreen {
 				startHere.setScale(0.8f * buttonSize / startHere.height());
 				startHere.setOrigin(result.width() * 0.8f, result.height());
 				startHere.setTranslation(tutorialButton.x() + tutorialButton.width() * 0.5f, 
-				tutorialButton.y() - tutorialButton.height() * 0.5f);
+						tutorialButton.y() - tutorialButton.height() * 0.5f);
 				startHere.setTint(background.primaryColor());
 			}
 
@@ -332,6 +270,12 @@ public class TitleScreen extends BaseScreen {
 		
 	}
 	
+	private void updateMuteButton() {
+		if (muteButton == null) return;
+		Image image = Audio.muted() ? imageUnmute : imageMute;
+		if (image != muteButton.image()) muteButton.setImage(image);
+	}
+	
 	private void toDifficultyScreen() {
 		// start a new game
 		Tutorial.trigger(Trigger.Title_Play);
@@ -404,7 +348,8 @@ public class TitleScreen extends BaseScreen {
 		}
 		
 		titleLayer.update(delta);
-
+		updateMuteButton();
+		
 		// show the start tutorial button iff it's not running
 		if (!Tutorial.running()) {
 			if (tutorialButton != null) {

@@ -52,10 +52,10 @@ public class Constant {
 	public final static String BG_PATH = AUDIO_PATH + "bg/";
 	public final static String SE_PATH = AUDIO_PATH  + "se/";
 	
-	public final static String soundmute_Button = preloadImage(IMAGE_PATH + "soundmute.png");
-	public final static String soundunmute_Button = preloadImage(IMAGE_PATH+ "soundunmute.png");
-	public final static String UNMute_Button= preloadImage(IMAGE_PATH+"unmute.png");
-	public final static String Mute_Button=preloadImage(IMAGE_PATH+"mute.png"); 
+	public final static String BUTTON_MUTE_SOUND = preloadImage(IMAGE_PATH + "mute_sound.png");
+	public final static String BUTTON_UNMUTE_SOUND = preloadImage(IMAGE_PATH + "unmute_sound.png");
+	public final static String BUTTON_MUTE_MUSIC=preloadImage(IMAGE_PATH + "mute_music.png"); 
+	public final static String BUTTON_UNMUTE_MUSIC= preloadImage(IMAGE_PATH + "unmute_music.png");
 	public final static String BUTTON_BACK = preloadImage(IMAGE_PATH + "back.png");
 	public final static String BUTTON_FORWARD = preloadImage(IMAGE_PATH + "forward.png");
 	public final static String BUTTON_UP = preloadImage(IMAGE_PATH + "up.png");
@@ -133,5 +133,6 @@ public class Constant {
 	public final static String KEY_BG_VOLUME = "bg-volume";
 	public final static String KEY_SE_VOLUME = "se-volume";
 	public final static String KEY_LANG = "lang";
+	public static final String KEY_MUTED = "muted";
 	public static final String KEY_GAME = "<game>";
 }

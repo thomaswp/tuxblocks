@@ -14,6 +14,7 @@ import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Action;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Indicator;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
@@ -59,10 +60,11 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		
 		float size = HeaderLayer.defaultButtonSize() * 0.7f;
 		buttonRepeat = new Button(Constant.BUTTON_RESET, size, size, true);
-	    //registerHighlightable(buttonRepeat, Tag.Tutorial_Repeat);
 		buttonRepeat.setPosition(width / 2 - size * 0.6f, height - buttonRepeat.height() * 0.75f);
 		buttonRepeat.layerAddable().setDepth(touchCatcher.depth() + 1);
 		buttonRepeat.setTint(Colors.LIGHT_GRAY, 0.4f);
+		buttonRepeat.highlighter().tags.add(Tag.Tutorial_Repeat);
+		Tutorial.addHighlightable(buttonRepeat);
 		layer.add(buttonRepeat.layerAddable());
 		
 		buttonCancel = new Button(Constant.BUTTON_CANCEL, size, size, true);
@@ -70,6 +72,8 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		buttonCancel.layerAddable().setDepth(buttonRepeat.layerAddable().depth());
 		buttonCancel.setTint(Colors.LIGHT_GRAY, 0.4f);
 		buttonCancel.setCancelSound();
+		buttonCancel.highlighter().tags.add(Tag.Tutorial_Cancel);
+		Tutorial.addHighlightable(buttonCancel);
 		layer.add(buttonCancel.layerAddable());
 		
 		buttonRepeat.setOnReleasedListener(new OnReleasedListener() {
@@ -94,7 +98,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 					touchCatcher.setVisible(true);
 				}
 			}
-		});
+		});		
 	}
 
 	public void clearIndicators() {

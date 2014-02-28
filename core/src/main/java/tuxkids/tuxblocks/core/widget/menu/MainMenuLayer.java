@@ -62,6 +62,7 @@ public class MainMenuLayer extends MenuLayer {
 			@Override
 			public void onFillChanged(float fill) {
 				Audio.bg().setVolume(fill);
+				Audio.setMuted(false);
 			}
 		});
 		
@@ -70,6 +71,7 @@ public class MainMenuLayer extends MenuLayer {
 			@Override
 			public void onFillChanged(float fill) {
 				Audio.se().setVolume(fill);
+				Audio.setMuted(false);
 			}
 		});
 	
