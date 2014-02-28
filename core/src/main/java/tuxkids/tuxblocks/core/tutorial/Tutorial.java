@@ -31,6 +31,7 @@ public abstract class Tutorial extends PlayNObject {
 		TextBoxHidden, 
 		TextBoxFullyHidden,
 		
+	
 		Title_Play, 
 		Title_Build, 
 		
@@ -70,10 +71,13 @@ public abstract class Tutorial extends PlayNObject {
 	 * {@link Highlightable} object for identification.
 	 */
 	public enum Tag {
+		
+		Tutorial_Repeat,
 		Title_Play,
 		Title_Build,
 		
 		Difficulty_Start,
+
 		
 		Defense_Towers, 
 		Defense_Grid, 

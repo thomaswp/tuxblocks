@@ -14,10 +14,10 @@
 },
 
 "tower" : {
-	"pea-shooter" : "ਛੋਟੀ ਬੰਦੂਖ ",
-	"big-shooter" : "ਵੱਡੀ ਬੰਦੂਖ ",
+	"pea-shooter" : "ਮਟਰ ਨਿਸ਼ਾਨੇਬਾਜ",
+	"big-shooter" : "ਮਿਸਾਇਲ ਸ਼ੂਟਰ",
 	"freezer" : "ਜਮਾਉਣ ਵਾਲਾ ",
-	"zapper" : "ਪਿਸਤੌਲ ",
+	"zapper" : "ਜੈਪਰ ",
 	"vertical-wall" : "ਵਰਟੀਕਲ ਕੰਧ",
 	"horizontal-wall" : "ਹੋਰੀਜੋਟਲ ਕੰਧ  "
 },

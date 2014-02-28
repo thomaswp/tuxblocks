@@ -86,6 +86,11 @@
           <resourceDirectory>${project.basedir}/res</resourceDirectory>
           <sdk>
             <platform>11</platform>
+<<<<<<< Updated upstream
+=======
+ <!-- in the following line remove three dots between path tag and insert android sdk location path-->	
+<path>/home/honey/android-sdk</path>
+>>>>>>> Stashed changes
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>

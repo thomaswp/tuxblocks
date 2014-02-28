@@ -59,6 +59,7 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		
 		float size = HeaderLayer.defaultButtonSize() * 0.7f;
 		buttonRepeat = new Button(Constant.BUTTON_RESET, size, size, true);
+	    //registerHighlightable(buttonRepeat, Tag.Tutorial_Repeat);
 		buttonRepeat.setPosition(width / 2 - size * 0.6f, height - buttonRepeat.height() * 0.75f);
 		buttonRepeat.layerAddable().setDepth(touchCatcher.depth() + 1);
 		buttonRepeat.setTint(Colors.LIGHT_GRAY, 0.4f);
