@@ -287,6 +287,15 @@ public class HashCode {
 		inRightEquals = false;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof HashCode)
+		{
+			return this.equals((HashCode)obj);
+		}
+		return false;
+	}
+	
 	/** 
 	 * Compares this HashCode to another, based on the fields added by
 	 * its Hashable
