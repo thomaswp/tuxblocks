@@ -495,7 +495,7 @@ for(k=0;k<50;k++)
 	{
 		// find the rightmost zero bit of index
 		int j=0, n=index;
-		while(n%2==1){ n=n>>1; j++; }
+		while((n&1)==1){ n=n>>1; j++; }
 
 		for(int k=0;k<dim;k++) { x_int[k]^=v[k][j];
 		x[k]=((double)x_int[k])/N; }

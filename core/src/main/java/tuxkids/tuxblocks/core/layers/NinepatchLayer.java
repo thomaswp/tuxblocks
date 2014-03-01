@@ -197,7 +197,7 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 	// gets the length of the given section (width or height), given
 	// the list of dimensions and the total width
 	private float getLength(int index, float total, int[] dims) {
-		if (index % 2 == 1) {
+		if ((index & 1) == 1) {
 			float d = total;
 			for (int i = 0; i < dims.length; i += 2) d -= dims[i];
 			return d / (dims.length / 2);
