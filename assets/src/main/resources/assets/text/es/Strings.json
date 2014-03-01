@@ -1,0 +1,54 @@
+{
+
+"menu" : {
+	"round":"Round",
+	"about-tuxblocks" : "About TuxBlocks",
+	"music-volume" : "Music Volume",
+	"effects-volume" : "Effects Volume",
+	"save-and-quit" : "Save and Quit",
+	"game-over" : "Game Over",
+	"victory" : "Victory!",
+	"continue" : "Continue",
+	"continue-from-save" : "Continue from save?",
+	"start-over" : "Start Over"
+},
+
+"tower" : {
+	"pea-shooter" : "Pea Shooter",
+	"big-shooter" : "B.I.G. Shooter",
+	"freezer" : "Freezer",
+	"zapper" : "Zapper",
+	"vertical-wall" : "Vertical Wall",
+	"horizontal-wall" : "Horizontal Wall"
+},
+
+"title" : {
+	"a-tux4kids-game" : "a Tux4Kids game",
+	"by" : "by",
+	"mentored-by" : "mentored by",
+	"play" : "Play",
+	"build" : "Build"
+},
+
+"difficulty" : {
+	"choose-difficulty" : "Choose Difficulty",
+	"math-difficulty" : "Math difficulty:",
+	"sample-problem" : "Sample problem:",
+	"game-difficulty" : "Game difficulty:",
+	"game-difficulty-desc" : "How difficult Blocks are to destroy",
+	"solve-time" : "Solve time:",
+	"solve-time-desc" : "How long you have to solve problems between rounds"	
+},
+
+"tutorial" : {
+	"click-pc" : "click",
+	"click-mobile" : "tap",
+	"clicking-pc" : "clicking",
+	"clicking-mobile" : "tapping",
+	"mouse-pc" : "mouse",
+	"mouse-mobile" : "finger",
+	"menu-pc" : "the Esc button on the keyboard",
+	"menu-mobile" : "the Android menu button"
+}
+
+}

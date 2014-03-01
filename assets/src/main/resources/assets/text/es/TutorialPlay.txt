@@ -1,0 +1,93 @@
+This screen lets you choose the difficulty for your game. The settings will make more sense once you’ve played some, so don't worry about them yet. The buttons at the top let you go back or start the game. When you're ready, start the game.
+
+This is the Grid. Blocks appear and try to get across, and it's your job to stop them.
+
+You do that by placing towers on the grid. Towers will shoot at the blocks to destroy them. You can make a maze out of towers to slow the blocks down.
+
+There are different types of towers. Pea Shooters are weak but good for mazing. The B.I.G. Shooter fires a missile which hits groups of blocks. Freezers slow down blocks. Zappers shoot lightning, which jumps from block to block. Walls won't shoot, but they help you maze quicker. Try dragging a Pea Shooter onto the Grid.
+
+Great! Now, if a block gets through your maze, you lose a life. If you lose all your lives, it’s game over. Blocks will come in Rounds, with a break in between. The menu at the top of the screen shows your Lives and the Countdown until the next round. Right now the timer's paused, so don't worry.
+
+The menu also shows how many upgrades you have. You get upgrades by earning points, and you earn points by destroying blocks or doing math. You can use upgrades to make Towers stronger.
+
+To upgrade a tower, you need to select it. To make it easier to select a Tower, you can double-<click> the Grid to zoom in. Try it.
+
+Now <click> on a Tower to select it. If you’re having trouble, you can hold your <mouse> down on the Grid to bring up a circle, then drag the circle over to a Tower to select it.
+
+Now upgrade the Tower by pressing the Upgrade button. Your Tower will change color to show it's been upgraded. You can only upgrade a Tower twice, and the better a Tower is, the more is costs to upgrade it. The number on the upgrade button tells you how much the upgrade costs.
+
+Good job! You can also sell Towers by <clicking> the Sell button, and the pressing it again to confirm. This will destroy your Tower and give you some extra points.
+
+Now you can double-<click> to zoom back out.
+
+Place a few more Towers and you’ll be ready for your first Round. You can trigger the round early by hitting the Go button!
+
+You survived your first Round, but we’re going to need more Towers for the next one. After a round, you can get more Towers by pressing the Plus button.
+
+Each button here shows you a problem you can solve and the reward you’ll get for solving it. New problems appear after every round. You usually have limited time between rounds, so choose problems wisely. For now, try <clicking> on the first one.
+
+This is the Solve screen. Here you can see the equation you selected before, created using Blocks. Unlike numbers on a page, these Blocks don't sit still! You can drag them around the screen to help solve the equation. Why don't you try picking up the [×4] block and putting it back down?
+
+Great! Try again, but this time, drag the [×4] block over to the [16] block and drop it on top.
+
+Did you notice what happened when you crossed the equals sign? Your [×4] turned into a [÷4]! It's just like we divided both sides of the equation by 4. The [×4] on the left side cancelled out, and we're left with a [÷4] on the right side.
+
+There's a also a little gray circle that appeared between the [16] block and the [÷4]. That's because 16 is divisible by 4. The blocks are giving you a chance to simplify them into one number. To do that, <click> on the gray circle.
+
+This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 16/4. The problem is written at the top of the screen. This one's pretty simple, right?
+
+You can solve the problem by <clicking> on the right solution. If you don't see the number you want, you can pan around by dragging the screen. 
+
+For big numbers, you can also type in the answer.
+
+When you're looking for a number, remember that going up or down one row makes the number change by 10, and going right or left one column makes it change by 1. Now, try finding the correct answer.
+
+When you think you've got it, press the Ok button. If you're wrong, the check will turn into an X to let you know. Also, if you ever scroll too far in the wrong direction, press the Center button to get back to where you started.
+
+Good job. Now, just like with multiplication and division, you can drag addition and subtraction blocks from one side of the equation to the other. See if you can solve the rest of the equation.
+
+When you've finished, hit the check mark that appears in top left corner to confirm.
+
+Let's try one more problem that's a little more complex.
+
+You might notice some things are a little different in this equation. First of all, there's a funny looking block on the right side of the equation. It's actually not a block at all, but an extra space to put a block. Try picking up the [8] and moving it to the blank space.
+
+Great. But why would you need another space? Well, with more complex equations, sometimes it's helpful to break up an expression into two expressions. Try grabbing the [-7] block and dragging it over to the blank space.
+
+Did you see what happened? The [÷4] distributed to the [-7]. Only now it's a [7] because you dragged it across the equals sign.
+
+You can also combine like terms by dragging the [7/4] back to the [x/4]. Try it out.
+
+So that's great, but how are we going to get [x] by itself to solve this equation? We need to get rid of that [÷4] block, but you may have noticed that you can't drag the times or divide blocks in this equation. You can tell because they're not flashing like all the other blocks. 
+
+That's because there's more than one expression on the left side of the equation. We can still cancel out the [÷4], but it won't be quite as simple as dragging the block to the other side. To cancel out a times or divide block that isn't flashing, you double-<click> on it. Try it with the [÷4].
+
+Great. Did you see what we did? We just multiplied the whole equation by 4. It looks a lot uglier right now, but sometimes in Math you have to make something look worse before it can get better. Let's start with the easy stuff: cancel out the [×4] and [÷4] by <clicking> on the gray circle between them.
+
+That looks a little better. Now we can also simplify two modifiers, like the [×4] and [×3]. Try <clicking> on the gray circle between them.
+
+Ok, you remember what to do here. Simplify the expression.
+
+Nice, now we're getting closer. We can probably go ahead and move the [-7] over to the right side.
+
+Ok, now we're ready to combine our [x] blocks. You can do that by dragging one on top of the other.
+
+Wonderful. Do you see the [×13] flashing? That means you can drag it again because we're down to just 1 expression on each side. I think you've got it from here, but one more thing first: If you ever get completely stuck on an equation, you can reset it by hitting the Reset button. 
+
+Ok, now try to finish solving the equation. 
+
+Oh, I almost forget. If you're solving a problem that gets too hard for you to do in your head, you can bring up the Scratch Work screen by pressing the Scratch button in the bottom left corner.
+
+You can draw with your <mouse> here, or clear your work with the Clear button in the bottom right corner. Play around with it and hit the Scratch button again to close it. 
+
+Great job! Did you notice the bars up at the top of the screen. They show your level for the 4 different operators and how close you are to leveling up. You gain experience for solving arithmetic problems correctly on your first try. The harder the problem you solve, the more experience you gain.
+
+As you level up, some problems will solve themselves, instead of making you go to the Simplify screen. After all, how many times do you need to do an easy addition problem before you've learned how?
+
+In fact, if you've been following this tutorial exactly, you've probably already leveled up your division. If you try the next problem, you may find the easy division is solved automatically. Check that out if you'd like, and when you're done, come back to the Grid screen.
+
+Notice how you now have extra Pea Shooters from all the problems you solved! And you're going to need them - later levels will have Blocks that are tougher, faster and even some that can fly over your Towers!
+
+That's about all for this Tutorial. You can start it over from Title screen, or learn about Build mode. You're welcome to keep playing this game, but you may want to start a new game with your choice of difficulty. 
+
+To quit, bring up the menu by pressing <esc>. There you can adjust the game's volume or Save and Quit, though you can only save between rounds. When you start a game, you can either continue your last save or start a new game. Good luck and have fun!

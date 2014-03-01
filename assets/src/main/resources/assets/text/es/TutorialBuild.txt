@@ -1,0 +1,21 @@
+Welcome to the Build screen. Here you can create your own problems to solve. Maybe you have some homework that you'd rather solve with Blocks than on paper. Well, here's the place to do it.
+
+It's pretty simple. Things work a lot like the Solve screen. The main difference is that you can pick up and move any block you want to. That means you can create problems that don't have a real solution, so be careful.
+
+Drag a Block from the left panel to one of the empty blocks on the main screen to add it to the equation.
+
+Great. You probably noticed that a new blank block appeared. The game will let you have up to 4 expressions in your equation, and it will add blank ones for you automatically.
+
+Now, you probably want to add numbers other than 1 to the equation. To change the value of the blocks on the left panel, you can <click> the left and right buttons near the number 1 at the top.
+
+Alternately, you can <click> on the circle with the number inside it. This will bring you to a screen where you can select a number, just like the Simplify screen. Give it a try.
+
+Now find a number for the block you want to add.
+
+Great. Hit the Ok button to confirm.
+
+Now you can add blocks with that value. You can also remove a block by dragging it to the left panel. When you've got an equation you want to try out, <click> the Ok button to confirm.
+
+Now we're on the Solve screen, which works just like it does in Play mode. Go ahead and see if you can solve your equation. Maybe it doesn't have a real solution? Give it a try.
+
+Good job. Well, that's all for this Tutorial. If you ever need this repeated, you can always start the tutorial again from the Title screen.
