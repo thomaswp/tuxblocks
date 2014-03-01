@@ -84,6 +84,7 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 	public void setInteractive(boolean interactive) {
 		setInteractive(interactive);
 	}
+	
 
 	@Override
 	public GroupLayer parent() {

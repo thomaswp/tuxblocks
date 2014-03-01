@@ -42,7 +42,7 @@ public class LanguageMenu extends MenuLayer {
 	private boolean closing;
 	private ScreenStack screens;
 	
-	public LanguageMenu() {
+	private LanguageMenu() {
 		super(graphics().width() * 0.7f, graphics().height() * 0.7f);
 		
 		buttons = new Button[Language.values().length];
