@@ -1,54 +1,54 @@
 {
 
 "menu" : {
-	"round":"Round",
-	"about-tuxblocks" : "About TuxBlocks",
-	"music-volume" : "Music Volume",
-	"effects-volume" : "Effects Volume",
-	"save-and-quit" : "Save and Quit",
-	"game-over" : "Game Over",
-	"victory" : "Victory!",
-	"continue" : "Continue",
-	"continue-from-save" : "Continue from save?",
-	"start-over" : "Start Over"
+	"round":"Ronda",
+	"about-tuxblocks" : "Sobre TuxBlocks",
+	"music-volume" : "Volumen de Música",
+	"effects-volume" : "Volumen de Sonidas",
+	"save-and-quit" : "Guardar y Salir",
+	"game-over" : "FIN",
+	"victory" : "¡Victoria!",
+	"continue" : "Continuar",
+	"continue-from-save" : "Continuar con partida guardada?",
+	"start-over" : "Empezar de nuevo"
 },
 
 "tower" : {
-	"pea-shooter" : "Pea Shooter",
-	"big-shooter" : "B.I.G. Shooter",
-	"freezer" : "Freezer",
-	"zapper" : "Zapper",
-	"vertical-wall" : "Vertical Wall",
-	"horizontal-wall" : "Horizontal Wall"
+	"pea-shooter" : "Cerbatana",
+	"big-shooter" : "El G.R.A.N.D.E.",
+	"freezer" : "Gélidotorre",
+	"zapper" : "Electrotorre",
+	"vertical-wall" : "Pared Vertical",
+	"horizontal-wall" : "Pared Horizontal"
 },
 
 "title" : {
-	"a-tux4kids-game" : "a Tux4Kids game",
-	"by" : "by",
-	"mentored-by" : "mentored by",
-	"play" : "Play",
-	"build" : "Build"
+	"a-tux4kids-game" : "un juego por Tux4Kids",
+	"by" : "por",
+	"mentored-by" : "guiado por",
+	"play" : "Jugar",
+	"build" : "Editor"
 },
 
 "difficulty" : {
-	"choose-difficulty" : "Choose Difficulty",
-	"math-difficulty" : "Math difficulty:",
-	"sample-problem" : "Sample problem:",
-	"game-difficulty" : "Game difficulty:",
-	"game-difficulty-desc" : "How difficult Blocks are to destroy",
-	"solve-time" : "Solve time:",
-	"solve-time-desc" : "How long you have to solve problems between rounds"	
+	"choose-difficulty" : "Eligir la Dificultad",
+	"math-difficulty" : "Dificultad de Mate:",
+	"sample-problem" : "Ejemplo:",
+	"game-difficulty" : "Dificultad de Defensa:",
+	"game-difficulty-desc" : "El vigor de las enemigas",
+	"solve-time" : "Tiempo de resolver:",
+	"solve-time-desc" : "El tiempo, en segundos, para resolver ecuaciónes entre rondas"	
 },
 
 "tutorial" : {
-	"click-pc" : "click",
-	"click-mobile" : "tap",
-	"clicking-pc" : "clicking",
-	"clicking-mobile" : "tapping",
-	"mouse-pc" : "mouse",
-	"mouse-mobile" : "finger",
-	"menu-pc" : "the Esc button on the keyboard",
-	"menu-mobile" : "the Android menu button"
+	"click-pc" : "clic",
+	"click-mobile" : "tecleo",
+	"clicking-pc" : "hacer clic",
+	"clicking-mobile" : "teclear",
+	"mouse-pc" : "ratón",
+	"mouse-mobile" : "dedo",
+	"menu-pc" : "el botón Esc en el teclado",
+	"menu-mobile" : "el botón Android menú"
 }
 
 }
