@@ -82,7 +82,7 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 
 	@Override
 	public void setInteractive(boolean interactive) {
-		setInteractive(interactive);  //TODO isn't this an infinite loop?
+		//setInteractive(interactive);  //TODO isn't this an infinite loop?
 	}
 	
 

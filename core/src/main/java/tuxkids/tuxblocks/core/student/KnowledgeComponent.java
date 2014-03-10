@@ -1,16 +1,27 @@
 package tuxkids.tuxblocks.core.student;
 
-public class KnowledgeComponent {
+import java.io.Serializable;
+
+public class KnowledgeComponent implements Serializable {
 	
 	private String humanDescription;
 	
-	private float L_0, slip, guess, transition;		//TODO make final
+	private final double L_0, slip, guess, transition;	
 	
-	private float probLearned;
-	
-	
+	private double probLearned;
 	
 	
+
+	public KnowledgeComponent(String humanDescription, double initialLearn, double slip,
+			double guess, double transition) {
+
+		this.humanDescription = humanDescription;
+		this.L_0 = initialLearn;
+		this.slip = slip;
+		this.guess = guess;
+		this.transition = transition;
+	}
+
 	public void studentAnswered(boolean wasCorrect) {
 		
 	}
@@ -19,7 +30,7 @@ public class KnowledgeComponent {
 		return humanDescription;
 	}
 	
-	public float probLearned() {
+	public double probLearned() {
 		return probLearned;
 	}
 
