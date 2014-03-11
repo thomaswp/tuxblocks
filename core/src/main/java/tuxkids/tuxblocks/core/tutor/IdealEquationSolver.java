@@ -7,8 +7,6 @@ import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
-import tuxkids.tuxblocks.core.solve.blocks.Sprite;
-import tuxkids.tuxblocks.core.solve.blocks.Sprite.Action;
 import tuxkids.tuxblocks.core.student.StudentAction;
 
 public class IdealEquationSolver {
@@ -33,7 +31,7 @@ public class IdealEquationSolver {
 			final BaseBlock dragFrom = mySide.get(i);
 			List<Block> draggableBlocks = new ArrayList<Block>();
 			for (Block block : dragFrom.getAllBlocks()) {
-//				if (block.)
+//				if (block.ca)
 			}
 		}
 		

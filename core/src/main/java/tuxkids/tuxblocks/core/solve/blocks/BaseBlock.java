@@ -116,16 +116,16 @@ public abstract class BaseBlock extends Block {
 	
 
 	/** Returns the index of the given block in this expression */
-	public BlockIndex indexOf(Block block) {
+	public ExpressionBlockIndex indexOf(Block block) {
 		if (block == this) {
-			return new BlockIndex(0, 0);
+			return new ExpressionBlockIndex(0, 0);
 		} else {
 			return modifiers.indexOf(block).oneDeeper();
 		}
 	}
 	
 	/** Returns the Block with the given index in this expression */
-	public Block getBlockAtIndex(BlockIndex index) {
+	public Block getBlockAtIndex(ExpressionBlockIndex index) {
 		if (index.depth == 0 && index.index == 0) {
 			return this;
 		} else if (index.depth > 0) {
@@ -157,7 +157,7 @@ public abstract class BaseBlock extends Block {
 	}
 	
 	@Override
-	protected boolean canRelease(boolean openSpace) {
+	protected boolean canRelease(boolean multiExpression) {
 		return true;
 	}
 	

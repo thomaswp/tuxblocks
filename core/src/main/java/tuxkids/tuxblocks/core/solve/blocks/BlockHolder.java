@@ -38,7 +38,7 @@ public class BlockHolder extends BaseBlock {
 	}
 
 	@Override
-	public boolean canRelease(boolean open) {
+	public boolean canRelease(boolean multiExpression) {
 		return false;
 	}
 	

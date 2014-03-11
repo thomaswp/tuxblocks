@@ -123,20 +123,22 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	}
 	
 	/** Returns the index of the given block in this expression */
-	public BlockIndex indexOf(Block block) {
+	public ExpressionBlockIndex indexOf(Block block) {
 		for (int i = 0; i < children.size(); i++) {
 			if (children.get(i) == block) {
-				return new BlockIndex(0, i);
+				return new ExpressionBlockIndex(0, i);
 			}
 		}
 		if (modifiers != null) {
-			return modifiers.indexOf(block).oneDeeper();
+			ExpressionBlockIndex parentIndex = modifiers.indexOf(block);
+			if (parentIndex != null) parentIndex = parentIndex.oneDeeper();
+			return parentIndex;
 		}
 		return null;
 	}
 	
 	/** Returns the Block with the given index in this expression */
-	public Block getBlockAtIndex(BlockIndex index) {
+	public Block getBlockAtIndex(ExpressionBlockIndex index) {
 		if (index.depth == 0) {
 			if (index.index < children.size()) return children.get(index.index);
 		} else if (modifiers != null) {

@@ -285,12 +285,8 @@ public class BlockController extends PlayNObject {
 	}
 	
 	public void update(int delta) {
-		int bb = 0;
-		for (BaseBlock s : equation) {
-			if (!(s instanceof BlockHolder)) bb++;
-		}
-		updateSide(delta, leftSide(), bb);
-		updateSide(delta, rightSide(), bb);
+		updateSide(delta, leftSide());
+		updateSide(delta, rightSide());
 		if (dragging != null) dragging.update(delta);
 		if (refreshEquation) {
 			refreshEquationImage();
@@ -299,15 +295,8 @@ public class BlockController extends PlayNObject {
 	}
 	
 	//updates the BaseBlocks on the given side
-	private void updateSide(int delta, List<BaseBlock> side, int totalBlocks) {
-		boolean multiExpression = totalBlocks > 2; // can't drag factors if there are >2 expressions
-		if (!multiExpression) {
-			int bb = 0;
-			for (BaseBlock s : side) {
-				if (!(s instanceof BlockHolder)) bb++;
-			}
-			if (bb > 1) multiExpression = true; // or if there is >1 expression on any given side
-		}
+	private void updateSide(int delta, List<BaseBlock> side) {
+		boolean multiExpression = EquationManipulator.isMultiExpression(equation, side);
 		for (BaseBlock sprite : side) {
 			boolean moveBase = false;
 			for (BaseBlock other : side) {
