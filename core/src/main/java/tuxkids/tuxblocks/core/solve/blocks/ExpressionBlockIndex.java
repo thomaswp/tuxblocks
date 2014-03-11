@@ -20,6 +20,6 @@ public class ExpressionBlockIndex {
 	
 	@Override
 	public String toString() {
-		return Formatter.format("{%d,  %d}", depth, index);
+		return Formatter.format("{%d, %d}", depth, index);
 	}
 }

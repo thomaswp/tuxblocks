@@ -118,6 +118,25 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 		return createCopyBuilder().createMutableEquation();
 	}
 	
+	
+	public EquationBlockIndex indexOf(Block block) {
+		int i = 0;
+		for (BaseBlock expression : this) {
+			ExpressionBlockIndex index = expression.indexOf(block);
+			if (index != null) return new EquationBlockIndex(i, index);
+			i++;
+		}
+		return null;
+	}
+	
+	public Block getBlockAtIndex(EquationBlockIndex index) {
+		if (index.expressionIndex < leftSide.size()) {
+			return leftSide.get(index.expressionIndex).getBlockAtIndex(index.blockIndex);
+		} else if (index.expressionIndex - leftSide.size() < rightSide.size()) {
+			return rightSide.get(index.expressionIndex - leftSide.size()).getBlockAtIndex(index.blockIndex);
+		}
+		return null;
+	}
 
 	/** An empty equation */
 	public static final Equation NOOP = new Builder()

@@ -12,7 +12,7 @@ public class EquationManipulator {
 		return equation;
 	}
 	
-	private EquationManipulator(Equation equation) {
+	public EquationManipulator(Equation equation) {
 		this.equation = equation.mutableCopy();
 	}
 	

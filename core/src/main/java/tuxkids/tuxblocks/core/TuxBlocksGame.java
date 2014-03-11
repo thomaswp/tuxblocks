@@ -51,10 +51,6 @@ public class TuxBlocksGame extends Game.Default {
 		this.languageCode = languageCode;
 //		Debug.write("Setting default language to: " + languageCode);
 	}
-	
-	public TuxBlocksGame() {
-		this(null);
-	}
 
 	private static void reset() {
 		//Clear static classes for Android because the JVM is maintained
@@ -66,7 +62,7 @@ public class TuxBlocksGame extends Game.Default {
 	}
 	
 	@Override
-	public void init() {	
+	public void init() {
 		reset();
 		
 		Constant.preloadImages();

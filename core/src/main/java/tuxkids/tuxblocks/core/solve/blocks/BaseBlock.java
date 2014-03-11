@@ -120,7 +120,9 @@ public abstract class BaseBlock extends Block {
 		if (block == this) {
 			return new ExpressionBlockIndex(0, 0);
 		} else {
-			return modifiers.indexOf(block).oneDeeper();
+			ExpressionBlockIndex index = modifiers.indexOf(block); 
+			if (index != null) index = index.oneDeeper();
+			return index;
 		}
 	}
 	
@@ -140,7 +142,9 @@ public abstract class BaseBlock extends Block {
 		performAction(new Action() {
 			@Override
 			public void run(Sprite sprite) {
-				blocks.add((Block) sprite);
+				if (sprite instanceof Block) {
+					blocks.add((Block) sprite);
+				}
 			}
 		});
 		return blocks;
