@@ -12,6 +12,7 @@ import pythagoras.f.Vector;
  */
 public class TimesRenderer extends ModifierRenderer {
 	
+	/** Used to indicate an uncalculated result in a hovering preview */
 	public final static int UNKNOWN_NUMBER = Integer.MAX_VALUE;
 	
 	public TimesRenderer(Renderer base, int[] operands) {
@@ -28,12 +29,16 @@ public class TimesRenderer extends ModifierRenderer {
 		super(base, factor);
 	}
 
+	// indicates if the child is simply 'x' and requires no parentheses for factors; eg. 3x not 3(x)
+	private boolean useParentheses() {
+		return !((base instanceof BaseRenderer) && "x".equals(((BaseRenderer) base).text()));
+	}
+
 	@Override
 	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
 		final ExpressionWriter childWriter = base.getExpressionWriter(textFormat);
 		final ExpressionWriter factorWriter = modifier.getExpressionWriter(textFormat);
-		// indicates if the child is simply 'x' and requires no parentheses for factors; eg. 3x not 3(x)
-		final boolean useParentheses = !((base instanceof BaseRenderer) && "x".equals(((BaseRenderer) base).text()));
+		final boolean useParentheses = useParentheses();
 		
 		return new ParentExpressionWriter(textFormat) {
 			
@@ -89,5 +94,16 @@ public class TimesRenderer extends ModifierRenderer {
 				canvas.restore();
 			}
 		};
+	}
+
+	@Override
+	public String getPlainText() {
+		boolean useParentheses = useParentheses();
+		StringBuilder sb = new StringBuilder();
+		sb.append(modifier.getPlainText());
+		if (useParentheses) sb.append("(");
+		sb.append(base.getPlainText());
+		if (useParentheses) sb.append(")");
+		return sb.toString();
 	}
 }

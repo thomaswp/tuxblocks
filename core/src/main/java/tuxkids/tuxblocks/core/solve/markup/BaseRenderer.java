@@ -45,4 +45,9 @@ public class BaseRenderer extends Renderer {
 			}
 		};
 	}
+
+	@Override
+	public String getPlainText() {
+		return text;
+	}
 }

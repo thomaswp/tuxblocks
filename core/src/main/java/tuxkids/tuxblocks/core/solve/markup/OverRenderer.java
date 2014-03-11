@@ -60,4 +60,21 @@ public class OverRenderer extends ModifierRenderer {
 			}
 		};
 	}
+
+	@Override
+	public String getPlainText() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		sb.append(base.getPlainText());
+		sb.append(") / ");
+		boolean useParentheses = ((FactorGroupRenderer) modifier).operands.length > 1; 
+		if (useParentheses) {
+			sb.append("(");
+		}
+		sb.append(modifier.getPlainText());
+		if (useParentheses) {
+			sb.append(")");
+		}
+		return sb.toString();
+	}
 }

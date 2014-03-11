@@ -35,4 +35,7 @@ public abstract class Renderer extends PlayNObject {
 	 * renderer's expression using the given TextFormat.
 	 */
 	public abstract ExpressionWriter getExpressionWriter(TextFormat textFormat);
+	
+	/** Returns a plain text representation of this renderer's content */
+	public abstract String getPlainText();
 }

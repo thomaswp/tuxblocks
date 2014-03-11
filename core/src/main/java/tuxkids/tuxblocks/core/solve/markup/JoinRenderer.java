@@ -55,4 +55,15 @@ public class JoinRenderer extends Renderer {
 		};
 	}
 
+	@Override
+	public String getPlainText() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(a.getPlainText());
+		sb.append(" ");
+		sb.append(symbol);
+		sb.append(" ");
+		sb.append(b.getPlainText());
+		return sb.toString();
+	}
+
 }

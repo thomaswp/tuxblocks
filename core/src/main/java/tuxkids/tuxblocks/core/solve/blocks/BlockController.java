@@ -40,6 +40,7 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
+import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 /**
@@ -233,6 +234,7 @@ public class BlockController extends PlayNObject {
 		Renderer lhs = getRenderer(leftSide());
 		Renderer rhs = getRenderer(rightSide());
 		Renderer equation = new JoinRenderer(lhs, rhs, "=");
+//		Debug.write(equation.getPlainText()); // to debug the equation to text function 
 		
 		// adjust the text size for the number of lines 
 		float textSize = equationImageHeight * 0.6f / Math.max(3, equation.lines());

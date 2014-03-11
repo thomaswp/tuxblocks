@@ -41,4 +41,9 @@ public class BlankRenderer extends Renderer {
 		};
 	}
 
+	@Override
+	public String getPlainText() {
+		return "[?]";
+	}
+
 }
