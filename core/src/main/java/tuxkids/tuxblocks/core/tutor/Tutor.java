@@ -53,9 +53,8 @@ public class Tutor {
 	}
 
 
-	public static KnowledgeComponent getKnowledgeComponentForAction(StudentAction a) {
-		//going to involve model
-		return null;
+	public KnowledgeComponent getKnowledgeComponentForAction(StudentAction a) {
+		return model.getKnowledgeComponentForAction(a);
 	}
 
 }

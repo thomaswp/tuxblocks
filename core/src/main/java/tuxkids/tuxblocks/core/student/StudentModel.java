@@ -14,10 +14,6 @@ public interface StudentModel {
 	public static final double TRANSITION_MED  =.1;
 	public static final double TRANSITION_LOW =.05;
 	
-	
-	
-
-
-	
+	KnowledgeComponent getKnowledgeComponentForAction(StudentAction a);
 	
 }

@@ -2,6 +2,20 @@ package tuxkids.tuxblocks.core.student;
 
 public class StudentAction{
 
-	public boolean wasValidAction;
+	public boolean wasValidAction;	
+	public ActionType type;
 	
+	public StudentAction(boolean wasValidAction, ActionType type) {
+		this.wasValidAction = wasValidAction;
+		this.type = type;
+	}
+	
+}
+
+enum ActionType{
+	ADD_INTEGERS, SUBTRACT_INTEGERS, MULTIPLY_INTEGERS_LOW,MULTIPLY_INTEGERS_MED,MULTIPLY_INTEGERS_HIGH,
+	 DIVIDE_INTEGERS_LOW,DIVIDE_INTEGERS_MED,DIVIDE_INTEGERS_HIGH, ADD_UNKNOWNS, SUBTRACT_UNKNOWNS,
+	 ADD_EQUATION_SIDES, SUBTRACT_EQUATION_SIDES, MULTIPLY_SINGLE_SIDE, MULTIPLY_MULTIPLE_SIDES,
+	 DIVIDE_SINGLE_SIDE, DIVIDE_MULTIPLE_SIDES, DISTRIBUTION, COMBINATION, 
+	 BUILDING_SYMBOLIC_EQUATIONS, BUILDING_WRITTEN_EQUATIONS
 }
