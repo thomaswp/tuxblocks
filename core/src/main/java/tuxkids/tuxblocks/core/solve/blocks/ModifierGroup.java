@@ -122,6 +122,29 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		return blockListener != null && !blockListener.inBuildMode();
 	}
 	
+	/** Returns the index of the given block in this expression */
+	public BlockIndex indexOf(Block block) {
+		for (int i = 0; i < children.size(); i++) {
+			if (children.get(i) == block) {
+				return new BlockIndex(0, i);
+			}
+		}
+		if (modifiers != null) {
+			return modifiers.indexOf(block).oneDeeper();
+		}
+		return null;
+	}
+	
+	/** Returns the Block with the given index in this expression */
+	public Block getBlockAtIndex(BlockIndex index) {
+		if (index.depth == 0) {
+			if (index.index < children.size()) return children.get(index.index);
+		} else if (modifiers != null) {
+			return modifiers.getBlockAtIndex(index.oneShallower());
+		}
+		return null;
+	}
+	
 	@Override
 	public void initSpriteImpl() {
 		super.initSpriteImpl();
@@ -464,7 +487,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	}
 	
 	@Override
-	protected void performAction(Action action) {
+	public void performAction(Action action) {
 		super.performAction(action);
 		for (ModifierBlock child : children) child.performAction(action);;
 		if (modifiers != null) modifiers.performAction(action);

@@ -376,7 +376,7 @@ public class BlockController extends PlayNObject {
 		}
 	}
 	
-	// can the dragging Block be dropped on teh given Block at the given position
+	// can the dragging Block be dropped on the given Block at the given position
 	private boolean canDropOn(BaseBlock base, float x, float y) {
 		if (base.intersects(dragging)) {
 			if (base instanceof BlockHolder && dragging instanceof VerticalModifierBlock) {

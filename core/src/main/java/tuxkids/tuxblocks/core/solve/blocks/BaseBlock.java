@@ -1,5 +1,8 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import playn.core.GroupLayer;
 import playn.core.Layer;
 import playn.core.util.Clock;
@@ -109,6 +112,38 @@ public abstract class BaseBlock extends Block {
 	public void addBlockListener(BlockListener listener) {
 		super.addBlockListener(listener);
 		modifiers.addBlockListener(listener);
+	}
+	
+
+	/** Returns the index of the given block in this expression */
+	public BlockIndex indexOf(Block block) {
+		if (block == this) {
+			return new BlockIndex(0, 0);
+		} else {
+			return modifiers.indexOf(block).oneDeeper();
+		}
+	}
+	
+	/** Returns the Block with the given index in this expression */
+	public Block getBlockAtIndex(BlockIndex index) {
+		if (index.depth == 0 && index.index == 0) {
+			return this;
+		} else if (index.depth > 0) {
+			return modifiers.getBlockAtIndex(index.oneShallower());
+		}
+		return null;
+	}
+	
+	/** Creates and returns a list of all Blocks (including this) in this expression */
+	public List<Block> getAllBlocks() {
+		final ArrayList<Block> blocks = new ArrayList<Block>();
+		performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				blocks.add((Block) sprite);
+			}
+		});
+		return blocks;
 	}
 	
 	@Override
@@ -391,7 +426,7 @@ public abstract class BaseBlock extends Block {
 	}
 	
 	@Override
-	protected void performAction(Action action) {
+	public void performAction(Action action) {
 		super.performAction(action);
 		modifiers.performAction(action);
 	}

@@ -2,7 +2,7 @@ package tuxkids.tuxblocks.core.tutor;
 
 import java.util.List;
 
-import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
 import tuxkids.tuxblocks.core.student.KnowledgeComponent;
 import tuxkids.tuxblocks.core.student.StudentAction;
 import tuxkids.tuxblocks.core.student.StudentModel;
@@ -16,7 +16,7 @@ public class Tutor {
 	private List<StudentAction> previousSolutionOrientedActions;
 
 
-	public boolean studentPerformedAction(Equation e, StudentAction a)
+	public boolean studentPerformedAction(MutableEquation e, StudentAction a)
 	{
 
 		if (a.wasValidAction) {

@@ -52,7 +52,7 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 	 * and recursively on any of its children. Subclasses should override
 	 * this method with a custom implementation.
 	 */
-	protected void performAction(Action action) {
+	public void performAction(Action action) {
 		action.run(this);
 	}
 	
@@ -262,7 +262,7 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 	}
 	
 	/** Used in {@link Sprite#performAction(Action)} */
-	protected interface Action {
+	public interface Action {
 		void run(Sprite sprite);
 	}
 	
