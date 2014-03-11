@@ -120,8 +120,7 @@ public class PersistUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if (store != null)
-				store.clear();
+			if (store != null) store.clear();
 		}
 		return null;
 	}

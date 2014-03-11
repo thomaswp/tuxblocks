@@ -82,9 +82,8 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 
 	@Override
 	public void setInteractive(boolean interactive) {
-		//setInteractive(interactive);  //TODO isn't this an infinite loop?
+		layer.setInteractive(interactive);
 	}
-	
 
 	@Override
 	public GroupLayer parent() {
