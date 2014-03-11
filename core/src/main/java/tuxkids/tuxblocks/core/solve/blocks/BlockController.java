@@ -40,7 +40,6 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.MultiList;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 /**
@@ -60,10 +59,8 @@ public class BlockController extends PlayNObject {
 	private Parent parent; // for callbacks to the Screen hosting this controller
 	private float width, height;
 	private GroupLayer layer;
-	private List<BaseBlock> leftSide = new ArrayList<BaseBlock>(), rightSide = new ArrayList<BaseBlock>(), // sides of the equation
-			removingLeft = new ArrayList<BaseBlock>(), removingRight = new ArrayList<BaseBlock>(); // BlockHolders being removed in BuildMode
-	@SuppressWarnings("unchecked")
-	private MultiList<BaseBlock> baseBlocks = new MultiList<BaseBlock>(leftSide, rightSide); // all Blocks in the equation
+	private BlockEquation equation = new BlockEquation(); // Holds all blocks in the equation being manipulated
+	private List<BaseBlock> removingLeft = new ArrayList<BaseBlock>(), removingRight = new ArrayList<BaseBlock>(); // BlockHolders being removed in BuildMode
 	private Listener listener = new Listener(); // callbacks for the Blocks
 	
 	private BaseBlock draggingFrom, tempDraggingFrom; // which BaseBlock the currently dragging Block is coming from
@@ -126,15 +123,7 @@ public class BlockController extends PlayNObject {
 	
 	/** Creates and returns an Equation representing the current state of this controller */
 	public Equation equation() {
-		ArrayList<BaseBlock> lhs = new ArrayList<BaseBlock>(),
-				rhs = new ArrayList<BaseBlock>();
-		for (BaseBlock sprite : leftSide) {
-			lhs.add((BaseBlock) sprite.copy());
-		}
-		for (BaseBlock sprite : rightSide) {
-			rhs.add((BaseBlock) sprite.copy());
-		}
-		return new Equation(lhs, rhs);
+		return equation.toEquation();
 	}
 	
 	/** Returns true if the {@link Equation} is in a solved state */
@@ -145,6 +134,14 @@ public class BlockController extends PlayNObject {
 	/** Returns the BlockListener for {@link Sprite} in this controller */
 	public BlockListener blockListener() {
 		return listener;
+	}
+	
+	private List<BaseBlock> leftSide() {
+		return equation.leftSide();
+	}
+	
+	private List<BaseBlock> rightSide() {
+		return equation.rightSide();
 	}
 	
 	public BlockController(Parent parent, float width, float height) {
@@ -160,11 +157,7 @@ public class BlockController extends PlayNObject {
 	
 	/** Clears and destroys the current {@link Equation} */
 	public void clear() {
-		for (BaseBlock sprite : baseBlocks) {
-			sprite.destroy();
-		}
-		leftSide.clear();
-		rightSide.clear();
+		equation.clear();
 		solved = false;
 		dragging = draggingFrom = null;
 	}
@@ -208,7 +201,7 @@ public class BlockController extends PlayNObject {
 	
 	// refreshes the position of the =
 	private void refreshEquals() {
-		equalsX = (leftSide.size() + 0.5f) / (baseBlocks.size() + 1) * width;
+		equalsX = (leftSide().size() + 0.5f) / (equation.count() + 1) * width;
 		equals.setTranslation(equalsX, height / 2);
 	}
 	
@@ -223,7 +216,7 @@ public class BlockController extends PlayNObject {
 	private boolean refreshSolved() {
 		if (dragging != null) return false;
 		int numbers = 0, variables = 0;
-		for (BaseBlock sprite : baseBlocks) {
+		for (BaseBlock sprite : equation) {
 			if (!sprite.isUnmodified()) return false;
 			if (sprite instanceof NumberBlock) {
 				numbers++;
@@ -237,8 +230,8 @@ public class BlockController extends PlayNObject {
 	
 	// refreshes the equation image
 	private void refreshEquationImage() {
-		Renderer lhs = getRenderer(leftSide);
-		Renderer rhs = getRenderer(rightSide);
+		Renderer lhs = getRenderer(leftSide());
+		Renderer rhs = getRenderer(rightSide());
 		Renderer equation = new JoinRenderer(lhs, rhs, "=");
 		
 		// adjust the text size for the number of lines 
@@ -279,24 +272,24 @@ public class BlockController extends PlayNObject {
 	}
 	
 	private List<BaseBlock> getBlocks(Side side) {
-		return side == Side.Left ? leftSide : rightSide;
+		return side == Side.Left ? leftSide() : rightSide();
 	}
 	
 	private List<BaseBlock> getOpposite(List<BaseBlock> side) {
-		return side == rightSide ? leftSide : rightSide;
+		return side == rightSide() ? leftSide() : rightSide();
 	}
 	
 	private List<BaseBlock> getContaining(BaseBlock block) {
-		return leftSide.contains(block) ? leftSide : rightSide;
+		return leftSide().contains(block) ? leftSide() : rightSide();
 	}
 	
 	public void update(int delta) {
 		int bb = 0;
-		for (BaseBlock s : baseBlocks) {
+		for (BaseBlock s : equation) {
 			if (!(s instanceof BlockHolder)) bb++;
 		}
-		updateSide(delta, leftSide, bb);
-		updateSide(delta, rightSide, bb);
+		updateSide(delta, leftSide(), bb);
+		updateSide(delta, rightSide(), bb);
 		if (dragging != null) dragging.update(delta);
 		if (refreshEquation) {
 			refreshEquationImage();
@@ -334,7 +327,7 @@ public class BlockController extends PlayNObject {
 	}
 	
 	public void paint(Clock clock) {
-		for (BaseBlock sprite : baseBlocks) {
+		for (BaseBlock sprite : equation) {
 			sprite.paint(clock);
 		}
 		
@@ -364,10 +357,10 @@ public class BlockController extends PlayNObject {
 
 	private void updateExpressionPositions(float base, float dt) {
 		int i = 1;
-		for (BaseBlock sprite : baseBlocks) {
+		for (BaseBlock sprite : equation) {
 			// super-fancy positioning algorithm
-			float x = i++ * (width - EQ_BUFFER) / (baseBlocks.size() + 1) - sprite.totalWidth() / 2 - sprite.offsetX();
-			if (i > leftSide.size() + 1) x += EQ_BUFFER;
+			float x = i++ * (width - EQ_BUFFER) / (equation.count() + 1) - sprite.totalWidth() / 2 - sprite.offsetX();
+			if (i > leftSide().size() + 1) x += EQ_BUFFER;
 			sprite.layer().setTx(lerpTime(sprite.layer().tx(), x, base, dt, 1f));
 			sprite.layer().setTy(lerpTime(sprite.layer().ty(), (height - sprite.height()) / 2, base, dt, 1f));
 		}
@@ -387,7 +380,7 @@ public class BlockController extends PlayNObject {
 		if (base.intersects(dragging)) {
 			if (base instanceof BlockHolder && dragging instanceof VerticalModifierBlock) {
 				int blocks = 0;
-				for (BaseBlock block : baseBlocks) {
+				for (BaseBlock block : equation) {
 					if (!(block instanceof BlockHolder)) blocks++;
 				}
 				return blocks == 1;
@@ -429,11 +422,11 @@ public class BlockController extends PlayNObject {
 	
 	private void updateBlockHolders() {
 		if (!inBuildMode) return;
-		updateBlockHolder(leftSide, Side.Left);
-		updateBlockHolder(rightSide, Side.Right);
+		updateBlockHolder(leftSide(), Side.Left);
+		updateBlockHolder(rightSide(), Side.Right);
 		// I think this is necessary because things might change for the left
 		// side after the right is updated. Just go with it.
-		updateBlockHolder(leftSide, Side.Left); 
+		updateBlockHolder(leftSide(), Side.Left); 
 	}
 	
 	// makes excess BlockHolders appear/disappear in BuildMode
@@ -446,7 +439,7 @@ public class BlockController extends PlayNObject {
 				if (block != draggingFrom) lastHolder = block;
 			}
 		}
-		if (holders == 0 && baseBlocks.size() < MAX_BLOCKS) {
+		if (holders == 0 && equation.count() < MAX_BLOCKS) {
 			BlockHolder holder = new BlockHolder();
 			float x = side == Side.Left ? - width / 2 : width * 3 / 2;
 			float y = height / 2 - Sprite.baseSize() / 2;
@@ -492,7 +485,7 @@ public class BlockController extends PlayNObject {
 			float x = getTouchX(event), y = getTouchY(event);
 			
 			// find the BaseBlock of the Sprite that was grabbed 
-			for (BaseBlock base : baseBlocks) {
+			for (BaseBlock base : equation) {
 				if (base.contains(sprite)) {
 					draggingFrom = base;
 					break;
@@ -564,7 +557,7 @@ public class BlockController extends PlayNObject {
 			// the drop target is either what we're hovering over or the
 			// BaseBlock dragging came from originally (it snaps back)
 			BaseBlock target = null;
-			for (BaseBlock base : baseBlocks) {
+			for (BaseBlock base : equation) {
 				base.clearPreview();
 				if (target == null && canDropOn(base, x, y)) {
 					target = base;
@@ -660,7 +653,7 @@ public class BlockController extends PlayNObject {
 			// update the hoverSprite and Block previews
 			BaseBlock lastHover = hoverSprite;
 			hoverSprite = null;
-			for (BaseBlock base : baseBlocks) {
+			for (BaseBlock base : equation) {
 				if (hoverSprite == null && canDropOn(base, x, y)) {
 					base.setPreview(true);
 					hoverSprite = base;
@@ -679,7 +672,7 @@ public class BlockController extends PlayNObject {
 				// invert blocks that pass the equals
 				
 				boolean invert;
-				boolean checkLeftDistance = draggingFromSide == leftSide;
+				boolean checkLeftDistance = draggingFromSide == leftSide();
 				if (inverted) checkLeftDistance = !checkLeftDistance;
 				if (checkLeftDistance) {
 					invert = x > equalsX + 5;
@@ -715,7 +708,7 @@ public class BlockController extends PlayNObject {
 				} else {
 					y = -graphics().height() / 2;
 				}
-				for (BaseBlock base : baseBlocks) {
+				for (BaseBlock base : equation) {
 					if (!(base instanceof BlockHolder)) {
 						ModifierBlock inverse = (ModifierBlock) ((VerticalModifierBlock) sprite).inverse().copy(true);
 						inverse.interpolateRect(base.offsetX(), y, base.totalWidth(), inverse.height(), 0, 1);
