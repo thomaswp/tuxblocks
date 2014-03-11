@@ -40,7 +40,6 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 /**
@@ -60,7 +59,7 @@ public class BlockController extends PlayNObject {
 	private Parent parent; // for callbacks to the Screen hosting this controller
 	private float width, height;
 	private GroupLayer layer;
-	private BlockEquation equation = new BlockEquation(); // Holds all blocks in the equation being manipulated
+	private MutableEquation equation = new MutableEquation(); // Holds all blocks in the equation being manipulated
 	private List<BaseBlock> removingLeft = new ArrayList<BaseBlock>(), removingRight = new ArrayList<BaseBlock>(); // BlockHolders being removed in BuildMode
 	private Listener listener = new Listener(); // callbacks for the Blocks
 	
@@ -124,7 +123,7 @@ public class BlockController extends PlayNObject {
 	
 	/** Creates and returns an Equation representing the current state of this controller */
 	public Equation equation() {
-		return equation.toEquation();
+		return equation.copy();
 	}
 	
 	/** Returns true if the {@link Equation} is in a solved state */
@@ -138,11 +137,11 @@ public class BlockController extends PlayNObject {
 	}
 	
 	private List<BaseBlock> leftSide() {
-		return equation.leftSide();
+		return equation.leftSideList();
 	}
 	
 	private List<BaseBlock> rightSide() {
-		return equation.rightSide();
+		return equation.rightSideList();
 	}
 	
 	public BlockController(Parent parent, float width, float height) {

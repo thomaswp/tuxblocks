@@ -327,8 +327,8 @@ public class EquationGenerator extends PlayNObject {
 		for (int i = 0; i < expressions; i++) {
 			int steps = rand(minSteps, maxSteps);
 			Equation eq = generateStandard(answer, steps);
-			builder.addLeft(eq.leftSide().get(0));
-			rhs += ((NumberBlock) eq.rightSide().get(0)).value();
+			builder.addLeft(eq.leftSide().iterator().next());
+			rhs += ((NumberBlock) eq.rightSide().iterator().next()).value();
 		}
 		builder.addRight(new NumberBlock(rhs));
 		if (expressions < 3) {
