@@ -222,7 +222,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	@Override
 	public void update(int delta) {
 		super.update(delta);
-		simplifyLayer.update();
+		if (hasSprite()) simplifyLayer.update();
 	}
 
 	public void setValue(int value) {

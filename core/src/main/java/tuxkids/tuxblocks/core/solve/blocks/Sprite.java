@@ -55,7 +55,7 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 	public void performAction(Action action) {
 		action.run(this);
 	}
-	
+
 	// An action for finding a given child Sprite
 	private static class Search implements Action {
 		private Sprite sprite;

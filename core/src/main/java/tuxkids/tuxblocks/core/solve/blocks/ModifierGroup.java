@@ -359,7 +359,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		if (modifiers != null && modifiers.children.size() == 0 && modifiers.modifiers != null) {
 			// remove our modifiers and add our modifiers' modifiers' children to our children
 			// in otherwords, close the gap in the chain
-			layer.remove(modifiers.layer());
+			if (hasSprite()) layer.remove(modifiers.layer());
 			for (ModifierBlock child : modifiers.modifiers.children) {
 				toRemove.add(child);
 			}
@@ -369,14 +369,14 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			}
 			toRemove.clear();
 			modifiers = modifiers.modifiers.modifiers;
-			if (modifiers != null) {
+			if (modifiers != null && hasSprite()) {
 				layer.add(modifiers.layer());
 			}
 		}
 	}
 	
 	protected void releaseLayers() {
-		layer.remove(modifiers.layer());
+		if (hasSprite()) layer.remove(modifiers.layer());
 	}
 	
 	/** Adds the given modifier to this group, optionally snapping into place */
@@ -440,11 +440,11 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			}
 		}
 		
-		// update out modifiers
+		// update our modifiers
 		if (modifiers != null) {
 			modifiers.update(delta, multiExpression);
 			ModifierGroup newMods = modifiers.updateParentModifiers();
-			if (newMods != modifiers) {
+			if (newMods != modifiers && hasSprite()) {
 				// if we have new modifiers, update the sprites accordingly
 				if (newMods != null) {
 					layer.add(newMods.layer());

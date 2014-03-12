@@ -2,11 +2,15 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import tuxkids.tuxblocks.core.solve.blocks.BlockController.Side;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public class EquationManipulator {
 	private MutableEquation equation;
+	private Stack<MutableEquation> stack = new Stack<MutableEquation>();
 	
 	public Equation equation() {
 		return equation;
@@ -14,6 +18,17 @@ public class EquationManipulator {
 	
 	public EquationManipulator(Equation equation) {
 		this.equation = equation.mutableCopy();
+	}
+	
+	public void push() {
+		stack.push(equation);
+		equation = equation.mutableCopy();
+	}
+	
+	public MutableEquation pop() {
+		MutableEquation eq = equation;
+		equation = stack.pop();
+		return eq;
 	}
 	
 	/** 
@@ -79,9 +94,7 @@ public class EquationManipulator {
 		}
 		
 		block.remove();
-		for (BaseBlock base : equation) {
-			base.update(0);
-		}
+		parent.update(0);
 		
 		return block.getDraggingSprite();
 	}
@@ -105,7 +118,37 @@ public class EquationManipulator {
 		return blocks;
 	}
 	
-	public boolean drop(Block toDrop, BaseBlock dropOn) {
+	public boolean drop(Block dragging, BaseBlock target) {
+		
+		if (target instanceof BlockHolder) {
+			// if dropped on a BlockHolder, replace it with the dropped Block
+			
+			if (dragging instanceof VerticalModifierBlock) {
+				// 0 * or / n = 0
+				return false;
+			} else {
+				if (dragging instanceof HorizontalModifierBlock) {
+					// turn a HorizontalModifier into a NumberBlock
+					NumberBlockProxy proxy = ((HorizontalModifierBlock) dragging).getProxy(false);
+					dragging = proxy;
+				}
+				
+//				swapExpression(getContaining(target), target, (BaseBlock) dragging);
+				dragging.update(0);
+			}
+			
+		} else {
+			
+			ModifierBlock added = target.addBlock(dragging, false);
+			if (added == null) {
+				// this happens when the drop requires a trip to the SolveScreen to resolve
+				// when we get back, we use these values to reset the Block if the solve failed
+//				tempDragging = dragging;
+//				tempDraggingFrom = draggingFrom;
+			}
+			target.update(0);
+		}
+		
 		return false;
 	}
 	
