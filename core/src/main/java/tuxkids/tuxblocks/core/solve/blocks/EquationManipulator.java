@@ -18,7 +18,6 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected Block dragging, tempDragging; // which block is currently dragging
 	protected BaseBlock draggingFrom, tempDraggingFrom; // which BaseBlock the currently dragging Block is coming from
 	protected List<BaseBlock> draggingFromSide; // which side the currently dragging Block is coming from
-	protected boolean inverted; // is the currently dragging Block inverted (past the equals)
 
 	protected abstract boolean hasSprites();
 
@@ -51,8 +50,15 @@ public abstract class EquationManipulator extends PlayNObject {
 		side.remove(index);
 		side.add(index, newExp);
 	}
+	
+	// invert the dragging Block when it crosses the =
+	protected Block invertBlock(Block block) {
+		Block inverse = block.inverse();
+		block.showInverse();
+		return inverse;
+	}
 
-	public boolean dragBlock(Block sprite) {
+	public Block dragBlock(Block sprite) {
 
 		// find the BaseBlock of the Sprite that was grabbed 
 		for (BaseBlock base : equation) {
@@ -75,7 +81,7 @@ public abstract class EquationManipulator extends PlayNObject {
 				debug("BIG PROBLEM!");
 				sprite.cancelDrag();
 				PlayN.pointer().cancelLayerDrags();
-				return false;
+				return null;
 			}
 		}
 
@@ -95,7 +101,7 @@ public abstract class EquationManipulator extends PlayNObject {
 		// remove the sprite from its group
 		sprite.remove();
 
-		return true;
+		return sprite;
 	}
 
 	protected Block dropBlock(BaseBlock target) {
@@ -151,7 +157,7 @@ public abstract class EquationManipulator extends PlayNObject {
 		return added;
 	}
 
-	public void invertBlock(Block sprite) {
+	public void negateBlock(Block sprite) {
 		if (sprite instanceof VerticalModifierBlock) {
 			if (!((ModifierBlock) sprite).canAddInverse()) return;
 			triggerTutorial(Trigger.Solve_VerticalModifierDoubleClicked);

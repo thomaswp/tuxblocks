@@ -59,6 +59,7 @@ public class BlockController extends EquationManipulator {
 	private float blockAnchorPX, blockAnchorPY; // where [0-1] on the currently dragging Block are we grabbing it
 	private float lastTouchX, lastTouchY; // last position of the drag
 	private BaseBlock hoverSprite; // the BaseBlock the currently dragging Block is currently hovering over
+	private boolean inverted; // is the currently dragging Block inverted (past the equals)
 	
 	private float equalsX; // x-coordinate of the =
 	private ImageLayer equals; // the ImageLayer for the =
@@ -139,6 +140,7 @@ public class BlockController extends EquationManipulator {
 		this.width = width;
 		this.height = height;
 		this.layer = graphics().createGroupLayer();
+		this.equation = new MutableEquation();
 		
 		equals = graphics().createImageLayer(CanvasUtils.createTextCached("=", 
 				new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, 20)), Colors.WHITE));
@@ -361,15 +363,14 @@ public class BlockController extends EquationManipulator {
 	}
 	
 	// invert the dragging Block when it crosses the =
-	private void invertDragging(boolean refresh) {
-		Block block = dragging.inverse();
-		dragging.showInverse();
+	protected void invertDragging(boolean refresh) {
+		Block inverse = dragging.inverse(), dragging = this.dragging;
+		this.dragging = invertBlock(dragging);
 		if (refresh) {
 			layer.remove(dragging.layer());
-			layer.add(block.layer());
-			block.layer().setDepth(DRAGGING_DEPTH);
+			layer.add(inverse.layer());
+			inverse.layer().setDepth(DRAGGING_DEPTH);
 		}
-		dragging = block;
 	}
 	
 	// give a nice little POOF when the block crosses the equals
@@ -454,7 +455,8 @@ public class BlockController extends EquationManipulator {
 			
 			float x = getTouchX(event), y = getTouchY(event);
 			
-			if (dragBlock(sprite)) {
+			sprite = dragBlock(sprite);
+			if (sprite != null) {
 				blockAnchorPX = (x - spriteX(sprite)) / sprite.width();
 				blockAnchorPY = (y - spriteY(sprite)) / sprite.height();
 	
@@ -586,7 +588,7 @@ public class BlockController extends EquationManipulator {
 		@Override
 		public void wasDoubleClicked(Block sprite, Event event) {
 			if (sprite instanceof VerticalModifierBlock) {
-				invertBlock(sprite);
+				negateBlock(sprite);
 				refreshEquation = true;
 				Audio.se().play(Constant.SE_TICK);
 			}
