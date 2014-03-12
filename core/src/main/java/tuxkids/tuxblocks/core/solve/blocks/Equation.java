@@ -30,9 +30,17 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 		return leftSide;
 	}
 	
+	public int leftCount() {
+		return leftSide.size();
+	}
+	
 	/** Returns the right side of the equation. */
 	public Iterable<BaseBlock> rightSide() {
 		return rightSide;
+	}
+	
+	public int rightCount() {
+		return rightSide.size();
 	}
 	
 	public Iterable<BaseBlock> allBlocks() {

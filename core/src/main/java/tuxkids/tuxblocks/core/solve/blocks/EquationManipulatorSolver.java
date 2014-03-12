@@ -23,7 +23,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	private Stack<MutableEquation> stack = new Stack<MutableEquation>();
 	private List<SolveAction> extraActions;
 	
-	public Equation equation() {
+	public MutableEquation equation() {
 		return equation;
 	}
 	
@@ -49,6 +49,10 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		return eq;
 	}
 	
+	public EquationManipulatorSolver copy() {
+		return new EquationManipulatorSolver(equation);
+	}
+	
 	public List<SolveAction> getAllActions() {
 		List<SolveAction> actions = new ArrayList<SolveAction>();
 		actions.addAll(getDragActions());
@@ -61,13 +65,16 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		List<DragAction> actions = new ArrayList<DragAction>();
 		List<EquationBlockIndex> draggables = getDraggableBlocks();
 		for (EquationBlockIndex draggable : draggables) {
-			Block block = equation.getBlock(draggable);
+			push();
+			dragBlock(equation.getBlock(draggable));
+			Block block = dragging;
 			List<Integer> droppables = getDroppableBases(block, draggable);
 			for (Integer droppable : droppables) {
 				if ((int) droppable != draggable.expressionIndex) {
 					actions.add(new DragAction(draggable, droppable, true));
 				}
 			}
+			pop();
 		}
 		return actions;
 	}
@@ -183,6 +190,8 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	}
 	
 	public List<SolveAction> performAction(DragAction action) {
+		Equation copy = equation.copy();
+		
 		dragBlock(equation.getBlock(action.fromIndex));
 		if (getSideFromBaseIndex(action.fromIndex.expressionIndex) != 
 				getSideFromBaseIndex(action.toIndex)) {
@@ -192,7 +201,10 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		
 		extraActions = new ArrayList<SolveAction>();
 		target.addBlockListener(this);
-		dropBlock(target);
+		Block result = dropBlock(target);
+		if (!(target instanceof VariableBlock) && result == null) {
+			throw new RuntimeException("Failed Drop! " + copy.getPlainText() + " - " + action);
+		}
 		List<SolveAction> extraActions = this.extraActions;
 		this.extraActions = null;
 		return extraActions;

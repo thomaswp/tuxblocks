@@ -206,22 +206,6 @@ public class BlockController extends EquationManipulator {
 		addExpression(side, newExp, original.layer().tx(), original.layer().ty(), index);
 	}
 	
-	// check to see if the equation is solved
-	private boolean refreshSolved() {
-		if (dragging != null) return false;
-		int numbers = 0, variables = 0;
-		for (BaseBlock sprite : equation) {
-			if (!sprite.isUnmodified()) return false;
-			if (sprite instanceof NumberBlock) {
-				numbers++;
-			}
-			if (sprite instanceof VariableBlock) {
-				variables++;
-			}
-		}
-		return numbers <= 1 && variables == 1;
-	}
-	
 	// refreshes the equation image
 	private void refreshEquationImage() {
 		Renderer lhs = getRenderer(leftSide());
@@ -272,7 +256,7 @@ public class BlockController extends EquationManipulator {
 		if (dragging != null) dragging.update(delta);
 		if (refreshEquation) {
 			refreshEquationImage();
-			solved = refreshSolved();
+			solved = equationSolved();
 		}
 	}
 	

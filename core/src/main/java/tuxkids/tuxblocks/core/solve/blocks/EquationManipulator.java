@@ -54,6 +54,26 @@ public abstract class EquationManipulator extends PlayNObject {
 		draggingFrom = tempDraggingFrom = null;
 		draggingFromSide = null;
 	}
+	
+	public static boolean isEquationSolved(Equation equation) {
+		int numbers = 0, variables = 0;
+		for (BaseBlock sprite : equation) {
+			if (!sprite.isUnmodified()) return false;
+			if (sprite instanceof NumberBlock) {
+				numbers++;
+			}
+			if (sprite instanceof VariableBlock) {
+				variables++;
+			}
+		}
+		return numbers <= 1 && variables == 1;
+	}
+	
+	// check to see if the equation is solved
+	protected boolean equationSolved() {
+		if (dragging != null) return false;
+		return isEquationSolved(equation);
+	}
 
 	protected void swapExpression(List<BaseBlock> side, BaseBlock original, BaseBlock newExp) {
 		int index = side.indexOf(original);
