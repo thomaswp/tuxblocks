@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.ButtonFactory;
 import tuxkids.tuxblocks.core.solve.markup.AddRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
@@ -169,14 +171,21 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		}
 		return null;
 	}
-
+	
 	@Override
-	public void updateSimplify() {
+	public void addSimplifiableBlocks(Aggregator ag) {
 		// all horizontal children can simplify (a + b - c can all combine)
 		for (int i = 1; i < children.size(); i++) {
 			ModifierBlock sprite = children.get(i);
-			simplifyLayer.getSimplifyButton(sprite, children.get(i - 1)).setTranslation(sprite.x(), sprite.centerY());
+			ag.add(sprite, children.get(i - 1), null);
 		}
+	}
+	
+	@Override
+	public void placeButton(ModifierBlock sprite, ModifierBlock pair,
+			Object tag, ButtonFactory factory) {
+		factory.getSimplifyButton(sprite, pair)
+		.setTranslation(sprite.x(), sprite.centerY());
 	}
 
 	@Override

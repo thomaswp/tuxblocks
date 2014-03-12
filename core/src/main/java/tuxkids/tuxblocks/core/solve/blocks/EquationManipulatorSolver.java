@@ -5,15 +5,17 @@ import java.util.List;
 import java.util.Stack;
 
 import playn.core.Pointer.Event;
-
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
-import tuxkids.tuxblocks.core.solve.action.StartSimplifyAction;
+import tuxkids.tuxblocks.core.solve.action.StartSimplifyVariablesAction;
+import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 public class EquationManipulatorSolver extends EquationManipulator implements BlockListener {
@@ -51,9 +53,10 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		List<SolveAction> actions = new ArrayList<SolveAction>();
 		actions.addAll(getDragActions());
 		actions.addAll(getReciprocalActions());
+		actions.addAll(getSimplifyActions());
 		return actions;
 	}
-	
+
 	public List<DragAction> getDragActions() {
 		List<DragAction> actions = new ArrayList<DragAction>();
 		List<EquationBlockIndex> draggables = getDraggableBlocks();
@@ -132,11 +135,49 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		return actions;
 	}
 	
-	public List<SolveAction> performAction(SolveAction action) {
+	public List<StartSimplifyingBlocksAction> getSimplifyActions() {
+		final List<StartSimplifyingBlocksAction> actions = new ArrayList<StartSimplifyingBlocksAction>();
+		int index = 0;
+		for (BaseBlock base : equation) {
+			int depth = 0;
+			Simplifiable simplifiable;
+			if (base instanceof Simplifiable) {
+				simplifiable = (Simplifiable) base;
+			} else {
+				depth++;
+				simplifiable = base.modifiers;
+			}
+			while (simplifiable != null) {
+				final BaseBlock parent = base;
+				final int fi = index;
+				final int fd = depth;
+				simplifiable.addSimplifiableBlocks(new Aggregator() {
+					@Override
+					public void add(ModifierBlock sprite, ModifierBlock pair, Object tag) {
+						EquationBlockIndex spriteIndex = new EquationBlockIndex(fi, parent.indexOf(sprite));
+						EquationBlockIndex pairIndex = pair == null ? null : new EquationBlockIndex(fi, parent.indexOf(pair));
+						actions.add(new StartSimplifyingBlocksAction(spriteIndex, pairIndex, fd));
+					}
+				});
+				if (simplifiable instanceof BaseBlock) {
+					simplifiable = ((BaseBlock) simplifiable).modifiers;
+				} else {
+					simplifiable = ((ModifierGroup) simplifiable).modifiers;
+				}
+				depth++;
+			}
+			index++;
+		}
+		return actions;
+	}
+	
+	public List<SolveAction> performSolveAction(SolveAction action) {
 		if (action instanceof DragAction) {
 			return performAction((DragAction) action);
 		} else if (action instanceof ReciprocalAction) {
 			performAction((ReciprocalAction) action);
+		} else if (action instanceof StartSimplifyingBlocksAction) {
+			return performAction((StartSimplifyingBlocksAction) action);
 		}
 		return null;
 	}
@@ -160,12 +201,40 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	public void performAction(ReciprocalAction action) {
 		reciprocateBlock(equation.getBlock(action.index));
 	}
+	
+	public List<SolveAction> performAction(StartSimplifyingBlocksAction action) {
+		extraActions = new ArrayList<SolveAction>();
+		
+		BaseBlock base = equation.allBlocks.get(action.baseIndex.expressionIndex);
+		int depth = action.modifierDepth;
+		Simplifiable simplifiable = null;
+		if (depth == 0) {
+			simplifiable = (Simplifiable) base;
+		} else {
+			simplifiable = base.modifiers;
+			depth--;
+			while (depth > 0) {
+				simplifiable = ((ModifierGroup) simplifiable).modifiers;
+				depth--;
+			}
+		}
+		
+		base.addBlockListener(this);
+		ModifierBlock sprite = (ModifierBlock) base.getBlockAtIndex(action.baseIndex.blockIndex);
+		ModifierBlock pair = action.pairIndex == null ? null : (ModifierBlock) base.getBlockAtIndex(action.pairIndex.blockIndex); 
+		simplifiable.simplify(sprite, pair);
+				
+
+		List<SolveAction> extraActions = this.extraActions;
+		this.extraActions = null;
+		return extraActions;
+	}
 
 	@Override
 	public void wasReduced(Renderer problem, int answer, int startNumber,
 			Stat stat, int level, SimplifyListener callback) {
 		callback.wasSimplified(true);
-		StartSimplifyAction startSimplify = new StartSimplifyAction(null);
+		StartSimplifyVariablesAction startSimplify = new StartSimplifyVariablesAction(null);
 		extraActions.add(startSimplify);
 		FinishSimplifyAction finishSimplify = new FinishSimplifyAction(null, answer, true);
 		extraActions.add(finishSimplify);

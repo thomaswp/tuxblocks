@@ -2,9 +2,13 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
 
+import playn.core.ImageLayer;
+
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayerDefault;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.ButtonFactory;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.markup.AddRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
@@ -132,26 +136,40 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		return new NumberBlock(value);
 	}
 
+	private enum Tag {
+		Horizontal, Times, Over
+	}
+	
 	@Override
-	public void updateSimplify() {
+	public void addSimplifiableBlocks(Aggregator ag) {
 		if (modifiers.children.size() > 0) {
 			// simplify with the closest HorizontalModifierBlock
-			simplifyLayer.getSimplifyButton(modifiers.children.get(0))
-			.setTranslation(width(), height() / 2);
+			ag.add(modifiers.children.get(0), Tag.Horizontal);
 		} else if (modifiers.modifiers != null) {
 			// or if there isn't one, simplify with any direct VerticalModifierBlock
 			VerticalModifierGroup mods = (VerticalModifierGroup) modifiers.modifiers;
 			if (mods.timesBlocks.size() > 0) {
-				simplifyLayer.getSimplifyButton(mods.timesBlocks.get(0))
-				.setTranslation(width() / 2, 0);
+				ag.add(mods.timesBlocks.get(0), Tag.Times);
 			}
 			if (mods.overBlocks.size() > 0) {
 				if (value % mods.overBlocks.get(0).value == 0) {
 					// only add didisible OverBlocks
-					simplifyLayer.getSimplifyButton(mods.overBlocks.get(0))
-					.setTranslation(width() / 2, height());
+					ag.add(mods.overBlocks.get(0), Tag.Over);
 				}
 			}
+		}
+	}
+	
+	@Override
+	public void placeButton(ModifierBlock sprite, ModifierBlock pair,
+			Object tag, ButtonFactory factory) {
+		ImageLayer simplifyButton = factory.getSimplifyButton(sprite, pair);
+		if (tag == Tag.Horizontal) {
+			simplifyButton.setTranslation(width(), height() / 2);
+		} else if (tag == Tag.Times) {
+			simplifyButton.setTranslation(width() / 2, 0);
+		} else {
+			simplifyButton.setTranslation(width() / 2, height());
 		}
 	}
 
@@ -227,7 +245,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 
 	public void setValue(int value) {
 		this.value = value;
-		((BlockLayerDefault) layer).setText(text());
+		if (hasSprite()) ((BlockLayerDefault) layer).setText(text());
 	}
 
 	@Override

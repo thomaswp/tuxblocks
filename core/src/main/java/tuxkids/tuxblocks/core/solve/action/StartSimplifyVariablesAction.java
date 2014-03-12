@@ -1,10 +1,10 @@
 package tuxkids.tuxblocks.core.solve.action;
 
-public class StartSimplifyAction extends SolveAction {
+public class StartSimplifyVariablesAction extends SolveAction {
 	
 	public final String problem;
 	
-	public StartSimplifyAction(String problem) {
+	public StartSimplifyVariablesAction(String problem) {
 		super(true);
 		this.problem = problem;
 	}

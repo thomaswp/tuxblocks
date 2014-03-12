@@ -52,33 +52,35 @@ public class SimplifyLayer extends LayerWrapper {
 		public void onPointerCancel(Event event) { }
 	};
 	
-	/** See {@link SimplifyLayer#getSimplifyButton(ModifierBlock, ModifierBlock, int)} */
-	public ImageLayer getSimplifyButton(ModifierBlock sprite) {
-		return getSimplifyButton(sprite, null, 0);
-	}
-	
-	/** See {@link SimplifyLayer#getSimplifyButton(ModifierBlock, ModifierBlock, int)} */
-	public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair) {
-		return getSimplifyButton(sprite, pair, 0);
-	}
-	
-	/** 
-	 * Returns an ImageLayer of a simplify button. If the player presses
-	 * this button the {@link Simplifiable#simplify(ModifierBlock, ModifierBlock)}
-	 * method will be called with the provided sprite and pair. Optionally sets the
-	 * depths of the returned layer.
-	 */
-	public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair, int depth) {
-		while (simplifyButtons.size() <= simplifyMap.size()) { 
-			addSimplifyButton();
+	private class Handler extends Aggregator implements ButtonFactory {
+		
+		public ImageLayer getSimplifyButton(ModifierBlock sprite) {
+			return getSimplifyButton(sprite, null, 0);
 		}
-		ImageLayer layer = simplifyButtons.get(simplifyMap.size());
-		simplifyMap.put(layer, sprite);
-		pairMap.put(layer, pair);
-		layer.setVisible(true);
-		layer.setDepth(depth);
-		return layer;
+		
+		public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair) {
+			return getSimplifyButton(sprite, pair, 0);
+		}
+		
+		public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair, int depth) {
+			while (simplifyButtons.size() <= simplifyMap.size()) { 
+				addSimplifyButton();
+			}
+			ImageLayer layer = simplifyButtons.get(simplifyMap.size());
+			simplifyMap.put(layer, sprite);
+			pairMap.put(layer, pair);
+			layer.setVisible(true);
+			layer.setDepth(depth);
+			return layer;
+		}
+		
+		@Override
+		public void add(ModifierBlock sprite, ModifierBlock pair, Object tag) {
+			parent.placeButton(sprite, pair, tag, this);
+		}
 	}
+	
+	private Handler handler = new Handler();
 	
 	private void addSimplifyButton() {
 		if (simplifyImage == null) {
@@ -121,19 +123,52 @@ public class SimplifyLayer extends LayerWrapper {
 		}
 		simplifyMap.clear();
 		if (parent.showSimplify()) {
-			parent.updateSimplify();
+			parent.addSimplifiableBlocks(handler);
 		}
 	}
 	
-	public interface Simplifiable {
-		/** 
-		 * Called once per update. This is the time to call 
-		 * {@link SimplifyLayer#getSimplifyButton(ModifierBlock, ModifierBlock, int)} 
-		 */
-		void updateSimplify();
+	public static interface Simplifiable {
+
 		/** See {@link SimplifyLayer#getSimplifyButton(ModifierBlock, ModifierBlock, int)} */
 		void simplify(ModifierBlock sprite, ModifierBlock pair);
 		/** Should return true if the {@link SimplifyLayer} should show its buttons */
 		boolean showSimplify();
+		/** Should get and position a simplify button for the supplied block and pair */
+		void placeButton(ModifierBlock sprite, ModifierBlock pair, Object tag, ButtonFactory factory);
+		/** Should register all simplifiable blocks (and their pairs) with the aggregator */
+		void addSimplifiableBlocks(Aggregator ag);
+	}
+	
+	/** Used to aggregate responses from the {@link Simplifiable#addSimplifiableBlocks(Aggregator)} method */
+	public static abstract class Aggregator {
+		public abstract void add(ModifierBlock sprite, ModifierBlock pair, Object tag);
+		
+		public void add(ModifierBlock sprite, Object tag) {
+			add(sprite, null, tag);
+		}
+		
+		public void add(ModifierBlock sprite) {
+			add(sprite, null, null);
+		}
+	}
+	
+	/** 
+	 * Used to allow blocks to add simplify buttons in the 
+	 * {@link Simplifiable#placeButton(ModifierBlock, ModifierBlock, Object, ButtonFactory)} method 
+	 */
+	public static interface ButtonFactory {
+
+		/** 
+		 * Returns an ImageLayer of a simplify button. If the player presses
+		 * this button the {@link Simplifiable#simplify(ModifierBlock, ModifierBlock)}
+		 * method will be called with the provided sprite and pair. Optionally sets the
+		 * depths of the returned layer.
+		 */
+		ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair, int depth);
+		
+		/** See {@link ButtonFactory#getSimplifyButton(ModifierBlock, ModifierBlock, int)} */
+		ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair);
+		/** See {@link ButtonFactory#getSimplifyButton(ModifierBlock, ModifierBlock, int)} */
+		ImageLayer getSimplifyButton(ModifierBlock sprite);
 	}
 }

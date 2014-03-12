@@ -129,6 +129,7 @@ public abstract class BaseBlock extends Block {
 	
 	/** Returns the Block with the given index in this expression */
 	public Block getBlockAtIndex(ExpressionBlockIndex index) {
+		if (index == null) return null;
 		if (index.depth == 0 && index.index == 0) {
 			return this;
 		} else if (index.depth > 0) {
@@ -146,6 +147,18 @@ public abstract class BaseBlock extends Block {
 				if (sprite instanceof Block) {
 					blocks.add((Block) sprite);
 				}
+			}
+		});
+		return blocks;
+	}
+	
+	/** Creates and returns a list of all Sprites (including this) in this expression */
+	public List<Sprite> getAllSprites() {
+		final ArrayList<Sprite> blocks = new ArrayList<Sprite>();
+		performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				blocks.add(sprite);
 			}
 		});
 		return blocks;
