@@ -296,7 +296,7 @@ public class BlockController extends PlayNObject {
 	
 	//updates the BaseBlocks on the given side
 	private void updateSide(int delta, List<BaseBlock> side) {
-		boolean multiExpression = EquationManipulator.isMultiExpression(equation, side);
+		boolean multiExpression = EquationManipulatorSolver.isMultiExpression(equation, side);
 		for (BaseBlock sprite : side) {
 			boolean moveBase = false;
 			for (BaseBlock other : side) {
