@@ -44,6 +44,16 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected List<BaseBlock> getContaining(BaseBlock block) {
 		return leftSide().contains(block) ? leftSide() : rightSide();
 	}
+	
+	protected Side getSideFromBaseIndex(int index) {
+		return index < leftSide().size() ? Side.Left : Side.Right;
+	}
+	
+	protected void clearDragData() {
+		dragging = tempDragging = null;
+		draggingFrom = tempDraggingFrom = null;
+		draggingFromSide = null;
+	}
 
 	protected void swapExpression(List<BaseBlock> side, BaseBlock original, BaseBlock newExp) {
 		int index = side.indexOf(original);
@@ -56,6 +66,26 @@ public abstract class EquationManipulator extends PlayNObject {
 		Block inverse = block.inverse();
 		block.showInverse();
 		return inverse;
+	}
+	
+	/** 
+	 * Returns whether or not BaseBlocks on the given side of the equation have multiple expressions 
+	 * and therefore cannot directly manipulate factors.  
+	 */
+	public static boolean isMultiExpression(Equation equation, List<BaseBlock> side) {
+		int totalBlocks = 0;
+		for (BaseBlock s : equation) {
+			if (!(s instanceof BlockHolder)) totalBlocks++;
+		}
+		boolean multiExpression = totalBlocks > 2; // can't drag factors if there are >2 expressions
+		if (!multiExpression) {
+			int bb = 0;
+			for (BaseBlock s : side) {
+				if (!(s instanceof BlockHolder)) bb++;
+			}
+			if (bb > 1) multiExpression = true; // or if there is >1 expression on any given side
+		}
+		return multiExpression;
 	}
 
 	public Block dragBlock(Block sprite) {

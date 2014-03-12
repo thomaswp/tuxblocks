@@ -278,7 +278,7 @@ public class BlockController extends EquationManipulator {
 	
 	//updates the BaseBlocks on the given side
 	private void updateSide(int delta, List<BaseBlock> side) {
-		boolean multiExpression = EquationManipulatorSolver.isMultiExpression(equation, side);
+		boolean multiExpression = isMultiExpression(equation, side);
 		for (BaseBlock sprite : side) {
 			boolean moveBase = false;
 			for (BaseBlock other : side) {

@@ -1,17 +1,23 @@
 package tuxkids.tuxblocks.core.solve.action;
 
-public class DragAction extends SolveAction {	
-	public final int fromIndex, toIndex;
-	public final String draggedExpression;
-	
-	public DragAction(int fromIndex, int toIndex, String draggedExpression) {
+import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
+
+public class DragAction extends SolveAction {
+	public final EquationBlockIndex fromIndex;	
+	public final int toIndex;
+
+	public DragAction(EquationBlockIndex fromIndex, int toIndex) {
 		this.fromIndex = fromIndex;
 		this.toIndex = toIndex;
-		this.draggedExpression = draggedExpression;
 	}
 
 	@Override
-	protected String name() {
+	public String name() {
 		return "DragAction";
+	}
+	
+	@Override
+	public String toString() {
+		return name() + ": " + fromIndex + " -> " + toIndex;
 	}
 }

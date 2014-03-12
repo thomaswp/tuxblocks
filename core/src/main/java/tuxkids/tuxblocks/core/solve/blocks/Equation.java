@@ -129,12 +129,19 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 		return null;
 	}
 	
-	public Block getBlockAtIndex(EquationBlockIndex index) {
+	public Block getBlock(EquationBlockIndex index) {
 		if (index.expressionIndex < leftSide.size()) {
 			return leftSide.get(index.expressionIndex).getBlockAtIndex(index.blockIndex);
 		} else if (index.expressionIndex - leftSide.size() < rightSide.size()) {
 			return rightSide.get(index.expressionIndex - leftSide.size()).getBlockAtIndex(index.blockIndex);
 		}
+		return null;
+	}
+	
+	public BaseBlock getBaseBlock(int index) {
+		if (index < leftSide.size()) return leftSide.get(index);
+		int rIndex = index - leftSide.size();
+		if (rIndex < rightSide.size()) return rightSide.get(rIndex);
 		return null;
 	}
 

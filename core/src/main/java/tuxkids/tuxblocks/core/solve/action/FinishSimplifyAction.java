@@ -5,7 +5,7 @@ public class FinishSimplifyAction extends SolveAction {
 	protected int answer;
 	
 	@Override
-	protected String name() {
+	public String name() {
 		return "FinishSimplify";
 	}
 }

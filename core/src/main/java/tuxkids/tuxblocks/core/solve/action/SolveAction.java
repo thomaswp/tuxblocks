@@ -4,5 +4,5 @@ public abstract class SolveAction {
 	protected boolean success;
 	protected long timestamp;
 	
-	protected abstract String name();
+	public abstract String name();
 }

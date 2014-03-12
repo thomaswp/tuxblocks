@@ -8,6 +8,7 @@ import playn.core.Layer;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.markup.ExpressionRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 /**
@@ -387,7 +388,8 @@ public abstract class BaseBlock extends Block {
 	 * Creates a {@link Renderer} to display this expression.
 	 */
 	public Renderer createRenderer() {
-		return modifiers.createRenderer(new BaseRenderer(text()).setHighlight(previewAdd()));
+		return new ExpressionRenderer(modifiers.createRenderer(
+				new BaseRenderer(text()).setHighlight(previewAdd())));
 	}
 	
 	/**
