@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import tuxkids.tuxblocks.core.solve.blocks.BlockController.Side;
-import tuxkids.tuxblocks.core.tutorial.Tutorial;
-import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.solve.blocks.EquationManipulator.Side;
 
 public class EquationManipulatorSolver {
 	private MutableEquation equation;
