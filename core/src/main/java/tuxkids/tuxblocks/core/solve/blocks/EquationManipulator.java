@@ -187,7 +187,7 @@ public abstract class EquationManipulator extends PlayNObject {
 		return added;
 	}
 
-	public void negateBlock(Block sprite) {
+	public void reciprocateBlock(Block sprite) {
 		if (sprite instanceof VerticalModifierBlock) {
 			if (!((ModifierBlock) sprite).canAddInverse()) return;
 			triggerTutorial(Trigger.Solve_VerticalModifierDoubleClicked);

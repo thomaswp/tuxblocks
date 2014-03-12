@@ -91,7 +91,7 @@ public class VariableBlock extends BaseBlock {
 		return false;
 	}
 	
-	// removes all "x-1" modifiers from the given list and returns the number removed
+	// removes all "*-1" modifiers from the given list and returns the number removed
 	private int removeNegatives(List<VerticalModifierBlock> modifiers) {
 		int count = 0;
 		for (int i = 0; i < modifiers.size(); i++) {
@@ -146,7 +146,7 @@ public class VariableBlock extends BaseBlock {
 			Renderer problem = new JoinRenderer(lhs, rhs, "=");
 			
 			boolean mustSolve = myFactor != null && spriteFactor != null;
-			boolean calcAnswer = !mustSolve || hasSprite();
+			boolean calcAnswer = !mustSolve || !previewAdd();
 			
 			//Don't say what the answer is if this is a preview
 			final int answer = calcAnswer ? myValue + spriteValue : TimesRenderer.UNKNOWN_NUMBER;
@@ -158,6 +158,14 @@ public class VariableBlock extends BaseBlock {
 						if (myFactor != null) {
 							myFactor.setValue(answer);
 							myFactor.setPreviewAdd(false); //creates highlight.. for a good reason I won't explain
+							// remove any excess negative modifiers
+							for (int i = 0; i < modifiers.modifiers.children.size(); i++) {
+								ModifierBlock mod = modifiers.modifiers.children.get(i);
+								if (mod != myFactor) { 
+									modifiers.modifiers.removeChild(mod, true);
+									i--;
+								}
+							}
 						} else {
 							ArrayList<ModifierBlock> modChildren = new ArrayList<ModifierBlock>();
 							while (!modifiers.children.isEmpty()) {
@@ -180,9 +188,9 @@ public class VariableBlock extends BaseBlock {
 			 
 			//if it's not just a +1, make them solve it
 			if (mustSolve) {
-				if (!hasSprite()) {
+				if (previewAdd()) {
 					r.wasSimplified(true); //show preview
-				} else {
+				} else if (blockListener != null){
 					blockListener.wasReduced(problem, answer, 
 							myValue, Stat.Plus, Difficulty.rankPlus(myValue, spriteValue), r);
 				}

@@ -6,7 +6,8 @@ public class DragAction extends SolveAction {
 	public final EquationBlockIndex fromIndex;	
 	public final int toIndex;
 
-	public DragAction(EquationBlockIndex fromIndex, int toIndex) {
+	public DragAction(EquationBlockIndex fromIndex, int toIndex, boolean success) {
+		super(success);
 		this.fromIndex = fromIndex;
 		this.toIndex = toIndex;
 	}

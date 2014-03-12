@@ -588,7 +588,7 @@ public class BlockController extends EquationManipulator {
 		@Override
 		public void wasDoubleClicked(Block sprite, Event event) {
 			if (sprite instanceof VerticalModifierBlock) {
-				negateBlock(sprite);
+				reciprocateBlock(sprite);
 				refreshEquation = true;
 				Audio.se().play(Constant.SE_TICK);
 			}
@@ -614,6 +614,9 @@ public class BlockController extends EquationManipulator {
 			dragging = tempDragging;
 			draggingFrom = tempDraggingFrom;
 			tempDragging = tempDraggingFrom = null;
+			if (inverted) {
+				invertDragging(true);
+			}
 			dropOn(draggingFrom);
 		}
 
