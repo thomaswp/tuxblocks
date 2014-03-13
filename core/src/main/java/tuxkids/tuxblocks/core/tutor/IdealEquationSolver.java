@@ -18,6 +18,16 @@ import tuxkids.tuxblocks.core.student.StudentAction;
 
 public class IdealEquationSolver {
 		
+	private static Comparator<List<Step>> comparator = new Comparator<List<Step>>() {
+		@Override
+		public int compare(List<Step> o1, List<Step> o2) {
+			Equation eq1 = o1.get(o1.size() - 1).result;
+			Equation eq2 = o2.get(o2.size() - 1).result;
+			// classic A* - compare based on f(x) + h(x)
+			return Double.compare(heuristic(eq1) + o1.size(), heuristic(eq2) + o2.size());
+		}
+	};
+
 	public SolutionPackage getIdealSolution(MutableEquation e) {
 		return null;
 	}
@@ -35,13 +45,14 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> expandedNodes = new HashMap<String, Integer>();
 		
 		while (paths.size() > 0) {
+			seeAllAndHeuristics(paths);//use this to debug A*'s expansion pattern
+			
 			List<Step> toExpand = paths.poll(); // get the best estimated path
-//			Debug.write(pathToString(toExpand)); //use this to debug A*'s expansion pattern
 			
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 			
 			// hash it using it's text function... TODO: use a quicker/more accurate hash 
-			String text = last.result.getPlainText();
+			String text = last.toString();
 			Integer lastPathLength = expandedNodes.get(text);
 			// if we've already gotten here by a shorter path, don't expand this node
 			if (lastPathLength != null && lastPathLength <= toExpand.size()) {
@@ -58,8 +69,7 @@ public class IdealEquationSolver {
 			List<Step> branches = expandState(last.result);
 			for (Step step : branches) {
 				// add them all as children, branching from the original path
-				List<Step> nPath = new ArrayList<Step>();
-				nPath.addAll(toExpand);
+				List<Step> nPath = new ArrayList<Step>(toExpand);
 				nPath.add(step);
 				paths.add(nPath);
 			}
@@ -70,27 +80,30 @@ public class IdealEquationSolver {
 		return null;
 	}
 	
-	private static Comparator<List<Step>> comparator = new Comparator<List<Step>>() {
-		@Override
-		public int compare(List<Step> o1, List<Step> o2) {
-			Equation eq1 = o1.get(o1.size() - 1).result;
-			Equation eq2 = o2.get(o2.size() - 1).result;
-			// classic A* - compare based on f(x) + h(x)
-			return Double.compare(heuristic(eq1) + o1.size(), heuristic(eq2) + o2.size());
-		}
-	};
-	
 	// for debugging paths
 	public static String pathToString(List<Step> path) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = path.size() - 1; i >= 0; i--) {
-			if (i < path.size() - 1) sb.append(" <- ");
+			if (i < path.size() - 1) 
+				sb.append(" <- ");
 			Equation eq = path.get(i).result;
-			sb.append(eq.getPlainText() + " {" + heuristic(eq) + "/" + i + "}");
+			sb.append(eq.getPlainText());
+			sb.append(" {");
+			sb.append(heuristic(eq));
+			sb.append("/");
+			sb.append(i);
+			sb.append("}");
 		}
 		return sb.toString();
 	}
 	
+	public static void seeAllAndHeuristics(Iterable<List<Step>> paths) {
+		for(List<Step> path:paths) {
+			System.out.println("\t" + pathToString(path));
+		}
+		System.out.println();
+	}
+
 	public static double heuristic(Equation eq) {
 		// the basic plan right now is to add 1 for every expression,
 		// 1 for every modifier of a variable and 0.75 for every modifier
@@ -103,21 +116,18 @@ public class IdealEquationSolver {
 		double score = 0;
 		//TODO Compare to looking at the string and counting *-/+
 		//If so, consider caching plaintext
+		//System.out.println(eq.getPlainText());
 		for (BaseBlock bb : eq.allBlocks()) {
 			for (Block block : bb.getAllBlocks()) {
-				if (block instanceof BaseBlock) {
+				if (block instanceof VariableBlock) {
 					score++;
 				} else {
-					if (bb instanceof VariableBlock) {
-						score++;
-					} else {
-						score += 0.75;
-					}
+					score++;
 				}
 			}
 		}
-		if (eq.leftCount() == 0 || eq.rightCount() == 0) score++;
-		score -= 2; // to make it consistent... though I can't imagine it would matter
+		//if (eq.leftCount() == 0 || eq.rightCount() == 0) score++;
+		//score -= 2; // to make it consistent... though I can't imagine it would matter
 		return score;
 	}
 	
@@ -142,9 +152,16 @@ public class IdealEquationSolver {
 		// starting and ending a simplification (also the start step has no actions)
 		public final List<SolveAction> actions = new ArrayList<SolveAction>();
 		public final Equation result;
+		private final String toString;
 		
 		public Step (Equation result) {
 			this.result = result;
+			this.toString = result.getPlainText();
+		}
+		
+		@Override
+		public String toString() {
+			return toString;
 		}
 	}
 	
