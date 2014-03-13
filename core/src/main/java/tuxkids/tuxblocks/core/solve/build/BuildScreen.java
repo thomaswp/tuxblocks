@@ -36,6 +36,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 		return Sprite.baseSize() * 1.2f;
 	}
 
+	@Override
 	protected float controllerWidth() {
 		return width() - toolboxWidth();
 	}

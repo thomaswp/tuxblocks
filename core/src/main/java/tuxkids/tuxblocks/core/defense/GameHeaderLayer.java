@@ -256,6 +256,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			update(0);
 		}
 		
+		@Override
 		public void update(int delta) {
 			int m = state.upgrades();
 			if (m != upgrades) {
@@ -268,6 +269,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			}
 		}
 		
+		@Override
 		public void paint(Clock clock) {
 			updateBeatSize(beatMS, layer);
 			updateBeatAlpha(beatMS, plusLayer);
@@ -311,6 +313,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			update(0);
 		}
 		
+		@Override
 		public void update(int delta) {
 			int nextRound; // time until next round (or a special state indicator if negative)
 			boolean beat = true; // do we beat this frame?
@@ -353,6 +356,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			}
 		}
 		
+		@Override
 		public void paint(Clock clock) {
 			updateBeatSize(beatMS, layer);
 			if (beatMS > 0) {
@@ -398,6 +402,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			layer.add(scoreLayer);
 		}
 		
+		@Override
 		public void update(int delta) {
 			if (score != state.score()) {
 				score = state.score();
@@ -408,6 +413,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			}
 		}
 		
+		@Override
 		public void paint(Clock clock) {
 			updateBeatSize(beatMS, scoreLayer);
 			if (beatMS > 0) beatMS -= clock.dt();
@@ -445,6 +451,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			update(0);
 		}
 		
+		@Override
 		public void update(int delta) {
 			int l = state.lives();
 			if (l != lives) {
@@ -456,6 +463,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			}
 		}
 		
+		@Override
 		public void paint(Clock clock) {
 			updateBeatSize(beatMS, layer);
 			updateBeatAlpha(beatMS, heartLayer);
@@ -520,6 +528,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			update(0);
 		}
 		
+		@Override
 		public void update(int delta) {
 			int l = state.getStatLevel(stat);
 			if (level != l) {
@@ -532,6 +541,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 			}
 		}
 		
+		@Override
 		public void paint(Clock clock) {
 			updateBeatSize(beatMS, levelLayer);
 			if (beatMS > 0) beatMS -= clock.dt();

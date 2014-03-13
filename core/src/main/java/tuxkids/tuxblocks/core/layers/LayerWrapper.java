@@ -105,6 +105,7 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 		layer.setAlpha(alpha);
 	}
 	
+	@Override
 	public float alpha() {
 		return layer.alpha();
 	}
@@ -125,10 +126,12 @@ public class LayerWrapper extends PlayNObject implements LayerLike {
 		return layer.rotation();
 	}
 
+	@Override
 	public void setTx(float tx) {
 		layer.setTx(tx);
 	}
 	
+	@Override
 	public void setTy(float ty) {
 		layer.setTy(ty);
 	}

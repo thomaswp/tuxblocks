@@ -54,14 +54,17 @@ public class SimplifyLayer extends LayerWrapper {
 	
 	private class Handler extends Aggregator implements ButtonFactory {
 		
+		@Override
 		public ImageLayer getSimplifyButton(ModifierBlock sprite) {
 			return getSimplifyButton(sprite, null, 0);
 		}
 		
+		@Override
 		public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair) {
 			return getSimplifyButton(sprite, pair, 0);
 		}
 		
+		@Override
 		public ImageLayer getSimplifyButton(ModifierBlock sprite, ModifierBlock pair, int depth) {
 			while (simplifyButtons.size() <= simplifyMap.size()) { 
 				addSimplifyButton();

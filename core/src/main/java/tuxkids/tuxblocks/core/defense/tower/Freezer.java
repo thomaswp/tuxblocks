@@ -140,6 +140,7 @@ public class Freezer extends Tower {
 		return TowerType.Freezer;
 	}
 	
+	@Override
 	public Image createImage(float cellSize, int color) {
 		return CanvasUtils.createCircleCached(cellSize / 2, color, 1, Colors.BLACK);
 	}

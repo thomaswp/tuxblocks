@@ -497,11 +497,12 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	
 	/** Prints out a hierarchy of this group's modifiers (with the given indentation) */
 	public String hierarchy(int tab) {
-		String out = "";
-		for (int i = 0; i < tab; i++) out += "  ";
-		out += children.toString() + "\n";
-		if (modifiers != null) out += modifiers.hierarchy(tab + 1);
-		return out;
+		StringBuilder out = new StringBuilder();
+		for (int i = 0; i < tab; i++) out.append("  ");
+		out.append(children.toString());
+		out.append("\n");
+		if (modifiers != null) out.append(modifiers.hierarchy(tab + 1));
+		return out.toString();
 	}
 
 	@Override

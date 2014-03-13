@@ -96,11 +96,13 @@ public class IdealEquationSolver {
 		// 1 for every modifier of a variable and 0.75 for every modifier
 		// of a number
 		
-		// the ideal here is that the heurisitic be consistent, meaning essentially
+		// the ideal here is that the heuristic be consistent, meaning essentially
 		// that performing a step can never decrease h(x) by more than 1 and that
 		// h(x) <= f(x), where f(x) is the actual number of steps required to solve
 		
 		double score = 0;
+		//TODO Compare to looking at the string and counting *-/+
+		//If so, consider caching plaintext
 		for (BaseBlock bb : eq.allBlocks()) {
 			for (Block block : bb.getAllBlocks()) {
 				if (block instanceof BaseBlock) {

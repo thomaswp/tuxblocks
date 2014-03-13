@@ -3,6 +3,9 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class EquationBlockIndex {
+	//TODO for performance, since all of these indexes are final,
+	//perhaps cache (like Integer) some prebuilt objects and use 
+	//a static build method
 	public final ExpressionBlockIndex blockIndex;
 	public final int expressionIndex;
 	
