@@ -205,6 +205,8 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		if (!(target instanceof VariableBlock) && result == null) {
 			throw new RuntimeException("Failed Drop! " + copy.getPlainText() + " - " + action);
 		}
+		equation.allBlocks.get(action.fromIndex.expressionIndex).update(0);
+		
 		List<SolveAction> extraActions = this.extraActions;
 		this.extraActions = null;
 		return extraActions;
@@ -235,6 +237,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		ModifierBlock sprite = (ModifierBlock) base.getBlockAtIndex(action.baseIndex.blockIndex);
 		ModifierBlock pair = action.pairIndex == null ? null : (ModifierBlock) base.getBlockAtIndex(action.pairIndex.blockIndex); 
 		simplifiable.simplify(sprite, pair);
+		base.update(0);
 				
 
 		List<SolveAction> extraActions = this.extraActions;

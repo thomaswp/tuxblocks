@@ -152,7 +152,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 		} else if (tag == Tag.CancelOver) {
 			factory.getSimplifyButton(sprite, pair, -1)
 			.setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
-		} else if (tag == Tag.Over) {
+		} else if (tag == Tag.Times) {
 			factory.getSimplifyButton(sprite, pair)
 			.setTranslation(sprite.centerX(), sprite.y() + modSize());
 		} else {
