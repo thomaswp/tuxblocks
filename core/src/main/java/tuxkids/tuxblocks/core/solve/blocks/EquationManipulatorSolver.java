@@ -179,12 +179,18 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	}
 	
 	public List<SolveAction> performSolveAction(SolveAction action) {
-		if (action instanceof DragAction) {
-			return performAction((DragAction) action);
-		} else if (action instanceof ReciprocalAction) {
-			performAction((ReciprocalAction) action);
-		} else if (action instanceof StartSimplifyingBlocksAction) {
-			return performAction((StartSimplifyingBlocksAction) action);
+		String eq = equation.getPlainText();
+		try {
+			if (action instanceof DragAction) {
+				return performAction((DragAction) action);
+			} else if (action instanceof ReciprocalAction) {
+				performAction((ReciprocalAction) action);
+			} else if (action instanceof StartSimplifyingBlocksAction) {
+				return performAction((StartSimplifyingBlocksAction) action);
+			}
+		} catch (Exception e) {
+			debug("Failed on: " + eq + ": " + action);
+			debug(e);
 		}
 		return null;
 	}

@@ -227,7 +227,7 @@ public abstract class EquationManipulator extends PlayNObject {
 			}
 			for (BaseBlock base : equation) {
 				if (!(base instanceof BlockHolder)) {
-					ModifierBlock inverse = (ModifierBlock) ((VerticalModifierBlock) sprite).inverse().copy(true);
+					ModifierBlock inverse = (ModifierBlock) ((VerticalModifierBlock) sprite).inverse().copy(hasSprites());
 					if (hasSprites()) inverse.interpolateRect(base.offsetX(), y, base.totalWidth(), inverse.height(), 0, 1);
 					base.addModifier(inverse, false);
 				}

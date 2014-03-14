@@ -190,7 +190,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 
 	// reduce a Times- and OverBlock to just one
 	private void reduceDif(final ModifierBlock a, final ModifierBlock b, boolean aTimes) {
-		if (a.value < b.value) {
+		if (Math.abs(a.value) < Math.abs(b.value)) {
 			// we want a to be greater than b
 			reduceDif(b, a, !aTimes);
 			return;
