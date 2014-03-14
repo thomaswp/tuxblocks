@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.tutor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,8 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulator;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulatorSolver;
 import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
+import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
+import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.StudentAction;
 
@@ -48,7 +51,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> expandedNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			seeAllAndHeuristics(paths);// use this to debug A*'s expansion
+			//seeAllAndHeuristics(paths);// use this to debug A*'s expansion
 										// pattern
 
 			List<Step> toExpand = paths.poll(); // get the best estimated path
@@ -122,30 +125,95 @@ public class IdealEquationSolver {
 		// solve
 
 		double score = 0;
-		// System.out.println(eq.getPlainText());
-		boolean oneSideBlank = false;
-		boolean xIsIsolated = false;
+		// System.out.println(eq.getPlainText())
 		
-		for (BaseBlock bb : eq.allBlocks()) {
-			if (bb instanceof BlockHolder)
-			{
-				oneSideBlank = true;
-				continue;
-			}
+		int generalLeftTerms = countGeneralTerms(eq.leftSide());
+		int generalRightTerms = countGeneralTerms(eq.rightSide());
+		int leftVarTerms = countVarTerms(eq.leftSide());
+		int rightVarTerms = countVarTerms(eq.rightSide());
+		
+		//int totalTerms = generalLeftTerms+generalRightTerms;
+		//int totalVarTerms = leftVarTerms + rightVarTerms;
+		
+		for (BaseBlock bb : eq.leftSide()) {
+			if (bb instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = bb.getAllBlocks();
-			for (int i = 1; i < attachedBlockList.size(); i++) {
-				if (bb instanceof VariableBlock) {
-					score += 2;
-				} else {
-					score++;
+			Collections.reverse(attachedBlockList);
+			if (bb instanceof VariableBlock)
+			{
+				for(int i = 0;i<attachedBlockList.size() - 1; i++) {
+					Block block = attachedBlockList.get(i);
+					if (i == 0) {
+						if (block instanceof TimesBlock || block instanceof OverBlock)
+							score += (generalRightTerms == 0? leftVarTerms:leftVarTerms+generalRightTerms);
+						else
+							score += (generalRightTerms == 0? 1:2);
+					}
+					else {
+						if (block instanceof TimesBlock || block instanceof OverBlock)
+							score += leftVarTerms+generalRightTerms;
+						else
+							score += 2;
+					}
 				}
 			}
-			if (bb instanceof VariableBlock && attachedBlockList.size() == 1)
-				xIsIsolated = true;
+			else {
+				score += attachedBlockList.size() - 1;
+				score += (rightVarTerms == 0? 1: 0);
+			}
 		}
-		if (oneSideBlank) score /=2;
-		if (xIsIsolated) score = Math.max(0, score-.2);
+		
+		for (BaseBlock bb : eq.rightSide()) {
+			if (bb instanceof BlockHolder) continue;
+			List<Block> attachedBlockList = bb.getAllBlocks();
+			Collections.reverse(attachedBlockList);
+			if (bb instanceof VariableBlock)
+			{
+				for(int i = 0;i<attachedBlockList.size() - 1; i++) {
+					Block block = attachedBlockList.get(i);
+					if (i == 0) {
+						if (block instanceof TimesBlock || block instanceof OverBlock)
+							score += (generalLeftTerms == 0? rightVarTerms:rightVarTerms+generalLeftTerms);
+						else
+							score += (generalLeftTerms == 0? 1:2);
+					}
+					else {
+						if (block instanceof TimesBlock || block instanceof OverBlock)
+							score += rightVarTerms+generalLeftTerms;
+						else
+							score += 2;
+					}
+				}
+			}
+			else {
+				score += attachedBlockList.size() - 1;
+				score += (leftVarTerms == 0? 1: 0);
+			}
+		}
+		
+
 		return score;
+	}
+
+
+	private static int countVarTerms(Iterable<BaseBlock> side) {
+		int terms = 0;
+
+		for (BaseBlock bb : side)
+		{
+			if (bb instanceof VariableBlock) terms++;
+		}
+		return terms;
+	}
+
+	private static int countGeneralTerms(Iterable<BaseBlock> side) {
+		int terms = 0;
+
+		for (BaseBlock bb : side)
+		{
+			if (!(bb instanceof BlockHolder)) terms++;
+		}
+		return terms;
 	}
 
 	// returns a list of all steps that can be taken for the given equation
