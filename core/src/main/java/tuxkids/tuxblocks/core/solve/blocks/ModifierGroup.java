@@ -228,7 +228,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	/** Removes and returns the given sprite (by reference, not equality) and destroys it */
 	protected ModifierBlock removeChild(ModifierBlock sprite, boolean destroy) {
 		ModifierBlock child = removeChild(sprite);
-		if (destroy) {
+		if (hasSprite() && destroy) {
 			destroying.add(child);
 		}
 		return child;

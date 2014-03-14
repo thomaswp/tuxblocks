@@ -179,18 +179,24 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	}
 	
 	public List<SolveAction> performSolveAction(SolveAction action) {
-		if (action instanceof DragAction) {
-			return performAction((DragAction) action);
-		} else if (action instanceof ReciprocalAction) {
-			performAction((ReciprocalAction) action);
-		} else if (action instanceof StartSimplifyingBlocksAction) {
-			return performAction((StartSimplifyingBlocksAction) action);
+		String eq = equation.getPlainText();
+		try {
+			if (action instanceof DragAction) {
+				return performAction((DragAction) action);
+			} else if (action instanceof ReciprocalAction) {
+				performAction((ReciprocalAction) action);
+			} else if (action instanceof StartSimplifyingBlocksAction) {
+				return performAction((StartSimplifyingBlocksAction) action);
+			}
+		} catch (Exception e) {
+			debug("Failed on: " + eq + ": " + action);
+			debug(e);
 		}
 		return null;
 	}
 	
 	public List<SolveAction> performAction(DragAction action) {
-		Equation copy = equation.copy();
+//		Equation copy = equation.copy();
 		
 		dragBlock(equation.getBlock(action.fromIndex));
 		if (getSideFromBaseIndex(action.fromIndex.expressionIndex) != 
@@ -203,8 +209,10 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		target.addBlockListener(this);
 		Block result = dropBlock(target);
 		if (!(target instanceof VariableBlock) && result == null) {
-			throw new RuntimeException("Failed Drop! " + copy.getPlainText() + " - " + action);
+			throw new RuntimeException("Failed Drop!"); // + copy.getPlainText() + " - " + action);
 		}
+		equation.allBlocks.get(action.fromIndex.expressionIndex).update(0);
+		
 		List<SolveAction> extraActions = this.extraActions;
 		this.extraActions = null;
 		return extraActions;
@@ -235,6 +243,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		ModifierBlock sprite = (ModifierBlock) base.getBlockAtIndex(action.baseIndex.blockIndex);
 		ModifierBlock pair = action.pairIndex == null ? null : (ModifierBlock) base.getBlockAtIndex(action.pairIndex.blockIndex); 
 		simplifiable.simplify(sprite, pair);
+		base.update(0);
 				
 
 		List<SolveAction> extraActions = this.extraActions;

@@ -182,11 +182,13 @@ public class Toolbox extends LayerWrapper implements BuildToolbox, Highlightable
 			if (block instanceof NumberBlock) {
 				((NumberBlock) block).setValue(number);
 			} else if (block instanceof ModifierBlock) {
-				if (block instanceof HorizontalModifierBlock) {
-					// Plus- and MinusBlocks take a magnitude (you can't have --3 or +-3)
-					((ModifierBlock) block).setValue(Math.abs(number));	
-				} else {
-					((ModifierBlock) block).setValue(number);
+				if (number != 0) {
+					if (block instanceof HorizontalModifierBlock) {
+						// Plus- and MinusBlocks take a magnitude (you can't have --3 or +-3)
+						((ModifierBlock) block).setValue(Math.abs(number));	
+					} else {
+						((ModifierBlock) block).setValue(number);
+					}
 				}
 				block.layer().setVisible(number != 0);
 			}

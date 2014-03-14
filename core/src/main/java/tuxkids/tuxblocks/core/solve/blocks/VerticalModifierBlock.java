@@ -8,10 +8,18 @@ public abstract class VerticalModifierBlock extends ModifierBlock {
 
 	public VerticalModifierBlock(int value) {
 		super(value);
+		if (value == 0) throw new RuntimeException("Cannot factor by zero.");
 	}
 	
 	public VerticalModifierBlock(VerticalModifierBlock inverse) {
 		super(inverse);
+		if (value == 0) throw new RuntimeException("Cannot factor by zero.");
+	}
+	
+	@Override
+	public void setValue(int value) {
+		if (value == 0) throw new RuntimeException("Cannot factor by zero.");
+		super.setValue(value);
 	}
 
 	@Override

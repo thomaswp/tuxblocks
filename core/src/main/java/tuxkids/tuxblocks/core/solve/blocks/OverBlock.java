@@ -44,7 +44,7 @@ public class OverBlock extends VerticalModifierBlock {
 		return new Constructor() {
 			@Override
 			public Persistable construct() {
-				return new OverBlock(0);
+				return new OverBlock(1);
 			}
 		};
 	}
