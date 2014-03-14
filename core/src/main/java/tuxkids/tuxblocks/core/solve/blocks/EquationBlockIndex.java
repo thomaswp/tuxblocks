@@ -6,6 +6,7 @@ public class EquationBlockIndex {
 	//TODO for performance, since all of these indexes are final,
 	//perhaps cache (like Integer) some prebuilt objects and use 
 	//a static build method
+	
 	public final ExpressionBlockIndex blockIndex;
 	public final int expressionIndex;
 	
@@ -16,8 +17,9 @@ public class EquationBlockIndex {
 	
 	public EquationBlockIndex(int expressionIndex, int groupDepth, int groupIndex) {
 		this.expressionIndex = expressionIndex;
-		this.blockIndex = new ExpressionBlockIndex(groupDepth, groupIndex);
+		this.blockIndex = ExpressionBlockIndex.makeExpressionBlockIndex(groupDepth, groupIndex);
 	}
+	
 	
 	@Override
 	public String toString() {

@@ -119,7 +119,7 @@ public abstract class BaseBlock extends Block {
 	/** Returns the index of the given block in this expression */
 	public ExpressionBlockIndex indexOf(Block block) {
 		if (block == this) {
-			return new ExpressionBlockIndex(0, 0);
+			return ExpressionBlockIndex.makeExpressionBlockIndex(0, 0);
 		} else {
 			ExpressionBlockIndex index = modifiers.indexOf(block); 
 			if (index != null) index = index.oneDeeper();

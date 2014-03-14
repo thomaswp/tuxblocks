@@ -126,7 +126,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	public ExpressionBlockIndex indexOf(Block block) {
 		for (int i = 0; i < children.size(); i++) {
 			if (children.get(i) == block) {
-				return new ExpressionBlockIndex(0, i);
+				return ExpressionBlockIndex.makeExpressionBlockIndex(0, i);
 			}
 		}
 		if (modifiers != null) {
