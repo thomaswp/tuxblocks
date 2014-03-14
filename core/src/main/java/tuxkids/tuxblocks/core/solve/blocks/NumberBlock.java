@@ -153,7 +153,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			}
 			if (mods.overBlocks.size() > 0) {
 				if (value % mods.overBlocks.get(0).value == 0) {
-					// only add didisible OverBlocks
+					// only add divisible OverBlocks
 					ag.add(mods.overBlocks.get(0), Tag.Over);
 				}
 			}

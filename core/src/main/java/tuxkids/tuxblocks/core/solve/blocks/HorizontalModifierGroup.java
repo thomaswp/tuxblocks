@@ -29,7 +29,8 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			x += modSize();
 		}
 	}
-	
+
+
 	@Override
 	protected void updateRect() {
 		rect.y = parentRect.y;

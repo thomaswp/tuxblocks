@@ -162,7 +162,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 					@Override
 					public void add(ModifierBlock sprite, ModifierBlock pair, Object tag) {
 						EquationBlockIndex spriteIndex = new EquationBlockIndex(fi, parent.indexOf(sprite));
-						EquationBlockIndex pairIndex = pair == null ? null : new EquationBlockIndex(fi, parent.indexOf(pair));
+						EquationBlockIndex pairIndex = (pair == null ? null : new EquationBlockIndex(fi, parent.indexOf(pair)));
 						actions.add(new StartSimplifyingBlocksAction(spriteIndex, pairIndex, fd));
 					}
 				});
