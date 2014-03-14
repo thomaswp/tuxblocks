@@ -196,7 +196,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	}
 	
 	public List<SolveAction> performAction(DragAction action) {
-		Equation copy = equation.copy();
+//		Equation copy = equation.copy();
 		
 		dragBlock(equation.getBlock(action.fromIndex));
 		if (getSideFromBaseIndex(action.fromIndex.expressionIndex) != 
@@ -209,7 +209,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		target.addBlockListener(this);
 		Block result = dropBlock(target);
 		if (!(target instanceof VariableBlock) && result == null) {
-			throw new RuntimeException("Failed Drop! " + copy.getPlainText() + " - " + action);
+			throw new RuntimeException("Failed Drop!"); // + copy.getPlainText() + " - " + action);
 		}
 		equation.allBlocks.get(action.fromIndex.expressionIndex).update(0);
 		
