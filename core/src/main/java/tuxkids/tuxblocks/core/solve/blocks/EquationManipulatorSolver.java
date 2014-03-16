@@ -61,6 +61,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		return actions;
 	}
 
+	//TODO prune useless drags?  Like, dragging the whole block to the same side.
 	public List<DragAction> getDragActions() {
 		List<DragAction> actions = new ArrayList<DragAction>();
 		List<EquationBlockIndex> draggables = getDraggableBlocks();

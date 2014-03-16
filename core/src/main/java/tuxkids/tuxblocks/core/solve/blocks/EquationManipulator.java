@@ -82,6 +82,7 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 	
 	// invert the dragging Block when it crosses the =
+	//TODO buggy?
 	protected Block invertBlock(Block block) {
 		Block inverse = block.inverse();
 		block.showInverse();
