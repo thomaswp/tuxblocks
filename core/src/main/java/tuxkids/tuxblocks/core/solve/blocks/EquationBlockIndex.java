@@ -6,6 +6,8 @@ public class EquationBlockIndex {
 	//TODO for performance, since all of these indexes are final,
 	//perhaps cache (like Integer) some prebuilt objects and use 
 	//a static build method
+	//Solving a Difficulty 2 equation via AStar requires the allocation of about 1-2k of these
+	//For a difficulty 0 equation, it's more like 10.
 	
 	public final ExpressionBlockIndex blockIndex;
 	public final int expressionIndex;

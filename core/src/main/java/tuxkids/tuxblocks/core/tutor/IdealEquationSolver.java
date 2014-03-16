@@ -125,71 +125,79 @@ public class IdealEquationSolver {
 
 		double score = 0;
 		// System.out.println(eq.getPlainText())
-		
+
 		int generalLeftTerms = countGeneralTerms(eq.leftSide());
 		int generalRightTerms = countGeneralTerms(eq.rightSide());
 		int leftVarTerms = countVarTerms(eq.leftSide());
 		int rightVarTerms = countVarTerms(eq.rightSide());
-		
+
 		//int totalTerms = generalLeftTerms+generalRightTerms;
 		//int totalVarTerms = leftVarTerms + rightVarTerms;
-		
+
 		for (BaseBlock bb : eq.leftSide()) {
 			if (bb instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = bb.getAllBlocks();
 			Collections.reverse(attachedBlockList);
 			if (bb instanceof VariableBlock)
 			{
+				//Iterate through everything attached to this block
 				for(int i = 0;i<attachedBlockList.size() - 1; i++) {
 					Block block = attachedBlockList.get(i);
-					if (i == 0) {
-						if (block instanceof TimesBlock || block instanceof OverBlock)
-							score += (generalRightTerms == 0? leftVarTerms:leftVarTerms+generalRightTerms);
-						else
-							score += (generalRightTerms == 0? 1:2);
+
+					if (block instanceof TimesBlock || block instanceof OverBlock) {
+						//Because we'll have to either multiply or divide to remove this term
+						//one step for every variable on this side and every term on the other
+						//(may need to be total terms)
+						score += leftVarTerms+generalRightTerms;
+						//If we can simplify times/over, the heuristic will over count, so adjust
+						score -= ((block instanceof TimesBlock && attachedBlockList.get(i+1) instanceof OverBlock) ||
+								(block instanceof OverBlock && attachedBlockList.get(i+1) instanceof TimesBlock)?1:0);
+
 					}
-					else {
-						if (block instanceof TimesBlock || block instanceof OverBlock)
-							score += leftVarTerms+generalRightTerms;
-						else
-							score += 2;
-					}
+					else
+						score += (generalRightTerms == 0 && i == 0 ? 1:2);
 				}
 			}
 			else {
+				//We will only have to simplify these out, so this is just one step
+				//for every thing attached to the number block
 				score += attachedBlockList.size() - 1;
 				score += (rightVarTerms == 0? 1: 0);
 			}
 		}
-		
+
 		for (BaseBlock bb : eq.rightSide()) {
 			if (bb instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = bb.getAllBlocks();
 			Collections.reverse(attachedBlockList);
 			if (bb instanceof VariableBlock)
 			{
+				//Iterate through everything attached to this block
 				for(int i = 0;i<attachedBlockList.size() - 1; i++) {
 					Block block = attachedBlockList.get(i);
-					if (i == 0) {
-						if (block instanceof TimesBlock || block instanceof OverBlock)
-							score += (generalLeftTerms == 0? rightVarTerms:rightVarTerms+generalLeftTerms);
-						else
-							score += (generalLeftTerms == 0? 1:2);
+
+					if (block instanceof TimesBlock || block instanceof OverBlock) {
+						score += rightVarTerms+generalLeftTerms;
+						//Because we'll have to either multiply or divide to remove this term
+						//one step for every variable on this side and every term on the other
+						//(may need to be total terms)
+						score -= ((block instanceof TimesBlock && attachedBlockList.get(i+1) instanceof OverBlock) ||
+								(block instanceof OverBlock && attachedBlockList.get(i+1) instanceof TimesBlock)?1:0);
+
 					}
-					else {
-						if (block instanceof TimesBlock || block instanceof OverBlock)
-							score += rightVarTerms+generalLeftTerms;
-						else
-							score += 2;
-					}
+					else
+						score += (generalLeftTerms == 0 && i == 0 ? 1:2);
 				}
+
 			}
 			else {
+				//We will only have to simplify these out, so this is just one step
+				//for every thing attached to the number block
 				score += attachedBlockList.size() - 1;
 				score += (leftVarTerms == 0? 1: 0);
 			}
 		}
-		
+
 
 		return score;
 	}
