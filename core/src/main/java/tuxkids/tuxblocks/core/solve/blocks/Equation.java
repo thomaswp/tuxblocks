@@ -170,6 +170,14 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 		private final List<BaseBlock> leftSide = new ArrayList<BaseBlock>(), 
 					rightSide = new ArrayList<BaseBlock>();
 		
+		public List<BaseBlock> leftSide() {
+			return leftSide;
+		}
+		
+		public List<BaseBlock> rightSide() {
+			return rightSide;
+		}
+		
 		public Builder addLeft(BaseBlock block) {
 			leftSide.add(block);
 			return this;
