@@ -115,6 +115,13 @@ public abstract class BaseBlock extends Block {
 		modifiers.addBlockListener(listener);
 	}
 	
+	protected abstract int getBaseValue(int answer);
+	
+	public double evaluate(int answer) {
+		double base = getBaseValue(answer);
+		if (modifiers != null) base = modifiers.evaluate(base);
+		return base;
+	}
 
 	/** Returns the index of the given block in this expression */
 	public ExpressionBlockIndex indexOf(Block block) {

@@ -15,6 +15,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulator;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulatorSolver;
 import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
+import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
@@ -249,6 +250,21 @@ public class IdealEquationSolver {
 		@Override
 		public String toString() {
 			return toString;
+		}
+		
+		public boolean validate(Equation originalEquation) {
+			return originalEquation.checkAnswer(getAnswer());
+		}
+		
+		public int getAnswer() {
+			if (EquationManipulator.isEquationSolved(result)) {
+				for (BaseBlock block : result.allBlocks()) {
+					if (block instanceof NumberBlock) {
+						return ((NumberBlock) block).value();
+					}
+				}
+			}
+			throw new RuntimeException("Equation is not simplified");
 		}
 	}
 

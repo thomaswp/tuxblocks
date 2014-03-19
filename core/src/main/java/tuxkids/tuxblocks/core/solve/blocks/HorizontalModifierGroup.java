@@ -38,6 +38,15 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		rect.width = parentRect.width + children.size() * modSize();
 		rect.height = parentRect.height;
 	}
+	
+	@Override
+	public double evaluate(double base) {
+		for (ModifierBlock mod : children) {
+			base += ((HorizontalModifierBlock) mod).plusValue();
+		}
+		if (modifiers != null) base = modifiers.evaluate(base);
+		return base;
+	}
 
 	@Override
 	protected ModifierGroup createModifiers() {

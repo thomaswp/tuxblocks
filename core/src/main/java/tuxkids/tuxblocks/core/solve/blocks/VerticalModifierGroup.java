@@ -29,6 +29,18 @@ public class VerticalModifierGroup extends ModifierGroup {
 		timesBlocks = new ArrayList<ModifierBlock>();
 		overBlocks = new ArrayList<ModifierBlock>();
 	}
+	
+	@Override
+	public double evaluate(double base) {
+		for (ModifierBlock times : timesBlocks) {
+			base *= times.value;
+		}
+		for (ModifierBlock over : overBlocks) {
+			base /= over.value;
+		}
+		if (modifiers != null) base = modifiers.evaluate(base);
+		return base;
+	}
 
 	@Override
 	protected void updateChildren(float base, float dt) {

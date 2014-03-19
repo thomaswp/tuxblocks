@@ -152,6 +152,19 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 		if (rIndex < rightSide.size()) return rightSide.get(rIndex);
 		return null;
 	}
+	
+	/** Returns true if the given answer is the correct value for the variable in this equation. */
+	public boolean checkAnswer(int answer) {
+		int left = 0, right = 0;
+		for (BaseBlock base : leftSide) {
+			left += base.evaluate(answer);
+		}
+		for (BaseBlock base : rightSide) {
+			right += base.evaluate(answer);
+		}
+		// because we do floating point arithmatic, make sure to do a rounded comparison
+		return Math.round(left * 1000) == Math.round(right * 1000);
+	}
 
 	/** An empty equation */
 	public static final Equation NOOP = new Builder()

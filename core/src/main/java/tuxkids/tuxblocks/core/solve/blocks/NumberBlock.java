@@ -262,4 +262,9 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			}
 		};
 	}
+
+	@Override
+	protected int getBaseValue(int answer) {
+		return value;
+	}
 }
