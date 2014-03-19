@@ -51,7 +51,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> expandedNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			//seeAllAndHeuristics(paths);// use this to debug A*'s expansion pattern
+			seeAllAndHeuristics(paths);// use this to debug A*'s expansion pattern
 
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 
@@ -105,7 +105,15 @@ public class IdealEquationSolver {
 	}
 
 	public static void seeAllAndHeuristics(Iterable<List<Step>> paths) {
+		List<List<Step>> reversablePaths = new ArrayList<List<Step>>();
+		
 		for (List<Step> path : paths) {
+			reversablePaths.add(path);
+		}
+		
+		Collections.reverse(reversablePaths);
+		
+		for (List<Step> path : reversablePaths) {
 			System.out.println("\t" + pathToString(path));
 		}
 		System.out.println();
