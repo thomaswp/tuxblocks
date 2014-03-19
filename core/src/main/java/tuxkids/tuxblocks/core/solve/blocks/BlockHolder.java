@@ -111,4 +111,9 @@ public class BlockHolder extends BaseBlock {
 			}
 		};
 	}
+
+	@Override
+	protected int getBaseValue(int answer) {
+		return 0;
+	}
 }

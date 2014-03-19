@@ -62,6 +62,9 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	 * removes one as appropriate.
 	 */
 	public abstract void addNegative();
+
+	/** Gets the value of a base block modified by these modifiers */
+	public abstract double evaluate(double base);
 	
 	protected GroupLayer layer;
 	protected Rectangle rect = new Rectangle();

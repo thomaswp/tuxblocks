@@ -219,4 +219,9 @@ public class VariableBlock extends BaseBlock {
 			}
 		};
 	}
+
+	@Override
+	protected int getBaseValue(int answer) {
+		return answer;
+	}
 }
