@@ -14,9 +14,11 @@ import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulator;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulatorSolver;
+import tuxkids.tuxblocks.core.solve.blocks.MinusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
+import tuxkids.tuxblocks.core.solve.blocks.PlusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.StudentAction;
@@ -49,25 +51,15 @@ public class IdealEquationSolver {
 		paths.add(startPath);
 
 		// a map of the shortest path lengths to a given node
-		HashMap<String, Integer> expandedNodes = new HashMap<String, Integer>();
+		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			seeAllAndHeuristics(paths);// use this to debug A*'s expansion pattern
-
+			//seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
-
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
-			// hash it using its text function... TODO: use a quicker/more
-			// accurate hash
-			String text = last.toString();
-			Integer lastPathLength = expandedNodes.get(text);
-			// if we've already gotten here by a shorter path, don't expand this node
-			if (lastPathLength != null && lastPathLength <= toExpand.size()) {
-				continue;
-			}
-			expandedNodes.put(text, toExpand.size());
-
+			
+			
 			// break if we win
 			if (EquationManipulator.isEquationSolved(last.result)) {
 				return toExpand;
@@ -76,6 +68,10 @@ public class IdealEquationSolver {
 			// get all possible nodes reachable from this node
 			List<Step> branches = expandState(last.result);
 			for (Step step : branches) {
+				if (!registerNode(step, discoveredNodes, toExpand.size() + 1)) {
+					continue;
+				}
+				
 				// add them all as children, branching from the original path
 				List<Step> nPath = new ArrayList<Step>(toExpand);
 				nPath.add(step);
@@ -86,6 +82,20 @@ public class IdealEquationSolver {
 		// this will almost certainly never happen...
 		// but if it does, the equation is unsolvable
 		return null;
+	}
+	
+	private boolean registerNode(Step currentStep, HashMap<String, Integer> discoveredNodes, int pathLength) {
+
+		// hash it using its text function... TODO: use a quicker/more
+		// accurate hash
+		String text = currentStep.equationString();
+		Integer lastPathLength = discoveredNodes.get(text);
+		// if we've already gotten here by a shorter path, don't expand this node
+		if (lastPathLength != null && lastPathLength <= pathLength) {
+			return false;
+		}
+		discoveredNodes.put(text, pathLength);
+		return true;
 	}
 
 	// for debugging paths
@@ -143,6 +153,10 @@ public class IdealEquationSolver {
 		//int totalTerms = generalLeftTerms+generalRightTerms;
 		//int totalVarTerms = leftVarTerms + rightVarTerms;
 
+		if (generalRightTerms == 0 || generalLeftTerms == 0) {
+			score++;
+		}
+		
 		for (BaseBlock bb : eq.leftSide()) {
 			if (bb instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = bb.getAllBlocks();
@@ -150,7 +164,7 @@ public class IdealEquationSolver {
 			if (bb instanceof VariableBlock)
 			{
 				//Iterate through everything attached to this block
-				for(int i = 0;i<attachedBlockList.size() - 1; i++) {
+				for(int i = 0;i<attachedBlockList.size()-1; i++) {
 					Block block = attachedBlockList.get(i);
 
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
@@ -161,10 +175,14 @@ public class IdealEquationSolver {
 						//If we can simplify times/over, the heuristic will over count, so adjust
 						score -= ((block instanceof TimesBlock && attachedBlockList.get(i+1) instanceof OverBlock) ||
 								(block instanceof OverBlock && attachedBlockList.get(i+1) instanceof TimesBlock)?1:0);
+						
+						if (attachedBlockList.get(i+1) instanceof PlusBlock || attachedBlockList.get(i+1) instanceof MinusBlock) {
+							score++;
+						}
 
 					}
 					else
-						score += (generalRightTerms == 0 && i == 0 ? 1:2);
+						score += 2;//(generalRightTerms == 0 && i == 0 ? 1:2);
 				}
 			}
 			else {
@@ -193,9 +211,12 @@ public class IdealEquationSolver {
 						score -= ((block instanceof TimesBlock && attachedBlockList.get(i+1) instanceof OverBlock) ||
 								(block instanceof OverBlock && attachedBlockList.get(i+1) instanceof TimesBlock)?1:0);
 
+						if (attachedBlockList.get(i+1) instanceof PlusBlock || attachedBlockList.get(i+1) instanceof MinusBlock) {
+							score++;
+						}
 					}
 					else
-						score += (generalLeftTerms == 0 && i == 0 ? 1:2);
+						score += 2;// (generalLeftTerms == 0 && i == 0 ? 1:2);
 				}
 
 			}
@@ -255,16 +276,15 @@ public class IdealEquationSolver {
 		// actions)
 		public final List<SolveAction> actions = new ArrayList<SolveAction>();
 		public final Equation result;
-		private final String toString;
+		private final String equationString;
 
 		public Step(Equation result) {
 			this.result = result;
-			this.toString = result.getPlainText();
+			this.equationString = result.getPlainText();
 		}
 
-		@Override
-		public String toString() {
-			return toString;
+		public String equationString() {
+			return equationString;
 		}
 		
 		public boolean validate(Equation originalEquation) {
