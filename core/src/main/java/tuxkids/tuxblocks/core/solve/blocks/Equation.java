@@ -202,6 +202,17 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 			return this;
 		}
 		
+		public Builder addLeft() {
+			leftSide.add(new BlockHolder());
+			return this;
+		}
+
+		public Builder addRight() {
+			rightSide.add(new BlockHolder());
+			return this;
+		}
+		
+		
 		public Builder exchangeSides(boolean b) {
 			if (b) {
 				List<BaseBlock> temp = new ArrayList<BaseBlock>(rightSide);

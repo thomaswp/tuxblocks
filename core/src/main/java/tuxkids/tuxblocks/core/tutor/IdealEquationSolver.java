@@ -25,6 +25,8 @@ import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.StudentAction;
 
 public class IdealEquationSolver {
+	
+	private static boolean debugHeuristic = false;
 
 	private static Comparator<List<Step>> comparator = new Comparator<List<Step>>() {
 		@Override
@@ -55,7 +57,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			//seeAllAndHeuristics(paths);
+			seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
@@ -102,6 +104,7 @@ public class IdealEquationSolver {
 	// for debugging paths
 	public static String pathToString(List<Step> path) {
 		StringBuilder sb = new StringBuilder();
+		debugHeuristic = true;
 		for (int i = path.size() - 1; i >= 0; i--) {
 			if (i < path.size() - 1)
 				sb.append(" <- ");
@@ -112,6 +115,7 @@ public class IdealEquationSolver {
 			sb.append("/");
 			sb.append(i);
 			sb.append("}");
+			debugHeuristic = false;
 		}
 		return sb.toString();
 	}
@@ -125,9 +129,14 @@ public class IdealEquationSolver {
 		
 		Collections.reverse(reversablePaths);
 		
+		
+		
 		for (List<Step> path : reversablePaths) {
 			System.out.println("\t" + pathToString(path));
 		}
+		
+		debugHeuristic = false;
+		
 		System.out.println();
 	}
 
@@ -158,10 +167,18 @@ public class IdealEquationSolver {
 			score++;
 		}
 		
+		if (debugHeuristic) System.out.print("\t\t");
+		
+		boolean isFirst = true;
+		
 		for (BaseBlock bb : eq.leftSide()) {
+			
+			double previousScore = score;
+			
 			if (bb instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = bb.getAllBlocks();
 			Collections.reverse(attachedBlockList);
+			
 			if (bb instanceof VariableBlock)
 			{
 				//Iterate through everything attached to this block
@@ -198,9 +215,15 @@ public class IdealEquationSolver {
 				score += attachedBlockList.size() - 1;
 				score += (rightVarTerms == 0? 1: 0);
 			}
+			if (debugHeuristic) System.out.printf("%s[%1.1f] ", (isFirst?"":"+ "),score-previousScore);
+			isFirst = false;
 		}
 
+		if (debugHeuristic) System.out.print(" = ");
+		
+		isFirst = true;
 		for (BaseBlock bb : eq.rightSide()) {
+			double previousScore = score;
 			if (bb instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = bb.getAllBlocks();
 			Collections.reverse(attachedBlockList);
@@ -222,7 +245,7 @@ public class IdealEquationSolver {
 							//Because we'll have to either multiply or divide to remove this term
 							//one step for every variable on this side and every term on the other
 							//(may need to be total terms)
-							score += leftVarTerms+generalRightTerms;
+							score += rightVarTerms+generalLeftTerms;
 
 							// dividing/multiplying out with a plus or minus block can't happen yet
 							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
@@ -241,8 +264,12 @@ public class IdealEquationSolver {
 				score += attachedBlockList.size() - 1;
 				score += (leftVarTerms == 0? 1: 0);
 			}
+			
+			if (debugHeuristic) System.out.printf("%s[%1.1f] ", (isFirst?"":"+ "),score-previousScore);
+			isFirst = false;
 		}
 
+		if (debugHeuristic) System.out.println();
 
 		return score;
 	}
@@ -255,7 +282,7 @@ public class IdealEquationSolver {
 		} else if (mBlock.value() == -mNextBlock.value()){
 			score += 2;
 		} else {
-			score += 2;	//may be 2
+			score += 2;	//may be 2 or 3
 		}
 		return score;
 	}
