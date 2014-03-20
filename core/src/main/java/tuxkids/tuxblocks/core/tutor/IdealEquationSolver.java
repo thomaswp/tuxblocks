@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.tutor;
 
+import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,25 +50,19 @@ public class IdealEquationSolver {
 		paths.add(startPath);
 
 		// a map of the shortest path lengths to a given node
-		HashMap<String, Integer> expandedNodes = new HashMap<String, Integer>();
+		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			//seeAllAndHeuristics(paths);// use this to debug A*'s expansion
+//			seeAllAndHeuristics(paths);// use this to debug A*'s expansion
 										// pattern
 
 			List<Step> toExpand = paths.poll(); // get the best estimated path
-
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
-			// hash it using its text function... TODO: use a quicker/more
-			// accurate hash
-			String text = last.toString();
-			Integer lastPathLength = expandedNodes.get(text);
-			// if we've already gotten here by a shorter path, don't expand this node
-			if (lastPathLength != null && lastPathLength <= toExpand.size()) {
-				continue;
-			}
-			expandedNodes.put(text, toExpand.size());
+			// check if we've gotten here before by a shorter path
+//			if (!registerNode(last, discoveredNodes, toExpand.size())) {
+//				continue;
+//			}
 
 			// break if we win
 			if (EquationManipulator.isEquationSolved(last.result)) {
@@ -77,6 +72,10 @@ public class IdealEquationSolver {
 			// get all possible nodes reachable from this node
 			List<Step> branches = expandState(last.result);
 			for (Step step : branches) {
+				if (!registerNode(step, discoveredNodes, toExpand.size() + 1)) {
+					continue;
+				}
+				
 				// add them all as children, branching from the original path
 				List<Step> nPath = new ArrayList<Step>(toExpand);
 				nPath.add(step);
@@ -87,6 +86,20 @@ public class IdealEquationSolver {
 		// this will almost certainly never happen...
 		// but if it does, the equation is unsolvable
 		return null;
+	}
+	
+	private boolean registerNode(Step currentStep, HashMap<String, Integer> discoveredNodes, int pathLength) {
+
+		// hash it using its text function... TODO: use a quicker/more
+		// accurate hash
+		String text = currentStep.equationString();
+		Integer lastPathLength = discoveredNodes.get(text);
+		// if we've already gotten here by a shorter path, don't expand this node
+		if (lastPathLength != null && lastPathLength <= pathLength) {
+			return false;
+		}
+		discoveredNodes.put(text, pathLength);
+		return true;
 	}
 
 	// for debugging paths
@@ -240,16 +253,15 @@ public class IdealEquationSolver {
 		// actions)
 		public final List<SolveAction> actions = new ArrayList<SolveAction>();
 		public final Equation result;
-		private final String toString;
+		private final String equationString;
 
 		public Step(Equation result) {
 			this.result = result;
-			this.toString = result.getPlainText();
+			this.equationString = result.getPlainText();
 		}
 
-		@Override
-		public String toString() {
-			return toString;
+		public String equationString() {
+			return equationString;
 		}
 		
 		public boolean validate(Equation originalEquation) {

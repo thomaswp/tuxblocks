@@ -3,6 +3,8 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.List;
 
 import playn.core.PlayN;
+import tuxkids.tuxblocks.core.solve.action.DragAction;
+import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
@@ -12,12 +14,14 @@ public abstract class EquationManipulator extends PlayNObject {
 		Left, Right;
 	}
 
+	private Equation lastEquation; // temp variable used when reporting SolveActions
+	
 	protected boolean inBuildMode; // true if this is being hosted by a BuildScreen
-
 	protected MutableEquation equation; // Holds all blocks in the equation being manipulated
 	protected Block dragging, tempDragging; // which block is currently dragging
 	protected BaseBlock draggingFrom, tempDraggingFrom; // which BaseBlock the currently dragging Block is coming from
 	protected List<BaseBlock> draggingFromSide; // which side the currently dragging Block is coming from
+	protected SolveActionCallback solveActionCallback; // callback for when a SolveAction is performed
 
 	protected abstract boolean hasSprites();
 
@@ -55,6 +59,7 @@ public abstract class EquationManipulator extends PlayNObject {
 		draggingFromSide = null;
 	}
 	
+	/** Returns true if the given equation is considered solved, with one variable and one number */
 	public static boolean isEquationSolved(Equation equation) {
 		int numbers = 0, variables = 0;
 		for (BaseBlock sprite : equation) {
@@ -154,6 +159,11 @@ public abstract class EquationManipulator extends PlayNObject {
 		return sprite;
 	}
 
+	/**
+	 * Drops the currently dragging block on the given target BaseBlock.
+	 * Returns the block actually added, which may or may not be the
+	 * Block you're looking for. Sorry.
+	 */
 	protected Block dropBlock(BaseBlock target) {
 
 		Block added = null;
@@ -233,5 +243,15 @@ public abstract class EquationManipulator extends PlayNObject {
 				}
 			}
 		}
+	}
+	
+	protected void reportSolveAction(SolveAction action) {
+		if (solveActionCallback == null) return;
+		solveActionCallback.onActionPerformed(action, lastEquation, equation);
+		lastEquation = equation.copy();
+	}
+	
+	public interface SolveActionCallback {
+		void onActionPerformed(SolveAction action, Equation before, Equation after);
 	}
 }
