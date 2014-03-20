@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
@@ -201,12 +202,31 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 			return this;
 		}
 		
+		public Builder exchangeSides(boolean b) {
+			if (b) {
+				List<BaseBlock> temp = new ArrayList<BaseBlock>(rightSide);
+				rightSide.clear();
+				rightSide.addAll(leftSide);
+				leftSide.clear();
+				leftSide.addAll(temp);
+			}
+			return this;
+		}
+		
 		public Equation createEquation() {
 			return new Equation(leftSide, rightSide);
 		}
 
 		public MutableEquation createMutableEquation() {
 			return new MutableEquation(leftSide, rightSide);
+		}
+		
+		public Builder addLeft(int i) {
+			return addLeft(new NumberBlock(i));
+		}
+
+		public Builder addRight(int i) {
+			return addRight(new NumberBlock(i));
 		}
 	}
 
