@@ -27,7 +27,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	protected final static int MODIFIERS_DEPTH = 0;
 	/** Z-depth of this group's children */
 	protected static final int CHILD_START_DEPTH = -1;
-	
+
 	/** 
 	 * Called when this group should update the position of its children,
 	 *  interpolating with the given base and dt.
@@ -56,7 +56,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	 * 3x, the modifier group [*3] will be passed x as a base.
 	 */
 	protected abstract Renderer createRenderer(Renderer base);
-	
+
 	/**
 	 * Adds a *-1 to this group (or its modifiers), or
 	 * removes one as appropriate.
@@ -65,7 +65,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 
 	/** Gets the value of a base block modified by these modifiers */
 	public abstract double evaluate(double base);
-	
+
 	protected GroupLayer layer;
 	protected Rectangle rect = new Rectangle();
 	// rect of this group's parent
@@ -76,11 +76,11 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	protected SimplifyLayer simplifyLayer;
 
 	private List<ModifierBlock> toRemove = new ArrayList<ModifierBlock>();
-	
+
 	protected List<ModifierBlock> children = new ArrayList<ModifierBlock>(),
 			destroying = new ArrayList<ModifierBlock>();
 	protected ModifierGroup modifiers;
-	
+
 	@Override
 	public Layer layer() {
 		return layer;
@@ -90,12 +90,12 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	public float x() {
 		return rect.x;
 	}
-	
+
 	@Override
 	public float y() {
 		return rect.y();
 	}
-	
+
 	@Override
 	public float width() {
 		return rect.width;
@@ -105,7 +105,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	public float height() {
 		return rect.height;
 	}
-	
+
 	public float totalWidth() {
 		if (modifiers == null) {
 			return width();
@@ -119,12 +119,12 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 		return modifiers.offsetX();
 	}
-	
+
 	@Override
 	public boolean showSimplify() {
 		return blockListener != null && !blockListener.inBuildMode();
 	}
-	
+
 	/** Returns the index of the given block in this expression */
 	public ExpressionBlockIndex indexOf(Block block) {
 		for (int i = 0; i < children.size(); i++) {
@@ -139,7 +139,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 		return null;
 	}
-	
+
 	/** Returns the Block with the given index in this expression */
 	public Block getBlockAtIndex(ExpressionBlockIndex index) {
 		if (index.depth == 0) {
@@ -149,7 +149,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void initSpriteImpl() {
 		super.initSpriteImpl();
@@ -167,12 +167,12 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			modifiers.initSprite();
 			addModifiersSprite();
 		}
-		
+
 		simplifyLayer = new SimplifyLayer(this);
 		layer.add(simplifyLayer.layerAddable());
 		simplifyLayer.setDepth(SIMPLIFY_DEPTH);
 	}
-	
+
 	@Override
 	public void destroy() {
 		if (hasSprite()) layer().destroy();
@@ -181,13 +181,13 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 		if (modifiers != null) modifiers.destroy();
 	}
-	
+
 	/** Creates and adds a new ModifierGroup to this group */
 	protected void addNewModifiers() {
 		if (modifiers != null) return;
 		setModifiers(createModifiers());
 	}
-	
+
 	/** Removes and returns this group's ModifierGroup */
 	protected ModifierGroup removeModifiers() {
 		ModifierGroup mods = modifiers;
@@ -195,7 +195,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		modifiers = null;
 		return mods;
 	}
-	
+
 	/** Sets this group's ModifierGroup to the given mods */
 	protected void setModifiers(ModifierGroup mods) {
 		removeModifiers();
@@ -205,7 +205,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			addModifiersSprite();
 		}
 	}
-	
+
 	// initializes the mods' sprite
 	protected void addModifiersSprite() {
 		if (modifiers != null) {
@@ -213,7 +213,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			modifiers.layer().setDepth(MODIFIERS_DEPTH);
 			modifiers.addBlockListener(blockListener);
 		}
-		
+
 	}
 
 	/** Removes and returns the given sprite (by reference, not equality) */
@@ -227,7 +227,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 		return null;
 	}
-	
+
 	/** Removes and returns the given sprite (by reference, not equality) and destroys it */
 	protected ModifierBlock removeChild(ModifierBlock sprite, boolean destroy) {
 		ModifierBlock child = removeChild(sprite);
@@ -244,7 +244,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		if (hasSprite()) addChildSprite(child, children.size() - 1);
 		child.addBlockListener(blockListener);
 	}
-	
+
 	/** Adds the given modifier to this group at the given index */
 	protected void addChildSprite(ModifierBlock child, int index) {
 		float depth = CHILD_START_DEPTH - index;
@@ -253,21 +253,21 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		child.layer().setVisible(true);
 		child.layer().setDepth(depth);
 	}
-	
+
 	/** Returns true if this group or any of its modifiers is modifier horizontally */
 	public boolean isModifiedHorizontally() {
 		if (modifiers == null) return false;
 		if (modifiers.children.size() > 0 && modifiers instanceof HorizontalModifierGroup) return true;
 		return modifiers.isModifiedHorizontally();
 	}
-	
+
 	/** Returns true if this group or any of its modifiers is modifier vertically */
 	public boolean isModifiedVertically() {
 		if (modifiers == null) return false;
 		if (modifiers.children.size() > 0 && modifiers instanceof VerticalModifierGroup) return true;
 		return modifiers.isModifiedVertically();
 	}
-	
+
 	/** Recursively adds any of this group's {@link VerticalModifierBlock}s to the given list */
 	protected void addVerticalModifiersTo(List<VerticalModifierBlock> mods) {
 		if (modifiers == null) return;
@@ -279,16 +279,16 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			}
 		}
 		modifiers.addVerticalModifiersTo(mods);
-		
+
 	}
-	
+
 	@Override
 	public boolean contains(float x, float y) {
 		if (super.contains(x, y)) return true;
 		if (modifiers != null) return modifiers.contains(x, y);
 		return false;
 	}
-	
+
 	/** 
 	 * Uses the given Sprite's position to call 
 	 * {@link ModifierGroup#updateParentRect(float, float, float, float)} 
@@ -296,7 +296,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	protected void updateParentRect(Sprite parent) {
 		updateParentRect(parent.x(), parent.y(), parent.width(), parent.height());
 	}
-	
+
 	/** 
 	 * Updates this group's representation of it's parent's position.
 	 * This method allows the group to have no reference to the parent
@@ -318,7 +318,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			modifiers.snapChildren();
 		}
 	}
-	
+
 	@Override
 	public void addBlockListener(BlockListener listener) {
 		this.blockListener = listener;
@@ -329,7 +329,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			modifiers.addBlockListener(listener);
 		}
 	}
-	
+
 	/** 
 	 * Checks to see if this group and it's modifiers have no children.
 	 * If so, it removes both links from the chain of modifiers and returns
@@ -355,7 +355,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		// or just return this
 		return this;
 	}
-	
+
 	// do some modifier cleanup
 	private void updateModifiers() {
 		// if our modifiers have no children, but they do have modifiers with children
@@ -377,11 +377,11 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			}
 		}
 	}
-	
+
 	protected void releaseLayers() {
 		if (hasSprite()) layer.remove(modifiers.layer());
 	}
-	
+
 	/** Adds the given modifier to this group, optionally snapping into place */
 	protected ModifierBlock addModifier(ModifierBlock sprite, boolean snap) {
 		if (modifiers == null && canAdd(sprite)) {
@@ -404,7 +404,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	}
 
 	// the following 2 methods are overridden in child classes
-	
+
 	/** Attempts to add the given NumberBlock and children, or propagates upward if it can't. */
 	public ModifierBlock addExpression(NumberBlock sprite, boolean snap) {
 		if (modifiers != null) {
@@ -412,7 +412,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 		return null;
 	}
-	
+
 	/** Returns true if the given expression can be added */
 	public boolean canAddExpression(NumberBlock sprite) {
 		if (modifiers != null) {
@@ -420,7 +420,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void update(int delta) {
 		// remove children that don't belong to this group
@@ -433,8 +433,8 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 				sprite.update(delta, multiExpression);
 			}
 		}
-		
-		
+
+
 		// remove blocks that have faded out
 		for (int i = 0; i < destroying.size(); i++) {
 			ModifierBlock sprite = destroying.get(i);
@@ -442,20 +442,23 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 				destroying.remove(i--);
 			}
 		}
-		
+
 		// update our modifiers
 		if (modifiers != null) {
 			modifiers.update(delta, multiExpression);
 			ModifierGroup newMods = modifiers.updateParentModifiers();
-			if (newMods != modifiers && hasSprite()) {
-				// if we have new modifiers, update the sprites accordingly
-				if (newMods != null) {
-					layer.add(newMods.layer());
+			if (newMods != modifiers) {
+				if (hasSprite())
+				{
+					// if we have new modifiers, update the sprites accordingly
+					if (newMods != null) {
+						layer.add(newMods.layer());
+					}
+					// TODO: check for memory leaks here... I'm not sure why the layer 
+					// might have children in the first place.. but it does sometimes
+					modifiers.layer.removeAll();
+					modifiers.layer().destroy();
 				}
-				// TODO: check for memory leaks here... I'm not sure why the layer 
-				// might have children in the first place.. but it does sometimes
-				modifiers.layer.removeAll();
-				modifiers.layer().destroy();
 				modifiers = newMods;
 			}
 		}
@@ -464,7 +467,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			simplifyLayer.update();
 		}
 	}
-	
+
 	public void update(int delta, boolean multiExpression) {
 		this.multiExpression = multiExpression;
 		update(delta);
@@ -486,18 +489,18 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			modifiers.paint(clock);
 		}
 	}
-	
+
 	public void simplifyModifiers() {
 		if (modifiers != null) modifiers.simplifyModifiers();
 	}
-	
+
 	@Override
 	public void performAction(Action action) {
 		super.performAction(action);
 		for (ModifierBlock child : children) child.performAction(action);;
 		if (modifiers != null) modifiers.performAction(action);
 	}
-	
+
 	/** Prints out a hierarchy of this group's modifiers (with the given indentation) */
 	public String hierarchy(int tab) {
 		StringBuilder out = new StringBuilder();
@@ -522,7 +525,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 		}
 		if (modifiers != null) copy.setModifiers((ModifierGroup) modifiers.copy());
 	}
-	
+
 	@Override
 	public void persist(Data data) throws NumberFormatException, ParseDataException {
 		children = data.persistList(children);
