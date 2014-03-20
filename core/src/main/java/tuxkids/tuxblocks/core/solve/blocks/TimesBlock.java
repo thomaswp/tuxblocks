@@ -79,7 +79,7 @@ public class TimesBlock extends VerticalModifierBlock{
 		return new Constructor() {
 			@Override
 			public Persistable construct() {
-				return new TimesBlock(0);
+				return new TimesBlock(1);
 			}
 		};
 	}
