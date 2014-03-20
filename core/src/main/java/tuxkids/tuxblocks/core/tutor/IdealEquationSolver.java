@@ -55,7 +55,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			seeAllAndHeuristics(paths);
+			//seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
@@ -174,6 +174,8 @@ public class IdealEquationSolver {
 						if (mightDivideOut(block, nextBlock))
 						{
 							score = adjustScoreForDividingOut(score, block, nextBlock);
+							//we essentially got two steps at once
+							i++;
 						} else {
 							//Because we'll have to either multiply or divide to remove this term
 							//one step for every variable on this side and every term on the other
@@ -214,6 +216,8 @@ public class IdealEquationSolver {
 						if (mightDivideOut(block, nextBlock))
 						{
 							score = adjustScoreForDividingOut(score, block, nextBlock);
+							//we essentially got two steps at once
+							i++;
 						} else {
 							//Because we'll have to either multiply or divide to remove this term
 							//one step for every variable on this side and every term on the other
@@ -251,7 +255,7 @@ public class IdealEquationSolver {
 		} else if (mBlock.value() == -mNextBlock.value()){
 			score += 2;
 		} else {
-			score += 3;	//may be 2
+			score += 2;	//may be 2
 		}
 		return score;
 	}
