@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
@@ -57,7 +59,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			seeAllAndHeuristics(paths);
+		//	seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
@@ -163,8 +165,9 @@ public class IdealEquationSolver {
 		//int totalTerms = generalLeftTerms+generalRightTerms;
 		//int totalVarTerms = leftVarTerms + rightVarTerms;
 
+		//discourage emptying out one side of the equation
 		if (generalRightTerms == 0 || generalLeftTerms == 0) {
-			score++;
+			score+=.1;
 		}
 		
 		if (debugHeuristic) System.out.print("\t\t");
@@ -266,6 +269,9 @@ public class IdealEquationSolver {
 				score += (leftVarTerms == 0? 1: 0);
 			}
 			
+			score = handleCombinableTerms(eq.leftSide(), score);
+			score = handleCombinableTerms(eq.rightSide(), score);
+			
 			if (debugHeuristic) System.out.printf("%s[%1.1f] ", (isFirst?"":"+ "),score-previousScore);
 			isFirst = false;
 		}
@@ -274,6 +280,58 @@ public class IdealEquationSolver {
 					leftVarTerms, rightVarTerms);
 
 		return score;
+	}
+
+	private static double handleCombinableTerms(Iterable<BaseBlock> side, double score) {
+		List<BaseBlock> baseBlocks = new ArrayList<BaseBlock>(4);
+		for(BaseBlock bb: side) baseBlocks.add(bb);
+		
+		int combinableTimesBlocks = 0;
+		List<Integer> timeses = new ArrayList<Integer>(baseBlocks.size());
+		int combinableOverBlocks = 0;
+		Set<Integer> possibleOvers = new HashSet<Integer>();
+		
+		int combinableNumberBlocks = 0;
+		
+		for(int i = 0;i< baseBlocks.size();i++)	{
+			BaseBlock thisBlock = baseBlocks.get(i);
+
+			//if the block and 
+			List<Block> attachedBlocks = thisBlock.getAllBlocks();
+			if (thisBlock instanceof VariableBlock && attachedBlocks.size()<=2)
+			{
+				if (attachedBlocks.size() == 1 || attachedBlocks.get(1) instanceof TimesBlock) {
+					combinableTimesBlocks++;
+					if (attachedBlocks.size() == 1) {
+						timeses.add(1);
+					} else {
+						timeses.add(((ModifierBlock) attachedBlocks.get(1)).value());
+					}
+					
+				} else if (attachedBlocks.get(1) instanceof OverBlock) {
+					combinableOverBlocks++;
+					possibleOvers.add(((ModifierBlock) attachedBlocks.get(i)).value());
+				}
+			} else if (thisBlock instanceof NumberBlock && attachedBlocks.size() == 1){
+				combinableNumberBlocks++;
+			}
+		}
+		
+		score += combinableNumberBlocks-1;
+		
+		int sum = sumList(timeses);
+		score += combinableOverBlocks - 1;
+		if (!(sum == 1 || sum ==0 )) score ++;		//don't need to divide in the end if the num variables sums to 1 or 0
+		
+		//something with division that takes into account different overs
+		
+		return score;
+	}
+
+	private static int sumList(List<Integer> timeses) {
+		int sum = 0;
+		for(Integer i: timeses) sum+=i;
+		return sum;
 	}
 
 	private static double adjustScoreForDividingOut(double score, Block block, Block nextBlock) {
