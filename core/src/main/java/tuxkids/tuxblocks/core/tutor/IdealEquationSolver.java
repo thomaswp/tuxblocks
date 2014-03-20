@@ -205,8 +205,9 @@ public class IdealEquationSolver {
 							}
 						}
 					}
-					else
+					else {		//if addition or subtraction
 						score += 2;//(generalRightTerms == 0 && i == 0 ? 1:2);
+					}
 				}
 			}
 			else {
@@ -269,7 +270,8 @@ public class IdealEquationSolver {
 			isFirst = false;
 		}
 
-		if (debugHeuristic) System.out.println();
+		if (debugHeuristic) System.out.printf("\tgL = %d, gR = %d, vL = %d, vR = %d%n",generalLeftTerms,generalRightTerms,
+					leftVarTerms, rightVarTerms);
 
 		return score;
 	}
