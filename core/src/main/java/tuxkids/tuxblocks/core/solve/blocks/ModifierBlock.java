@@ -124,6 +124,10 @@ public abstract class ModifierBlock extends Block {
 		destroy(true);
 	}
 	
+	public int value() {
+		return value;
+	}
+	
 	/** Sets the numeric value of this modifier and updates the sprite accordingly */
 	public void setValue(int value) {
 		if (this.value == value) return;

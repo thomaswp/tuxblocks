@@ -15,6 +15,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulator;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulatorSolver;
 import tuxkids.tuxblocks.core.solve.blocks.MinusBlock;
+import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
@@ -54,7 +55,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			//seeAllAndHeuristics(paths);
+			seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
@@ -168,18 +169,22 @@ public class IdealEquationSolver {
 					Block block = attachedBlockList.get(i);
 
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
-						//Because we'll have to either multiply or divide to remove this term
-						//one step for every variable on this side and every term on the other
-						//(may need to be total terms)
-						score += leftVarTerms+generalRightTerms;
-						//If we can simplify times/over, the heuristic will over count, so adjust
-						score -= ((block instanceof TimesBlock && attachedBlockList.get(i+1) instanceof OverBlock) ||
-								(block instanceof OverBlock && attachedBlockList.get(i+1) instanceof TimesBlock)?1:0);
+						Block nextBlock = attachedBlockList.get(i+1);
 						
-						if (attachedBlockList.get(i+1) instanceof PlusBlock || attachedBlockList.get(i+1) instanceof MinusBlock) {
-							score++;
-						}
+						if (mightDivideOut(block, nextBlock))
+						{
+							score = adjustScoreForDividingOut(score, block, nextBlock);
+						} else {
+							//Because we'll have to either multiply or divide to remove this term
+							//one step for every variable on this side and every term on the other
+							//(may need to be total terms)
+							score += leftVarTerms+generalRightTerms;
 
+							// dividing/multiplying out with a plus or minus block can't happen yet
+							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
+								score++;
+							}
+						}
 					}
 					else
 						score += 2;//(generalRightTerms == 0 && i == 0 ? 1:2);
@@ -204,15 +209,21 @@ public class IdealEquationSolver {
 					Block block = attachedBlockList.get(i);
 
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
-						score += rightVarTerms+generalLeftTerms;
-						//Because we'll have to either multiply or divide to remove this term
-						//one step for every variable on this side and every term on the other
-						//(may need to be total terms)
-						score -= ((block instanceof TimesBlock && attachedBlockList.get(i+1) instanceof OverBlock) ||
-								(block instanceof OverBlock && attachedBlockList.get(i+1) instanceof TimesBlock)?1:0);
+						Block nextBlock = attachedBlockList.get(i+1);
+						
+						if (mightDivideOut(block, nextBlock))
+						{
+							score = adjustScoreForDividingOut(score, block, nextBlock);
+						} else {
+							//Because we'll have to either multiply or divide to remove this term
+							//one step for every variable on this side and every term on the other
+							//(may need to be total terms)
+							score += leftVarTerms+generalRightTerms;
 
-						if (attachedBlockList.get(i+1) instanceof PlusBlock || attachedBlockList.get(i+1) instanceof MinusBlock) {
-							score++;
+							// dividing/multiplying out with a plus or minus block can't happen yet
+							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
+								score++;
+							}
 						}
 					}
 					else
@@ -230,6 +241,24 @@ public class IdealEquationSolver {
 
 
 		return score;
+	}
+
+	private static double adjustScoreForDividingOut(double score, Block block, Block nextBlock) {
+		ModifierBlock mBlock = (ModifierBlock)block;
+		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
+		if (mBlock.value() == mNextBlock.value()) {
+			score += 1;
+		} else if (mBlock.value() == -mNextBlock.value()){
+			score += 2;
+		} else {
+			score += 3;	//may be 2
+		}
+		return score;
+	}
+
+	private static boolean mightDivideOut(Block block, Block nextBlock) {
+		return (block instanceof TimesBlock && nextBlock instanceof OverBlock) ||
+		(block instanceof OverBlock && nextBlock instanceof TimesBlock);
 	}
 
 
