@@ -6,6 +6,7 @@ import java.util.List;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.markup.BlockHolderRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.MultiList;
@@ -95,7 +96,6 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 	private Renderer getRenderer(List<BaseBlock> side) {
 		Renderer renderer = null;
 		for (BaseBlock base : side) {
-			if (base instanceof BlockHolder) continue;
 			Renderer toAdd = base.createRenderer();
 			if (renderer == null) renderer = toAdd;
 			else {

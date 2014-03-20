@@ -99,4 +99,14 @@ public abstract class ExpressionWriter {
 			this.blankColor = blankcolor;
 		}
 	}
+	
+	public static ExpressionWriter NOOP = new ExpressionWriter(null) {
+		@Override
+		protected Vector formatExpression(TextFormat textFormat) {
+			return new Vector();
+		}
+
+		@Override
+		public void drawExpression(Canvas canvas) { }
+	};
 }
