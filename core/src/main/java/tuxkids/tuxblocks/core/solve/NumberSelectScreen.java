@@ -522,7 +522,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		if (MenuLayer.showing()) return;
 		
 		Integer s = selectedAnswer();
-		int selected = s == null ? 0 : s;
+		int selected = s == null ? 0 : s.intValue();
 		
 		char c = event.typedChar();
 		if (c >= '0' && c <= '9') {
@@ -533,8 +533,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 				selectedPoint = getPoint(selected);
 				Tutorial.trigger(Trigger.Number_NumberSelected);
 			}
-		} else if (s != 0 && c == '-') {
-			selectedPoint = getPoint(-s); 
+		} else if (selected != 0 && c == '-') {
+			selectedPoint = getPoint(-selected); 
 			Tutorial.trigger(Trigger.Number_NumberSelected);
 		}
 	}
