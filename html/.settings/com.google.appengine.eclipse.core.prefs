@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 filesCopiedToWebInfLib=
 gaeDeployDialogSettings=
+gaeLaunchAppInBrowser=true
 googleCloudSqlEnabled=false
 localDevMySqlEnabled=true
