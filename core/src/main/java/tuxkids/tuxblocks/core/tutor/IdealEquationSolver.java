@@ -298,8 +298,9 @@ public class IdealEquationSolver {
 						return ((NumberBlock) block).value();
 					}
 				}
+				return 0;
 			}
-			throw new RuntimeException("Equation is not simplified");
+			throw new RuntimeException("Equation is not simplified: " + result.getPlainText());
 		}
 	}
 

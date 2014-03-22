@@ -6,7 +6,7 @@ public class BlockHolderRenderer extends Renderer {
 	
 	@Override
 	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
-		return ExpressionWriter.NOOP;
+		return null;
 	}
 
 	@Override

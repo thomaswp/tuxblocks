@@ -27,6 +27,10 @@ public class JoinRenderer extends Renderer {
 		final ExpressionWriter aWriter = a.getExpressionWriter(textFormat);
 		final ExpressionWriter bWriter = b.getExpressionWriter(textFormat);
 		
+		// If either renderer is null (see BlockHolderRenderer) 
+		if (aWriter == null) return bWriter;
+		if (bWriter == null) return aWriter;
+		
 		return new ParentExpressionWriter(textFormat) {
 			
 			TextLayout layout;

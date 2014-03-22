@@ -34,6 +34,11 @@ public class BlockHolder extends BaseBlock {
 	}
 	
 	@Override
+	public Renderer createRenderer() {
+		return new BlockHolderRenderer();
+	}
+	
+	@Override
 	public int color() {
 		return Colors.WHITE;
 	}
@@ -75,11 +80,6 @@ public class BlockHolder extends BaseBlock {
 	@Override
 	public Block inverse() {
 		return null;
-	}
-	
-	@Override
-	public Renderer createRenderer() {
-		return new BlockHolderRenderer();
 	}
 	
 	@Override

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import tuxkids.tuxblocks.core.solve.blocks.Equation.Builder;
-import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
-import tuxkids.tuxblocks.core.solve.markup.BlockHolderRenderer;
+import tuxkids.tuxblocks.core.solve.markup.DefaultZeroRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.MultiList;
@@ -95,14 +93,20 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 	
 	private Renderer getRenderer(List<BaseBlock> side) {
 		Renderer renderer = null;
+		boolean addedNonZeroBlock = false;
 		for (BaseBlock base : side) {
 			Renderer toAdd = base.createRenderer();
-			if (renderer == null) renderer = toAdd;
-			else {
+			if (!(base instanceof BlockHolder)) addedNonZeroBlock = true;
+			if (renderer == null) {
+				renderer = toAdd;
+			} else {
 				renderer = new JoinRenderer(renderer, toAdd, "+");
 			}
 		}
-		if (renderer == null) renderer = new BaseRenderer("0");
+		if (!addedNonZeroBlock) {
+			// defaults the renderer to 0 if no "real" blocks are present
+			renderer = new DefaultZeroRenderer(renderer);
+		}
 		return renderer;
 	}
 
