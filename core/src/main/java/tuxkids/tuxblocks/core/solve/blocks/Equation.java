@@ -160,7 +160,7 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 	
 	/** Returns true if the given answer is the correct value for the variable in this equation. */
 	public boolean checkAnswer(int answer) {
-		int left = 0, right = 0;
+		double left = 0, right = 0;
 		for (BaseBlock base : leftSide) {
 			left += base.evaluate(answer);
 		}
@@ -168,7 +168,7 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 			right += base.evaluate(answer);
 		}
 		// because we do floating point arithmatic, make sure to do a rounded comparison
-		return Math.round(left * 1000) == Math.round(right * 1000);
+		return Math.round(left * 1000.0) == Math.round(right * 1000.0);
 	}
 
 	/** An empty equation */

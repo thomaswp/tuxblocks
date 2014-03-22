@@ -505,7 +505,7 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	public String hierarchy(int tab) {
 		StringBuilder out = new StringBuilder();
 		for (int i = 0; i < tab; i++) out.append("  ");
-		out.append(children.toString());
+		out.append(children);
 		out.append("\n");
 		if (modifiers != null) out.append(modifiers.hierarchy(tab + 1));
 		return out.toString();
