@@ -192,7 +192,7 @@ public class VariableBlock extends BaseBlock {
 				if (previewAdd()) {
 					r.wasSimplified(true); //show preview
 				} else if (blockListener != null){
-					blockListener.wasReduced(problem, answer, 
+					blockListener.wasReduced(null, null, null, problem, answer, 
 							myValue, Stat.Plus, Difficulty.rankPlus(myValue, spriteValue), r);
 				}
 			} else {

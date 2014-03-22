@@ -65,6 +65,18 @@ public class MultiList<T> implements Iterable<T> {
 		throw new IndexOutOfBoundsException();
 	}
 
+	/** Returns the index of the given element, assmuning each list was flattened into one  */
+	public int indexOf(T element) {
+		int offset = 0;
+		for (int i = 0; i < lists.size(); i++) {
+			List<? extends T> list = lists.get(i);
+			int index = list.indexOf(element);
+			if (index >= 0) return index + offset;
+			offset += list.size();
+		}
+		return -1;
+	}
+
 	/** Gets an {@link Iterator} over each element in each list */
 	@Override
 	public Iterator<T> iterator() {

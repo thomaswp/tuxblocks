@@ -218,7 +218,8 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			int level = Difficulty.rankPlus(before.plusValue(), hSprite.plusValue());
 			int start = before.plusValue();
 			// show it to the player
-			blockListener.wasReduced(problem, answer, start, stat, level, new SimplifyListener() {
+			blockListener.wasReduced(sprite, pair, this,
+					problem, answer, start, stat, level, new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (success) {
