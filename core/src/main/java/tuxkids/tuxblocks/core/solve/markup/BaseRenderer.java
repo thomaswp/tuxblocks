@@ -13,6 +13,10 @@ public class BaseRenderer extends Renderer {
 	private String text;
 	private boolean highlight;
 	
+	public String text() {
+		return text;
+	}
+	
 	public BaseRenderer setHighlight(boolean highlight) {
 		this.highlight = highlight;
 		return this;
