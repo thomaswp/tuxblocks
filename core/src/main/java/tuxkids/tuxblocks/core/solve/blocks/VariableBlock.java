@@ -171,7 +171,8 @@ public class VariableBlock extends BaseBlock {
 							while (!modifiers.children.isEmpty()) {
 								modChildren.add(modifiers.removeChild(modifiers.children.get(0)));
 							}
-							addModifier(new TimesBlock(answer), true);
+							if (modifiers.modifiers != null) modifiers.removeModifiers();
+							if (answer != 1) addModifier(new TimesBlock(answer), true);
 							while (!modChildren.isEmpty()) {
 								addBlock(modChildren.remove(0), false);
 							}
@@ -191,7 +192,7 @@ public class VariableBlock extends BaseBlock {
 				if (previewAdd()) {
 					r.wasSimplified(true); //show preview
 				} else if (blockListener != null){
-					blockListener.wasReduced(problem, answer, 
+					blockListener.wasReduced(null, null, null, problem, answer, 
 							myValue, Stat.Plus, Difficulty.rankPlus(myValue, spriteValue), r);
 				}
 			} else {

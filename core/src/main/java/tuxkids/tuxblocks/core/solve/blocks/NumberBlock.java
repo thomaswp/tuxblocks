@@ -232,7 +232,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			if (autoAnswer) {
 				listener.wasSimplified(true);
 			} else {
-				blockListener.wasReduced(renderer, answer, start, stat, level, listener);
+				blockListener.wasReduced(sprite, pair, null, renderer, answer, start, stat, level, listener);
 			}
 		}
 	}

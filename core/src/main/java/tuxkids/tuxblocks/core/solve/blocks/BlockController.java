@@ -586,10 +586,18 @@ public class BlockController extends EquationManipulator {
 		}
 
 		@Override
-		public void wasReduced(Renderer problem, int answer, int startNumber, 
-				Stat stat, int level, SimplifyListener callback) {
+		public void wasReduced(ModifierBlock sprite, ModifierBlock pair, ModifierGroup modifiers,
+				Renderer problem, int answer, int startNumber, 
+				Stat stat, int level, final SimplifyListener callback) {
 			// pass it on to the parent
-			parent.showNumberSelectScreen(problem, answer, startNumber, stat, level, callback);
+			startBlockReduce(sprite, pair, modifiers, problem, answer, stat, level);
+			parent.showNumberSelectScreen(problem, answer, startNumber, stat, level, new SimplifyListener() {
+				@Override
+				public void wasSimplified(boolean success) {
+					completeBlockReduce(success);
+					callback.wasSimplified(success);
+				}
+			});
 			Audio.se().play(Constant.SE_TICK);
 		}
 		

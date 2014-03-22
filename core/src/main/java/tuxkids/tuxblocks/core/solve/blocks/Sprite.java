@@ -252,7 +252,8 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 		/** Called when a Sprite is simplified and the equation need refreshing */
 		void wasSimplified();
 		/** Called when a Sprite needs the {@link SolveScreen} to reduce */
-		void wasReduced(Renderer problem, int answer, int startNumber, 
+		void wasReduced(ModifierBlock sprite, ModifierBlock pair, ModifierGroup modifiers, 
+				Renderer problem, int answer, int startNumber, 
 				Stat stat, int level, SimplifyListener callback);
 		/** Called when a Sprite's movement is cancelled */
 		void wasCanceled();

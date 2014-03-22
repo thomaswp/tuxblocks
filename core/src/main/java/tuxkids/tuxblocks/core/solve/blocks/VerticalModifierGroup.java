@@ -238,7 +238,10 @@ public class VerticalModifierGroup extends ModifierGroup {
 			listener.wasSimplified(true);
 		} else {
 			// otherwise show the NumberSelectScreen for the problem
-			blockListener.wasReduced(problem, answer, 0, Stat.Over, 
+			ModifierBlock sprite = aTimes ? a : b;
+			ModifierBlock pair = aTimes ? b : a;
+			blockListener.wasReduced(sprite, pair, this,
+					problem, answer, 0, Stat.Over, 
 					Difficulty.rankOver(a.value, b.value), listener);
 		}
 		
@@ -279,7 +282,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 				listener.wasSimplified(true);
 			} else {
 				// show the NumberSelectScreen
-				blockListener.wasReduced(problem, answer, b.value, Stat.Times, 
+				blockListener.wasReduced(a, b, this, problem, answer, b.value, Stat.Times, 
 						Difficulty.rankTimes(a.value, b.value), listener);
 			}
 		}

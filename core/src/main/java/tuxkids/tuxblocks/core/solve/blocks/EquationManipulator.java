@@ -3,8 +3,14 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.List;
 
 import playn.core.PlayN;
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
+import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
+import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
+import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
+import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
+import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
@@ -15,6 +21,7 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 
 	private Equation lastEquation; // temp variable used when reporting SolveActions
+	private EquationBlockIndex draggingPreviousIndex;
 	
 	protected boolean inBuildMode; // true if this is being hosted by a BuildScreen
 	protected MutableEquation equation; // Holds all blocks in the equation being manipulated
@@ -22,6 +29,15 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected BaseBlock draggingFrom, tempDraggingFrom; // which BaseBlock the currently dragging Block is coming from
 	protected List<BaseBlock> draggingFromSide; // which side the currently dragging Block is coming from
 	protected SolveActionCallback solveActionCallback; // callback for when a SolveAction is performed
+	
+	public EquationManipulator() {
+		solveActionCallback = new SolveActionCallback() {
+			@Override
+			public void onActionPerformed(SolveAction action, Equation before) {
+				debug(before.getPlainText() + " -> " + (action == null ? "[ ]" : action));
+			}
+		};
+	}
 
 	protected abstract boolean hasSprites();
 
@@ -53,8 +69,13 @@ public abstract class EquationManipulator extends PlayNObject {
 		return index < leftSide().size() ? Side.Left : Side.Right;
 	}
 	
+	public void setSolveActionCallback(SolveActionCallback solveActionCallback) {
+		this.solveActionCallback = solveActionCallback;
+	}
+	
 	protected void clearDragData() {
 		dragging = tempDragging = null;
+		draggingPreviousIndex = null;
 		draggingFrom = tempDraggingFrom = null;
 		draggingFromSide = null;
 	}
@@ -114,8 +135,14 @@ public abstract class EquationManipulator extends PlayNObject {
 		return multiExpression;
 	}
 
+	
+	//TODO: store the equation here so it can be retrieved on the drop
 	public Block dragBlock(Block sprite) {
 
+		if (solveActionCallback != null) {
+			draggingPreviousIndex = equation.indexOf(sprite);
+		}
+		
 		// find the BaseBlock of the Sprite that was grabbed 
 		for (BaseBlock base : equation) {
 			if (base.contains(sprite)) {
@@ -163,10 +190,15 @@ public abstract class EquationManipulator extends PlayNObject {
 	/**
 	 * Drops the currently dragging block on the given target BaseBlock.
 	 * Returns the block actually added, which may or may not be the
-	 * Block you're looking for. Sorry.
+	 * Block you're looking for. Sorry. TODO: uncomplicate
 	 */
 	protected Block dropBlock(BaseBlock target) {
 
+		if (solveActionCallback != null) {
+			int targetIndex = equation.allBlocks.indexOf(target);
+			reportSolveAction(new DragAction(draggingPreviousIndex, targetIndex, target != draggingFrom));
+		}
+		
 		Block added = null;
 		if (target == null) {
 			if (!inBuildMode) debug("BIG PROBLEM!");
@@ -177,7 +209,7 @@ public abstract class EquationManipulator extends PlayNObject {
 				// if dropped on a BlockHolder, replace it with the dropped Block
 
 				if (dragging instanceof VerticalModifierBlock) {
-					// 0 * or / n = 0
+					// 0 * or / n = 0 dragged onto a BlockHolder eg. 3x = 0
 					dragging.destroy();
 				} else {
 					if (dragging instanceof HorizontalModifierBlock) {
@@ -215,12 +247,18 @@ public abstract class EquationManipulator extends PlayNObject {
 
 		dragging = null;
 		draggingFrom = null;
+		draggingPreviousIndex = null;
 		return added;
 	}
 
 	public void reciprocateBlock(Block sprite) {
 		if (sprite instanceof VerticalModifierBlock) {
-			if (!((ModifierBlock) sprite).canAddInverse()) return;
+			boolean success = ((ModifierBlock) sprite).canAddInverse(); 
+			if (solveActionCallback != null) {
+				reportSolveAction(new ReciprocalAction(equation.indexOf(sprite), success));
+			}
+			
+			if (!success) return;
 			triggerTutorial(Trigger.Solve_VerticalModifierDoubleClicked);
 
 			// add a Times or OverBlock to each BaseBlock to cancel out the
@@ -246,13 +284,41 @@ public abstract class EquationManipulator extends PlayNObject {
 		}
 	}
 	
+	protected void startBlockReduce(ModifierBlock sprite, ModifierBlock pair, 
+			ModifierGroup modifiers, Renderer problem, int answer, Stat stat, int level) {
+		if (solveActionCallback != null) {
+			// TODO: really should be a better way of reporting/representing this
+			// so not everything has to be passed
+			EquationBlockIndex baseIndex = equation.indexOf(sprite);
+			EquationBlockIndex pairIndex = equation.indexOf(pair);
+			BaseBlock baseBlock = equation.allBlocks.get(baseIndex.expressionIndex);
+			int modifierDepth = 0;
+			if (modifiers != null) {
+				modifierDepth = 1;
+				ModifierGroup group = baseBlock.modifiers;
+				while (group != modifiers) {
+					modifiers = modifiers.modifiers;
+					modifierDepth++;
+				}
+			}
+			reportSolveAction(new StartSimplifyingBlocksAction(baseIndex, pairIndex, 
+					modifierDepth, problem.getPlainText(), answer));
+		}
+	}
+	
+	protected void completeBlockReduce(boolean success) {
+		if (solveActionCallback != null) {
+			reportSolveAction(new FinishSimplifyAction(success));
+		}
+	}
+	
 	protected void reportSolveAction(SolveAction action) {
 		if (solveActionCallback == null) return;
-		solveActionCallback.onActionPerformed(action, lastEquation, equation);
+		solveActionCallback.onActionPerformed(action, equation);
 		lastEquation = equation.copy();
 	}
 	
 	public interface SolveActionCallback {
-		void onActionPerformed(SolveAction action, Equation before, Equation after);
+		void onActionPerformed(SolveAction action, Equation before);
 	}
 }
