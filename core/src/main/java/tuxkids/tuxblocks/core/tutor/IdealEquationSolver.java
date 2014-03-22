@@ -28,9 +28,9 @@ import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.StudentAction;
 
 public class IdealEquationSolver {
-	
+
 	private static final int MAX_TERMS_PER_SIDE = 7;
-	
+
 	private static boolean debugHeuristic = false;
 
 	private static Comparator<List<Step>> comparator = new Comparator<List<Step>>() {
@@ -62,12 +62,12 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-		//	seeAllAndHeuristics(paths);
+			//	seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
-			
-			
+
+
 			// break if we win
 			if (EquationManipulator.isEquationSolved(last.result)) {
 				return toExpand;
@@ -79,7 +79,7 @@ public class IdealEquationSolver {
 				if (!registerNode(step, discoveredNodes, toExpand.size() + 1)) {
 					continue;
 				}
-				
+
 				// add them all as children, branching from the original path
 				List<Step> nPath = new ArrayList<Step>(toExpand);
 				nPath.add(step);
@@ -91,7 +91,7 @@ public class IdealEquationSolver {
 		// but if it does, the equation is unsolvable
 		return null;
 	}
-	
+
 	private boolean registerNode(Step currentStep, HashMap<String, Integer> discoveredNodes, int pathLength) {
 
 		// hash it using its text function... TODO: use a quicker/more
@@ -127,31 +127,31 @@ public class IdealEquationSolver {
 
 	public static void seeAllAndHeuristics(Iterable<List<Step>> paths) {
 		List<List<Step>> reversablePaths = new ArrayList<List<Step>>();
-		
+
 		for (List<Step> path : paths) {
 			reversablePaths.add(path);
 		}
-		
+
 		Collections.reverse(reversablePaths);
-		
-		
-		
+
+
+
 		for (List<Step> path : reversablePaths) {
 			System.out.println("\t" + pathToString(path));
 		}
-		
+
 		debugHeuristic = false;
-		
+
 		System.out.println();
 	}
-	
-	
+
+
 	private static class HeuristicTermPackage {
 		BaseBlock term = null;
 		boolean ignore = true;
 		boolean hasBeenHandled = false;
 		double termsScore = 0.0;
-		
+
 		HeuristicTermPackage reset() {
 			ignore = true;
 			hasBeenHandled = false;
@@ -159,7 +159,7 @@ public class IdealEquationSolver {
 			term = null;
 			return this;
 		}
-		
+
 		@Override
 		public String toString() {
 			if (ignore) return "";
@@ -167,10 +167,10 @@ public class IdealEquationSolver {
 			return String.format("[%1.2f]", termsScore);
 		}
 	}
-	
+
 	private static List<HeuristicTermPackage> leftSideTerms = new ArrayList<IdealEquationSolver.HeuristicTermPackage>(MAX_TERMS_PER_SIDE);
 	private static List<HeuristicTermPackage> rightSideTerms = new ArrayList<IdealEquationSolver.HeuristicTermPackage>(MAX_TERMS_PER_SIDE);
-	
+
 	static {
 		for(int i =0;i<MAX_TERMS_PER_SIDE;i++) {
 			leftSideTerms.add(new HeuristicTermPackage());
@@ -192,27 +192,29 @@ public class IdealEquationSolver {
 
 		double score = 0;
 		// System.out.println(eq.getPlainText())
-		
-		
+
+
 		Iterator<BaseBlock> leftSideIterator = eq.leftSide().iterator();
 		Iterator<BaseBlock> rightSideIterator = eq.rightSide().iterator();
-		
+
 		int generalLeftTerms = 0;
 		int generalRightTerms = 0;
 		int leftVarTerms = 0;
 		int rightVarTerms = 0;
-		
+
 		//Dump the terms into our lists and perform some counts of the various terms
 		for(int i =0;i<MAX_TERMS_PER_SIDE;i++) {
 			HeuristicTermPackage leftTerm = leftSideTerms.get(i).reset();
 			HeuristicTermPackage rightTerm = rightSideTerms.get(i).reset();
-			
+
 			if (leftSideIterator.hasNext()) {
+				leftTerm.ignore = false;
 				leftTerm.term = leftSideIterator.next();
 				if (!(leftTerm.term instanceof BlockHolder)) generalLeftTerms++;
 				if (leftTerm.term instanceof VariableBlock) leftVarTerms++;
 			}
 			if (rightSideIterator.hasNext()) {
+				rightTerm.ignore = false;
 				rightTerm.term = rightSideIterator.next();
 				if (!(rightTerm.term instanceof BlockHolder)) generalRightTerms++;
 				if (rightTerm.term instanceof VariableBlock) rightVarTerms++;
@@ -223,17 +225,17 @@ public class IdealEquationSolver {
 		if (generalRightTerms == 0 || generalLeftTerms == 0) {
 			score+=.1;
 		}
-		
+
 		double leftSideCombinationScore = handleCombinableTerms(leftSideTerms);
 		score += leftSideCombinationScore;
 		double rightSideCombinationScore = handleCombinableTerms(rightSideTerms);
 		score += rightSideCombinationScore;
-		
+
 		if (debugHeuristic) System.out.printf("\t\tLSCS=%1.2f RSCS=%1.2f",leftSideCombinationScore,rightSideCombinationScore);
-		
+
 		handleComplicatedTerms(leftSideTerms, generalRightTerms, leftVarTerms, rightVarTerms);
 		handleComplicatedTerms(rightSideTerms, generalLeftTerms, rightVarTerms, leftVarTerms);
-		
+
 		if (debugHeuristic){
 			for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
 				if (leftSideTerms.get(i).ignore) continue;
@@ -245,15 +247,25 @@ public class IdealEquationSolver {
 				System.out.print(rightSideTerms.get(i)+" + ");
 			}
 		}
-		
+
+		if (debugHeuristic) System.out.printf("\tgL = %d, gR = %d, vL = %d, vR = %d%n",generalLeftTerms,generalRightTerms,
+				leftVarTerms, rightVarTerms);
+
+		for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
+			if (!leftSideTerms.get(i).ignore) score += leftSideTerms.get(i).termsScore;
+			if (!rightSideTerms.get(i).ignore) score += rightSideTerms.get(i).termsScore;
+		}
+
+		return score;
+
 		/*for (BaseBlock bb : eq.leftSide()) {
-			
+
 			double previousScore = score;
-			
+
 			if (bb instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = bb.getAllBlocks();
 			Collections.reverse(attachedBlockList);
-			
+
 			if (bb instanceof VariableBlock)
 			{
 				//Iterate through everything attached to this block
@@ -262,7 +274,7 @@ public class IdealEquationSolver {
 
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
 						Block nextBlock = attachedBlockList.get(i+1);
-						
+
 						if (mightDivideOut(block, nextBlock))
 						{
 							score = adjustScoreForDividingOut(score, block, nextBlock);
@@ -310,7 +322,7 @@ public class IdealEquationSolver {
 
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
 						Block nextBlock = attachedBlockList.get(i+1);
-						
+
 						if (mightDivideOut(block, nextBlock))
 						{
 							score = adjustScoreForDividingOut(score, block, nextBlock);
@@ -339,30 +351,28 @@ public class IdealEquationSolver {
 				score += attachedBlockList.size() - 1;
 				score += (leftVarTerms == 0? 1: 0);
 			}
-			
-			
-			
+
+
+
 			//if (debugHeuristic) System.out.printf("%s[%1.1f] ", (isFirst?"":"+ "),score-previousScore);
 
 		}*/
 
-		if (debugHeuristic) System.out.printf("\tgL = %d, gR = %d, vL = %d, vR = %d%n",generalLeftTerms,generalRightTerms,
-					leftVarTerms, rightVarTerms);
 
-		return score;
 	}
 
 	private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalOtherSideTerms,
 			int thisSideVarTerms, int otherSideVarTerms) {
 
 		for (HeuristicTermPackage thisTerm : terms) {
-			if (thisTerm.hasBeenHandled || thisTerm.ignore) continue;
+			if (thisTerm.ignore) break;
+			if (thisTerm.hasBeenHandled ) continue;
 			thisTerm.hasBeenHandled = true;
-			
+
 			if (thisTerm.term instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
 			Collections.reverse(attachedBlockList);
-			
+
 			if (thisTerm.term instanceof VariableBlock)
 			{
 				//Iterate through everything attached to this block
@@ -371,7 +381,7 @@ public class IdealEquationSolver {
 
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
 						Block nextBlock = attachedBlockList.get(i+1);
-						
+
 						if (mightDivideOut(block, nextBlock))
 						{
 							thisTerm.termsScore += adjustScoreForDividingOut(block, nextBlock);
@@ -402,19 +412,31 @@ public class IdealEquationSolver {
 			}
 
 		}
-		
-	}
 
+	}
+	
+	private static List<Integer> timeses = new ArrayList<Integer>(MAX_TERMS_PER_SIDE);
+	private static Set<HeuristicTermPackage> potentialTimesHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
+	private static Set<HeuristicTermPackage> potentialNumbersHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
+
+	
 	private static double handleCombinableTerms(List<HeuristicTermPackage> side) {
 		double score = 0;
-		int combinableTimesBlocks = 0;
-		List<Integer> timeses = new ArrayList<Integer>(side.size());
+		//int combinableTimesBlocks = 0;
+		//int combinableNumberBlocks = 0;
 		
-		int combinableNumberBlocks = 0;
+		potentialNumbersHandled.clear();
+		potentialTimesHandled.clear();
+		timeses.clear();
 		
+		
+		
+		
+
 		for(int i = 0;i< side.size();i++)	{
 			HeuristicTermPackage thisTerm = side.get(i);
-			if (thisTerm.hasBeenHandled || thisTerm.ignore) continue;
+			if ( thisTerm.ignore) break;
+			if (thisTerm.hasBeenHandled) continue;
 			BaseBlock thisBlock = thisTerm.term;
 
 			//if the block and 
@@ -422,37 +444,42 @@ public class IdealEquationSolver {
 			if (thisBlock instanceof VariableBlock && attachedBlocks.size()<=2)
 			{
 				if (attachedBlocks.size() == 1 || attachedBlocks.get(1) instanceof TimesBlock) {
-					thisTerm.hasBeenHandled = true;
-					combinableTimesBlocks++;
+					potentialTimesHandled.add(thisTerm);
 					if (attachedBlocks.size() == 1) {
 						timeses.add(1);
 					} else {
 						timeses.add(((ModifierBlock) attachedBlocks.get(1)).value());
 					}
-					
+
 				} 
 			} else if (thisBlock instanceof NumberBlock && attachedBlocks.size() == 1){
-				combinableNumberBlocks++;
-				thisTerm.hasBeenHandled = true;
+				potentialNumbersHandled.add(thisTerm);
 			}
 		}
-		
+
 		//one move per n-1 blocks to move together and one move per n-1 blocks to combine numbers
 		//e.g. [3]+[3]+[3] would be resolved in 4 moves
 		//[3+3]+[3]+[]
 		//[6]+ [3] +[]
 		//[6+3] + [] + []
 		//[9] + [] + []
-		score += (combinableNumberBlocks-1) * 2;
+		if (potentialNumbersHandled.size() > 1) {
+			score += (potentialNumbersHandled.size()-1) * 2;
+			for (HeuristicTermPackage h:potentialNumbersHandled) h.hasBeenHandled = true;
+		} 
+
+
+		if (potentialTimesHandled.size() > 1) {
+			//one move per n-1 blocks to move together (combine happens automatically or instantaneously)
+			score += potentialTimesHandled.size() - 1;
+
+			//if the end sum is not 1 or 0, we will have to divide as well
+			int sum = sumList(timeses);
+			if (!(sum == 1 || sum ==0 )) score++;		//don't need to divide in the end if the num variables sums to 1 or 0
 		
-		
-		//one move per n-1 blocks to move together (combine happens automatically or instantaneously)
-		score += combinableTimesBlocks - 1;
-		
-		//if the end sum is not 1 or 0, we will have to divide as well
-		int sum = sumList(timeses);
-		if (!(sum == 1 || sum ==0 )) score++;		//don't need to divide in the end if the num variables sums to 1 or 0
-		
+			for (HeuristicTermPackage h:potentialTimesHandled) h.hasBeenHandled = true;
+		} 
+
 		return score;
 	}
 
@@ -478,7 +505,7 @@ public class IdealEquationSolver {
 
 	private static boolean mightDivideOut(Block block, Block nextBlock) {
 		return (block instanceof TimesBlock && nextBlock instanceof OverBlock) ||
-		(block instanceof OverBlock && nextBlock instanceof TimesBlock);
+				(block instanceof OverBlock && nextBlock instanceof TimesBlock);
 	}
 
 
@@ -535,11 +562,11 @@ public class IdealEquationSolver {
 		public String equationString() {
 			return equationString;
 		}
-		
+
 		public boolean validate(Equation originalEquation) {
 			return originalEquation.checkAnswer(getAnswer());
 		}
-		
+
 		public int getAnswer() {
 			if (EquationManipulator.isEquationSolved(result)) {
 				for (BaseBlock block : result.allBlocks()) {
