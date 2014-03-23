@@ -67,7 +67,8 @@ public class OverRenderer extends ModifierRenderer {
 		sb.append("(");
 		sb.append(base.getPlainText());
 		sb.append(") / ");
-		boolean useParentheses = ((FactorGroupRenderer) modifier).operands.length > 1; 
+		boolean useParentheses = modifier instanceof FactorGroupRenderer && 
+				((FactorGroupRenderer) modifier).operands.length > 1;
 		if (useParentheses) {
 			sb.append("(");
 		}

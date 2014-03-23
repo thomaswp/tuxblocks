@@ -190,7 +190,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 			}
 		} catch (Exception e) {
 			debug("Failed on: " + eq + ": " + action);
-			debug(e);
+			e.printStackTrace();
 		}
 		return null;
 	}
