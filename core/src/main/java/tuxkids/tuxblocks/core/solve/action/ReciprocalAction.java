@@ -18,7 +18,7 @@ public class ReciprocalAction extends SolveAction {
 	
 	@Override
 	public String toString() {
-		return name() + ": " + index;
+		return super.toString() + ": " + index;
 	}
 
 }

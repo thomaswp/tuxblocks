@@ -174,7 +174,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	}
 
 	@Override
-	public void simplify(final ModifierBlock sprite, ModifierBlock pair) { //ignore pair argument
+	public void simplify(final ModifierBlock sprite, final ModifierBlock pair) { //ignore pair argument
 		if (blockListener != null) { // again, not sure why this check is necessary but...
 
 			final int answer; // the answer to the problem 
@@ -220,11 +220,13 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			SimplifyListener listener = new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
+					if (blockListener != null) {
+						blockListener.wasSimplified(sprite, pair, null, success);
+					}
 					if (success) {
 						// change this block's value, remove the modifier
 						setValue(answer);
 						sprite.group.removeChild(sprite, true);
-						blockListener.wasSimplified();
 					}
 				}
 			};
@@ -232,7 +234,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			if (autoAnswer) {
 				listener.wasSimplified(true);
 			} else {
-				blockListener.wasReduced(sprite, pair, null, renderer, answer, start, stat, level, listener);
+				blockListener.wasReduced(renderer, answer, start, stat, level, listener);
 			}
 		}
 	}

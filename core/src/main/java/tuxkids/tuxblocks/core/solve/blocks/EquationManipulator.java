@@ -6,10 +6,11 @@ import playn.core.PlayN;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
+import tuxkids.tuxblocks.core.solve.action.FinishProblemAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
+import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
 import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
-import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
@@ -20,7 +21,7 @@ public abstract class EquationManipulator extends PlayNObject {
 		Left, Right;
 	}
 
-	private Equation lastEquation; // temp variable used when reporting SolveActions
+	private Equation draggingPreviousEquation; // temp variable used when reporting SolveActions
 	private EquationBlockIndex draggingPreviousIndex;
 	
 	protected boolean inBuildMode; // true if this is being hosted by a BuildScreen
@@ -29,15 +30,6 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected BaseBlock draggingFrom, tempDraggingFrom; // which BaseBlock the currently dragging Block is coming from
 	protected List<BaseBlock> draggingFromSide; // which side the currently dragging Block is coming from
 	protected SolveActionCallback solveActionCallback; // callback for when a SolveAction is performed
-	
-	public EquationManipulator() {
-		solveActionCallback = new SolveActionCallback() {
-			@Override
-			public void onActionPerformed(SolveAction action, Equation before) {
-				debug(before.getPlainText() + " -> " + (action == null ? "[ ]" : action));
-			}
-		};
-	}
 
 	protected abstract boolean hasSprites();
 
@@ -134,13 +126,12 @@ public abstract class EquationManipulator extends PlayNObject {
 		}
 		return multiExpression;
 	}
-
 	
-	//TODO: store the equation here so it can be retrieved on the drop
 	public Block dragBlock(Block sprite) {
 
 		if (solveActionCallback != null) {
 			draggingPreviousIndex = equation.indexOf(sprite);
+			draggingPreviousEquation = equation.copy();
 		}
 		
 		// find the BaseBlock of the Sprite that was grabbed 
@@ -247,7 +238,10 @@ public abstract class EquationManipulator extends PlayNObject {
 
 		dragging = null;
 		draggingFrom = null;
+		
 		draggingPreviousIndex = null;
+		draggingPreviousEquation = null;
+		
 		return added;
 	}
 
@@ -284,38 +278,58 @@ public abstract class EquationManipulator extends PlayNObject {
 		}
 	}
 	
-	protected void startBlockReduce(ModifierBlock sprite, ModifierBlock pair, 
-			ModifierGroup modifiers, Renderer problem, int answer, Stat stat, int level) {
+	protected void startBlockReduce(Renderer problem, int answer, Stat stat, int level) {
+		if (solveActionCallback != null) {
+			reportSolveAction(new StartSimplifyingBlocksAction(problem.getPlainText(), answer));
+		}
+	}
+	
+	protected void finishBlockReduce(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success) {
 		if (solveActionCallback != null) {
 			// TODO: really should be a better way of reporting/representing this
 			// so not everything has to be passed
 			EquationBlockIndex baseIndex = equation.indexOf(sprite);
 			EquationBlockIndex pairIndex = equation.indexOf(pair);
-			BaseBlock baseBlock = equation.allBlocks.get(baseIndex.expressionIndex);
+			
 			int modifierDepth = 0;
-			if (modifiers != null) {
-				modifierDepth = 1;
-				ModifierGroup group = baseBlock.modifiers;
-				while (group != modifiers) {
-					modifiers = modifiers.modifiers;
-					modifierDepth++;
+			if (baseIndex != null) {
+				BaseBlock baseBlock = equation.allBlocks.get(baseIndex.expressionIndex);
+				if (modifiers != null) {
+					modifierDepth = 1;
+					ModifierGroup group = baseBlock.modifiers;
+					while (group != modifiers) {
+						group = group.modifiers;
+						modifierDepth++;
+					}
 				}
 			}
-			reportSolveAction(new StartSimplifyingBlocksAction(baseIndex, pairIndex, 
-					modifierDepth, problem.getPlainText(), answer));
+			
+			reportSolveAction(new FinishSimplifyAction(baseIndex, pairIndex, modifierDepth, success));
 		}
 	}
 	
-	protected void completeBlockReduce(boolean success) {
+	protected void startSolving() {
 		if (solveActionCallback != null) {
-			reportSolveAction(new FinishSimplifyAction(success));
+			reportSolveAction(new StartProblemAction(equation.getPlainText()));
+		}
+	}
+	
+	public void finishSolving() {
+		if (solveActionCallback != null) {
+			reportSolveAction(new FinishProblemAction(isEquationSolved(equation)));
 		}
 	}
 	
 	protected void reportSolveAction(SolveAction action) {
 		if (solveActionCallback == null) return;
-		solveActionCallback.onActionPerformed(action, equation);
-		lastEquation = equation.copy();
+		
+		// if we have a stored equation from a drag action use it
+		Equation send = draggingPreviousEquation;
+		// otherwise the current equation should be representative
+		if (send == null) send = equation;
+		solveActionCallback.onActionPerformed(action, send);
+		
+		draggingPreviousEquation = null;
 	}
 	
 	public interface SolveActionCallback {

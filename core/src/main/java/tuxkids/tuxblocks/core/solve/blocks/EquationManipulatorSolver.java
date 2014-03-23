@@ -10,7 +10,6 @@ import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
-import tuxkids.tuxblocks.core.solve.action.StartSimplifyVariablesAction;
 import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
@@ -143,8 +142,8 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		return actions;
 	}
 	
-	public List<StartSimplifyingBlocksAction> getSimplifyActions() {
-		final List<StartSimplifyingBlocksAction> actions = new ArrayList<StartSimplifyingBlocksAction>();
+	public List<FinishSimplifyAction> getSimplifyActions() {
+		final List<FinishSimplifyAction> actions = new ArrayList<FinishSimplifyAction>();
 		int index = 0;
 		for (BaseBlock base : equation) {
 			int depth = 0;
@@ -164,7 +163,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 					public void add(ModifierBlock sprite, ModifierBlock pair, Object tag) {
 						EquationBlockIndex spriteIndex = new EquationBlockIndex(fi, parent.indexOf(sprite));
 						EquationBlockIndex pairIndex = (pair == null ? null : new EquationBlockIndex(fi, parent.indexOf(pair)));
-						actions.add(new StartSimplifyingBlocksAction(spriteIndex, pairIndex, fd, null, 0));
+						actions.add(new FinishSimplifyAction(spriteIndex, pairIndex, fd, true));
 					}
 				});
 				if (simplifiable instanceof BaseBlock) {
@@ -186,8 +185,8 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 				return performAction((DragAction) action);
 			} else if (action instanceof ReciprocalAction) {
 				performAction((ReciprocalAction) action);
-			} else if (action instanceof StartSimplifyingBlocksAction) {
-				return performAction((StartSimplifyingBlocksAction) action);
+			} else if (action instanceof FinishSimplifyAction) {
+				return performAction((FinishSimplifyAction) action);
 			}
 		} catch (Exception e) {
 			debug("Failed on: " + eq + ": " + action);
@@ -223,7 +222,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		reciprocateBlock(equation.getBlock(action.index));
 	}
 	
-	public List<SolveAction> performAction(StartSimplifyingBlocksAction action) {
+	public List<SolveAction> performAction(FinishSimplifyAction action) {
 		extraActions = new ArrayList<SolveAction>();
 		
 		BaseBlock base = equation.allBlocks.get(action.baseIndex.expressionIndex);
@@ -252,15 +251,20 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		return extraActions;
 	}
 
+	// TODO: The actions created in the following methods have empty values, but that might matter more as
+	// we do more comparisons with player actions
+	
 	@Override
-	public void wasReduced(ModifierBlock sprite, ModifierBlock pair, ModifierGroup modifiers,
-			Renderer problem, int answer, int startNumber,
+	public void wasReduced(Renderer problem, int answer, int startNumber,
 			Stat stat, int level, SimplifyListener callback) {
+		extraActions.add(new StartSimplifyingBlocksAction(problem.getPlainText(), answer));
 		callback.wasSimplified(true);
-		StartSimplifyVariablesAction startSimplify = new StartSimplifyVariablesAction(null);
-		extraActions.add(startSimplify);
-		FinishSimplifyAction finishSimplify = new FinishSimplifyAction(false);
-		extraActions.add(finishSimplify);
+	}
+
+	@Override
+	public void wasSimplified(Block sprite, ModifierBlock pair,
+			ModifierGroup modifiers, boolean success) {
+		extraActions.add(new FinishSimplifyAction(null, null, 0, success));
 	}
 
 	@Override
@@ -274,9 +278,6 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 
 	@Override
 	public void wasDoubleClicked(Block sprite, Event event) { }
-
-	@Override
-	public void wasSimplified() { }
 
 	@Override
 	public void wasCanceled() { }

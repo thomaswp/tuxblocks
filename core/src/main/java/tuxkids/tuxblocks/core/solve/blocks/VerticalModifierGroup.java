@@ -183,9 +183,9 @@ public class VerticalModifierGroup extends ModifierGroup {
 	public void simplify(ModifierBlock sprite, ModifierBlock pair) {
 		if (sprite.inverse().equals(pair)) {
 			// if the two cancel out, just remove them
+			blockListener.wasSimplified(sprite, pair, this, true);
 			removeChild(sprite, true);
 			removeChild(pair, true);
-			blockListener.wasSimplified();
 		} else {
 			// otherwise, we either we're either combining or reducing
 			boolean spriteTimes = sprite instanceof TimesBlock;
@@ -201,7 +201,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 
 	// reduce a Times- and OverBlock to just one
-	private void reduceDif(final ModifierBlock a, final ModifierBlock b, boolean aTimes) {
+	private void reduceDif(final ModifierBlock a, final ModifierBlock b, final boolean aTimes) {
 		if (Math.abs(a.value) < Math.abs(b.value)) {
 			// we want a to be greater than b
 			reduceDif(b, a, !aTimes);
@@ -224,11 +224,13 @@ public class VerticalModifierGroup extends ModifierGroup {
 		SimplifyListener listener = new SimplifyListener() {
 			@Override
 			public void wasSimplified(boolean success) {
+				ModifierBlock sprite = aTimes ? a : b;
+				ModifierBlock pair = aTimes ? b : a;
+				blockListener.wasSimplified(sprite, pair, VerticalModifierGroup.this, success);
 				if (success) {
 					// set A's new smaller value and remove B 
 					a.setValue(answer);
 					removeChild(b, true);
-					blockListener.wasSimplified();
 				}
 			}
 		};
@@ -238,10 +240,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 			listener.wasSimplified(true);
 		} else {
 			// otherwise show the NumberSelectScreen for the problem
-			ModifierBlock sprite = aTimes ? a : b;
-			ModifierBlock pair = aTimes ? b : a;
-			blockListener.wasReduced(sprite, pair, this,
-					problem, answer, 0, Stat.Over, 
+			blockListener.wasReduced(problem, answer, 0, Stat.Over, 
 					Difficulty.rankOver(a.value, b.value), listener);
 		}
 		
@@ -268,11 +267,11 @@ public class VerticalModifierGroup extends ModifierGroup {
 			SimplifyListener listener = new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
+					blockListener.wasSimplified(a, b, VerticalModifierGroup.this, success);
 					if (success) {
 						// set B's value and remove A 
 						b.setValue(answer);
 						removeChild(a, true);
-						blockListener.wasSimplified();
 					}
 				}
 			};
@@ -282,7 +281,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 				listener.wasSimplified(true);
 			} else {
 				// show the NumberSelectScreen
-				blockListener.wasReduced(a, b, this, problem, answer, b.value, Stat.Times, 
+				blockListener.wasReduced(problem, answer, b.value, Stat.Times, 
 						Difficulty.rankTimes(a.value, b.value), listener);
 			}
 		}

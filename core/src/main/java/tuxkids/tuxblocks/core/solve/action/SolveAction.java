@@ -16,4 +16,9 @@ public abstract class SolveAction {
 	}
 	
 	public abstract String name();
+	
+	@Override
+	public String toString() {
+		return (success ? "" : "~") + name();
+	}
 }

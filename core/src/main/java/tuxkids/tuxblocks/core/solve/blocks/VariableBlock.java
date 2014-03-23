@@ -154,6 +154,9 @@ public class VariableBlock extends BaseBlock {
 			SimplifyListener r = new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
+					if (blockListener != null) {
+						blockListener.wasSimplified(VariableBlock.this, null, null, success);
+					}
 					if (success) {
 						if (myFactor != null) {
 							myFactor.setValue(answer);
@@ -178,9 +181,6 @@ public class VariableBlock extends BaseBlock {
 							}
 						}
 						if (sprite.hasSprite()) sprite.layer().destroy();
-						if (blockListener != null) {
-							blockListener.wasSimplified();
-						}
 					} else {
 						blockListener.wasCanceled();
 					}
@@ -192,8 +192,8 @@ public class VariableBlock extends BaseBlock {
 				if (previewAdd()) {
 					r.wasSimplified(true); //show preview
 				} else if (blockListener != null){
-					blockListener.wasReduced(null, null, null, problem, answer, 
-							myValue, Stat.Plus, Difficulty.rankPlus(myValue, spriteValue), r);
+					blockListener.wasReduced(problem, answer, myValue, Stat.Plus, 
+							Difficulty.rankPlus(myValue, spriteValue), r);
 				}
 			} else {
 				r.wasSimplified(true);

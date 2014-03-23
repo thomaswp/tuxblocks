@@ -199,14 +199,14 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	public void simplify(final ModifierBlock sprite, ModifierBlock pair) {
+	public void simplify(final ModifierBlock sprite, final ModifierBlock pair) {
 		HorizontalModifierBlock hSprite = (HorizontalModifierBlock) sprite;
 		final HorizontalModifierBlock before = (HorizontalModifierBlock) pair;
 		if (sprite.inverse().equals(before)) {
 			// if the two are inverses (2 - 2) just simplify
+			blockListener.wasSimplified(sprite, pair, this, true);
 			removeChild(sprite, true);
 			removeChild(before, true);
-			blockListener.wasSimplified();
 		} else {
 			// create a problem to combine the two blocks
 			Renderer problem = new JoinRenderer(
@@ -218,15 +218,14 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			int level = Difficulty.rankPlus(before.plusValue(), hSprite.plusValue());
 			int start = before.plusValue();
 			// show it to the player
-			blockListener.wasReduced(sprite, pair, this,
-					problem, answer, start, stat, level, new SimplifyListener() {
+			blockListener.wasReduced(problem, answer, start, stat, level, new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
+					blockListener.wasSimplified(sprite, pair, HorizontalModifierGroup.this, success);
 					if (success) {
 						// and if the succeed, remove the modifier block and add it to the other one
 						before.setPlusValue(answer);
 						removeChild(sprite, true);
-						blockListener.wasSimplified();
 					}
 				}
 			});

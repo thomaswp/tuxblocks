@@ -29,6 +29,7 @@ import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
+import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.build.BuildScreen;
@@ -146,6 +147,13 @@ public class BlockController extends EquationManipulator {
 				new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, 20)), Colors.WHITE));
 		centerImageLayer(equals);
 		layer.add(equals);
+		
+		solveActionCallback = new SolveActionCallback() {
+			@Override
+			public void onActionPerformed(SolveAction action, Equation before) {
+				if (!inBuildMode) debug(before.getPlainText() + " -> " + (action == null ? "[ ]" : action));
+			}
+		};
 	}
 	
 	/** Clears and destroys the current {@link Equation} */
@@ -165,10 +173,11 @@ public class BlockController extends EquationManipulator {
 			addExpression(Side.Right, sprite);
 		}
 		updateExpressionPositions(0, 1);
+		startSolving();
 	}
 	
-	/** Adds the given expression to the given side (used in construction, no during manipulation) */
-	public void addExpression(Side side, BaseBlock expression) {
+	// Adds the given expression to the given side (used in construction, no during manipulation)
+	private void addExpression(Side side, BaseBlock expression) {
 		List<BaseBlock> blocks = getBlocks(side);
 		addExpression(blocks, expression, 0, 0, blocks.size());
 		refreshEquationImage();
@@ -579,25 +588,21 @@ public class BlockController extends EquationManipulator {
 		}
 
 		@Override
-		public void wasSimplified() {
-			refreshEquation = true;
-			Tutorial.trigger(Trigger.Solve_Simplified);
-			Audio.se().play(Constant.SE_TICK);
+		public void wasSimplified(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success) {
+			finishBlockReduce(sprite, pair, modifiers, success);
+			if (success) {
+				refreshEquation = true;
+				Tutorial.trigger(Trigger.Solve_Simplified);
+				Audio.se().play(Constant.SE_TICK);
+			}
 		}
 
 		@Override
-		public void wasReduced(ModifierBlock sprite, ModifierBlock pair, ModifierGroup modifiers,
-				Renderer problem, int answer, int startNumber, 
+		public void wasReduced(Renderer problem, int answer, int startNumber, 
 				Stat stat, int level, final SimplifyListener callback) {
 			// pass it on to the parent
-			startBlockReduce(sprite, pair, modifiers, problem, answer, stat, level);
-			parent.showNumberSelectScreen(problem, answer, startNumber, stat, level, new SimplifyListener() {
-				@Override
-				public void wasSimplified(boolean success) {
-					completeBlockReduce(success);
-					callback.wasSimplified(success);
-				}
-			});
+			startBlockReduce(problem, answer, stat, level);
+			parent.showNumberSelectScreen(problem, answer, startNumber, stat, level, callback);
 			Audio.se().play(Constant.SE_TICK);
 		}
 		

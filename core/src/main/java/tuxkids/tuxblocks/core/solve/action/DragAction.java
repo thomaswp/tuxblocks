@@ -19,6 +19,6 @@ public class DragAction extends SolveAction {
 	
 	@Override
 	public String toString() {
-		return name() + ": " + fromIndex + " -> " + toIndex;
+		return super.toString() + ": " + fromIndex + " -> " + toIndex;
 	}
 }
