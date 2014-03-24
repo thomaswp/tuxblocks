@@ -32,6 +32,8 @@ public class TimesRenderer extends ModifierRenderer {
 	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
 		final ExpressionWriter childWriter = base.getExpressionWriter(textFormat);
 		final ExpressionWriter factorWriter = modifier.getExpressionWriter(textFormat);
+		// indicates if the child is simply 'x' and requires no parentheses for factors; eg. 3x not 3(x)
+		final boolean useParentheses = !((base instanceof BaseRenderer) && "x".equals(((BaseRenderer) base).text()));
 		
 		return new ParentExpressionWriter(textFormat) {
 			
@@ -42,6 +44,8 @@ public class TimesRenderer extends ModifierRenderer {
 			protected Vector formatExpression(TextFormat textFormat) {
 				float height = childWriter.height();
 				w = height / 7;
+				if (!useParentheses) w /= 2;
+				
 				return new Vector(factorWriter.width() + childWriter.width() + w * 4, 
 						Math.max(factorWriter.height(), childWriter.height()));
 			}
@@ -69,17 +73,19 @@ public class TimesRenderer extends ModifierRenderer {
 				float y = (height() - h) / 2;
 				canvas.translate(x, y);
 				
-				// draw left paren
-				path.moveTo(w, (h + height) / 2);
-				path.quadraticCurveTo(-w, height / 2, w, height - h);
-				canvas.strokePath(path);
-				
-				// draw right paren
-				path = canvas.createPath();
-				canvas.translate(childWriter.width() + w * 3, 0);
-				path.moveTo(-w, (h + height) / 2);
-				path.quadraticCurveTo(w, height / 2, -w, height - h);
-				canvas.strokePath(path);
+				if (useParentheses) {
+					// draw left paren
+					path.moveTo(w, (h + height) / 2);
+					path.quadraticCurveTo(-w, height / 2, w, height - h);
+					canvas.strokePath(path);
+					
+					// draw right paren
+					path = canvas.createPath();
+					canvas.translate(childWriter.width() + w * 3, 0);
+					path.moveTo(-w, (h + height) / 2);
+					path.quadraticCurveTo(w, height / 2, -w, height - h);
+					canvas.strokePath(path);
+				}
 				canvas.restore();
 			}
 		};
