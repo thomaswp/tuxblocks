@@ -1,9 +1,11 @@
 package tuxkids.tuxblocks.core.tutorial;
 
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 /** Start of both tutorials */
-public class TutorialStart extends Tutorial {
+public class TutorialStart extends LinearTutorial {
 
 	public TutorialStart(int themeColor, int secondaryColor) {
 		super(themeColor, secondaryColor);
