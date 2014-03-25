@@ -125,7 +125,7 @@ public abstract class Tutorial extends PlayNObject {
 		Lang.getText(path, new Callback<String>() {
 			@Override
 			public void onSuccess(String result) {
-				tutorial.setText(result);
+				tutorial.loadTextFile(result);
 			}
 
 			@Override

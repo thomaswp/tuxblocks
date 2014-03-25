@@ -47,7 +47,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 		this.secondaryColor = secondaryColor;
 	}
 	
-	public void setText(String text) {
+	public void loadTextFile(String text) {
 		// load the text into lines
 		for (String line : text.split("\n")) {
 			// normalize line-ends

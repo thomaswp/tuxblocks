@@ -5,7 +5,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public interface TutorialInstance {
 
-	void setText(String result);
+	void loadTextFile(String result);
 	void paint(Clock clock);
 	void update(int delta);
 	void trigger(Trigger event);

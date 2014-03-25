@@ -1,55 +1,58 @@
 package tuxkids.tuxblocks.core.tutorial;
 
+import java.util.ArrayList;
+
+import playn.core.Json;
+import playn.core.PlayN;
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public abstract class FSMTutorial implements TutorialInstance {
 
+	TutorialLayer layer;
+	
+	public FSMTutorial(int themeColor) {
+		layer = new TutorialLayer(themeColor);
+	}
+	
 	@Override
-	public void setText(String result) {
-		// TODO Auto-generated method stub
+	public void loadTextFile(String result) {
+		Json.Object obj = PlayN.json().parse(result);
 		
 	}
 
 	@Override
 	public void paint(Clock clock) {
-		// TODO Auto-generated method stub
-		
+		layer.paint(clock);
 	}
 
 	@Override
 	public void update(int delta) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void trigger(Trigger event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void didLeaveScreen() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
+		layer.destroy();
 	}
 
 	@Override
 	public void refreshHighlights() {
-		// TODO Auto-generated method stub
-		
+		Tutorial.refreshHighlights(new ArrayList<Tutorial.Tag>());
 	}
 
 	@Override
+	public void didLeaveScreen() {
+		
+	}
+	
+	@Override
 	public void wasRepeated() {
-		// TODO Auto-generated method stub
 		
 	}
 
