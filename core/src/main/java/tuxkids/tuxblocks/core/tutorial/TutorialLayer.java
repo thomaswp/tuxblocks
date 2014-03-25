@@ -1,8 +1,5 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;
 import playn.core.Pointer.Event;
@@ -12,8 +9,6 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
-import tuxkids.tuxblocks.core.tutorial.Tutorial.Action;
-import tuxkids.tuxblocks.core.tutorial.Tutorial.Indicator;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
@@ -30,7 +25,6 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 	protected final TextBoxLayer textBox; 
 	protected final Button buttonRepeat, buttonCancel;
 	protected final int themeColor;
-	protected final List<IndicatorLayer> indicators = new ArrayList<IndicatorLayer>();
 	
 	protected boolean cancelling;
 	
@@ -95,31 +89,6 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 			}
 		});
 	}
-
-	public void clearIndicators() {
-		for (IndicatorLayer indicator : indicators) {
-			indicator.clear();
-		}
-	}
-
-	/** Shows the given {@link Action}, displaying its text in the {@link TextBoxLayer} */
-	public void showAction(Action action) {
-		showMessage(action.message);
-		clearIndicators();
-		int index = 0;
-		for (final Indicator indicator : action.indicators) {
-			if (indicators.size() == index) {
-				IndicatorLayer indicatorLayer = new IndicatorLayer();
-				indicators.add(indicatorLayer);
-				layer.add(indicatorLayer.layerAddable());
-			}
-			
-			IndicatorLayer indicatorLayer = indicators.get(index);
-			indicatorLayer.set(indicator, themeColor);
-			indicatorLayer.setVisible(true);
-			index++;
-		}
-	}
 	
 	/** Shows the given message in the {@link TextBoxLayer} */
 	public void showMessage(String text) {
@@ -133,17 +102,9 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 		touchCatcher.setVisible(true);
 	}
 	
-	/** Called from {@link Tutorial#paintInstance(Clock)} */
+	/** Called from {@link TutorialInstance#paint(Clock)} */
 	public void paint(Clock clock) {
 		textBox.paint(clock);
-		for (IndicatorLayer layer : indicators) {
-			if (layer.isSet()) {
-				lerpAlpha(layer, 1, 0.99f, clock.dt());
-			} else if (layer.visible()) {
-				lerpAlpha(layer, 0, 0.99f, clock.dt());
-				if (layer.alpha() == 0) layer.setVisible(false);
-			}
-		}
 	}
 
 	@Override
