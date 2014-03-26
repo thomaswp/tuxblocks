@@ -31,7 +31,7 @@ public class IdealEquationSolver {
 
 	private static final int MAX_TERMS_PER_SIDE = 7;
 
-	private static boolean debugHeuristic = false;
+	public static boolean debugHeuristic = false;
 
 	private static Comparator<List<Step>> comparator = new Comparator<List<Step>>() {
 		@Override
@@ -248,8 +248,10 @@ public class IdealEquationSolver {
 			}
 		}
 
-		if (debugHeuristic) System.out.printf("\tgL = %d, gR = %d, vL = %d, vR = %d%n",generalLeftTerms,generalRightTerms,
-				leftVarTerms, rightVarTerms);
+		if (debugHeuristic) {
+			System.out.printf("\tgL = %d, gR = %d, vL = %d, vR = %d%n",generalLeftTerms,generalRightTerms,leftVarTerms, rightVarTerms);
+		}
+				
 
 		for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
 			if (!leftSideTerms.get(i).ignore) score += leftSideTerms.get(i).termsScore;
@@ -258,108 +260,7 @@ public class IdealEquationSolver {
 
 		return score;
 
-		/*for (BaseBlock bb : eq.leftSide()) {
-
-			double previousScore = score;
-
-			if (bb instanceof BlockHolder) continue;
-			List<Block> attachedBlockList = bb.getAllBlocks();
-			Collections.reverse(attachedBlockList);
-
-			if (bb instanceof VariableBlock)
-			{
-				//Iterate through everything attached to this block
-				for(int i = 0;i<attachedBlockList.size()-1; i++) {
-					Block block = attachedBlockList.get(i);
-
-					if (block instanceof TimesBlock || block instanceof OverBlock) {
-						Block nextBlock = attachedBlockList.get(i+1);
-
-						if (mightDivideOut(block, nextBlock))
-						{
-							score = adjustScoreForDividingOut(score, block, nextBlock);
-							//we essentially got two steps at once
-							i++;
-						} else {
-							//Because we'll have to either multiply or divide to remove this term
-							//one step for every variable on this side and every term on the other
-							//(may need to be total terms)
-							score += leftVarTerms+generalRightTerms;
-
-							// dividing/multiplying out with a plus or minus block can't happen yet
-							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
-								score++;
-							}
-						}
-					}
-					else {		//if addition or subtraction
-						score += 2;//(generalRightTerms == 0 && i == 0 ? 1:2);
-					}
-				}
-			}
-			else {
-				//We will only have to simplify these out, so this is just one step
-				//for every thing attached to the number block
-				score += attachedBlockList.size() - 1;
-				score += (rightVarTerms == 0? 1: 0);
-			}
-			//if (debugHeuristic) System.out.printf("%s[%1.1f] ", (isFirst?"":"+ "),score-previousScore);
-
-		}
-
-		//if (debugHeuristic) System.out.print(" = ");
-
-		for (BaseBlock bb : eq.rightSide()) {
-			double previousScore = score;
-			if (bb instanceof BlockHolder) continue;
-			List<Block> attachedBlockList = bb.getAllBlocks();
-			Collections.reverse(attachedBlockList);
-			if (bb instanceof VariableBlock)
-			{
-				//Iterate through everything attached to this block
-				for(int i = 0;i<attachedBlockList.size() - 1; i++) {
-					Block block = attachedBlockList.get(i);
-
-					if (block instanceof TimesBlock || block instanceof OverBlock) {
-						Block nextBlock = attachedBlockList.get(i+1);
-
-						if (mightDivideOut(block, nextBlock))
-						{
-							score = adjustScoreForDividingOut(score, block, nextBlock);
-							//we essentially got two steps at once
-							i++;
-						} else {
-							//Because we'll have to either multiply or divide to remove this term
-							//one step for every variable on this side and every term on the other
-							//(may need to be total terms)
-							score += rightVarTerms+generalLeftTerms;
-
-							// dividing/multiplying out with a plus or minus block can't happen yet
-							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
-								score++;
-							}
-						}
-					}
-					else
-						score += 2;// (generalLeftTerms == 0 && i == 0 ? 1:2);
-				}
-
-			}
-			else {
-				//We will only have to simplify these out, so this is just one step
-				//for every thing attached to the number block
-				score += attachedBlockList.size() - 1;
-				score += (leftVarTerms == 0? 1: 0);
-			}
-
-
-
-			//if (debugHeuristic) System.out.printf("%s[%1.1f] ", (isFirst?"":"+ "),score-previousScore);
-
-		}*/
-
-
-	}
+}
 
 	private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalOtherSideTerms,
 			int thisSideVarTerms, int otherSideVarTerms) {
@@ -382,12 +283,15 @@ public class IdealEquationSolver {
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
 						Block nextBlock = attachedBlockList.get(i+1);
 
-						if (mightDivideOut(block, nextBlock))
-						{
+						if (mightDivideOut(block, nextBlock)) {
 							thisTerm.termsScore += adjustScoreForDividingOut(block, nextBlock);
-							//we essentially got two steps at once
+							//we essentially got two steps at once, so skip to the next block
 							i++;
-						} else {
+						} else if (timesMightCombine(block, nextBlock)) {
+							thisTerm.termsScore += 1;
+						}
+						
+						else {
 							//Because we'll have to either multiply or divide to remove this term
 							//one step for every variable on this side and every term on the other
 							//(may need to be total terms)
@@ -475,7 +379,7 @@ public class IdealEquationSolver {
 
 			//if the end sum is not 1 or 0, we will have to divide as well
 			int sum = sumList(timeses);
-			if (!(sum == 1 || sum ==0 )) score++;		//don't need to divide in the end if the num variables sums to 1 or 0
+			if (!(sum == 1 || sum ==0 )) score+=2;		//1 for the drag over, 1 for the simplify
 		
 			for (HeuristicTermPackage h:potentialTimesHandled) h.hasBeenHandled = true;
 		} 
@@ -508,6 +412,10 @@ public class IdealEquationSolver {
 				(block instanceof OverBlock && nextBlock instanceof TimesBlock);
 	}
 
+
+	private static boolean timesMightCombine(Block block, Block nextBlock) {
+		return (block instanceof TimesBlock && nextBlock instanceof TimesBlock);
+	}
 
 	private static int countVarTerms(Iterable<BaseBlock> side) {
 		int terms = 0;
