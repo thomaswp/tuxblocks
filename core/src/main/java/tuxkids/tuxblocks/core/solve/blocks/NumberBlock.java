@@ -2,9 +2,13 @@ package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
 
+import playn.core.ImageLayer;
+
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayerDefault;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.ButtonFactory;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Simplifiable;
 import tuxkids.tuxblocks.core.solve.markup.AddRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
@@ -132,31 +136,45 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 		return new NumberBlock(value);
 	}
 
+	private enum Tag {
+		Horizontal, Times, Over
+	}
+	
 	@Override
-	public void updateSimplify() {
+	public void addSimplifiableBlocks(Aggregator ag) {
 		if (modifiers.children.size() > 0) {
 			// simplify with the closest HorizontalModifierBlock
-			simplifyLayer.getSimplifyButton(modifiers.children.get(0))
-			.setTranslation(width(), height() / 2);
+			ag.add(modifiers.children.get(0), Tag.Horizontal);
 		} else if (modifiers.modifiers != null) {
 			// or if there isn't one, simplify with any direct VerticalModifierBlock
 			VerticalModifierGroup mods = (VerticalModifierGroup) modifiers.modifiers;
 			if (mods.timesBlocks.size() > 0) {
-				simplifyLayer.getSimplifyButton(mods.timesBlocks.get(0))
-				.setTranslation(width() / 2, 0);
+				ag.add(mods.timesBlocks.get(0), Tag.Times);
 			}
 			if (mods.overBlocks.size() > 0) {
 				if (value % mods.overBlocks.get(0).value == 0) {
-					// only add didisible OverBlocks
-					simplifyLayer.getSimplifyButton(mods.overBlocks.get(0))
-					.setTranslation(width() / 2, height());
+					// only add divisible OverBlocks
+					ag.add(mods.overBlocks.get(0), Tag.Over);
 				}
 			}
 		}
 	}
+	
+	@Override
+	public void placeButton(ModifierBlock sprite, ModifierBlock pair,
+			Object tag, ButtonFactory factory) {
+		ImageLayer simplifyButton = factory.getSimplifyButton(sprite, pair);
+		if (tag == Tag.Horizontal) {
+			simplifyButton.setTranslation(width(), height() / 2);
+		} else if (tag == Tag.Times) {
+			simplifyButton.setTranslation(width() / 2, 0);
+		} else {
+			simplifyButton.setTranslation(width() / 2, height());
+		}
+	}
 
 	@Override
-	public void simplify(final ModifierBlock sprite, ModifierBlock pair) { //ignore pair argument
+	public void simplify(final ModifierBlock sprite, final ModifierBlock pair) { //ignore pair argument
 		if (blockListener != null) { // again, not sure why this check is necessary but...
 
 			final int answer; // the answer to the problem 
@@ -202,11 +220,13 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			SimplifyListener listener = new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
+					if (blockListener != null) {
+						blockListener.wasSimplified(sprite, pair, null, success);
+					}
 					if (success) {
 						// change this block's value, remove the modifier
 						setValue(answer);
 						sprite.group.removeChild(sprite, true);
-						blockListener.wasSimplified();
 					}
 				}
 			};
@@ -222,12 +242,12 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	@Override
 	public void update(int delta) {
 		super.update(delta);
-		simplifyLayer.update();
+		if (hasSprite()) simplifyLayer.update();
 	}
 
 	public void setValue(int value) {
 		this.value = value;
-		((BlockLayerDefault) layer).setText(text());
+		if (hasSprite()) ((BlockLayerDefault) layer).setText(text());
 	}
 
 	@Override
@@ -243,5 +263,10 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				return new NumberBlock(0);
 			}
 		};
+	}
+
+	@Override
+	protected int getBaseValue(int answer) {
+		return value;
 	}
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.ButtonFactory;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
@@ -26,6 +28,18 @@ public class VerticalModifierGroup extends ModifierGroup {
 	public VerticalModifierGroup() {
 		timesBlocks = new ArrayList<ModifierBlock>();
 		overBlocks = new ArrayList<ModifierBlock>();
+	}
+	
+	@Override
+	public double evaluate(double base) {
+		for (ModifierBlock times : timesBlocks) {
+			base *= times.value;
+		}
+		for (ModifierBlock over : overBlocks) {
+			base /= over.value;
+		}
+		if (modifiers != null) base = modifiers.evaluate(base);
+		return base;
 	}
 
 	@Override
@@ -103,31 +117,31 @@ public class VerticalModifierGroup extends ModifierGroup {
 	protected boolean canAdd(ModifierBlock sprite) {
 		return sprite instanceof VerticalModifierBlock;
 	}
-
+	
+	private enum Tag {
+		CancelTimes, CancelOver, Times, Over;
+	}
+	
 	@Override
-	public void updateSimplify() {
+	public void addSimplifiableBlocks(Aggregator ag) {
 		for (int i = 0; i < timesBlocks.size(); i++) {
 			ModifierBlock sprite = timesBlocks.get(i);
 			for (ModifierBlock div : overBlocks) {
 				if (div.equals(sprite.inverse())) {
 					// if we have a Times- and OverBlock that cancel out, allow
 					// the player to simplify them
-					simplifyLayer.getSimplifyButton(sprite, div)
-					.setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
-					continue;
+					ag.add(sprite, div, Tag.CancelTimes);
 				} else if (areDivisible(sprite.value, div.value)) {
 					// if we have a Time- and OverBLock which can be reduced to
 					// eliminate one, allow the player to simplify
-					simplifyLayer.getSimplifyButton(sprite, div, -1)
-					.setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
+					ag.add(sprite, div, Tag.CancelOver);
 					continue;
 				}
 			}
 			
 			if (i > 0) {
 				// allow the player to combine TimesBlocks
-				simplifyLayer.getSimplifyButton(sprite, timesBlocks.get(i - 1))
-				.setTranslation(sprite.centerX(), sprite.y() + modSize());
+				ag.add(sprite, timesBlocks.get(i - 1), Tag.Times);
 				continue;
 			}
 		}
@@ -136,10 +150,26 @@ public class VerticalModifierGroup extends ModifierGroup {
 			// allow the player to combine OverBlocks
 			ModifierBlock sprite = overBlocks.get(i);
 			if (i > 0) {
-				simplifyLayer.getSimplifyButton(sprite, overBlocks.get(i - 1))
-				.setTranslation(sprite.centerX(), sprite.y());
+				ag.add(sprite, overBlocks.get(i - 1), Tag.Over);
 				continue;
 			}
+		}
+	}
+	
+	@Override
+	public void placeButton(ModifierBlock sprite, ModifierBlock pair, Object tag, ButtonFactory factory) {
+		if (tag == Tag.CancelTimes) {
+			factory.getSimplifyButton(sprite, pair)
+			.setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
+		} else if (tag == Tag.CancelOver) {
+			factory.getSimplifyButton(sprite, pair, -1)
+			.setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
+		} else if (tag == Tag.Times) {
+			factory.getSimplifyButton(sprite, pair)
+			.setTranslation(sprite.centerX(), sprite.y() + modSize());
+		} else {
+			factory.getSimplifyButton(sprite, pair)
+			.setTranslation(sprite.centerX(), sprite.y());
 		}
 	}
 	
@@ -153,9 +183,9 @@ public class VerticalModifierGroup extends ModifierGroup {
 	public void simplify(ModifierBlock sprite, ModifierBlock pair) {
 		if (sprite.inverse().equals(pair)) {
 			// if the two cancel out, just remove them
+			blockListener.wasSimplified(sprite, pair, this, true);
 			removeChild(sprite, true);
 			removeChild(pair, true);
-			blockListener.wasSimplified();
 		} else {
 			// otherwise, we either we're either combining or reducing
 			boolean spriteTimes = sprite instanceof TimesBlock;
@@ -171,8 +201,8 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 
 	// reduce a Times- and OverBlock to just one
-	private void reduceDif(final ModifierBlock a, final ModifierBlock b, boolean aTimes) {
-		if (a.value < b.value) {
+	private void reduceDif(final ModifierBlock a, final ModifierBlock b, final boolean aTimes) {
+		if (Math.abs(a.value) < Math.abs(b.value)) {
 			// we want a to be greater than b
 			reduceDif(b, a, !aTimes);
 			return;
@@ -194,11 +224,13 @@ public class VerticalModifierGroup extends ModifierGroup {
 		SimplifyListener listener = new SimplifyListener() {
 			@Override
 			public void wasSimplified(boolean success) {
+				ModifierBlock sprite = aTimes ? a : b;
+				ModifierBlock pair = aTimes ? b : a;
+				blockListener.wasSimplified(sprite, pair, VerticalModifierGroup.this, success);
 				if (success) {
 					// set A's new smaller value and remove B 
 					a.setValue(answer);
 					removeChild(b, true);
-					blockListener.wasSimplified();
 				}
 			}
 		};
@@ -235,11 +267,11 @@ public class VerticalModifierGroup extends ModifierGroup {
 			SimplifyListener listener = new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
+					blockListener.wasSimplified(a, b, VerticalModifierGroup.this, success);
 					if (success) {
 						// set B's value and remove A 
 						b.setValue(answer);
 						removeChild(a, true);
-						blockListener.wasSimplified();
 					}
 				}
 			};

@@ -99,6 +99,7 @@ public class NinepatchLayer extends LayerWrapper implements ImageLayerLike {
 		});
 	}
 	
+	@Override
 	public void destroy() {
 		layer.destroy();
 	}

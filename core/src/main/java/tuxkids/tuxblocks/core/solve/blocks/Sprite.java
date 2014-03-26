@@ -52,10 +52,10 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 	 * and recursively on any of its children. Subclasses should override
 	 * this method with a custom implementation.
 	 */
-	protected void performAction(Action action) {
+	public void performAction(Action action) {
 		action.run(this);
 	}
-	
+
 	// An action for finding a given child Sprite
 	private static class Search implements Action {
 		private Sprite sprite;
@@ -250,7 +250,7 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 		/** Called when a Sprite is double-clicked by the player */
 		void wasDoubleClicked(Block sprite, Event event);
 		/** Called when a Sprite is simplified and the equation need refreshing */
-		void wasSimplified();
+		void wasSimplified(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success);
 		/** Called when a Sprite needs the {@link SolveScreen} to reduce */
 		void wasReduced(Renderer problem, int answer, int startNumber, 
 				Stat stat, int level, SimplifyListener callback);
@@ -262,7 +262,7 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 	}
 	
 	/** Used in {@link Sprite#performAction(Action)} */
-	protected interface Action {
+	public interface Action {
 		void run(Sprite sprite);
 	}
 	

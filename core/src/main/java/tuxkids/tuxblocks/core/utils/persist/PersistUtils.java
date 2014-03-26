@@ -84,7 +84,7 @@ public class PersistUtils {
 		if (data == null) return;
 		String[] lines = data.split("\n");
 		for (String line : lines) {
-			store.add(line.equals(NULL) ? null : line);
+			store.add(NULL.equals(line) ? null : line);
 		}
 	}
 	
@@ -120,8 +120,12 @@ public class PersistUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
+<<<<<<< HEAD
 			if (store != null)
 				store.clear();
+=======
+			if (store != null) store.clear();
+>>>>>>> origin/story
 		}
 		return null;
 	}

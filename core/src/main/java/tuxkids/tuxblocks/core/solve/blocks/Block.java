@@ -53,7 +53,7 @@ public abstract class Block extends Sprite implements Hashable {
 	protected abstract boolean canRelease(boolean multiExpression);
 	/** The color of this block */
 	protected abstract int color();
-	
+		
 	/** Make this block show its inverse (when the equals sign is crossed) */
 	public abstract void showInverse();
 	/** Gets this block's inverse (when the equals sign is crossed) */

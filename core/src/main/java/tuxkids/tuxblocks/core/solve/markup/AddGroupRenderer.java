@@ -51,4 +51,14 @@ class AddGroupRenderer extends ModifierGroupRenderer {
 			}
 		};
 	}
+
+	@Override
+	public String getPlainText() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < operands.length; i++) {
+			sb.append(operands[i] < 0 ? " - " : " + ");
+			sb.append(Math.abs(operands[i]));
+		}
+		return sb.toString();
+	}
 }

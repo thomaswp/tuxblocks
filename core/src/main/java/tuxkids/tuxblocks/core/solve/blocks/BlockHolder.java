@@ -4,6 +4,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayer;
 import tuxkids.tuxblocks.core.solve.blocks.layer.EmptyBlockLayer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.markup.BlockHolderRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
@@ -33,12 +34,17 @@ public class BlockHolder extends BaseBlock {
 	}
 	
 	@Override
+	public Renderer createRenderer() {
+		return new BlockHolderRenderer();
+	}
+	
+	@Override
 	public int color() {
 		return Colors.WHITE;
 	}
 
 	@Override
-	public boolean canRelease(boolean open) {
+	public boolean canRelease(boolean multiExpression) {
 		return false;
 	}
 	
@@ -110,5 +116,10 @@ public class BlockHolder extends BaseBlock {
 				return new BlockHolder();
 			}
 		};
+	}
+
+	@Override
+	protected int getBaseValue(int answer) {
+		return 0;
 	}
 }

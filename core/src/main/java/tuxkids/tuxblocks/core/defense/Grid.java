@@ -286,7 +286,7 @@ public class Grid extends PlayNObject implements Highlightable {
 	}
 
 	// creates the background sprite for the Grid
-	private ImageLayerTintable createGridSprite() {
+	private final ImageLayerTintable createGridSprite() {
 
 		CanvasImage image = graphics().createImage(width(), height());
 		Canvas canvas = image.canvas();

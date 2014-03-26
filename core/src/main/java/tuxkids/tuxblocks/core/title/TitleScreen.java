@@ -340,6 +340,7 @@ public class TitleScreen extends BaseScreen {
 		}
 	}
 	
+	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
 		titleLayer.paint(clock);

@@ -12,6 +12,7 @@ import pythagoras.f.Vector;
  */
 public class TimesRenderer extends ModifierRenderer {
 	
+	/** Used to indicate an uncalculated result in a hovering preview */
 	public final static int UNKNOWN_NUMBER = Integer.MAX_VALUE;
 	
 	public TimesRenderer(Renderer base, int[] operands) {
@@ -28,10 +29,16 @@ public class TimesRenderer extends ModifierRenderer {
 		super(base, factor);
 	}
 
+	// indicates if the child is simply 'x' and requires no parentheses for factors; eg. 3x not 3(x)
+	private boolean useParentheses() {
+		return !((base instanceof BaseRenderer) && "x".equals(((BaseRenderer) base).text()));
+	}
+
 	@Override
 	public ExpressionWriter getExpressionWriter(TextFormat textFormat) {
 		final ExpressionWriter childWriter = base.getExpressionWriter(textFormat);
 		final ExpressionWriter factorWriter = modifier.getExpressionWriter(textFormat);
+		final boolean useParentheses = useParentheses();
 		
 		return new ParentExpressionWriter(textFormat) {
 			
@@ -42,6 +49,8 @@ public class TimesRenderer extends ModifierRenderer {
 			protected Vector formatExpression(TextFormat textFormat) {
 				float height = childWriter.height();
 				w = height / 7;
+				if (!useParentheses) w /= 2;
+				
 				return new Vector(factorWriter.width() + childWriter.width() + w * 4, 
 						Math.max(factorWriter.height(), childWriter.height()));
 			}
@@ -69,19 +78,32 @@ public class TimesRenderer extends ModifierRenderer {
 				float y = (height() - h) / 2;
 				canvas.translate(x, y);
 				
-				// draw left paren
-				path.moveTo(w, (h + height) / 2);
-				path.quadraticCurveTo(-w, height / 2, w, height - h);
-				canvas.strokePath(path);
-				
-				// draw right paren
-				path = canvas.createPath();
-				canvas.translate(childWriter.width() + w * 3, 0);
-				path.moveTo(-w, (h + height) / 2);
-				path.quadraticCurveTo(w, height / 2, -w, height - h);
-				canvas.strokePath(path);
+				if (useParentheses) {
+					// draw left paren
+					path.moveTo(w, (h + height) / 2);
+					path.quadraticCurveTo(-w, height / 2, w, height - h);
+					canvas.strokePath(path);
+					
+					// draw right paren
+					path = canvas.createPath();
+					canvas.translate(childWriter.width() + w * 3, 0);
+					path.moveTo(-w, (h + height) / 2);
+					path.quadraticCurveTo(w, height / 2, -w, height - h);
+					canvas.strokePath(path);
+				}
 				canvas.restore();
 			}
 		};
+	}
+
+	@Override
+	public String getPlainText() {
+		boolean useParentheses = useParentheses();
+		StringBuilder sb = new StringBuilder();
+		sb.append(modifier.getPlainText());
+		if (useParentheses) sb.append("(");
+		sb.append(base.getPlainText());
+		if (useParentheses) sb.append(")");
+		return sb.toString();
 	}
 }

@@ -46,6 +46,7 @@ public class ImageLayerTintable extends LayerWrapper implements ImageLayerLike {
 		return base.height();
 	}
 
+	@Override
 	public Image image() {
 		return baseImage;
 	}

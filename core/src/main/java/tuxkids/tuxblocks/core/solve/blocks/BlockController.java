@@ -10,7 +10,6 @@ import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Layer;
-import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.TextFormat;
 import playn.core.util.Clock;
@@ -30,6 +29,7 @@ import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
+import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.build.BuildScreen;
@@ -40,18 +40,12 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.MultiList;
-import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 /**
  * Responsible for manipulating {@link Equation} on the {@link SolveScreen}
  * or {@link BuildScreen}.
  */
-public class BlockController extends PlayNObject {
-	
-	public enum Side {
-		Left, Right;
-	}
+public class BlockController extends EquationManipulator {
 
 	private final static float EQ_BUFFER = 50; // space left between sides for the = sign
 	private static final float DRAGGING_DEPTH = 1; // depth for dragging blocks
@@ -60,19 +54,13 @@ public class BlockController extends PlayNObject {
 	private Parent parent; // for callbacks to the Screen hosting this controller
 	private float width, height;
 	private GroupLayer layer;
-	private List<BaseBlock> leftSide = new ArrayList<BaseBlock>(), rightSide = new ArrayList<BaseBlock>(), // sides of the equation
-			removingLeft = new ArrayList<BaseBlock>(), removingRight = new ArrayList<BaseBlock>(); // BlockHolders being removed in BuildMode
-	@SuppressWarnings("unchecked")
-	private MultiList<BaseBlock> baseBlocks = new MultiList<BaseBlock>(leftSide, rightSide); // all Blocks in the equation
+	private List<BaseBlock> removingLeft = new ArrayList<BaseBlock>(), removingRight = new ArrayList<BaseBlock>(); // BlockHolders being removed in BuildMode
 	private Listener listener = new Listener(); // callbacks for the Blocks
 	
-	private BaseBlock draggingFrom, tempDraggingFrom; // which BaseBlock the currently dragging Block is coming from
-	private List<BaseBlock> draggingFromSide; // which side the currently dragging Block is coming from
-	private Block dragging, tempDragging; // which block is currently dragging
 	private float blockAnchorPX, blockAnchorPY; // where [0-1] on the currently dragging Block are we grabbing it
 	private float lastTouchX, lastTouchY; // last position of the drag
-	private boolean inverted; // is the currently dragging Block inverted (past the equals)
 	private BaseBlock hoverSprite; // the BaseBlock the currently dragging Block is currently hovering over
+	private boolean inverted; // is the currently dragging Block inverted (past the equals)
 	
 	private float equalsX; // x-coordinate of the =
 	private ImageLayer equals; // the ImageLayer for the =
@@ -81,8 +69,17 @@ public class BlockController extends PlayNObject {
 	private Image equationImage; // the ImageLayer for the Renderer's image of the equation
 	private boolean refreshEquation; // true if the equationImage needs refreshing
 	
-	private boolean inBuildMode; // true if this is being hosted by a BuildScreen
 	private BuildToolbox buildToolbox; // if inBuildMode, we need a reference to the BuildToolbox
+	
+	@Override
+	protected boolean hasSprites() {
+		return true;
+	}
+	
+	@Override
+	protected void triggerTutorial(Trigger event) {
+		Tutorial.trigger(event);
+	}
 	
 	/** The height at which the equation Image will be rendered */
 	public float equationImageHieght() {
@@ -126,15 +123,7 @@ public class BlockController extends PlayNObject {
 	
 	/** Creates and returns an Equation representing the current state of this controller */
 	public Equation equation() {
-		ArrayList<BaseBlock> lhs = new ArrayList<BaseBlock>(),
-				rhs = new ArrayList<BaseBlock>();
-		for (BaseBlock sprite : leftSide) {
-			lhs.add((BaseBlock) sprite.copy());
-		}
-		for (BaseBlock sprite : rightSide) {
-			rhs.add((BaseBlock) sprite.copy());
-		}
-		return new Equation(lhs, rhs);
+		return equation.copy();
 	}
 	
 	/** Returns true if the {@link Equation} is in a solved state */
@@ -151,20 +140,25 @@ public class BlockController extends PlayNObject {
 		this.parent = parent;
 		this.width = width;
 		this.height = height;
-		layer = graphics().createGroupLayer();
+		this.layer = graphics().createGroupLayer();
+		this.equation = new MutableEquation();
+		
 		equals = graphics().createImageLayer(CanvasUtils.createTextCached("=", 
 				new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, 20)), Colors.WHITE));
 		centerImageLayer(equals);
 		layer.add(equals);
+		
+		solveActionCallback = new SolveActionCallback() {
+			@Override
+			public void onActionPerformed(SolveAction action, Equation before) {
+				if (!inBuildMode) debug(before.getPlainText() + " -> " + (action == null ? "[ ]" : action));
+			}
+		};
 	}
 	
 	/** Clears and destroys the current {@link Equation} */
 	public void clear() {
-		for (BaseBlock sprite : baseBlocks) {
-			sprite.destroy();
-		}
-		leftSide.clear();
-		rightSide.clear();
+		equation.clear();
 		solved = false;
 		dragging = draggingFrom = null;
 	}
@@ -179,10 +173,11 @@ public class BlockController extends PlayNObject {
 			addExpression(Side.Right, sprite);
 		}
 		updateExpressionPositions(0, 1);
+		startSolving();
 	}
 	
-	/** Adds the given expression to the given side (used in construction, no during manipulation) */
-	public void addExpression(Side side, BaseBlock expression) {
+	// Adds the given expression to the given side (used in construction, no during manipulation)
+	private void addExpression(Side side, BaseBlock expression) {
 		List<BaseBlock> blocks = getBlocks(side);
 		addExpression(blocks, expression, 0, 0, blocks.size());
 		refreshEquationImage();
@@ -208,38 +203,24 @@ public class BlockController extends PlayNObject {
 	
 	// refreshes the position of the =
 	private void refreshEquals() {
-		equalsX = (leftSide.size() + 0.5f) / (baseBlocks.size() + 1) * width;
+		equalsX = (leftSide().size() + 0.5f) / (equation.count() + 1) * width;
 		equals.setTranslation(equalsX, height / 2);
 	}
 	
 	// swaps out one expression for another on the given side
-	private void swapExpression(List<BaseBlock> side, BaseBlock original, BaseBlock newExp) {
+	@Override
+	protected void swapExpression(List<BaseBlock> side, BaseBlock original, BaseBlock newExp) {
 		int index = side.indexOf(original);
 		side.remove(index);
 		addExpression(side, newExp, original.layer().tx(), original.layer().ty(), index);
 	}
 	
-	// check to see if the equation is solved
-	private boolean refreshSolved() {
-		if (dragging != null) return false;
-		int numbers = 0, variables = 0;
-		for (BaseBlock sprite : baseBlocks) {
-			if (!sprite.isUnmodified()) return false;
-			if (sprite instanceof NumberBlock) {
-				numbers++;
-			}
-			if (sprite instanceof VariableBlock) {
-				variables++;
-			}
-		}
-		return numbers <= 1 && variables == 1;
-	}
-	
 	// refreshes the equation image
 	private void refreshEquationImage() {
-		Renderer lhs = getRenderer(leftSide);
-		Renderer rhs = getRenderer(rightSide);
+		Renderer lhs = getRenderer(leftSide());
+		Renderer rhs = getRenderer(rightSide());
 		Renderer equation = new JoinRenderer(lhs, rhs, "=");
+//		Debug.write(equation.getPlainText()); // to debug the equation to text function 
 		
 		// adjust the text size for the number of lines 
 		float textSize = equationImageHeight * 0.6f / Math.max(3, equation.lines());
@@ -278,42 +259,19 @@ public class BlockController extends PlayNObject {
 		return renderer;
 	}
 	
-	private List<BaseBlock> getBlocks(Side side) {
-		return side == Side.Left ? leftSide : rightSide;
-	}
-	
-	private List<BaseBlock> getOpposite(List<BaseBlock> side) {
-		return side == rightSide ? leftSide : rightSide;
-	}
-	
-	private List<BaseBlock> getContaining(BaseBlock block) {
-		return leftSide.contains(block) ? leftSide : rightSide;
-	}
-	
 	public void update(int delta) {
-		int bb = 0;
-		for (BaseBlock s : baseBlocks) {
-			if (!(s instanceof BlockHolder)) bb++;
-		}
-		updateSide(delta, leftSide, bb);
-		updateSide(delta, rightSide, bb);
+		updateSide(delta, leftSide());
+		updateSide(delta, rightSide());
 		if (dragging != null) dragging.update(delta);
 		if (refreshEquation) {
 			refreshEquationImage();
-			solved = refreshSolved();
+			solved = equationSolved();
 		}
 	}
 	
 	//updates the BaseBlocks on the given side
-	private void updateSide(int delta, List<BaseBlock> side, int totalBlocks) {
-		boolean multiExpression = totalBlocks > 2; // can't drag factors if there are >2 expressions
-		if (!multiExpression) {
-			int bb = 0;
-			for (BaseBlock s : side) {
-				if (!(s instanceof BlockHolder)) bb++;
-			}
-			if (bb > 1) multiExpression = true; // or if there is >1 expression on any given side
-		}
+	private void updateSide(int delta, List<BaseBlock> side) {
+		boolean multiExpression = isMultiExpression(equation, side);
 		for (BaseBlock sprite : side) {
 			boolean moveBase = false;
 			for (BaseBlock other : side) {
@@ -334,7 +292,7 @@ public class BlockController extends PlayNObject {
 	}
 	
 	public void paint(Clock clock) {
-		for (BaseBlock sprite : baseBlocks) {
+		for (BaseBlock sprite : equation) {
 			sprite.paint(clock);
 		}
 		
@@ -364,10 +322,10 @@ public class BlockController extends PlayNObject {
 
 	private void updateExpressionPositions(float base, float dt) {
 		int i = 1;
-		for (BaseBlock sprite : baseBlocks) {
+		for (BaseBlock sprite : equation) {
 			// super-fancy positioning algorithm
-			float x = i++ * (width - EQ_BUFFER) / (baseBlocks.size() + 1) - sprite.totalWidth() / 2 - sprite.offsetX();
-			if (i > leftSide.size() + 1) x += EQ_BUFFER;
+			float x = i++ * (width - EQ_BUFFER) / (equation.count() + 1) - sprite.totalWidth() / 2 - sprite.offsetX();
+			if (i > leftSide().size() + 1) x += EQ_BUFFER;
 			sprite.layer().setTx(lerpTime(sprite.layer().tx(), x, base, dt, 1f));
 			sprite.layer().setTy(lerpTime(sprite.layer().ty(), (height - sprite.height()) / 2, base, dt, 1f));
 		}
@@ -382,12 +340,12 @@ public class BlockController extends PlayNObject {
 		}
 	}
 	
-	// can the dragging Block be dropped on teh given Block at the given position
+	// can the dragging Block be dropped on the given Block at the given position
 	private boolean canDropOn(BaseBlock base, float x, float y) {
 		if (base.intersects(dragging)) {
 			if (base instanceof BlockHolder && dragging instanceof VerticalModifierBlock) {
 				int blocks = 0;
-				for (BaseBlock block : baseBlocks) {
+				for (BaseBlock block : equation) {
 					if (!(block instanceof BlockHolder)) blocks++;
 				}
 				return blocks == 1;
@@ -398,15 +356,14 @@ public class BlockController extends PlayNObject {
 	}
 	
 	// invert the dragging Block when it crosses the =
-	private void invertDragging(boolean refresh) {
-		Block block = dragging.inverse();
-		dragging.showInverse();
+	protected void invertDragging(boolean refresh) {
+		Block inverse = dragging.inverse(), dragging = this.dragging;
+		this.dragging = invertBlock(dragging);
 		if (refresh) {
 			layer.remove(dragging.layer());
-			layer.add(block.layer());
-			block.layer().setDepth(DRAGGING_DEPTH);
+			layer.add(inverse.layer());
+			inverse.layer().setDepth(DRAGGING_DEPTH);
 		}
-		dragging = block;
 	}
 	
 	// give a nice little POOF when the block crosses the equals
@@ -429,11 +386,11 @@ public class BlockController extends PlayNObject {
 	
 	private void updateBlockHolders() {
 		if (!inBuildMode) return;
-		updateBlockHolder(leftSide, Side.Left);
-		updateBlockHolder(rightSide, Side.Right);
+		updateBlockHolder(leftSide(), Side.Left);
+		updateBlockHolder(rightSide(), Side.Right);
 		// I think this is necessary because things might change for the left
 		// side after the right is updated. Just go with it.
-		updateBlockHolder(leftSide, Side.Left); 
+		updateBlockHolder(leftSide(), Side.Left); 
 	}
 	
 	// makes excess BlockHolders appear/disappear in BuildMode
@@ -446,7 +403,7 @@ public class BlockController extends PlayNObject {
 				if (block != draggingFrom) lastHolder = block;
 			}
 		}
-		if (holders == 0 && baseBlocks.size() < MAX_BLOCKS) {
+		if (holders == 0 && equation.count() < MAX_BLOCKS) {
 			BlockHolder holder = new BlockHolder();
 			float x = side == Side.Left ? - width / 2 : width * 3 / 2;
 			float y = height / 2 - Sprite.baseSize() / 2;
@@ -491,62 +448,28 @@ public class BlockController extends PlayNObject {
 			
 			float x = getTouchX(event), y = getTouchY(event);
 			
-			// find the BaseBlock of the Sprite that was grabbed 
-			for (BaseBlock base : baseBlocks) {
-				if (base.contains(sprite)) {
-					draggingFrom = base;
-					break;
+			sprite = dragBlock(sprite);
+			if (sprite != null) {
+				blockAnchorPX = (x - spriteX(sprite)) / sprite.width();
+				blockAnchorPY = (y - spriteY(sprite)) / sprite.height();
+	
+				// get the dragging Sprite and add it to our layer
+				layer.add(dragging.layer());
+				dragging.layer().setDepth(DRAGGING_DEPTH);
+	
+				if (sprite != dragging) {
+					// make it invisible if it's not the dragging sprite
+					sprite.layer().setVisible(false);
 				}
+				
+				lastTouchX = x;
+				lastTouchY = y;
+				inverted = false;
+				refreshEquation = true;
+				updatePosition();
+				
+				Audio.se().play(Constant.SE_TICK);
 			}
-			
-			if (draggingFrom == null) {
-				if (inBuildMode) {
-					// The happens when we drag from the ToolBox, so we copy the dragging Sprite
-					Block nSprite = (Block) sprite.copy(true);
-					nSprite.layer().setTranslation(sprite.layer().tx(), sprite.layer().ty());
-					nSprite.interpolateDefaultRect(null);
-					sprite = nSprite;
-				} else {
-					// This happens when the dragging block isn't a part of any BaseBlock's group
-					// which shouldn't be able to happen but somehow has... so we cancel everything
-					debug("BIG PROBLEM!");
-					sprite.cancelDrag();
-					PlayN.pointer().cancelLayerDrags();
-					return;
-				}
-			}
-			
-			draggingFromSide = getContaining(draggingFrom);
-			
-			blockAnchorPX = (x - spriteX(sprite)) / sprite.width();
-			blockAnchorPY = (y - spriteY(sprite)) / sprite.height();
-			
-			if (sprite == draggingFrom) {
-				// we're picking up a BaseBlock, so replace it with a BlockHolder
-				BlockHolder holder = new BlockHolder();
-				swapExpression(draggingFromSide, draggingFrom, holder);
-				draggingFrom = holder;
-			}
-			
-			// get the dragging Sprite and add it to our layer
-			dragging = sprite.getDraggingSprite();
-			layer.add(dragging.layer());
-			dragging.layer().setDepth(DRAGGING_DEPTH);
-
-			// remove the sprite from its group
-			sprite.remove();
-			if (sprite != dragging) {
-				// and make it invisible if it's not the dragging sprite
-				sprite.layer().setVisible(false);
-			}
-			
-			lastTouchX = x;
-			lastTouchY = y;
-			inverted = false;
-			refreshEquation = true;
-			updatePosition();
-			
-			Audio.se().play(Constant.SE_TICK);
 		}
 
 		@Override
@@ -564,7 +487,7 @@ public class BlockController extends PlayNObject {
 			// the drop target is either what we're hovering over or the
 			// BaseBlock dragging came from originally (it snaps back)
 			BaseBlock target = null;
-			for (BaseBlock base : baseBlocks) {
+			for (BaseBlock base : equation) {
 				base.clearPreview();
 				if (target == null && canDropOn(base, x, y)) {
 					target = base;
@@ -592,58 +515,17 @@ public class BlockController extends PlayNObject {
 		
 		private void dropOn(BaseBlock target) {
 			
-			if (target == null) {
-				if (!inBuildMode) debug("BIG PROBLEM!");
-				// delete the sprite if it's dropped onto the toolbox
-				dragging.destroy();
-			} else {
-				if (target instanceof BlockHolder) {
-					// if dropped on a BlockHolder, replace it with the dropped Block
-					
-					if (dragging instanceof VerticalModifierBlock) {
-						// 0 * or / n = 0
-						dragging.destroy();
-					} else {
-						if (dragging instanceof HorizontalModifierBlock) {
-							// turn a HorizontalModifier into a NumberBlock
-							NumberBlockProxy proxy = ((HorizontalModifierBlock) dragging).getProxy(false);
-							dragging.layer().setVisible(false);
-							dragging = proxy;
-						} else if (dragging instanceof BaseBlock) {
-							ModifierGroup mods = ((BaseBlock) dragging).modifiers;
-							if (mods.isModifiedHorizontally() || mods.isModifiedVertically() || mods.children.size() > 0) {
-								Tutorial.trigger(Trigger.Solve_BlockWithModifiersReleasedOnBlank);
-							}
-						}
-						
-						swapExpression(getContaining(target), target, (BaseBlock) dragging);
-						target.layer().destroy();
-					}
-					
-					Tutorial.trigger(Trigger.Solve_BlockReleasedOnBlank);
-				} else {
-					if (dragging instanceof VariableBlock && target instanceof VariableBlock) {
-						Tutorial.trigger(Trigger.Solve_VariablesStartedCombine);
-					}
-					
-					ModifierBlock added = target.addBlock(dragging, false);
-					if (added == null) {
-						// this happens when the drop requires a trip to the SolveScreen to resolve
-						// when we get back, we use these values to reset the Block if the solve failed
-						tempDragging = dragging;
-						tempDraggingFrom = draggingFrom;
-					} else {
-						added.layer().setTranslation(added.layer().tx() - spriteX(target), 
-								added.layer().ty() - spriteY(target));
-					}
-				}
+			Block added = dropBlock(target);
+			if (!(target instanceof BlockHolder) && added != null) {
+				// if we're not creating a new block, reset the coordinate space
+				// of the added block
+				added.layer().setTranslation(added.layer().tx() - spriteX(target), 
+						added.layer().ty() - spriteY(target));
 			}
+			
 			updateBlockHolders();
 			
-			dragging = null;
-			draggingFrom = null;
 			hoverSprite = null;
-			
 			refreshEquation = true;
 			
 			Audio.se().play(Constant.SE_DROP);
@@ -660,7 +542,7 @@ public class BlockController extends PlayNObject {
 			// update the hoverSprite and Block previews
 			BaseBlock lastHover = hoverSprite;
 			hoverSprite = null;
-			for (BaseBlock base : baseBlocks) {
+			for (BaseBlock base : equation) {
 				if (hoverSprite == null && canDropOn(base, x, y)) {
 					base.setPreview(true);
 					hoverSprite = base;
@@ -679,7 +561,7 @@ public class BlockController extends PlayNObject {
 				// invert blocks that pass the equals
 				
 				boolean invert;
-				boolean checkLeftDistance = draggingFromSide == leftSide;
+				boolean checkLeftDistance = draggingFromSide == leftSide();
 				if (inverted) checkLeftDistance = !checkLeftDistance;
 				if (checkLeftDistance) {
 					invert = x > equalsX + 5;
@@ -699,47 +581,27 @@ public class BlockController extends PlayNObject {
 		@Override
 		public void wasDoubleClicked(Block sprite, Event event) {
 			if (sprite instanceof VerticalModifierBlock) {
-				if (!((ModifierBlock) sprite).canAddInverse()) return;
-				Tutorial.trigger(Trigger.Solve_VerticalModifierDoubleClicked);
-				
-				// add a Times or OverBlock to each BaseBlock to cancel out the
-				// one that was double-clicked
-				
-				float y;
-				if (sprite instanceof TimesBlock) {
-					if (((VerticalModifierBlock) sprite).value == -1) {
-						y = -graphics().height() / 2;
-					} else {
-						y = graphics().height() / 2;
-					}
-				} else {
-					y = -graphics().height() / 2;
-				}
-				for (BaseBlock base : baseBlocks) {
-					if (!(base instanceof BlockHolder)) {
-						ModifierBlock inverse = (ModifierBlock) ((VerticalModifierBlock) sprite).inverse().copy(true);
-						inverse.interpolateRect(base.offsetX(), y, base.totalWidth(), inverse.height(), 0, 1);
-						base.addModifier(inverse, false);
-					}
-				}
+				reciprocateBlock(sprite);
 				refreshEquation = true;
+				Audio.se().play(Constant.SE_TICK);
 			}
-			
-
-			Audio.se().play(Constant.SE_TICK);
 		}
 
 		@Override
-		public void wasSimplified() {
-			refreshEquation = true;
-			Tutorial.trigger(Trigger.Solve_Simplified);
-			Audio.se().play(Constant.SE_TICK);
+		public void wasSimplified(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success) {
+			finishBlockReduce(sprite, pair, modifiers, success);
+			if (success) {
+				refreshEquation = true;
+				Tutorial.trigger(Trigger.Solve_Simplified);
+				Audio.se().play(Constant.SE_TICK);
+			}
 		}
 
 		@Override
 		public void wasReduced(Renderer problem, int answer, int startNumber, 
-				Stat stat, int level, SimplifyListener callback) {
+				Stat stat, int level, final SimplifyListener callback) {
 			// pass it on to the parent
+			startBlockReduce(problem, answer, stat, level);
 			parent.showNumberSelectScreen(problem, answer, startNumber, stat, level, callback);
 			Audio.se().play(Constant.SE_TICK);
 		}
@@ -749,6 +611,9 @@ public class BlockController extends PlayNObject {
 			dragging = tempDragging;
 			draggingFrom = tempDraggingFrom;
 			tempDragging = tempDraggingFrom = null;
+			if (inverted) {
+				invertDragging(true);
+			}
 			dropOn(draggingFrom);
 		}
 

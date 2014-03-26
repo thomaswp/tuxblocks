@@ -78,7 +78,7 @@ public class NumberLayer extends LayerWrapper {
 	/** Creates a set of Images for displaying numbers in the given {@link TextFormat} and color */
 	public static class NumberBitmapFont {
 
-		protected final String characters = "-.0123456789";
+		protected static final String characters = "-.0123456789";
 		
 		protected TextFormat textFormat;
 		protected Image[] images;

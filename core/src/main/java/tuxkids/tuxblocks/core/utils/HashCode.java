@@ -289,8 +289,12 @@ public class HashCode {
 	
 	@Override
 	public boolean equals(Object obj) {
+<<<<<<< HEAD
 		if (obj instanceof HashCode)
 		{
+=======
+		if (obj instanceof HashCode) {
+>>>>>>> origin/story
 			return this.equals((HashCode)obj);
 		}
 		return false;

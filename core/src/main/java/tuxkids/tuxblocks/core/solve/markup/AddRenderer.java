@@ -43,4 +43,12 @@ public class AddRenderer extends ModifierRenderer {
 		};
 	}
 
+	@Override
+	public String getPlainText() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(base.getPlainText());
+		sb.append(modifier.getPlainText());
+		return sb.toString();
+	}
+
 }

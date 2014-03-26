@@ -27,6 +27,10 @@ public class JoinRenderer extends Renderer {
 		final ExpressionWriter aWriter = a.getExpressionWriter(textFormat);
 		final ExpressionWriter bWriter = b.getExpressionWriter(textFormat);
 		
+		// If either renderer is null (see BlockHolderRenderer) 
+		if (aWriter == null) return bWriter;
+		if (bWriter == null) return aWriter;
+		
 		return new ParentExpressionWriter(textFormat) {
 			
 			TextLayout layout;
@@ -53,6 +57,17 @@ public class JoinRenderer extends Renderer {
 				canvas.fillText(layout, aWriter.width() + spacing(), (height() - layout.height()) / 2);
 			}
 		};
+	}
+
+	@Override
+	public String getPlainText() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(a.getPlainText());
+		sb.append(" ");
+		sb.append(symbol);
+		sb.append(" ");
+		sb.append(b.getPlainText());
+		return sb.toString();
 	}
 
 }

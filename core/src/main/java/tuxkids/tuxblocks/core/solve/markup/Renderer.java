@@ -32,7 +32,12 @@ public abstract class Renderer extends PlayNObject {
 	
 	/**
 	 * Returns an {@link ExpressionWriter} capable of rendering this
-	 * renderer's expression using the given TextFormat.
+	 * renderer's expression using the given TextFormat. In rare cases
+	 * may return null, but a top-level Renderer should never do so. See
+	 * {@link BlockHolderRenderer}.
 	 */
 	public abstract ExpressionWriter getExpressionWriter(TextFormat textFormat);
+	
+	/** Returns a plain text representation of this renderer's content */
+	public abstract String getPlainText();
 }

@@ -266,7 +266,7 @@ public interface Persistable {
 				if (x != null) x.persist(this);
 			} else {
 				type = persist((String) null);
-				if (type.equals(NULL)) {
+				if (NULL.equals(type)) {
 					x = null;
 				} else {
 					if (x != null) {

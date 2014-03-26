@@ -62,6 +62,7 @@ public class GameEndMenuLayer extends MenuLayer {
 		});
 	}
 	
+	@Override
 	protected void hideInstance() {
 		super.hideInstance();
 		if (onDismiss != null) {
@@ -69,6 +70,7 @@ public class GameEndMenuLayer extends MenuLayer {
 		}
 	}
 	
+	@Override
 	protected void showInstance() {
 		super.showInstance();
 		textImageLayer.setImage(victory ? victoryImage : gameOverImage);
@@ -78,6 +80,7 @@ public class GameEndMenuLayer extends MenuLayer {
 	}
 	
 	
+	@Override
 	protected void updateInstance(int delta) {
 		super.updateInstance(delta);
 		if (!played && alpha() == 1) {

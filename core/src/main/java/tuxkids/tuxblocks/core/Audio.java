@@ -117,6 +117,7 @@ public abstract class Audio extends PlayNObject {
 			return soundboard.getLoop(path);
 		}
 
+		@Override
 		public void play(String path) {
 			// fade out other background music before playing
 			for (Playable p : cache.values()) {
@@ -153,6 +154,7 @@ public abstract class Audio extends PlayNObject {
 			return clip;
 		}
 		
+		@Override
 		public void play(String path) {
 			preload(path);
 			Playable playing = cache.get(path);

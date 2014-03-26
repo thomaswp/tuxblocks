@@ -21,7 +21,9 @@ public class TuxParticles extends Particles {
 	@Override
     public Emitter createEmitter (int maxParticles, Image image, GroupLayer onLayer) {
     	final TuxEmitter emitter = new TuxEmitter(this, maxParticles, image);
-        emitter._conn = _onPaint.connect(new Slot<Now>() { public void onEmit (Now now) {
+        emitter._conn = _onPaint.connect(new Slot<Now>() { 
+        	@Override
+			public void onEmit (Now now) {
             emitter.update(now.time, now.dt);
         }});
         onLayer.add(emitter.layer);

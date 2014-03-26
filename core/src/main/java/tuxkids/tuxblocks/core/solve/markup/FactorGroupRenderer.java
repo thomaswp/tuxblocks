@@ -5,6 +5,7 @@ import playn.core.TextFormat;
 import playn.core.TextLayout;
 import pythagoras.f.Vector;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 /**
  * A {@link ModifierGroupRenderer} specifically for factors (times and divide).
@@ -59,5 +60,24 @@ class FactorGroupRenderer extends ModifierGroupRenderer {
 				}
 			}
 		};
+	}
+
+	@Override
+	public String getPlainText() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < operands.length; i++) {
+			if (operands[i] == TimesRenderer.UNKNOWN_NUMBER) {
+				sb.append("{?}");
+				Debug.write("This really shouldn't be called... why are you logging a preview?");
+			} else {
+				if (useNegatives && operands.length == 1 && operands[i] == -1) {
+					sb.append("-");
+				} else { 
+					if (i != 0) sb.append(Constant.DOT_SYMBOL);
+					sb.append(operands[i]);
+				}
+			}
+		}
+		return sb.toString();
 	}
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
+import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.ButtonFactory;
 import tuxkids.tuxblocks.core.solve.markup.AddRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
@@ -27,13 +29,23 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			x += modSize();
 		}
 	}
-	
+
+
 	@Override
 	protected void updateRect() {
 		rect.y = parentRect.y;
 		rect.x = parentRect.x;
 		rect.width = parentRect.width + children.size() * modSize();
 		rect.height = parentRect.height;
+	}
+	
+	@Override
+	public double evaluate(double base) {
+		for (ModifierBlock mod : children) {
+			base += ((HorizontalModifierBlock) mod).plusValue();
+		}
+		if (modifiers != null) base = modifiers.evaluate(base);
+		return base;
 	}
 
 	@Override
@@ -169,25 +181,32 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		}
 		return null;
 	}
-
+	
 	@Override
-	public void updateSimplify() {
+	public void addSimplifiableBlocks(Aggregator ag) {
 		// all horizontal children can simplify (a + b - c can all combine)
 		for (int i = 1; i < children.size(); i++) {
 			ModifierBlock sprite = children.get(i);
-			simplifyLayer.getSimplifyButton(sprite, children.get(i - 1)).setTranslation(sprite.x(), sprite.centerY());
+			ag.add(sprite, children.get(i - 1), null);
 		}
+	}
+	
+	@Override
+	public void placeButton(ModifierBlock sprite, ModifierBlock pair,
+			Object tag, ButtonFactory factory) {
+		factory.getSimplifyButton(sprite, pair)
+		.setTranslation(sprite.x(), sprite.centerY());
 	}
 
 	@Override
-	public void simplify(final ModifierBlock sprite, ModifierBlock pair) {
+	public void simplify(final ModifierBlock sprite, final ModifierBlock pair) {
 		HorizontalModifierBlock hSprite = (HorizontalModifierBlock) sprite;
 		final HorizontalModifierBlock before = (HorizontalModifierBlock) pair;
 		if (sprite.inverse().equals(before)) {
 			// if the two are inverses (2 - 2) just simplify
+			blockListener.wasSimplified(sprite, pair, this, true);
 			removeChild(sprite, true);
 			removeChild(before, true);
-			blockListener.wasSimplified();
 		} else {
 			// create a problem to combine the two blocks
 			Renderer problem = new JoinRenderer(
@@ -202,11 +221,11 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			blockListener.wasReduced(problem, answer, start, stat, level, new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
+					blockListener.wasSimplified(sprite, pair, HorizontalModifierGroup.this, success);
 					if (success) {
 						// and if the succeed, remove the modifier block and add it to the other one
 						before.setPlusValue(answer);
 						removeChild(sprite, true);
-						blockListener.wasSimplified();
 					}
 				}
 			});

@@ -56,7 +56,10 @@ public class SolveScreen extends EquationScreen {
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
-				if (inButton) popThis();
+				if (inButton) {
+					controller.finishSolving();
+					popThis();
+				}
 			}
 		});
 		registerHighlightable(buttonBack, Tag.Solve_Ok);

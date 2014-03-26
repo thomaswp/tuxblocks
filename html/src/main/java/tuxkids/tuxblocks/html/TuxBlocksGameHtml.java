@@ -1,5 +1,4 @@
 package tuxkids.tuxblocks.html;
-import playn.core.Font;
 import playn.core.CanvasImage;
 import playn.core.PlayN;
 import playn.html.HtmlGame;

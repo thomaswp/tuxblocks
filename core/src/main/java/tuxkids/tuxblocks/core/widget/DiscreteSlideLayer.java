@@ -69,6 +69,7 @@ public class DiscreteSlideLayer extends SlideLayer {
 		setStop(0);
 	}
 
+	@Override
 	public void paint(Clock clock) {
 		super.paint(clock);
 		if (!dragging) {

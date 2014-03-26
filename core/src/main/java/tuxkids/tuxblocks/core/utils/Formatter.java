@@ -10,7 +10,7 @@ public class Formatter {
 
 	/** Used in lieu of {@link String#format(String, Object...)}, which GWT does not support. */
 	public static String format(final String format, final Object... args) {
-		final StringBuffer msg = new StringBuffer();
+		final StringBuilder msg = new StringBuilder();
 		int argIndex = 0;
 		for (int i = 0; i < format.length(); i++) {
 			if (i < format.length() - 1) {

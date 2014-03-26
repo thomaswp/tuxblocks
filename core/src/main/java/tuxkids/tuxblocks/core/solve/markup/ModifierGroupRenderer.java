@@ -9,6 +9,10 @@ abstract class ModifierGroupRenderer extends Renderer {
 	protected int[] operands;
 	protected boolean[] highlights;
 	
+	public int operandCount() {
+		return operands.length;
+	}
+	
 	@Override
 	public boolean fullyHighlighted() {
 		for (int i = 0; i < highlights.length; i++) if (!highlights[i]) return false;

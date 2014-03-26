@@ -327,14 +327,40 @@ public class EquationGenerator extends PlayNObject {
 		for (int i = 0; i < expressions; i++) {
 			int steps = rand(minSteps, maxSteps);
 			Equation eq = generateStandard(answer, steps);
-			builder.addLeft(eq.leftSide().get(0));
-			rhs += ((NumberBlock) eq.rightSide().get(0)).value();
+			
+			// compare the current number of x's to see if it's negated by the new equation, avoiding floating point error
+			if (Math.round((numXs(eq.leftSide()) + numXs(builder.leftSide())) * 1000) == 0) { 
+				// this means the two equations will cancel out, yielding no or all solutions, so try again
+				i--;
+				continue;
+			}
+			
+			builder.addLeft(eq.leftSide().iterator().next());
+			rhs += ((NumberBlock) eq.rightSide().iterator().next()).value();
 		}
 		builder.addRight(new NumberBlock(rhs));
 		if (expressions < 3) {
 			builder.addRight(new BlockHolder());
 		}
 		return builder.createEquation();
+	}
+	
+	// returns the total "number of x's" in this equation,
+	// in other words the sum of all factors of x
+	private static double numXs(Iterable<BaseBlock> expressions) {
+		double xs = 0;
+		for (BaseBlock expression : expressions) {
+			int factor = 1, divisor = 1;
+			for (Block block : expression.getAllBlocks()) {
+				if (block instanceof TimesBlock) {
+					factor *= ((TimesBlock) block).value;
+				} else if (block instanceof OverBlock) {
+					divisor *= ((OverBlock) block).value;
+				}
+			}
+			xs += (double) factor / divisor;
+		}
+		return xs;
 	}
 
 	private static int generateAnswer() {

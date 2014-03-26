@@ -1,10 +1,14 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import playn.core.GroupLayer;
 import playn.core.Layer;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
+import tuxkids.tuxblocks.core.solve.markup.ExpressionRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 /**
@@ -111,6 +115,62 @@ public abstract class BaseBlock extends Block {
 		modifiers.addBlockListener(listener);
 	}
 	
+	protected abstract int getBaseValue(int answer);
+	
+	public double evaluate(int answer) {
+		double base = getBaseValue(answer);
+		if (modifiers != null) base = modifiers.evaluate(base);
+		return base;
+	}
+
+	/** Returns the index of the given block in this expression */
+	public ExpressionBlockIndex indexOf(Block block) {
+		if (block == this) {
+			return ExpressionBlockIndex.makeExpressionBlockIndex(0, 0);
+		} else {
+			ExpressionBlockIndex index = modifiers.indexOf(block); 
+			if (index != null) index = index.oneDeeper();
+			return index;
+		}
+	}
+	
+	/** Returns the Block with the given index in this expression */
+	public Block getBlockAtIndex(ExpressionBlockIndex index) {
+		if (index == null) return null;
+		if (index.depth == 0 && index.index == 0) {
+			return this;
+		} else if (index.depth > 0) {
+			return modifiers.getBlockAtIndex(index.oneShallower());
+		}
+		return null;
+	}
+	
+	/** Creates and returns a list of all Blocks (including this) in this expression */
+	public List<Block> getAllBlocks() {
+		final ArrayList<Block> blocks = new ArrayList<Block>();
+		performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				if (sprite instanceof Block) {
+					blocks.add((Block) sprite);
+				}
+			}
+		});
+		return blocks;
+	}
+	
+	/** Creates and returns a list of all Sprites (including this) in this expression */
+	public List<Sprite> getAllSprites() {
+		final ArrayList<Sprite> blocks = new ArrayList<Sprite>();
+		performAction(new Action() {
+			@Override
+			public void run(Sprite sprite) {
+				blocks.add(sprite);
+			}
+		});
+		return blocks;
+	}
+	
 	@Override
 	protected float defaultWidth() {
 		return baseSize();
@@ -122,7 +182,7 @@ public abstract class BaseBlock extends Block {
 	}
 	
 	@Override
-	protected boolean canRelease(boolean openSpace) {
+	protected boolean canRelease(boolean multiExpression) {
 		return true;
 	}
 	
@@ -348,7 +408,8 @@ public abstract class BaseBlock extends Block {
 	 * Creates a {@link Renderer} to display this expression.
 	 */
 	public Renderer createRenderer() {
-		return modifiers.createRenderer(new BaseRenderer(text()).setHighlight(previewAdd()));
+		return new ExpressionRenderer(modifiers.createRenderer(
+				new BaseRenderer(text()).setHighlight(previewAdd())));
 	}
 	
 	/**
@@ -391,7 +452,7 @@ public abstract class BaseBlock extends Block {
 	}
 	
 	@Override
-	protected void performAction(Action action) {
+	public void performAction(Action action) {
 		super.performAction(action);
 		modifiers.performAction(action);
 	}

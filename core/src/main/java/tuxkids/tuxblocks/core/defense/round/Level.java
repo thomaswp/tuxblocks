@@ -262,7 +262,7 @@ public abstract class Level implements Persistable {
 				// type of Walker per round, but this is not necessary. This was done to avoid slower
 				// Walkers being overcome by faster ones and creating a jumble
 				final Walker walker = possibleWalkers.get(
-						(int) (possibleWalkers.size() * Math.random()));
+						(int) (possibleWalkers.size() * Math.random()));  //Use rand.nextInt()?
 				int exp = walker.exp();
 				
 				int minBase = exp * 5; // min points "spent" on # of Walkers
