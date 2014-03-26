@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import playn.core.util.Clock;
-import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
@@ -51,14 +49,8 @@ public abstract class LinearTutorial implements TutorialInstance {
 		// load the text into lines
 		for (String line : text.split("\n")) {
 			// normalize line-ends
-			line = line.replace("\n", "").replace("\r", "");
+			line = Tutorial.prepareMessage(line);
 			if (!line.replace(" ", "").isEmpty()) {
-				String domain = "tutorial";
-				// replace platform-specific text
-				line = line.replace("<click>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICK));
-				line = line.replace("<clicking>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICKING));
-				line = line.replace("<mouse>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_MOUSE));
-				line = line.replace("<esc>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_MENU));
 				sections.add(line);
 			}
 		}

@@ -28,6 +28,7 @@ public abstract class Tutorial extends PlayNObject {
 	 * corresponding Trigger will be passed to {@link Tutorial#trigger(Trigger)}.
 	 */
 	public enum Trigger {
+		
 		TextBoxHidden, 
 		TextBoxFullyHidden,
 		
@@ -117,7 +118,8 @@ public abstract class Tutorial extends PlayNObject {
 		if (instance != null) {
 			return;
 		}
-		start(new TutorialStart(themeColor, secondaryColor), Constant.TUTORIAL_START_PATH);
+//		start(new TutorialStart(themeColor, secondaryColor), Constant.TUTORIAL_START_PATH);
+		start(new Tutorial0(themeColor), "TutorialTest.json");
 	}
 	
 	protected static void start(final TutorialInstance tutorial, final String path) {
@@ -201,6 +203,21 @@ public abstract class Tutorial extends PlayNObject {
 			highlightable.highlighter().setHighlighted(
 					highlightable.highlighter().hasTags(highlights));
 		}
+	}
+	
+	protected static String prepareMessage(String line) {
+		if (line == null) return null;
+
+		line = line.replace("\n", "").replace("\r", "");
+		
+		String domain = "tutorial";
+		// replace platform-specific text
+		line = line.replace("<click>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICK));
+		line = line.replace("<clicking>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICKING));
+		line = line.replace("<mouse>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_MOUSE));
+		line = line.replace("<esc>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_MENU));
+		
+		return line;
 	}
 	
 }
