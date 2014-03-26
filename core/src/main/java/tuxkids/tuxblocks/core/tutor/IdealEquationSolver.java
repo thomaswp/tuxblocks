@@ -17,12 +17,10 @@ import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulator;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulatorSolver;
-import tuxkids.tuxblocks.core.solve.blocks.MinusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
-import tuxkids.tuxblocks.core.solve.blocks.PlusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.StudentAction;
@@ -62,7 +60,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			//seeAllAndHeuristics(paths);
+		//	seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
@@ -236,7 +234,7 @@ public class IdealEquationSolver {
 		}
 		
 		if (leftVarTerms >0 && rightVarTerms > 0) {
-			score += .5;
+			score += 1.5;
 		}
 
 		double leftSideEasyCombinationScore = handleEasilyCombinableTerms(leftSideTerms);
@@ -289,11 +287,15 @@ public class IdealEquationSolver {
 }
 
 	private static void handleDependentTerms(List<HeuristicTermPackage> theseTerms, List<HeuristicTermPackage> otherTerms, int varTermsThisSide) {
+		
 		for (HeuristicTermPackage thisTerm : theseTerms) {
 			if (thisTerm.ignore) break;
 			if (thisTerm.hasBeenHandled ) continue;
 			thisTerm.hasBeenHandled = true;
 			if (thisTerm.term instanceof BlockHolder) continue;
+			
+			skipIndicies.clear();
+			
 			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
 			Collections.reverse(attachedBlockList);
 			
@@ -303,16 +305,22 @@ public class IdealEquationSolver {
 			if (thisTerm.term instanceof VariableBlock && attachedBlockList.size() >= 2) //ignore solo blocks
 			{
 				for(int i = 0;i<attachedBlockList.size()-1; i++) {
+					if (skipIndicies.contains(i)) continue;
 					Block block = attachedBlockList.get(i);
 
-					if (block instanceof TimesBlock || block instanceof OverBlock) {
+					if (isBlockTimesOrDivide(block)) {
 						thisTerm.queueUpScore(conditionalScore);
 						conditionalScore=0;
 						Block nextBlock = attachedBlockList.get(i+1);
 
-						if ((doesDivideOut(block, nextBlock) || timesMightCombine(block, nextBlock)) ) {
-							//skip this block and the next
-							i++;
+						int divideOutOffset = doesDivideOut(block, attachedBlockList.subList(i+1, attachedBlockList.size()-1));
+						if (-1 != divideOutOffset )
+						{
+							skipIndicies.add(i+divideOutOffset);
+							continue;
+						}
+						else if (timesMightCombine(block, nextBlock)) {
+							skipIndicies.add(i+1);
 							continue;
 						}
 						else
@@ -348,11 +356,15 @@ public class IdealEquationSolver {
 			}
 		}
 	}
+	
+	private static Set<Integer> skipIndicies = new HashSet<Integer>();
 
 	private static void handleIsolatedTerms(List<HeuristicTermPackage> terms) {
 		for (HeuristicTermPackage thisTerm : terms) {
 			if (thisTerm.ignore) break;
 			if (thisTerm.hasBeenHandled ) continue;
+			
+			skipIndicies.clear();
 
 			if (thisTerm.term instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
@@ -361,16 +373,19 @@ public class IdealEquationSolver {
 			if (thisTerm.term instanceof VariableBlock)
 			{
 				//Iterate through everything attached to this block
-				for(int i = 0;i<attachedBlockList.size()-1; i++) {
+				int endOfAttachedBlockIndex = attachedBlockList.size()-1;
+				for(int i = 0;i<endOfAttachedBlockIndex; i++) {
+					if (skipIndicies.contains(i)) continue;
 					Block block = attachedBlockList.get(i);
 
-					if (block instanceof TimesBlock || block instanceof OverBlock) {
+					if (isBlockTimesOrDivide(block)) {
 						Block nextBlock = attachedBlockList.get(i+1);
 
-						if (mightDivideOut(block, nextBlock)) {
-							thisTerm.termsScore += adjustScoreForDividingOut(block, nextBlock);
-							//we essentially got two steps at once, so skip to the next block
-							i++;
+						int divideOutOffset = doesDivideOut(block, attachedBlockList.subList(i+1, endOfAttachedBlockIndex));
+						if (-1 != divideOutOffset) {
+							thisTerm.termsScore += adjustScoreForDividingOut(block, attachedBlockList.get(i+divideOutOffset));
+							//we essentially got two steps at once, so skip this step
+							skipIndicies.add(i+divideOutOffset);
 						} else if (timesMightCombine(block, nextBlock)) {
 							//this is like combining 7*3(x-5) -> 21(x-5), which is one step
 							thisTerm.termsScore += 1;
@@ -517,7 +532,7 @@ public class IdealEquationSolver {
 		return score;
 	}
 
-	private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalThisSideTerms,
+	/*private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalThisSideTerms,
 			int generalOtherSideTerms, int thisSideVarTerms, int otherSideVarTerms) {
 	
 		for (HeuristicTermPackage thisTerm : terms) {
@@ -535,7 +550,7 @@ public class IdealEquationSolver {
 				for(int i = 0;i<attachedBlockList.size()-1; i++) {
 					Block block = attachedBlockList.get(i);
 	
-					if (block instanceof TimesBlock || block instanceof OverBlock) {
+					if (isBlockTimesOrDivide(block)) {
 						Block nextBlock = attachedBlockList.get(i+1);
 	
 						if (mightDivideOut(block, nextBlock)) {
@@ -579,7 +594,7 @@ public class IdealEquationSolver {
 	
 		}
 	
-	}
+	}*/
 
 	private static int sumList(List<Integer> timeses) {
 		int sum = 0;
@@ -587,6 +602,7 @@ public class IdealEquationSolver {
 		return sum;
 	}
 
+	/*@Deprecated
 	private static double adjustScoreForDividingOut(Block block, Block nextBlock) {
 		double score = 0;
 		ModifierBlock mBlock = (ModifierBlock)block;
@@ -599,19 +615,68 @@ public class IdealEquationSolver {
 			score += 2;	//may be 2 or 3
 		}
 		return score;
+	}*/
+	
+	private static double adjustScoreForDividingOut(Block block, Block nextBlock) {
+		ModifierBlock mBlock = (ModifierBlock)block;
+		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
+		if (mBlock.value() == mNextBlock.value()) {
+			return 0;		//discount to make these more lucrative
+		}
+		else if (mBlock.value() == -mNextBlock.value()) {
+			return 1;		//in the case of negatives, it takes two turns, but with the discount
+		}
+		return 2;		
 	}
 
+	/*@Deprecated
 	private static boolean doesDivideOut(Block block, Block nextBlock) {
 		if (!(mightDivideOut(block, nextBlock))) return false;
 		ModifierBlock mBlock = (ModifierBlock)block;
 		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
 		return mBlock.value() == mNextBlock.value() || mBlock.value() == -mNextBlock.value();
+	}*/
+	
+	private static boolean canTwoBlocksDivideOut(Block block, Block nextBlock) {
+		ModifierBlock mBlock = (ModifierBlock)block;
+		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
+		return mBlock.value() == mNextBlock.value() || mBlock.value() == -mNextBlock.value();
 	}
 
+	private static int doesDivideOut(Block block, List<Block> subList) {
+		if (isBlockTimesOrDivide(block)) {
+			boolean thisBlockIsOver = block instanceof OverBlock;
+			int offset = 0;
+			for(Block otherBlock : subList) {
+				offset++;
+				if (isBlockTimesOrDivide(otherBlock)) {
+					if (thisBlockIsOver && otherBlock instanceof TimesBlock ||
+						!thisBlockIsOver && otherBlock instanceof OverBlock	){
+						if (canTwoBlocksDivideOut(block, otherBlock)) {
+							return offset;
+						}
+						//perhaps there is another match
+					}
+				}
+				else {
+					//if we have bumped into an addition or subtraction, we can't divide anything out
+					return -1;
+				}
+			}
+		
+		}
+		return -1;
+	}
+
+	protected static boolean isBlockTimesOrDivide(Block block) {
+		return block instanceof TimesBlock || block instanceof OverBlock;
+	}
+
+	/*@Deprecated
 	private static boolean mightDivideOut(Block block, Block nextBlock) {
 		return (block instanceof TimesBlock && nextBlock instanceof OverBlock) ||
 				(block instanceof OverBlock && nextBlock instanceof TimesBlock);
-	}
+	}*/
 
 
 	private static boolean timesMightCombine(Block block, Block nextBlock) {
