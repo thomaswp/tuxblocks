@@ -257,8 +257,8 @@ public class IdealEquationSolver {
 		handleIsolatedTerms(leftSideTerms);
 		handleIsolatedTerms(rightSideTerms);
 		
-		handleDependentTerms(leftSideTerms, rightSideTerms);
-		handleDependentTerms(rightSideTerms, leftSideTerms);
+		handleDependentTerms(leftSideTerms, rightSideTerms, leftVarTerms);
+		handleDependentTerms(rightSideTerms, leftSideTerms, rightVarTerms);
 		
 		if (debugHeuristic){
 			for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
@@ -288,7 +288,7 @@ public class IdealEquationSolver {
 
 }
 
-	private static void handleDependentTerms(List<HeuristicTermPackage> theseTerms, List<HeuristicTermPackage> otherTerms) {
+	private static void handleDependentTerms(List<HeuristicTermPackage> theseTerms, List<HeuristicTermPackage> otherTerms, int varTermsThisSide) {
 		for (HeuristicTermPackage thisTerm : theseTerms) {
 			if (thisTerm.ignore) break;
 			if (thisTerm.hasBeenHandled ) continue;
@@ -320,13 +320,20 @@ public class IdealEquationSolver {
 							for(HeuristicTermPackage otherTerm : theseTerms) {
 								if (otherTerm.ignore) break;
 								if (otherTerm == thisTerm || otherTerm.term instanceof BlockHolder) continue;
-								
+								if (otherTerm.term instanceof NumberBlock) {
+									thisTerm.queueUpScore(1.0/varTermsThisSide);
+									continue;
+								}
 								thisTerm.queueUpScore(otherTerm.termsScore+1);		//plus 1 to handle this multiplication/division
 							}
 							
 							for(HeuristicTermPackage otherTerm : otherTerms) {
 								if (otherTerm.ignore) break;
 								if (otherTerm.term instanceof BlockHolder) continue;
+								if (otherTerm.term instanceof NumberBlock) {
+									thisTerm.queueUpScore(1.0/varTermsThisSide);
+									continue;
+								}
 								thisTerm.queueUpScore(otherTerm.termsScore+1);		//plus 1 to handle this multiplication/division
 							}
 							thisTerm.queueUpScore(1); //and one turn to execute the task (clicking the over/times or dragging it)
@@ -382,76 +389,15 @@ public class IdealEquationSolver {
 				//We will only have to simplify these out, so this is just one step
 				//for every thing attached to the number block
 				thisTerm.termsScore += attachedBlockList.size() - 1;
+				
+				//discourage large number blocks
+				if (attachedBlockList.size() > 3) thisTerm.termsScore += .05*attachedBlockList.size();
 				thisTerm.hasBeenHandled = true;
 			}
 
 		}
 	}
 
-	private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalThisSideTerms,
-			int generalOtherSideTerms, int thisSideVarTerms, int otherSideVarTerms) {
-
-		for (HeuristicTermPackage thisTerm : terms) {
-			if (thisTerm.ignore) break;
-			if (thisTerm.hasBeenHandled ) continue;
-			thisTerm.hasBeenHandled = true;
-
-			if (thisTerm.term instanceof BlockHolder) continue;
-			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
-			Collections.reverse(attachedBlockList);
-
-			if (thisTerm.term instanceof VariableBlock)
-			{
-				//Iterate through everything attached to this block
-				for(int i = 0;i<attachedBlockList.size()-1; i++) {
-					Block block = attachedBlockList.get(i);
-
-					if (block instanceof TimesBlock || block instanceof OverBlock) {
-						Block nextBlock = attachedBlockList.get(i+1);
-
-						if (mightDivideOut(block, nextBlock)) {
-							thisTerm.termsScore += adjustScoreForDividingOut(block, nextBlock);
-							//we essentially got two steps at once, so skip to the next block
-							i++;
-						} else if (timesMightCombine(block, nextBlock)) {
-							//this is like combining 7*3(x-5) -> 21(x-5), which is one step
-							thisTerm.termsScore += 1;
-						}
-						else if (thisTerm.isEventualCombine && i == attachedBlockList.size()-2) {
-							thisTerm.termsScore += 1;	//we won't have to divide out the last term
-						}
-						else {
-							//Because we'll have to either multiply or divide to remove this term
-							//one step for every variable on this side and every term on the other
-							//(may need to be total terms)
-							thisTerm.termsScore += generalThisSideTerms+generalOtherSideTerms;
-							
-							//TODO terms based on attached plusses and minuses.
-							//I.e. 2x + 5(x-6) = 20 is worse than 2x + 5x = 20 + 30
-							
-							
-							// dividing/multiplying out with a plus or minus block can't happen yet
-							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
-								thisTerm.termsScore++;
-							}
-						}
-					}
-					else {		//if addition or subtraction
-						thisTerm.termsScore += 2;
-					}
-				}
-			}
-			else {		//simply numbers
-				//We will only have to simplify these out, so this is just one step
-				//for every thing attached to the number block
-				thisTerm.termsScore += attachedBlockList.size() - 1;
-				thisTerm.termsScore += (otherSideVarTerms == 0? 1: 0);
-			}
-
-		}
-
-	}
-	
 	private static List<Integer> timeses = new ArrayList<Integer>(MAX_TERMS_PER_SIDE);
 	private static Set<HeuristicTermPackage> potentialTimesHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
 	private static Set<HeuristicTermPackage> potentialNumbersHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
@@ -547,7 +493,6 @@ public class IdealEquationSolver {
 						&& !(attachedBlocks.get(2) instanceof TimesBlock)) {
 					potentialTimesHandled.add(thisTerm);
 					timeses.add(((ModifierBlock) attachedBlocks.get(1)).value());
-					//We don't want to update already handled's scores
 				} 
 			}
 			else if (thisBlock instanceof NumberBlock){
@@ -570,6 +515,70 @@ public class IdealEquationSolver {
 		
 		
 		return score;
+	}
+
+	private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalThisSideTerms,
+			int generalOtherSideTerms, int thisSideVarTerms, int otherSideVarTerms) {
+	
+		for (HeuristicTermPackage thisTerm : terms) {
+			if (thisTerm.ignore) break;
+			if (thisTerm.hasBeenHandled ) continue;
+			thisTerm.hasBeenHandled = true;
+	
+			if (thisTerm.term instanceof BlockHolder) continue;
+			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
+			Collections.reverse(attachedBlockList);
+	
+			if (thisTerm.term instanceof VariableBlock)
+			{
+				//Iterate through everything attached to this block
+				for(int i = 0;i<attachedBlockList.size()-1; i++) {
+					Block block = attachedBlockList.get(i);
+	
+					if (block instanceof TimesBlock || block instanceof OverBlock) {
+						Block nextBlock = attachedBlockList.get(i+1);
+	
+						if (mightDivideOut(block, nextBlock)) {
+							thisTerm.termsScore += adjustScoreForDividingOut(block, nextBlock);
+							//we essentially got two steps at once, so skip to the next block
+							i++;
+						} else if (timesMightCombine(block, nextBlock)) {
+							//this is like combining 7*3(x-5) -> 21(x-5), which is one step
+							thisTerm.termsScore += 1;
+						}
+						else if (thisTerm.isEventualCombine && i == attachedBlockList.size()-2) {
+							thisTerm.termsScore += 1;	//we won't have to divide out the last term
+						}
+						else {
+							//Because we'll have to either multiply or divide to remove this term
+							//one step for every variable on this side and every term on the other
+							//(may need to be total terms)
+							thisTerm.termsScore += generalThisSideTerms+generalOtherSideTerms;
+							
+							//TODO terms based on attached plusses and minuses.
+							//I.e. 2x + 5(x-6) = 20 is worse than 2x + 5x = 20 + 30
+							
+							
+							// dividing/multiplying out with a plus or minus block can't happen yet
+							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
+								thisTerm.termsScore++;
+							}
+						}
+					}
+					else {		//if addition or subtraction
+						thisTerm.termsScore += 2;
+					}
+				}
+			}
+			else {		//simply numbers
+				//We will only have to simplify these out, so this is just one step
+				//for every thing attached to the number block
+				thisTerm.termsScore += attachedBlockList.size() - 1;
+				thisTerm.termsScore += (otherSideVarTerms == 0? 1: 0);
+			}
+	
+		}
+	
 	}
 
 	private static int sumList(List<Integer> timeses) {
