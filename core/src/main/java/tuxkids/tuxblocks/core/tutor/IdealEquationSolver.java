@@ -297,13 +297,13 @@ public class IdealEquationSolver {
 			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
 			Collections.reverse(attachedBlockList);
 
-			if (thisTerm.term instanceof VariableBlock && attachedBlockList.size() > 2)
+			if (thisTerm.term instanceof VariableBlock && attachedBlockList.size() >= 2) //ignore solo blocks
 			{
 				for(int i = 0;i<attachedBlockList.size()-1; i++) {
 					Block block = attachedBlockList.get(i);
 
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
-						Block nextBlock = attachedBlockList.get(1);
+						Block nextBlock = attachedBlockList.get(i+1);
 
 						if (!(doesDivideOut(block, nextBlock) || timesMightCombine(block, nextBlock)) )
 						{
@@ -457,6 +457,7 @@ public class IdealEquationSolver {
 			List<Block> attachedBlocks = thisBlock.getAllBlocks();
 			if (thisBlock instanceof VariableBlock && attachedBlocks.size()<=2)
 			{
+				//Either the block is solo     or  three is one times block at index 1
 				if (attachedBlocks.size() <= 1 || attachedBlocks.get(1) instanceof TimesBlock) {
 					potentialTimesHandled.add(thisTerm);
 					if (attachedBlocks.size() == 1) {
