@@ -62,7 +62,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-				seeAllAndHeuristics(paths);
+			seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
@@ -152,6 +152,7 @@ public class IdealEquationSolver {
 		boolean hasBeenHandled = false;
 		double termsScore = 0.0;
 		boolean isEventualCombine = false;
+		private double pendingScore;
 
 		HeuristicTermPackage reset() {
 			ignore = true;
@@ -159,14 +160,25 @@ public class IdealEquationSolver {
 			termsScore = 0.0;
 			term = null;
 			isEventualCombine = false;
+			pendingScore = 0;
 			return this;
 		}
 
 		@Override
 		public String toString() {
 			if (ignore) return "";
-			if (!hasBeenHandled) return String.format("[%1.2f?]%s", termsScore,isEventualCombine?"`":"");
-			return String.format("[%1.2f]%s", termsScore,isEventualCombine?"`":"");
+			if (!hasBeenHandled) return String.format("[%1.2f+%1.2f?]%s", termsScore,pendingScore, isEventualCombine?"`":"");
+			return String.format("[%1.2f+%1.2f]%s", termsScore,pendingScore, isEventualCombine?"`":"");
+		}
+
+		public void queueUpScore(double d) {
+			this.pendingScore += d;
+		}
+		
+		public HeuristicTermPackage finalizeScore() {
+			this.termsScore += pendingScore;
+			this.pendingScore = 0;
+			return this;
 		}
 	}
 
@@ -239,9 +251,15 @@ public class IdealEquationSolver {
 
 		if (debugHeuristic) System.out.printf("\t\tLSECS=%1.2f LSDCS=%1.2f | RSECS=%1.2f RSDCS=%1.2f ",leftSideEasyCombinationScore, leftSideEventualCombinationScore, rightSideEasyCombinationScore, rightSideEventualCombinationScore);
 
-		handleComplicatedTerms(leftSideTerms, generalLeftTerms, generalRightTerms, leftVarTerms, rightVarTerms);
-		handleComplicatedTerms(rightSideTerms, generalRightTerms, generalLeftTerms, rightVarTerms, leftVarTerms);
+		//handleComplicatedTerms(leftSideTerms, generalLeftTerms, generalRightTerms, leftVarTerms, rightVarTerms);
+		//handleComplicatedTerms(rightSideTerms, generalRightTerms, generalLeftTerms, rightVarTerms, leftVarTerms);
 
+		handleIsolatedTerms(leftSideTerms);
+		handleIsolatedTerms(rightSideTerms);
+		
+		handleDependentTerms(leftSideTerms, rightSideTerms);
+		handleDependentTerms(rightSideTerms, leftSideTerms);
+		
 		if (debugHeuristic){
 			for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
 				if (leftSideTerms.get(i).ignore) continue;
@@ -260,8 +278,8 @@ public class IdealEquationSolver {
 				
 
 		for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
-			if (!leftSideTerms.get(i).ignore) score += leftSideTerms.get(i).termsScore;
-			if (!rightSideTerms.get(i).ignore) score += rightSideTerms.get(i).termsScore;
+			if (!leftSideTerms.get(i).ignore) score += leftSideTerms.get(i).finalizeScore().termsScore;
+			if (!rightSideTerms.get(i).ignore) score += rightSideTerms.get(i).finalizeScore().termsScore;
 		}
 
 		if (score <= 0)
@@ -269,6 +287,89 @@ public class IdealEquationSolver {
 		return score;
 
 }
+
+	private static void handleDependentTerms(List<HeuristicTermPackage> theseTerms, List<HeuristicTermPackage> otherTerms) {
+		for (HeuristicTermPackage thisTerm : theseTerms) {
+			if (thisTerm.ignore) break;
+			if (thisTerm.hasBeenHandled ) continue;
+			thisTerm.hasBeenHandled = true;
+			if (thisTerm.term instanceof BlockHolder) continue;
+			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
+			Collections.reverse(attachedBlockList);
+
+			if (thisTerm.term instanceof VariableBlock && attachedBlockList.size() > 2)
+			{
+				for(int i = 0;i<attachedBlockList.size()-1; i++) {
+					Block block = attachedBlockList.get(i);
+
+					if (block instanceof TimesBlock || block instanceof OverBlock) {
+						Block nextBlock = attachedBlockList.get(1);
+
+						if (!(doesDivideOut(block, nextBlock) || timesMightCombine(block, nextBlock)) )
+						{
+							for(HeuristicTermPackage otherTerm : theseTerms) {
+								if (otherTerm == thisTerm) continue;
+								if (otherTerm.ignore) break;
+								thisTerm.queueUpScore(otherTerm.termsScore+1);		//plus 1 to handle this multiplication/division
+							}
+							
+							for(HeuristicTermPackage otherTerm : otherTerms) {
+								if (otherTerm.ignore) break;
+								thisTerm.queueUpScore(otherTerm.termsScore+1);		//plus 1 to handle this multiplication/division
+							}
+							break;		//only do the first dependent
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private static void handleIsolatedTerms(List<HeuristicTermPackage> terms) {
+		for (HeuristicTermPackage thisTerm : terms) {
+			if (thisTerm.ignore) break;
+			if (thisTerm.hasBeenHandled ) continue;
+
+			if (thisTerm.term instanceof BlockHolder) continue;
+			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
+			Collections.reverse(attachedBlockList);
+
+			if (thisTerm.term instanceof VariableBlock)
+			{
+				//Iterate through everything attached to this block
+				for(int i = 0;i<attachedBlockList.size()-1; i++) {
+					Block block = attachedBlockList.get(i);
+
+					if (block instanceof TimesBlock || block instanceof OverBlock) {
+						Block nextBlock = attachedBlockList.get(i+1);
+
+						if (mightDivideOut(block, nextBlock)) {
+							thisTerm.termsScore += adjustScoreForDividingOut(block, nextBlock);
+							//we essentially got two steps at once, so skip to the next block
+							i++;
+						} else if (timesMightCombine(block, nextBlock)) {
+							//this is like combining 7*3(x-5) -> 21(x-5), which is one step
+							thisTerm.termsScore += 1;
+						}
+						else if (thisTerm.isEventualCombine && i == attachedBlockList.size()-2) {
+							thisTerm.termsScore += 1;	//we won't have to divide out the last term
+						}
+						//will depend on others
+					}
+					else {		//if addition or subtraction
+						thisTerm.termsScore += 2;
+					}
+				}
+			}
+			else {		//simply numbers
+				//We will only have to simplify these out, so this is just one step
+				//for every thing attached to the number block
+				thisTerm.termsScore += attachedBlockList.size() - 1;
+				thisTerm.hasBeenHandled = true;
+			}
+
+		}
+	}
 
 	private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalThisSideTerms,
 			int generalOtherSideTerms, int thisSideVarTerms, int otherSideVarTerms) {
@@ -306,7 +407,7 @@ public class IdealEquationSolver {
 							//Because we'll have to either multiply or divide to remove this term
 							//one step for every variable on this side and every term on the other
 							//(may need to be total terms)
-							thisTerm.termsScore += generalThisSideTerms+generalOtherSideTerms + 1;
+							thisTerm.termsScore += generalThisSideTerms+generalOtherSideTerms;
 							
 							//TODO terms based on attached plusses and minuses.
 							//I.e. 2x + 5(x-6) = 20 is worse than 2x + 5x = 20 + 30
@@ -471,6 +572,13 @@ public class IdealEquationSolver {
 			score += 2;	//may be 2 or 3
 		}
 		return score;
+	}
+
+	private static boolean doesDivideOut(Block block, Block nextBlock) {
+		if (!(mightDivideOut(block, nextBlock))) return false;
+		ModifierBlock mBlock = (ModifierBlock)block;
+		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
+		return mBlock.value() == mNextBlock.value() || mBlock.value() == -mNextBlock.value();
 	}
 
 	private static boolean mightDivideOut(Block block, Block nextBlock) {
