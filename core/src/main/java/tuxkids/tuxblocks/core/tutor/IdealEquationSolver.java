@@ -151,20 +151,22 @@ public class IdealEquationSolver {
 		boolean ignore = true;
 		boolean hasBeenHandled = false;
 		double termsScore = 0.0;
+		boolean isEventualCombine = false;
 
 		HeuristicTermPackage reset() {
 			ignore = true;
 			hasBeenHandled = false;
 			termsScore = 0.0;
 			term = null;
+			isEventualCombine = false;
 			return this;
 		}
 
 		@Override
 		public String toString() {
 			if (ignore) return "";
-			if (!hasBeenHandled) return String.format("[%1.2f?]", termsScore);
-			return String.format("[%1.2f]", termsScore);
+			if (!hasBeenHandled) return String.format("[%1.2f?]%s", termsScore,isEventualCombine?"`":"");
+			return String.format("[%1.2f]%s", termsScore,isEventualCombine?"`":"");
 		}
 	}
 
@@ -183,16 +185,11 @@ public class IdealEquationSolver {
 		// 1 for every modifier of a variable and 0.75 for every modifier
 		// of a number
 
-		// the ideal here is that the heuristic be consistent, meaning
-		// essentially
-		// that performing a step can never decrease h(x) by more than 1 and
-		// that
-		// h(x) <= f(x), where f(x) is the actual number of steps required to
-		// solve
+		// the ideal here is that the heuristic be consistent, meaning essentially
+		// that performing a step can never decrease h(x) by more than 1 and that
+		// h(x) <= f(x), where f(x) is the actual number of steps required to solve
 
 		double score = 0;
-		// System.out.println(eq.getPlainText())
-
 
 		Iterator<BaseBlock> leftSideIterator = eq.leftSide().iterator();
 		Iterator<BaseBlock> rightSideIterator = eq.rightSide().iterator();
@@ -226,12 +223,17 @@ public class IdealEquationSolver {
 			score+=.1;
 		}
 
-		double leftSideCombinationScore = handleCombinableTerms(leftSideTerms);
-		score += leftSideCombinationScore;
-		double rightSideCombinationScore = handleCombinableTerms(rightSideTerms);
-		score += rightSideCombinationScore;
+		double leftSideEasyCombinationScore = handleEasilyCombinableTerms(leftSideTerms);
+		score += leftSideEasyCombinationScore;
+		double rightSideEasyCombinationScore = handleEasilyCombinableTerms(rightSideTerms);
+		score += rightSideEasyCombinationScore;
+		
+		double leftSideEventualCombinationScore = accountForEventualCombinableTerms(leftSideTerms);
+		score += leftSideEventualCombinationScore;
+		double rightSideEventualCombinationScore = accountForEventualCombinableTerms(rightSideTerms);
+		score += rightSideEventualCombinationScore;
 
-		if (debugHeuristic) System.out.printf("\t\tLSCS=%1.2f RSCS=%1.2f",leftSideCombinationScore,rightSideCombinationScore);
+		if (debugHeuristic) System.out.printf("\t\tLSECS=%1.2f LSDCS=%1.2f | RSECS=%1.2f RSDCS=%1.2f ",leftSideEasyCombinationScore, leftSideEventualCombinationScore, rightSideEasyCombinationScore, rightSideEventualCombinationScore);
 
 		handleComplicatedTerms(leftSideTerms, generalRightTerms, leftVarTerms, rightVarTerms);
 		handleComplicatedTerms(rightSideTerms, generalLeftTerms, rightVarTerms, leftVarTerms);
@@ -258,6 +260,8 @@ public class IdealEquationSolver {
 			if (!rightSideTerms.get(i).ignore) score += rightSideTerms.get(i).termsScore;
 		}
 
+		if (score <= 0)
+			return 0;
 		return score;
 
 }
@@ -291,7 +295,9 @@ public class IdealEquationSolver {
 							//this is like combining 7*3(x-5) -> 21(x-5), which is one step
 							thisTerm.termsScore += 1;
 						}
-						
+						else if (thisTerm.isEventualCombine && i == attachedBlockList.size()-2) {
+							thisTerm.termsScore += 1;	//we won't have to divide out the last term
+						}
 						else {
 							//Because we'll have to either multiply or divide to remove this term
 							//one step for every variable on this side and every term on the other
@@ -320,7 +326,7 @@ public class IdealEquationSolver {
 	private static Set<HeuristicTermPackage> potentialNumbersHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
 
 	
-	private static double handleCombinableTerms(List<HeuristicTermPackage> side) {
+	private static double handleEasilyCombinableTerms(List<HeuristicTermPackage> side) {
 		double score = 0;
 
 		potentialNumbersHandled.clear();
@@ -337,7 +343,7 @@ public class IdealEquationSolver {
 			List<Block> attachedBlocks = thisBlock.getAllBlocks();
 			if (thisBlock instanceof VariableBlock && attachedBlocks.size()<=2)
 			{
-				if (attachedBlocks.size() == 1 || attachedBlocks.get(1) instanceof TimesBlock) {
+				if (attachedBlocks.size() <= 1 || attachedBlocks.get(1) instanceof TimesBlock) {
 					potentialTimesHandled.add(thisTerm);
 					if (attachedBlocks.size() == 1) {
 						timeses.add(1);
@@ -377,6 +383,63 @@ public class IdealEquationSolver {
 		return score;
 	}
 
+	private static double accountForEventualCombinableTerms(List<HeuristicTermPackage> side) {
+		double score = 0;
+		
+		//for cases like [10x] + [8x + 6] = [-97 + 13] + [ ], where we won't have to divide out
+		//the 10x and 8x, we'll be able to add them
+		
+		potentialTimesHandled.clear();
+		potentialNumbersHandled.clear();
+		timeses.clear();
+
+		for(int i = 0;i< side.size();i++)	{
+			HeuristicTermPackage thisTerm = side.get(i);
+			if (thisTerm.ignore) break;
+			//we do not need to skip over the terms that might have been combined in the easy case,
+			//in fact, those might be part of the combination
+			//e.g. [10x]` + [8x + 6] + [-17x]` = 34
+			//e.g. the 10x and -17x would have already been handled, but they will be part of the 
+			//eventual combination (down to 1x, no less) and so, we must account for them 
+			//We just won't re-update their values
+			BaseBlock thisBlock = thisTerm.term;
+
+			//if the block and 
+			List<Block> attachedBlocks = thisBlock.getAllBlocks();
+			if (thisBlock instanceof VariableBlock)
+			{
+				if (attachedBlocks.size() <= 1) {
+					potentialTimesHandled.add(thisTerm);
+					timeses.add(1);
+				} else if (attachedBlocks.size() >2 && attachedBlocks.get(1) instanceof TimesBlock
+						&& !(attachedBlocks.get(2) instanceof TimesBlock)) {
+					potentialTimesHandled.add(thisTerm);
+					timeses.add(((ModifierBlock) attachedBlocks.get(1)).value());
+					//We don't want to update already handled's scores
+				} 
+			}
+			else if (thisBlock instanceof NumberBlock){
+				potentialNumbersHandled.add(thisTerm);
+			}
+		}
+		
+		if (potentialTimesHandled.size() > 1) {
+			//if the end sum is not 1 or 0, we will have to divide as well
+			int sum = sumList(timeses);
+			if ((sum == 1 || sum ==0 )) score-=1;		//1 for the drag over, 1 for the simplify
+		
+			for (HeuristicTermPackage h:potentialTimesHandled) if (!h.hasBeenHandled) h.isEventualCombine = true;
+		}
+		
+		if (potentialNumbersHandled.size() > 1) {
+			//eventually, we will have to combine these blocks using n-1 drags and n-1 combines
+			score += 2* (potentialNumbersHandled.size() - 1);
+		}
+		
+		
+		return score;
+	}
+
 	private static int sumList(List<Integer> timeses) {
 		int sum = 0;
 		for(Integer i: timeses) sum+=i;
@@ -405,26 +468,6 @@ public class IdealEquationSolver {
 
 	private static boolean timesMightCombine(Block block, Block nextBlock) {
 		return (block instanceof TimesBlock && nextBlock instanceof TimesBlock);
-	}
-
-	private static int countVarTerms(Iterable<BaseBlock> side) {
-		int terms = 0;
-
-		for (BaseBlock bb : side)
-		{
-			if (bb instanceof VariableBlock) terms++;
-		}
-		return terms;
-	}
-
-	private static int countGeneralTerms(Iterable<BaseBlock> side) {
-		int terms = 0;
-
-		for (BaseBlock bb : side)
-		{
-			if (!(bb instanceof BlockHolder)) terms++;
-		}
-		return terms;
 	}
 
 	// returns a list of all steps that can be taken for the given equation
