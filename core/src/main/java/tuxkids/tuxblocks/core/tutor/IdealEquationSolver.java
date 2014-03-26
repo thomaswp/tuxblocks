@@ -62,7 +62,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			seeAllAndHeuristics(paths);
+			//seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
@@ -296,6 +296,9 @@ public class IdealEquationSolver {
 			if (thisTerm.term instanceof BlockHolder) continue;
 			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
 			Collections.reverse(attachedBlockList);
+			
+			double conditionalScore = 0;	//score to be added if there is a times or over eventually
+			//e.g. x + 2(x-12)/3 + 47 = -21 is farther away than x + 2(x-12)/3 = -21-47
 
 			if (thisTerm.term instanceof VariableBlock && attachedBlockList.size() >= 2) //ignore solo blocks
 			{
@@ -303,22 +306,36 @@ public class IdealEquationSolver {
 					Block block = attachedBlockList.get(i);
 
 					if (block instanceof TimesBlock || block instanceof OverBlock) {
+						thisTerm.queueUpScore(conditionalScore);
+						conditionalScore=0;
 						Block nextBlock = attachedBlockList.get(i+1);
 
-						if (!(doesDivideOut(block, nextBlock) || timesMightCombine(block, nextBlock)) )
+						if ((doesDivideOut(block, nextBlock) || timesMightCombine(block, nextBlock)) ) {
+							//skip this block and the next
+							i++;
+							continue;
+						}
+						else
 						{
 							for(HeuristicTermPackage otherTerm : theseTerms) {
-								if (otherTerm == thisTerm) continue;
 								if (otherTerm.ignore) break;
+								if (otherTerm == thisTerm || otherTerm.term instanceof BlockHolder) continue;
+								
 								thisTerm.queueUpScore(otherTerm.termsScore+1);		//plus 1 to handle this multiplication/division
 							}
 							
 							for(HeuristicTermPackage otherTerm : otherTerms) {
 								if (otherTerm.ignore) break;
+								if (otherTerm.term instanceof BlockHolder) continue;
 								thisTerm.queueUpScore(otherTerm.termsScore+1);		//plus 1 to handle this multiplication/division
 							}
+							thisTerm.queueUpScore(1); //and one turn to execute the task (clicking the over/times or dragging it)
 							break;		//only do the first dependent
 						}
+					}
+					//else is a plus or a minus
+					else {
+						conditionalScore++;
 					}
 				}
 			}
