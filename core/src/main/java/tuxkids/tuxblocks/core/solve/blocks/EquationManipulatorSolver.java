@@ -103,6 +103,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	
 	private List<Integer> getDroppableBases(Block toDrop, EquationBlockIndex startingIndex) {
 		List<Integer> blocks = new ArrayList<Integer>();
+		//TODO, can probably get away with just a boolean instead of a startingSide object
 		Side startingSide = startingIndex.expressionIndex < equation.leftSide.size() ? Side.Left : Side.Right;
 
 		Block inverse = (Block) toDrop.inverse().copy();
@@ -110,15 +111,26 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		Block leftDrop = startingSide == Side.Left ? toDrop : inverse;
 		Block rightDrop = startingSide == Side.Right? toDrop : inverse;
 		
-		blocks.addAll(getDroppableBases(leftDrop, equation.leftSide, 0));
-		blocks.addAll(getDroppableBases(rightDrop, equation.rightSide, equation.leftSide.size()));
+		blocks.addAll(getDroppableBases(leftDrop, equation.leftSide, 0, mightDoDragNoop(startingSide == Side.Left, startingIndex)));
+		blocks.addAll(getDroppableBases(rightDrop, equation.rightSide, equation.leftSide.size(),mightDoDragNoop(startingSide == Side.Right, startingIndex)));
 		return blocks;
 	}
 	
-	private List<Integer> getDroppableBases(Block toDrop, List<BaseBlock> side, int indexOffset) {
+	private boolean mightDoDragNoop(boolean isSameSide, EquationBlockIndex startingIndex) {
+		if (!isSameSide) return false;
+		if (startingIndex.blockIndex == ExpressionBlockIndex.makeExpressionBlockIndex(0, 0)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private List<Integer> getDroppableBases(Block toDrop, List<BaseBlock> side, int indexOffset, boolean omitBlockHolders) {
 		List<Integer> blocks = new ArrayList<Integer>();
 		for (int i = 0; i < side.size(); i++) {
-			if (side.get(i).canAccept(toDrop)) blocks.add(i + indexOffset);
+			if (omitBlockHolders && side.get(i) instanceof BlockHolder) continue;
+			if (side.get(i).canAccept(toDrop)) {
+				blocks.add(i + indexOffset);
+			}
 		}
 		return blocks;
 	}
