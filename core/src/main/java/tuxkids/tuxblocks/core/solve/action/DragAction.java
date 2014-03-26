@@ -21,4 +21,5 @@ public class DragAction extends SolveAction {
 	public String toString() {
 		return super.toString() + ": " + fromIndex + " -> " + toIndex;
 	}
+	
 }
