@@ -288,6 +288,7 @@ public class IdealEquationSolver {
 							//we essentially got two steps at once, so skip to the next block
 							i++;
 						} else if (timesMightCombine(block, nextBlock)) {
+							//this is like combining 7*3(x-5) -> 21(x-5), which is one step
 							thisTerm.termsScore += 1;
 						}
 						
@@ -296,19 +297,14 @@ public class IdealEquationSolver {
 							//one step for every variable on this side and every term on the other
 							//(may need to be total terms)
 							thisTerm.termsScore += thisSideVarTerms+generalOtherSideTerms;
-
-							// dividing/multiplying out with a plus or minus block can't happen yet
-							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
-								thisTerm.termsScore++;
-							}
 						}
 					}
 					else {		//if addition or subtraction
-						thisTerm.termsScore += 2;//(generalRightTerms == 0 && i == 0 ? 1:2);
+						thisTerm.termsScore += 2;
 					}
 				}
 			}
-			else {
+			else {		//simply numbers
 				//We will only have to simplify these out, so this is just one step
 				//for every thing attached to the number block
 				thisTerm.termsScore += attachedBlockList.size() - 1;
@@ -326,16 +322,10 @@ public class IdealEquationSolver {
 	
 	private static double handleCombinableTerms(List<HeuristicTermPackage> side) {
 		double score = 0;
-		//int combinableTimesBlocks = 0;
-		//int combinableNumberBlocks = 0;
-		
+
 		potentialNumbersHandled.clear();
 		potentialTimesHandled.clear();
 		timeses.clear();
-		
-		
-		
-		
 
 		for(int i = 0;i< side.size();i++)	{
 			HeuristicTermPackage thisTerm = side.get(i);
