@@ -25,6 +25,8 @@ import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.build.BuildGameState;
 import tuxkids.tuxblocks.core.solve.build.BuildScreen;
+import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.story.StoryScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
@@ -57,8 +59,7 @@ public class TitleScreen extends BaseScreen {
 
 
 	private TextFormat authorFormat, superFormat, optionFormat;
-	//private Button tutorialButton;
-//	private Button muteButton;
+
 	private ImageLayerTintable startHere;
 	private LanguageLayer languageLayer;
 	
@@ -127,34 +128,8 @@ public class TitleScreen extends BaseScreen {
 		float midY = (height() + titleLayer.height()) / 2 + authorFormat.font.size();
 		int tintPressed = Colors.WHITE, tintUnpressed = Color.rgb(200, 200, 200);
 		
-//		final float buttonSize = height() / 6;
-//		tutorialButton = new Button(Constant.IMAGE_CONFIRM, buttonSize, buttonSize, true);
-//		tutorialButton.setPosition(width() / 2, midY);
-//		tutorialButton.setTint(tintPressed, tintUnpressed);
-//		fadeInLayer.add(tutorialButton.layerAddable());
-//		
-//		muteButton = new Button(Constant.IMAGE_MUTE, buttonSize, buttonSize, true);
-//		muteButton.setPosition(width()/20, midY);
-//		muteButton.setTint(tintPressed, tintUnpressed);
-//		fadeInLayer.add(muteButton.layerAddable());
-		
 		startHere = new ImageLayerTintable();
-//		Lang.getImage(Constant.IMAGE_START_LOCAL, new Callback<Image>() {
-//			@Override
-//			public void onSuccess(Image result) {
-//				startHere.setImage(result);
-//				startHere.setScale(0.8f * buttonSize / startHere.height());
-//				startHere.setOrigin(result.width() * 0.8f, result.height());
-//				startHere.setTranslation(tutorialButton.x() + tutorialButton.width() * 0.5f, 
-//						tutorialButton.y() - tutorialButton.height() * 0.5f);
-//				startHere.setTint(background.primaryColor());
-//			}
-//
-//			@Override
-//			public void onFailure(Throwable cause) {
-//				cause.printStackTrace();
-//			}
-//		});
+
 		fadeInLayer.add(startHere.layerAddable());
 		
 		float size = (height() - titleLayer.height()) / 1.8f;
@@ -200,17 +175,6 @@ public class TitleScreen extends BaseScreen {
 		if (storyText.width() > buttonTextMaxWidth) storyText.setScale(buttonTextMaxWidth / storyText.width());
 		PlayNObject.centerImageLayer(storyText);
 		fadeInLayer.add(storyText);
-
-//		tutorialButton.setOnReleasedListener(new OnReleasedListener() {
-//			@Override
-//			public void onRelease(Event event, boolean inButton) {
-//				if (inButton) {
-//					Tutorial.start(background.primaryColor(), background.secondaryColor());
-//					tutorialButton.layerAddable().setVisible(false);
-//					startHere.setVisible(false);
-//				}
-//			}
-//		});
 		
 		playButton.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -229,7 +193,7 @@ public class TitleScreen extends BaseScreen {
 							}
 						});
 					} else {
-						// or if you're in the tutorial, just start a new one
+						// or if you're in the tutorial, just start a new game
 						toDifficultyScreen();
 					}
 				}
@@ -245,6 +209,19 @@ public class TitleScreen extends BaseScreen {
 					state.setBackground(background);
 					BuildScreen bs = new BuildScreen(screens, state);
 					pushScreen(bs, screens.slide().down());
+				}
+			}
+		});
+		
+		storyButton.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					Tutorial.trigger(Trigger.Title_Build);
+					GameState state = new StoryGameState();
+					state.setBackground(background);
+					StoryScreen screen = new StoryScreen(screens, state);
+					pushScreen(screen, screens.slide().left());
 				}
 			}
 		});
@@ -273,7 +250,7 @@ public class TitleScreen extends BaseScreen {
 		// start a new game
 		Tutorial.trigger(Trigger.Title_Play);
 		DifficultyScreen ds = new DifficultyScreen(screens, background);
-		pushScreen(ds, screens.slide().left());
+		pushScreen(ds, screens.slide().right());
 	}
 	
 	private void continueGame() {
@@ -344,9 +321,6 @@ public class TitleScreen extends BaseScreen {
 
 		// show the start tutorial button iff it's not running
 		if (!Tutorial.running()) {
-//			if (tutorialButton != null) {
-//				tutorialButton.layerAddable().setVisible(true);
-//			}
 			if (startHere != null) {
 				startHere.setVisible(true);
 			}
