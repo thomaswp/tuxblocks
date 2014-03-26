@@ -62,7 +62,7 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-			//	seeAllAndHeuristics(paths);
+				seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 
@@ -222,6 +222,10 @@ public class IdealEquationSolver {
 		if (generalRightTerms == 0 || generalLeftTerms == 0) {
 			score+=.1;
 		}
+		
+		if (leftVarTerms >0 && rightVarTerms > 0) {
+			score += .5;
+		}
 
 		double leftSideEasyCombinationScore = handleEasilyCombinableTerms(leftSideTerms);
 		score += leftSideEasyCombinationScore;
@@ -235,8 +239,8 @@ public class IdealEquationSolver {
 
 		if (debugHeuristic) System.out.printf("\t\tLSECS=%1.2f LSDCS=%1.2f | RSECS=%1.2f RSDCS=%1.2f ",leftSideEasyCombinationScore, leftSideEventualCombinationScore, rightSideEasyCombinationScore, rightSideEventualCombinationScore);
 
-		handleComplicatedTerms(leftSideTerms, generalRightTerms, leftVarTerms, rightVarTerms);
-		handleComplicatedTerms(rightSideTerms, generalLeftTerms, rightVarTerms, leftVarTerms);
+		handleComplicatedTerms(leftSideTerms, generalLeftTerms, generalRightTerms, leftVarTerms, rightVarTerms);
+		handleComplicatedTerms(rightSideTerms, generalRightTerms, generalLeftTerms, rightVarTerms, leftVarTerms);
 
 		if (debugHeuristic){
 			for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
@@ -266,8 +270,8 @@ public class IdealEquationSolver {
 
 }
 
-	private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalOtherSideTerms,
-			int thisSideVarTerms, int otherSideVarTerms) {
+	private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalThisSideTerms,
+			int generalOtherSideTerms, int thisSideVarTerms, int otherSideVarTerms) {
 
 		for (HeuristicTermPackage thisTerm : terms) {
 			if (thisTerm.ignore) break;
@@ -302,7 +306,7 @@ public class IdealEquationSolver {
 							//Because we'll have to either multiply or divide to remove this term
 							//one step for every variable on this side and every term on the other
 							//(may need to be total terms)
-							thisTerm.termsScore += thisSideVarTerms+generalOtherSideTerms;
+							thisTerm.termsScore += generalThisSideTerms+generalOtherSideTerms + 1;
 						}
 					}
 					else {		//if addition or subtraction
