@@ -120,12 +120,8 @@ public class PersistUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-<<<<<<< HEAD
 			if (store != null)
 				store.clear();
-=======
-			if (store != null) store.clear();
->>>>>>> origin/story
 		}
 		return null;
 	}
