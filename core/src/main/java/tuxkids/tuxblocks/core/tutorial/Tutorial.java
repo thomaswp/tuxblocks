@@ -63,7 +63,7 @@ public abstract class Tutorial extends PlayNObject {
 		Number_NumberSelected, 
 		Number_Scratch, 
 		
-		Build_Shown, 
+		Build_Shown, Title_Story, 
 	}
 	
 	/**

@@ -2,7 +2,7 @@ package tuxkids.tuxblocks.core.tutorial;
 
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
-public class Tutorial0 extends FSMTutorial {
+class Tutorial0 extends FSMTutorial {
 
 	public Tutorial0(int themeColor) {
 		super(themeColor);

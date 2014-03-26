@@ -217,7 +217,7 @@ public class TitleScreen extends BaseScreen {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					Tutorial.trigger(Trigger.Title_Build);
+					Tutorial.trigger(Trigger.Title_Story);
 					GameState state = new StoryGameState();
 					state.setBackground(background);
 					StoryScreen screen = new StoryScreen(screens, state);
@@ -250,7 +250,7 @@ public class TitleScreen extends BaseScreen {
 		// start a new game
 		Tutorial.trigger(Trigger.Title_Play);
 		DifficultyScreen ds = new DifficultyScreen(screens, background);
-		pushScreen(ds, screens.slide().right());
+		pushScreen(ds, screens.slide().left());
 	}
 	
 	private void continueGame() {

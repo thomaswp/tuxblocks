@@ -10,7 +10,7 @@ import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Debug;
 
-public abstract class FSMTutorial implements TutorialInstance {
+abstract class FSMTutorial implements TutorialInstance {
 
 	protected final State anyState = new State(null);
 	protected final State endState = new State(null);

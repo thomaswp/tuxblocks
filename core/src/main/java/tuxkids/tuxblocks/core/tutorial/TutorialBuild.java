@@ -4,7 +4,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 /** Tutorial for Build mode */
-public class TutorialBuild extends LinearTutorial {
+class TutorialBuild extends LinearTutorial {
 
 	public TutorialBuild(int themeColor, int secondaryColor) {
 		super(themeColor, secondaryColor);
