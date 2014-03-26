@@ -307,6 +307,15 @@ public class IdealEquationSolver {
 							//one step for every variable on this side and every term on the other
 							//(may need to be total terms)
 							thisTerm.termsScore += generalThisSideTerms+generalOtherSideTerms + 1;
+							
+							//TODO terms based on attached plusses and minuses.
+							//I.e. 2x + 5(x-6) = 20 is worse than 2x + 5x = 20 + 30
+							
+							
+							// dividing/multiplying out with a plus or minus block can't happen yet
+							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
+								thisTerm.termsScore++;
+							}
 						}
 					}
 					else {		//if addition or subtraction
