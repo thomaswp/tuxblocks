@@ -29,7 +29,8 @@ public class IdealEquationSolver {
 
 	private static final int MAX_TERMS_PER_SIDE = 7;
 
-	public static boolean debugHeuristic = false;
+	//can be used for observing the inner steps of the heuristic
+	private static boolean debugHeuristic = false;
 
 	private static Comparator<List<Step>> comparator = new Comparator<List<Step>>() {
 		@Override
@@ -37,8 +38,7 @@ public class IdealEquationSolver {
 			Equation eq1 = o1.get(o1.size() - 1).result;
 			Equation eq2 = o2.get(o2.size() - 1).result;
 			// classic A* - compare based on f(x) + h(x)
-			return Double.compare(heuristic(eq1) + o1.size(), heuristic(eq2)
-					+ o2.size());
+			return Double.compare(heuristic(eq1) + o1.size(), heuristic(eq2) + o2.size());
 		}
 	};
 
@@ -48,8 +48,7 @@ public class IdealEquationSolver {
 
 	public List<Step> aStar(Equation start) {
 		// queue of paths to solution, sorted using the heuristic
-		PriorityQueue<List<Step>> paths = new PriorityQueue<List<Step>>(20,
-				comparator);
+		PriorityQueue<List<Step>> paths = new PriorityQueue<List<Step>>(20, comparator);
 
 		// add an empty start path
 		List<Step> startPath = new ArrayList<Step>();
@@ -60,11 +59,9 @@ public class IdealEquationSolver {
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
 		while (paths.size() > 0) {
-		//	seeAllAndHeuristics(paths);
+			// seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
-
-
 
 			// break if we win
 			if (EquationManipulator.isEquationSolved(last.result)) {
@@ -90,10 +87,26 @@ public class IdealEquationSolver {
 		return null;
 	}
 
+	// returns a list of all steps that can be taken for the given equation
+	private List<Step> expandState(Equation state) {
+		List<Step> steps = new ArrayList<Step>();
+		EquationManipulatorSolver solver = new EquationManipulatorSolver(state);
+		for (SolveAction action : solver.getAllActions()) {
+			solver.push();
+			List<SolveAction> actions = solver.performSolveAction(action);
+			Step step = new Step(solver.equation());
+			step.actions.add(action);
+			if (actions != null)
+				step.actions.addAll(actions);
+			steps.add(step);
+			solver.pop();
+		}
+		return steps;
+	}
+
 	private boolean registerNode(Step currentStep, HashMap<String, Integer> discoveredNodes, int pathLength) {
 
-		// hash it using its text function... TODO: use a quicker/more
-		// accurate hash
+		// hash it using its text function... TODO: use a quicker/more accurate hash
 		String text = currentStep.equationString();
 		Integer lastPathLength = discoveredNodes.get(text);
 		// if we've already gotten here by a shorter path, don't expand this node
@@ -132,8 +145,6 @@ public class IdealEquationSolver {
 
 		Collections.reverse(reversablePaths);
 
-
-
 		for (List<Step> path : reversablePaths) {
 			System.out.println("\t" + pathToString(path));
 		}
@@ -143,16 +154,21 @@ public class IdealEquationSolver {
 		System.out.println();
 	}
 
-
+	/**
+	 * An object to represent a single term and help hold the half-way steps
+	 * for computing a heuristic for the entire equation.
+	 * @author Kevin Lubick
+	 *
+	 */
 	private static class HeuristicTermPackage {
 		BaseBlock term = null;
 		boolean ignore = true;
 		boolean hasBeenHandled = false;
-		double termsScore = 0.0;
+		double termsScore = 0.0;		
 		boolean isEventualCombine = false;
 		private double pendingScore;
 
-		HeuristicTermPackage reset() {
+		public HeuristicTermPackage reset() {
 			ignore = true;
 			hasBeenHandled = false;
 			termsScore = 0.0;
@@ -164,15 +180,17 @@ public class IdealEquationSolver {
 
 		@Override
 		public String toString() {
-			if (ignore) return "";
-			if (!hasBeenHandled) return String.format("[%1.2f+%1.2f?]%s", termsScore,pendingScore, isEventualCombine?"`":"");
-			return String.format("[%1.2f+%1.2f]%s", termsScore,pendingScore, isEventualCombine?"`":"");
+			if (ignore)
+				return "";
+			if (!hasBeenHandled)
+				return String.format("[%1.2f+%1.2f?]%s", termsScore, pendingScore, isEventualCombine ? "`" : "");
+			return String.format("[%1.2f+%1.2f]%s", termsScore, pendingScore, isEventualCombine ? "`" : "");
 		}
 
 		public void queueUpScore(double d) {
 			this.pendingScore += d;
 		}
-		
+
 		public HeuristicTermPackage finalizeScore() {
 			this.termsScore += pendingScore;
 			this.pendingScore = 0;
@@ -180,24 +198,25 @@ public class IdealEquationSolver {
 		}
 	}
 
-	private static List<HeuristicTermPackage> leftSideTerms = new ArrayList<IdealEquationSolver.HeuristicTermPackage>(MAX_TERMS_PER_SIDE);
-	private static List<HeuristicTermPackage> rightSideTerms = new ArrayList<IdealEquationSolver.HeuristicTermPackage>(MAX_TERMS_PER_SIDE);
+	//Variables that will be reused to prevent unneccessary allocations
+	private static List<HeuristicTermPackage> leftSideTerms = new ArrayList<IdealEquationSolver.HeuristicTermPackage>(
+			MAX_TERMS_PER_SIDE);
+	private static List<HeuristicTermPackage> rightSideTerms = new ArrayList<IdealEquationSolver.HeuristicTermPackage>(
+			MAX_TERMS_PER_SIDE);
+
+	private static Set<Integer> skipIndicies = new HashSet<Integer>();
+	private static List<Integer> timeses = new ArrayList<Integer>(MAX_TERMS_PER_SIDE);
+	private static Set<HeuristicTermPackage> potentialTimesHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
+	private static Set<HeuristicTermPackage> potentialNumbersHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
 
 	static {
-		for(int i =0;i<MAX_TERMS_PER_SIDE;i++) {
+		for (int i = 0; i < MAX_TERMS_PER_SIDE; i++) {
 			leftSideTerms.add(new HeuristicTermPackage());
 			rightSideTerms.add(new HeuristicTermPackage());
 		}
 	}
 
 	public static double heuristic(Equation eq) {
-		// the basic plan right now is to add 1 for every expression,
-		// 1 for every modifier of a variable and 0.75 for every modifier
-		// of a number
-
-		// the ideal here is that the heuristic be consistent, meaning essentially
-		// that performing a step can never decrease h(x) by more than 1 and that
-		// h(x) <= f(x), where f(x) is the actual number of steps required to solve
 
 		double score = 0;
 
@@ -209,31 +228,36 @@ public class IdealEquationSolver {
 		int leftVarTerms = 0;
 		int rightVarTerms = 0;
 
-		//Dump the terms into our lists and perform some counts of the various terms
-		for(int i =0;i<MAX_TERMS_PER_SIDE;i++) {
+		// Dump the terms into our lists and perform some counts of the various terms
+		for (int i = 0; i < MAX_TERMS_PER_SIDE; i++) {
 			HeuristicTermPackage leftTerm = leftSideTerms.get(i).reset();
 			HeuristicTermPackage rightTerm = rightSideTerms.get(i).reset();
 
 			if (leftSideIterator.hasNext()) {
 				leftTerm.ignore = false;
 				leftTerm.term = leftSideIterator.next();
-				if (!(leftTerm.term instanceof BlockHolder)) generalLeftTerms++;
-				if (leftTerm.term instanceof VariableBlock) leftVarTerms++;
+				if (!(leftTerm.term instanceof BlockHolder))
+					generalLeftTerms++;
+				if (leftTerm.term instanceof VariableBlock)
+					leftVarTerms++;
 			}
 			if (rightSideIterator.hasNext()) {
 				rightTerm.ignore = false;
 				rightTerm.term = rightSideIterator.next();
-				if (!(rightTerm.term instanceof BlockHolder)) generalRightTerms++;
-				if (rightTerm.term instanceof VariableBlock) rightVarTerms++;
+				if (!(rightTerm.term instanceof BlockHolder))
+					generalRightTerms++;
+				if (rightTerm.term instanceof VariableBlock)
+					rightVarTerms++;
 			}
 		}
 
-		//discourage emptying out one side of the equation
+		// discourage emptying out one side of the equation
 		if (generalRightTerms == 0 || generalLeftTerms == 0) {
-			score+=.1;
+			score += .1;
 		}
-		
-		if (leftVarTerms >0 && rightVarTerms > 0) {
+
+		// discourage having variable terms on both sides
+		if (leftVarTerms > 0 && rightVarTerms > 0) {
 			score += 1.5;
 		}
 
@@ -241,201 +265,81 @@ public class IdealEquationSolver {
 		score += leftSideEasyCombinationScore;
 		double rightSideEasyCombinationScore = handleEasilyCombinableTerms(rightSideTerms);
 		score += rightSideEasyCombinationScore;
-		
+
 		double leftSideEventualCombinationScore = accountForEventualCombinableTerms(leftSideTerms);
 		score += leftSideEventualCombinationScore;
 		double rightSideEventualCombinationScore = accountForEventualCombinableTerms(rightSideTerms);
 		score += rightSideEventualCombinationScore;
 
-		if (debugHeuristic) System.out.printf("\t\tLSECS=%1.2f LSDCS=%1.2f | RSECS=%1.2f RSDCS=%1.2f ",leftSideEasyCombinationScore, leftSideEventualCombinationScore, rightSideEasyCombinationScore, rightSideEventualCombinationScore);
-
-		//handleComplicatedTerms(leftSideTerms, generalLeftTerms, generalRightTerms, leftVarTerms, rightVarTerms);
-		//handleComplicatedTerms(rightSideTerms, generalRightTerms, generalLeftTerms, rightVarTerms, leftVarTerms);
+		if (debugHeuristic) {
+			System.out.printf("\t\tLSECS=%1.2f LSDCS=%1.2f | RSECS=%1.2f RSDCS=%1.2f ", leftSideEasyCombinationScore,
+					leftSideEventualCombinationScore, rightSideEasyCombinationScore, rightSideEventualCombinationScore);
+		}
 
 		handleIsolatedTerms(leftSideTerms);
 		handleIsolatedTerms(rightSideTerms);
-		
+
 		handleDependentTerms(leftSideTerms, rightSideTerms, leftVarTerms);
 		handleDependentTerms(rightSideTerms, leftSideTerms, rightVarTerms);
-		
-		if (debugHeuristic){
-			for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
-				if (leftSideTerms.get(i).ignore) continue;
-				System.out.print(leftSideTerms.get(i)+" + ");
-			}
-			System.out.print(" = ");
-			for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
-				if (rightSideTerms.get(i).ignore) continue;
-				System.out.print(rightSideTerms.get(i)+" + ");
-			}
-		}
 
 		if (debugHeuristic) {
-			System.out.printf("\tgL = %d, gR = %d, vL = %d, vR = %d%n",generalLeftTerms,generalRightTerms,leftVarTerms, rightVarTerms);
+			for (int i = 0; i < MAX_TERMS_PER_SIDE; i++) {
+				if (leftSideTerms.get(i).ignore)
+					continue;
+				System.out.print(leftSideTerms.get(i) + " + ");
+			}
+			System.out.print(" = ");
+			for (int i = 0; i < MAX_TERMS_PER_SIDE; i++) {
+				if (rightSideTerms.get(i).ignore)
+					continue;
+				System.out.print(rightSideTerms.get(i) + " + ");
+			}
+		
+			System.out.printf("\tgL = %d, gR = %d, vL = %d, vR = %d%n", generalLeftTerms, generalRightTerms,
+					leftVarTerms, rightVarTerms);
 		}
-				
 
-		for(int i = 0;i<MAX_TERMS_PER_SIDE;i++) {
-			if (!leftSideTerms.get(i).ignore) score += leftSideTerms.get(i).finalizeScore().termsScore;
-			if (!rightSideTerms.get(i).ignore) score += rightSideTerms.get(i).finalizeScore().termsScore;
+		for (int i = 0; i < MAX_TERMS_PER_SIDE; i++) {
+			if (!leftSideTerms.get(i).ignore)
+				score += leftSideTerms.get(i).finalizeScore().termsScore;
+			if (!rightSideTerms.get(i).ignore)
+				score += rightSideTerms.get(i).finalizeScore().termsScore;
 		}
 
 		if (score <= 0)
 			return 0;
 		return score;
 
-}
-
-	private static void handleDependentTerms(List<HeuristicTermPackage> theseTerms, List<HeuristicTermPackage> otherTerms, int varTermsThisSide) {
-		
-		for (HeuristicTermPackage thisTerm : theseTerms) {
-			if (thisTerm.ignore) break;
-			if (thisTerm.hasBeenHandled ) continue;
-			thisTerm.hasBeenHandled = true;
-			if (thisTerm.term instanceof BlockHolder) continue;
-			
-			skipIndicies.clear();
-			
-			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
-			Collections.reverse(attachedBlockList);
-			
-			double conditionalScore = 0;	//score to be added if there is a times or over eventually
-			//e.g. x + 2(x-12)/3 + 47 = -21 is farther away than x + 2(x-12)/3 = -21-47
-
-			if (thisTerm.term instanceof VariableBlock && attachedBlockList.size() >= 2) //ignore solo blocks
-			{
-				for(int i = 0;i<attachedBlockList.size()-1; i++) {
-					if (skipIndicies.contains(i)) continue;
-					Block block = attachedBlockList.get(i);
-
-					if (isBlockTimesOrDivide(block)) {
-						thisTerm.queueUpScore(conditionalScore);
-						conditionalScore=0;
-						Block nextBlock = attachedBlockList.get(i+1);
-
-						int divideOutOffset = doesDivideOut(block, attachedBlockList.subList(i+1, attachedBlockList.size()-1));
-						if (-1 != divideOutOffset )
-						{
-							skipIndicies.add(i+divideOutOffset);
-							continue;
-						}
-						else if (timesMightCombine(block, nextBlock)) {
-							skipIndicies.add(i+1);
-							continue;
-						}
-						else
-						{
-							for(HeuristicTermPackage otherTerm : theseTerms) {
-								if (otherTerm.ignore) break;
-								if (otherTerm == thisTerm || otherTerm.term instanceof BlockHolder) continue;
-								if (otherTerm.term instanceof NumberBlock) {
-									thisTerm.queueUpScore(1.0/varTermsThisSide);
-									continue;
-								}
-								thisTerm.queueUpScore(otherTerm.termsScore+1);		//plus 1 to handle this multiplication/division
-							}
-							
-							for(HeuristicTermPackage otherTerm : otherTerms) {
-								if (otherTerm.ignore) break;
-								if (otherTerm.term instanceof BlockHolder) continue;
-								if (otherTerm.term instanceof NumberBlock) {
-									thisTerm.queueUpScore(1.0/varTermsThisSide);
-									continue;
-								}
-								thisTerm.queueUpScore(otherTerm.termsScore+1);		//plus 1 to handle this multiplication/division
-							}
-							thisTerm.queueUpScore(1); //and one turn to execute the task (clicking the over/times or dragging it)
-							break;		//only do the first dependent
-						}
-					}
-					//else is a plus or a minus
-					else {
-						conditionalScore++;
-					}
-				}
-			}
-		}
-	}
-	
-	private static Set<Integer> skipIndicies = new HashSet<Integer>();
-
-	private static void handleIsolatedTerms(List<HeuristicTermPackage> terms) {
-		for (HeuristicTermPackage thisTerm : terms) {
-			if (thisTerm.ignore) break;
-			if (thisTerm.hasBeenHandled ) continue;
-			
-			skipIndicies.clear();
-
-			if (thisTerm.term instanceof BlockHolder) continue;
-			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
-			Collections.reverse(attachedBlockList);
-
-			if (thisTerm.term instanceof VariableBlock)
-			{
-				//Iterate through everything attached to this block
-				int endOfAttachedBlockIndex = attachedBlockList.size()-1;
-				for(int i = 0;i<endOfAttachedBlockIndex; i++) {
-					if (skipIndicies.contains(i)) continue;
-					Block block = attachedBlockList.get(i);
-
-					if (isBlockTimesOrDivide(block)) {
-						Block nextBlock = attachedBlockList.get(i+1);
-
-						int divideOutOffset = doesDivideOut(block, attachedBlockList.subList(i+1, endOfAttachedBlockIndex));
-						if (-1 != divideOutOffset) {
-							thisTerm.termsScore += adjustScoreForDividingOut(block, attachedBlockList.get(i+divideOutOffset));
-							//we essentially got two steps at once, so skip this step
-							skipIndicies.add(i+divideOutOffset);
-						} else if (timesMightCombine(block, nextBlock)) {
-							//this is like combining 7*3(x-5) -> 21(x-5), which is one step
-							thisTerm.termsScore += 1;
-						}
-						else if (thisTerm.isEventualCombine && i == attachedBlockList.size()-2) {
-							thisTerm.termsScore += 1;	//we won't have to divide out the last term
-						}
-						//will depend on others
-					}
-					else {		//if addition or subtraction
-						thisTerm.termsScore += 2;
-					}
-				}
-			}
-			else {		//simply numbers
-				//We will only have to simplify these out, so this is just one step
-				//for every thing attached to the number block
-				thisTerm.termsScore += attachedBlockList.size() - 1;
-				
-				//discourage large number blocks
-				if (attachedBlockList.size() > 3) thisTerm.termsScore += .05*attachedBlockList.size();
-				thisTerm.hasBeenHandled = true;
-			}
-
-		}
 	}
 
-	private static List<Integer> timeses = new ArrayList<Integer>(MAX_TERMS_PER_SIDE);
-	private static Set<HeuristicTermPackage> potentialTimesHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
-	private static Set<HeuristicTermPackage> potentialNumbersHandled = new HashSet<IdealEquationSolver.HeuristicTermPackage>();
-
-	
+	/**
+	 * Handles combinable terms like 
+	 * 3x` + 2x` = 5  (known as potentialTimes)
+	 * 2x = 17` - 23`	(known as potential Numbers)
+	 * 
+	 * `combinable term.
+	 * 
+	 * the passed in heuristics will not have their scores updated, but may be marked as handled.
+	 * A representative score for this side of the equation will be returned.
+	 */
 	private static double handleEasilyCombinableTerms(List<HeuristicTermPackage> side) {
-		double score = 0;
-
+		//it takes at least two potentially combinable terms to combine, so we want to hold references
+		//to candidates before we tally up the scores
 		potentialNumbersHandled.clear();
 		potentialTimesHandled.clear();
 		timeses.clear();
 
-		for(int i = 0;i< side.size();i++)	{
+		for (int i = 0; i < side.size(); i++) {
 			HeuristicTermPackage thisTerm = side.get(i);
-			if ( thisTerm.ignore) break;
-			if (thisTerm.hasBeenHandled) continue;
+			if (thisTerm.ignore)
+				break;
+			if (thisTerm.hasBeenHandled)
+				continue;
 			BaseBlock thisBlock = thisTerm.term;
 
-			//if the block and 
 			List<Block> attachedBlocks = thisBlock.getAllBlocks();
-			if (thisBlock instanceof VariableBlock && attachedBlocks.size()<=2)
-			{
-				//Either the block is solo     or  three is one times block at index 1
+			if (thisBlock instanceof VariableBlock && attachedBlocks.size() <= 2) {
+				// Either the block is solo or three is one times block at index 1
 				if (attachedBlocks.size() <= 1 || attachedBlocks.get(1) instanceof TimesBlock) {
 					potentialTimesHandled.add(thisTerm);
 					if (attachedBlocks.size() == 1) {
@@ -444,266 +348,330 @@ public class IdealEquationSolver {
 						timeses.add(((ModifierBlock) attachedBlocks.get(1)).value());
 					}
 
-				} 
-			} else if (thisBlock instanceof NumberBlock && attachedBlocks.size() == 1){
+				}
+			} else if (thisBlock instanceof NumberBlock && attachedBlocks.size() == 1) {
 				potentialNumbersHandled.add(thisTerm);
 			}
 		}
-
-		//one move per n-1 blocks to move together and one move per n-1 blocks to combine numbers
-		//e.g. [3]+[3]+[3] would be resolved in 4 moves
-		//[3+3]+[3]+[]
-		//[6]+ [3] +[]
-		//[6+3] + [] + []
-		//[9] + [] + []
+		double score = 0;
+		// one move per n-1 blocks to move together and one move per n-1 blocks
+		// to combine numbers
+		// e.g. [3]+[3]+[3] would be resolved in 4 moves
+		// [3+3]+[3]+[]
+		// [6]+ [3] +[]
+		// [6+3] + [] + []
+		// [9] + [] + []
 		if (potentialNumbersHandled.size() > 1) {
-			score += (potentialNumbersHandled.size()-1) * 2;
-			for (HeuristicTermPackage h:potentialNumbersHandled) h.hasBeenHandled = true;
-		} 
-
+			score += (potentialNumbersHandled.size() - 1) * 2;
+			for (HeuristicTermPackage h : potentialNumbersHandled)
+				h.hasBeenHandled = true;
+		}
 
 		if (potentialTimesHandled.size() > 1) {
-			//one move per n-1 blocks to move together (combine happens automatically or instantaneously)
+			// one move per n-1 blocks to move together (combine happens automatically or instantaneously)
 			score += potentialTimesHandled.size() - 1;
 
-			//if the end sum is not 1 or 0, we will have to divide as well
+			// if the end sum is not 1 or 0, we will have to divide as well
 			int sum = sumList(timeses);
-			if (!(sum == 1 || sum ==0 )) score+=2;		//1 for the drag over, 1 for the simplify
-		
-			for (HeuristicTermPackage h:potentialTimesHandled) h.hasBeenHandled = true;
-		} 
+			if (!(sum == 1 || sum == 0))
+				score += 2; // 1 for the drag over, 1 for the simplify
+
+			for (HeuristicTermPackage h : potentialTimesHandled)
+				h.hasBeenHandled = true;
+		}
 
 		return score;
 	}
 
+	/**
+	 * Detects "eventual combines", for cases like 
+	 * [10x] + [8x + 6] = [-97 + 13] + [ ]
+	 * where we won't have to divide out
+	 * the 10x and 8x, because we'll be able to add them.
+	 * 
+	 * This will find those terms and mark them as "eventual combine" so they aren't 
+	 * treated like multiplication that will need to be undone by dividing out
+	 */
 	private static double accountForEventualCombinableTerms(List<HeuristicTermPackage> side) {
 		double score = 0;
-		
-		//for cases like [10x] + [8x + 6] = [-97 + 13] + [ ], where we won't have to divide out
-		//the 10x and 8x, we'll be able to add them
-		
+
 		potentialTimesHandled.clear();
 		potentialNumbersHandled.clear();
 		timeses.clear();
 
-		for(int i = 0;i< side.size();i++)	{
+		for (int i = 0; i < side.size(); i++) {
 			HeuristicTermPackage thisTerm = side.get(i);
-			if (thisTerm.ignore) break;
-			//we do not need to skip over the terms that might have been combined in the easy case,
-			//in fact, those might be part of the combination
-			//e.g. [10x]` + [8x + 6] + [-17x]` = 34
-			//e.g. the 10x and -17x would have already been handled, but they will be part of the 
-			//eventual combination (down to 1x, no less) and so, we must account for them 
-			//We just won't re-update their values
+			if (thisTerm.ignore)
+				break;
+			// we do not need to skip over the terms that might have been
+			// combined in the easy case,
+			// in fact, those might be part of the combination
+			// e.g. [10x]` + [8x + 6] + [-17x]` = 34
+			// e.g. the 10x and -17x would have already been handled, but they
+			// will be part of the
+			// eventual combination (down to 1x, no less) and so, we must
+			// account for them
+			// We just won't re-update their values
 			BaseBlock thisBlock = thisTerm.term;
 
-			//if the block and 
+			// if the block and
 			List<Block> attachedBlocks = thisBlock.getAllBlocks();
-			if (thisBlock instanceof VariableBlock)
-			{
+			if (thisBlock instanceof VariableBlock) {
 				if (attachedBlocks.size() <= 1) {
 					potentialTimesHandled.add(thisTerm);
 					timeses.add(1);
-				} else if (attachedBlocks.size() >2 && attachedBlocks.get(1) instanceof TimesBlock
+				} else if (attachedBlocks.size() > 2 && attachedBlocks.get(1) instanceof TimesBlock
 						&& !(attachedBlocks.get(2) instanceof TimesBlock)) {
 					potentialTimesHandled.add(thisTerm);
 					timeses.add(((ModifierBlock) attachedBlocks.get(1)).value());
-				} 
-			}
-			else if (thisBlock instanceof NumberBlock){
+				}
+			} else if (thisBlock instanceof NumberBlock) {
 				potentialNumbersHandled.add(thisTerm);
 			}
 		}
-		
+
 		if (potentialTimesHandled.size() > 1) {
-			//if the end sum is not 1 or 0, we will have to divide as well
+			// if the end sum is 1 or 0, we save a step, so subtract
 			int sum = sumList(timeses);
-			if ((sum == 1 || sum ==0 )) score-=1;		//1 for the drag over, 1 for the simplify
-		
-			for (HeuristicTermPackage h:potentialTimesHandled) if (!h.hasBeenHandled) h.isEventualCombine = true;
+			if ((sum == 1 || sum == 0))
+				score -= 1; 
+
+			for (HeuristicTermPackage h : potentialTimesHandled)
+				if (!h.hasBeenHandled)
+					h.isEventualCombine = true;
 		}
-		
+
 		if (potentialNumbersHandled.size() > 1) {
-			//eventually, we will have to combine these blocks using n-1 drags and n-1 combines
-			score += 2* (potentialNumbersHandled.size() - 1);
+			// eventually, we will have to combine these blocks using n-1 drags
+			// and n-1 combines
+			score += 2 * (potentialNumbersHandled.size() - 1);
+			
+			//Potential side effect do we need to mark these numbers as handled?
 		}
-		
-		
+
 		return score;
 	}
 
-	/*private static void handleComplicatedTerms(List<HeuristicTermPackage> terms, int generalThisSideTerms,
-			int generalOtherSideTerms, int thisSideVarTerms, int otherSideVarTerms) {
-	
+	/**
+	 * Goes through each term on this side of the equation and pretends they are "isolated",
+	 * that is, "If this term were the only thing in this expression, how long would it take to
+	 * isolate 'x' or simplify this to one number?"
+	 */
+	private static void handleIsolatedTerms(List<HeuristicTermPackage> terms) {
 		for (HeuristicTermPackage thisTerm : terms) {
-			if (thisTerm.ignore) break;
-			if (thisTerm.hasBeenHandled ) continue;
+			if (thisTerm.ignore)
+				break;
+			if (thisTerm.hasBeenHandled || thisTerm.term instanceof BlockHolder)
+				continue;
+
+			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
+			
+			if (thisTerm.term instanceof VariableBlock) {	
+				handleIsolatedVariableBlock(thisTerm, attachedBlockList);
+			} else { 
+				// simply numbers
+				// We will only have to simplify these out, so this is just one step
+				// for every thing attached to the number block
+				thisTerm.termsScore += attachedBlockList.size() - 1;
+
+				// discourage large number blocks (not too human-like)
+				if (attachedBlockList.size() > 3)
+					thisTerm.termsScore += .05 * attachedBlockList.size();
+				thisTerm.hasBeenHandled = true;
+			}
+
+		}
+	}
+
+	//helper for handleIsolatedTerms
+	private static void handleIsolatedVariableBlock(HeuristicTermPackage thisTerm, List<Block> attachedBlockList) {
+		// Iterate through everything attached to this block in reverse order
+		Collections.reverse(attachedBlockList);
+		skipIndicies.clear();
+		
+		int endOfAttachedBlockIndex = attachedBlockList.size() - 1;
+		for (int i = 0; i < endOfAttachedBlockIndex; i++) {
+			if (skipIndicies.contains(i))
+				continue;
+			Block block = attachedBlockList.get(i);
+			if (isBlockTimesOrDivide(block)) {
+				Block nextBlock = attachedBlockList.get(i + 1);
+				int divideOutOffset = doesDivideOut(block,
+						attachedBlockList.subList(i + 1, endOfAttachedBlockIndex));
+				
+				if (-1 != divideOutOffset) {
+					thisTerm.termsScore += adjustScoreForDividingOut(block, attachedBlockList.get(i + divideOutOffset));
+					// we essentially got two steps at once, so skip this step
+					skipIndicies.add(i + divideOutOffset);
+				} else if (timesMightCombine(block, nextBlock)) {
+					// this is like combining 7*3(x-5) -> 21(x-5), which is one step
+					thisTerm.termsScore += 1;
+				} else if (thisTerm.isEventualCombine && i == attachedBlockList.size() - 2) {
+					thisTerm.termsScore += 1; // we won't have to divide out the last term
+				}
+				// will depend on others
+			} else { // if addition or subtraction, we'll have to slide it over and combine it with whatever is there
+				thisTerm.termsScore += 2;
+			}
+		}
+	}
+
+	/**
+	 * Goes through the terms and, now that all the scores are known for each term in isolation,
+	 * approximates how many steps it will take to solve a given term whilst working around other terms.
+	 * 
+	 * given 
+	 * [(x) / 12] + [4(x - 2)] = [ 90 ] + [    ]
+	 * [  0.00  ] + [  2.00  ] = [0.00] + [0.00]		//scores after isolated run run
+	 * 
+	 * For the first term, undoing the multiply by 12 will require us to dance around the second block
+	 * and the third block, so we add 1 point for undoing the division, the score + 1 of every variable
+	 * term we dance around (once to combine in the undoing) and a normalized amount for dealing with
+	 * number blocks.  These scores are put in the HeuristicTermPackage's queue up score so that the changes
+	 * to the first block don't adversely affect the later ones.  At the end, we have:
+	 * [0.00+4.50] + [2.00+2.50] = [0.00+0.00] + [0.00+0.00]
+	 */
+	private static void handleDependentTerms(List<HeuristicTermPackage> theseTerms,
+			List<HeuristicTermPackage> otherTerms, int varTermsThisSide) {
+
+		for (HeuristicTermPackage thisTerm : theseTerms) {
+			if (thisTerm.ignore)
+				break;
+			if (thisTerm.hasBeenHandled || thisTerm.term instanceof BlockHolder)
+				continue;
 			thisTerm.hasBeenHandled = true;
-	
-			if (thisTerm.term instanceof BlockHolder) continue;
+
+			skipIndicies.clear();
+
 			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
 			Collections.reverse(attachedBlockList);
-	
-			if (thisTerm.term instanceof VariableBlock)
+
+			double conditionalScore = 0; // score to be added if there is a times or over eventually
+			// e.g. x + 2(x-12)/3 + 47 = -21 is farther away than x + 2(x-12)/3 = -21-47
+
+			if (thisTerm.term instanceof VariableBlock && attachedBlockList.size() >= 2) // ignore solo blocks
 			{
-				//Iterate through everything attached to this block
-				for(int i = 0;i<attachedBlockList.size()-1; i++) {
+				for (int i = 0; i < attachedBlockList.size() - 1; i++) {
+					if (skipIndicies.contains(i))
+						continue;
 					Block block = attachedBlockList.get(i);
-	
+
 					if (isBlockTimesOrDivide(block)) {
-						Block nextBlock = attachedBlockList.get(i+1);
-	
-						if (mightDivideOut(block, nextBlock)) {
-							thisTerm.termsScore += adjustScoreForDividingOut(block, nextBlock);
-							//we essentially got two steps at once, so skip to the next block
-							i++;
+						thisTerm.queueUpScore(conditionalScore);
+						conditionalScore = 0;
+						Block nextBlock = attachedBlockList.get(i + 1);
+
+						int divideOutOffset = doesDivideOut(block,
+								attachedBlockList.subList(i + 1, attachedBlockList.size() - 1));
+						if (-1 != divideOutOffset) {
+							skipIndicies.add(i + divideOutOffset);
+							continue;
 						} else if (timesMightCombine(block, nextBlock)) {
-							//this is like combining 7*3(x-5) -> 21(x-5), which is one step
-							thisTerm.termsScore += 1;
-						}
-						else if (thisTerm.isEventualCombine && i == attachedBlockList.size()-2) {
-							thisTerm.termsScore += 1;	//we won't have to divide out the last term
-						}
-						else {
-							//Because we'll have to either multiply or divide to remove this term
-							//one step for every variable on this side and every term on the other
-							//(may need to be total terms)
-							thisTerm.termsScore += generalThisSideTerms+generalOtherSideTerms;
-							
-							//TODO terms based on attached plusses and minuses.
-							//I.e. 2x + 5(x-6) = 20 is worse than 2x + 5x = 20 + 30
-							
-							
-							// dividing/multiplying out with a plus or minus block can't happen yet
-							if (nextBlock instanceof PlusBlock || nextBlock instanceof MinusBlock) {
-								thisTerm.termsScore++;
+							skipIndicies.add(i + 1);
+							continue;
+						} else {
+							for (HeuristicTermPackage otherTerm : theseTerms) {
+								if (otherTerm.ignore)
+									break;
+								if (otherTerm == thisTerm || otherTerm.term instanceof BlockHolder)
+									continue;
+								if (otherTerm.term instanceof NumberBlock) {
+									thisTerm.queueUpScore(1.0 / varTermsThisSide);
+									continue;
+								}
+								thisTerm.queueUpScore(otherTerm.termsScore + 1); // plus 1 to handle this multiplication/division
 							}
+
+							for (HeuristicTermPackage otherTerm : otherTerms) {
+								if (otherTerm.ignore)
+									break;
+								if (otherTerm.term instanceof BlockHolder)
+									continue;
+								if (otherTerm.term instanceof NumberBlock) {
+									thisTerm.queueUpScore(1.0 / varTermsThisSide);
+									continue;
+								}
+								thisTerm.queueUpScore(otherTerm.termsScore + 1); // plus 1 to handle this multiplication/division
+							}
+							thisTerm.queueUpScore(1); // and one turn to execute the task (clicking the over/times or dragging it)
+							break; // only do the first dependent block on a term
 						}
 					}
-					else {		//if addition or subtraction
-						thisTerm.termsScore += 2;
+					// else is a plus or a minus
+					else {
+						conditionalScore++;
 					}
 				}
 			}
-			else {		//simply numbers
-				//We will only have to simplify these out, so this is just one step
-				//for every thing attached to the number block
-				thisTerm.termsScore += attachedBlockList.size() - 1;
-				thisTerm.termsScore += (otherSideVarTerms == 0? 1: 0);
-			}
-	
 		}
-	
-	}*/
+	}
 
 	private static int sumList(List<Integer> timeses) {
 		int sum = 0;
-		for(Integer i: timeses) sum+=i;
+		for (Integer i : timeses)
+			sum += i;
 		return sum;
 	}
 
-	/*@Deprecated
 	private static double adjustScoreForDividingOut(Block block, Block nextBlock) {
-		double score = 0;
-		ModifierBlock mBlock = (ModifierBlock)block;
+		ModifierBlock mBlock = (ModifierBlock) block;
 		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
 		if (mBlock.value() == mNextBlock.value()) {
-			score += 1;
-		} else if (mBlock.value() == -mNextBlock.value()){
-			score += 2;
-		} else {
-			score += 2;	//may be 2 or 3
+			return 0; // 1 turn discount to make these more lucrative  XXX a negative value makes some equations hang.  Unsure of cause.
+		} else if (mBlock.value() == -mNextBlock.value()) {
+			return 1; // in the case of negatives, it takes two turns, but with the one turn discount, 1 point
 		}
-		return score;
-	}*/
-	
-	private static double adjustScoreForDividingOut(Block block, Block nextBlock) {
-		ModifierBlock mBlock = (ModifierBlock)block;
-		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
-		if (mBlock.value() == mNextBlock.value()) {
-			return 0;		//discount to make these more lucrative
-		}
-		else if (mBlock.value() == -mNextBlock.value()) {
-			return 1;		//in the case of negatives, it takes two turns, but with the discount
-		}
-		return 2;		
+		return 2;
 	}
 
-	/*@Deprecated
-	private static boolean doesDivideOut(Block block, Block nextBlock) {
-		if (!(mightDivideOut(block, nextBlock))) return false;
-		ModifierBlock mBlock = (ModifierBlock)block;
-		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
-		return mBlock.value() == mNextBlock.value() || mBlock.value() == -mNextBlock.value();
-	}*/
-	
 	private static boolean canTwoBlocksDivideOut(Block block, Block nextBlock) {
-		ModifierBlock mBlock = (ModifierBlock)block;
+		ModifierBlock mBlock = (ModifierBlock) block;
 		ModifierBlock mNextBlock = (ModifierBlock) nextBlock;
 		return mBlock.value() == mNextBlock.value() || mBlock.value() == -mNextBlock.value();
 	}
 
-	private static int doesDivideOut(Block block, List<Block> subList) {
+	/**
+	 *  Searches for future blocks that this block might divide out with.  
+	 *  
+	 *  return -1 if no possible division, index in the attached list otherwise
+	 */
+	private static int doesDivideOut(Block block, List<Block> remainingBlocks) {
 		if (isBlockTimesOrDivide(block)) {
 			boolean thisBlockIsOver = block instanceof OverBlock;
 			int offset = 0;
-			for(Block otherBlock : subList) {
+			for (Block otherBlock : remainingBlocks) {
 				offset++;
 				if (isBlockTimesOrDivide(otherBlock)) {
-					if (thisBlockIsOver && otherBlock instanceof TimesBlock ||
-						!thisBlockIsOver && otherBlock instanceof OverBlock	){
+					if (thisBlockIsOver && otherBlock instanceof TimesBlock || !thisBlockIsOver
+							&& otherBlock instanceof OverBlock) {
 						if (canTwoBlocksDivideOut(block, otherBlock)) {
 							return offset;
 						}
-						//perhaps there is another match
+						// perhaps there is another match, like in the case of 
+						//new VariableBlock("x").minus(4).{times(3)}.times(2).[over(3)]
+						//where [] is the passed in block and { } is the eventually found match
 					}
-				}
-				else {
-					//if we have bumped into an addition or subtraction, we can't divide anything out
+				} else {
+					// if we have bumped into an addition or subtraction, we can't divide anything out
+					// e.g. new VariableBlock("x").times(3).minus(4).[over(3)]
 					return -1;
 				}
 			}
-		
 		}
-		return -1;
+		return -1;		//this shouldn't be the case, but if block isn't an over/times block, we can't divide it out
 	}
 
-	protected static boolean isBlockTimesOrDivide(Block block) {
+	private static boolean isBlockTimesOrDivide(Block block) {
 		return block instanceof TimesBlock || block instanceof OverBlock;
 	}
-
-	/*@Deprecated
-	private static boolean mightDivideOut(Block block, Block nextBlock) {
-		return (block instanceof TimesBlock && nextBlock instanceof OverBlock) ||
-				(block instanceof OverBlock && nextBlock instanceof TimesBlock);
-	}*/
-
 
 	private static boolean timesMightCombine(Block block, Block nextBlock) {
 		return (block instanceof TimesBlock && nextBlock instanceof TimesBlock);
 	}
 
-	// returns a list of all steps that can be taken for the given equation
-	private List<Step> expandState(Equation state) {
-		List<Step> steps = new ArrayList<Step>();
-		EquationManipulatorSolver solver = new EquationManipulatorSolver(state);
-		for (SolveAction action : solver.getAllActions()) {
-			solver.push();
-			List<SolveAction> actions = solver.performSolveAction(action);
-			Step step = new Step(solver.equation());
-			step.actions.add(action);
-			if (actions != null)
-				step.actions.addAll(actions);
-			steps.add(step);
-			solver.pop();
-		}
-		return steps;
-	}
-
 	public static class Step {
 		// sometimes steps have multiple actions associated with them, such as
-		// starting and ending a simplification (also the start step has no
-		// actions)
+		// starting and ending a simplification (also the start step has no actions)
 		public final List<SolveAction> actions = new ArrayList<SolveAction>();
 		public final Equation result;
 		private final String equationString;
