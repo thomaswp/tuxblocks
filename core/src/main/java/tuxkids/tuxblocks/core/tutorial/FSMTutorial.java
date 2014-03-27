@@ -33,7 +33,7 @@ abstract class FSMTutorial implements TutorialInstance {
 	protected State addState(String id) {
 		String text = messages.getString(id);
 		if (text == null) {
-			Debug.write("WARNING: no such tutorial id: " + id);
+			Debug.write("WARNING: no such tutorial text with id: " + id);
 			text = "";
 		}
 		text = Tutorial.prepareMessage(text);

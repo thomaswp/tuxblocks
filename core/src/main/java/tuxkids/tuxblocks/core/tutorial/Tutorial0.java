@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+
+import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
 
 class Tutorial0 extends FSMTutorial {
 
@@ -10,15 +11,20 @@ class Tutorial0 extends FSMTutorial {
 
 	@Override
 	protected void addStates() {
-		State one = addStartState("firstMessage");
-		State two = addState("secondMessage");
-		State three = addState("thirdMessage");
+		State one = addStartState("id_nextWaveSoon");
+		State two = addState("id_shoreUpDefenses");
+		State three = addState("id_dragFirstTower");
+		State four = addState("id_goodFirstPlacement");
+		State five = addState("id_okayFirstPlacement");
+		State six = addState("id_secondTowerPlacement");
 		
-		one.addTransition(two, Trigger.TextBoxHidden);
-		two.addTransition(three, Trigger.Build_Shown);
-		three.addTransition(endState, Trigger.Title_Build);
+		one.addTransition(two, TextBoxHidden);
+		two.addTransition(three, TextBoxHidden);
 		
-		anyState.addTransition(two, Trigger.Title_Play);
+		three.addTransition(five, Defense_TowerDropped);
+		five.addTransition(six, Defense_TowerDropped);
+		
+		//anyState.addTransition(two, Title_Play);
 	}
 
 

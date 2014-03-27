@@ -119,7 +119,7 @@ public abstract class Tutorial extends PlayNObject {
 			return;
 		}
 //		start(new TutorialStart(themeColor, secondaryColor), Constant.TUTORIAL_START_PATH);
-		start(new Tutorial0(themeColor), "TutorialTest.json");
+		start(new Tutorial0(themeColor), "TutorialStory0.json");
 	}
 	
 	protected static void start(final TutorialInstance tutorial, final String path) {
