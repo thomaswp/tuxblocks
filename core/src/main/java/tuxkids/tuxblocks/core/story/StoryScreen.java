@@ -2,16 +2,17 @@ package tuxkids.tuxblocks.core.story;
 
 import playn.core.CanvasImage;
 import playn.core.Color;
-import playn.core.ImageLayer;
-import playn.core.TextFormat;
 import playn.core.Font.Style;
+import playn.core.ImageLayer;
 import playn.core.Pointer.Event;
+import playn.core.TextFormat;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.Lang;
+import tuxkids.tuxblocks.core.defense.DefenseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
@@ -67,13 +68,24 @@ public class StoryScreen extends GameScreen {
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					Tutorial.start(background.primaryColor(), background.secondaryColor());
-					
-					
+					startGame();					
 					
 				}
 			}
 		});
 	}
+	
+	private void startGame() {
+		GameState state = new StoryGameState();
+		state.setBackground(background);
+		
+		DefenseScreen ds = new DefenseScreen(screens, state);
+		pushScreen(ds, screens.slide().down());
+		// remove this screen from the stack - going back should lead to the TitleScreen
+		screens.remove(this);
+		Audio.bg().play(Constant.BG_GAME1);
+	}
+	
 	
 	@Override
 	protected void popThis() {
