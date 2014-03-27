@@ -1,14 +1,45 @@
 package tuxkids.tuxblocks.core.story;
 
+import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.defense.Grid;
+import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
+import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.title.Difficulty;
 
 public class StoryGameState extends GameState {
 
+	private int lesson = 0;
+	private boolean hasSetupTowersForLesson = false;
+	
 	public StoryGameState() {
-		super(new Difficulty(0, 1, Difficulty.ROUND_TIME_INFINITE));
+		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
+		addItem(TowerType.PeaShooter, -1);		//start with two towers
+		problems().clear(); 					//no problems
 		
 	}
 	
+	@Override
+	public void registerGrid(Grid grid) {
+		super.registerGrid(grid);
+		if (!hasSetupTowersForLesson) {
+			setUpTowersForLesson(grid);
+			hasSetupTowersForLesson = true;
+		}
+	}
+
+	private void setUpTowersForLesson(Grid grid) {
+		switch (lesson) {
+		case 0:
+			grid.placeTower(new PeaShooter(), new Point(8, 1));
+			grid.placeTower(new PeaShooter(), new Point(7, 2));
+			grid.placeTower(new PeaShooter(), new Point(6, 2));
+			grid.placeTower(new PeaShooter(), new Point(7, 14));
+			break;
+
+		default:
+			break;
+		}
+	}
 
 }

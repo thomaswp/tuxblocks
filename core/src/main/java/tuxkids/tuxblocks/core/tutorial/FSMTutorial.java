@@ -19,6 +19,7 @@ abstract class FSMTutorial implements TutorialInstance {
 	private TutorialLayer layer;
 	private State state = startState;
 	private Json.Object messages;
+	private static final Object NO_EXTRA_INFO = new Object();
 	
 	protected abstract void addStates();
 	
@@ -61,19 +62,31 @@ abstract class FSMTutorial implements TutorialInstance {
 
 	@Override
 	public void trigger(Trigger event) {
+		this.trigger(event, NO_EXTRA_INFO);
+	}
+	
+	@Override
+	public void trigger(Trigger event, Object extraInformation) {
 		if (state == endState || state == null) return;
 		
-		State nextState = state.sawTrigger(event);
+		State nextState = state.sawTrigger(event, extraInformation);
 		
 		if (nextState != null) {
 			state = nextState;
 			refreshHighlights();
 			if (state.message != null) layer.showMessage(state.message);
+			state = state.notifyMessageShown();
 		}
 		if (nextState == endState) {
-			destroy();
+			endOfTutorial();
 		}
 	}
+
+	protected void endOfTutorial() {
+		destroy();
+	}
+	
+	
 
 	@Override
 	public void destroy() {
@@ -95,22 +108,46 @@ abstract class FSMTutorial implements TutorialInstance {
 		// repeat button pressed, message reshown
 	}
 	
+	protected interface StateChooser {
+
+		State chooseState(Object extraInformation);
+
+		
+	}
+	
+	private class DefaultStateChooser implements StateChooser {
+		private State state;
+
+		public DefaultStateChooser(State state) {
+			this.state = state;
+		}
+
+		@Override
+		public State chooseState(Object extraInformation) {
+			return state;
+		}
+		
+	}
+	
 	protected class State {
 		public final String message;
 		public final List<Highlightable> highlightables = new ArrayList<Highlightable>();
-		private final HashMap<Trigger, State> transitions = new HashMap<Trigger, State>();
+		private final HashMap<Trigger, StateChooser> transitions = new HashMap<Trigger, StateChooser>();
 		private State elseState;
+		private State epsilonState;
 		
-		private State(String message) {
+		//for subclassing.  Should call addState();
+		protected State(String message) {
 			this.message = message;
 		}
-		
-		private State sawTrigger(Trigger event) {
-			State nextState = transitions.get(event);
+
+		private State sawTrigger(Trigger trigger, Object extraInformation) {
+				
+			StateChooser nextState = transitions.get(trigger);
 			if (nextState != null) {
-				return nextState;
-			} else if (nextState == null && elseState == null) {
-				return anyState.transitions.get(event);
+				return nextState.chooseState(extraInformation);
+			} else if (nextState == null && elseState == null && anyState.transitions.containsKey(trigger)) {
+				return anyState.transitions.get(trigger).chooseState(extraInformation);
 			}
 			return elseState;
 		}
@@ -122,14 +159,56 @@ abstract class FSMTutorial implements TutorialInstance {
 		
 		public State addTransition(State state, Trigger... triggers) {
 			for(Trigger t: triggers) {
-				transitions.put(t, state);
+				StateChooser sc = transitions.get(t);
+				if (sc == null) {
+					transitions.put(t, new DefaultStateChooser(state));
+				} else {
+					Debug.write("Warning: Multiple states from this trigger.  Make a stateChooser instead.");
+				}
 			}
 			return this;
 		}
 		
+		public State addTransition(StateChooser stateChooser, Trigger trigger) {
+			StateChooser sc = transitions.get(trigger);
+			if (sc == null) {
+				transitions.put(trigger, stateChooser);
+			}
+			else {
+				Debug.write("You can't chain stateChoosers.  Make one combined stateChooser per action/trigger");
+			}
+	
+			return this;
+		}
+		
+		
 		public State elseTransition(State state) {
 			this.elseState = state;
 			return this;
+		}
+
+		public void registerEpsilonTransition(State epsilonState) {
+			if (this.epsilonState == null) {
+				this.epsilonState = epsilonState;
+			}
+			else {
+				Debug.write("You can only register one epsilon state");
+			}
+		}
+		
+		/**
+		 * Allows this state to update after its message has been shown.
+		 * 
+		 * The default implementation is an epsilon transition (if one has 
+		 * been registered), but subclasses could do things like trigger UI events
+		 * @return
+		 */
+		public State notifyMessageShown() {
+			if (this.epsilonState == null) {
+				return this;
+			}
+			Debug.write("Epsilon transition to "+epsilonState);
+			return epsilonState;
 		}
 	}
 

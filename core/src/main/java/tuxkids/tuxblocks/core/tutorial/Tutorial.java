@@ -63,7 +63,7 @@ public abstract class Tutorial extends PlayNObject {
 		Number_NumberSelected, 
 		Number_Scratch, 
 		
-		Build_Shown, Title_Story, 
+		Build_Shown, Title_Story, Defense_BadTowerPlacement, 
 	}
 	
 	/**
@@ -163,6 +163,12 @@ public abstract class Tutorial extends PlayNObject {
 	public static void trigger(Trigger event) {
 		if (instance != null) {
 			instance.trigger(event);
+		}
+	}
+	
+	public static void trigger(Trigger event, Object extraInfo) {
+		if (instance != null) {
+			instance.trigger(event, extraInfo);
 		}
 	}
 	

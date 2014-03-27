@@ -111,6 +111,11 @@ public abstract class LinearTutorial implements TutorialInstance {
 	}
 	
 	@Override
+	public void trigger(Trigger event, Object extraInformation) {
+		trigger(event);  //TODO: handle extraInfo
+	}
+	
+	@Override
 	public void destroy() {
 		tutorialLayer.destroy();
 		Tutorial.clearIndicators();

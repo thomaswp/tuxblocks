@@ -2,6 +2,11 @@ package tuxkids.tuxblocks.core.tutorial;
 
 
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
+import pythagoras.f.Vector;
+import pythagoras.i.Point;
+import tuxkids.tuxblocks.core.tutorial.FSMTutorial.State;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 class Tutorial0 extends FSMTutorial {
 
@@ -14,18 +19,48 @@ class Tutorial0 extends FSMTutorial {
 		State one = addStartState("id_nextWaveSoon");
 		State two = addState("id_shoreUpDefenses");
 		State three = addState("id_dragFirstTower");
-		State four = addState("id_goodFirstPlacement");
-		State five = addState("id_okayFirstPlacement");
+		final State four = addState("id_goodFirstPlacement");
+		final State five = addState("id_okayFirstPlacement");
 		State six = addState("id_secondTowerPlacement");
 		
 		one.addTransition(two, TextBoxHidden);
 		two.addTransition(three, TextBoxHidden);
 		
-		three.addTransition(five, Defense_TowerDropped);
-		five.addTransition(six, Defense_TowerDropped);
+		three.addTransition(new StateChooser() {
+			
+			@Override
+			public State chooseState(Object extraInformation) {
+				if (extraInformation instanceof Point) {
+					
+					return four;
+				}
+				return five;
+			}
+		}, Defense_TowerDropped);
 		
-		//anyState.addTransition(two, Title_Play);
+		four.addTransition(six, Defense_TowerDropped);
+		five.addTransition(six, Defense_TowerDropped);
+		six.addTransition(endState, Defense_RoundOver);
+		
+		handleBadTowerTransition(one);
+		handleBadTowerTransition(two);
+		handleBadTowerTransition(three);
+		handleBadTowerTransition(four);
+		handleBadTowerTransition(five);
 	}
 
+	private void handleBadTowerTransition(final State originalState) {
+		State error = addState("id_badTowerPlacement");
+		originalState.addTransition(error, Defense_BadTowerPlacement);
+		error.registerEpsilonTransition(originalState);
+		
+	}
+
+	
+	@Override
+	protected void endOfTutorial() {
+		Debug.write("End");
+		super.endOfTutorial();
+	}
 
 }

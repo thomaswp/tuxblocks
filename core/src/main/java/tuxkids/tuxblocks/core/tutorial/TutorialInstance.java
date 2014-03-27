@@ -9,6 +9,7 @@ public interface TutorialInstance {
 	void paint(Clock clock);
 	void update(int delta);
 	void trigger(Trigger event);
+	void trigger(Trigger event, Object extraInformation);
 	void didLeaveScreen();
 	void destroy();
 	void refreshHighlights();

@@ -42,6 +42,7 @@
 },
 
 "tutorial" : {
+	"story" : "Story",
 	"click-pc" : "click",
 	"click-mobile" : "tap",
 	"clicking-pc" : "clicking",
