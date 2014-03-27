@@ -41,8 +41,11 @@
 	"solve-time-desc" : "How long you have to solve problems between rounds"	
 },
 
+"story" : {
+	"story" : "Story"
+},
+
 "tutorial" : {
-	"story" : "Story",
 	"click-pc" : "click",
 	"click-mobile" : "tap",
 	"clicking-pc" : "clicking",

@@ -92,5 +92,10 @@ public class StoryScreen extends GameScreen {
 		Audio.se().play(Constant.SE_BACK);
 		popThis(screens.slide().right());
 	}
+	
+	@Override
+	protected String getScreenName() {
+		return "story";
+	}
 
 }

@@ -31,8 +31,10 @@ class Tutorial0 extends FSMTutorial {
 			@Override
 			public State chooseState(Object extraInformation) {
 				if (extraInformation instanceof Point) {
-					
-					return four;
+					Point point = (Point) extraInformation;
+					if (point.x == 5 && point.y == 2) {
+						return four;
+					}
 				}
 				return five;
 			}
