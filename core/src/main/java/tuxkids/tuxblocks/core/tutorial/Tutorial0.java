@@ -14,11 +14,11 @@ class Tutorial0 extends FSMTutorial {
 		State two = addState("secondMessage");
 		State three = addState("thirdMessage");
 		
-		one.addTransition(Trigger.TextBoxHidden, two);
-		two.addTransition(Trigger.Build_Shown, three);
-		three.addTransition(Trigger.Title_Build, endState);
+		one.addTransition(two, Trigger.TextBoxHidden);
+		two.addTransition(three, Trigger.Build_Shown);
+		three.addTransition(endState, Trigger.Title_Build);
 		
-		anyState.addTransition(Trigger.Title_Play, two);
+		anyState.addTransition(two, Trigger.Title_Play);
 	}
 
 

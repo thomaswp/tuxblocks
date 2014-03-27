@@ -63,8 +63,8 @@ abstract class FSMTutorial implements TutorialInstance {
 	public void trigger(Trigger event) {
 		if (state == endState || state == null) return;
 		
-		State nextState = state.transitions.get(event);
-		if (nextState == null) nextState = anyState.transitions.get(event);
+		State nextState = state.sawTrigger(event);
+		
 		if (nextState != null) {
 			state = nextState;
 			refreshHighlights();
@@ -95,22 +95,40 @@ abstract class FSMTutorial implements TutorialInstance {
 		// repeat button pressed, message reshown
 	}
 	
-	protected static class State {
+	protected class State {
 		public final String message;
 		public final List<Highlightable> highlightables = new ArrayList<Highlightable>();
-		public final HashMap<Trigger, State> transitions = new HashMap<Trigger, State>();
+		private final HashMap<Trigger, State> transitions = new HashMap<Trigger, State>();
+		private State elseState;
 		
-		protected State(String message) {
+		private State(String message) {
 			this.message = message;
 		}
 		
+		private State sawTrigger(Trigger event) {
+			State nextState = transitions.get(event);
+			if (nextState != null) {
+				return nextState;
+			} else if (nextState == null && elseState == null) {
+				return anyState.transitions.get(event);
+			}
+			return elseState;
+		}
+
 		public State addHighlightable(Highlightable highlightable) {
 			highlightables.add(highlightable);
 			return this;
 		}
 		
-		public State addTransition(Trigger trigger, State state) {
-			transitions.put(trigger, state);
+		public State addTransition(State state, Trigger... triggers) {
+			for(Trigger t: triggers) {
+				transitions.put(t, state);
+			}
+			return this;
+		}
+		
+		public State elseTransition(State state) {
+			this.elseState = state;
 			return this;
 		}
 	}
