@@ -17,6 +17,7 @@ These were suggestions made by players during the beta:
 * Make enemies faster (and perhaps weaker to balance things) so the rounds go quicker, especially since players can't do anything during them.
 * Look into more interesting art for Towers and Walkers.
 * Add a visible Menu (or at least mute) button to the TitleScreen and DefenseScreen
+* Buttons should not highlight when you mouse over them if the menu is open (unless the buttons are on the menu)
 
 Possible Issues
 ---------------------
