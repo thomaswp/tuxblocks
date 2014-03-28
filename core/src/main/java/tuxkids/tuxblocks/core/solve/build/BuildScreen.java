@@ -19,7 +19,6 @@ import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
-import tuxkids.tuxblocks.core.utils.persist.PersistUtils;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
 
@@ -86,12 +85,6 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 		registerHighlightable(toolbox.buttonMore, Tag.Build_NumberUp);
 		registerHighlightable(toolbox.buttonLess, Tag.Build_NumberDown);
 		registerHighlightable(toolbox, Tag.Build_LeftPanel);
-		
-		if (PersistUtils.stored("lastEq")) {
-			Equation eq = PersistUtils.fetch(Equation.class, "lastEq");
-			System.out.println(eq.getPlainText());
-			setEquation(eq);
-		}
 	}
 	
 	@Override

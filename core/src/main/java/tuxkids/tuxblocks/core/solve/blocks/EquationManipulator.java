@@ -32,6 +32,10 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected SolveActionCallback solveActionCallback; // callback for when a SolveAction is performed
 
 	protected abstract boolean hasSprites();
+	
+	protected boolean shouldActionCallback() {
+		return !inBuildMode && solveActionCallback != null;
+	}
 
 	protected void triggerTutorial(Trigger trigger) {
 
@@ -100,7 +104,6 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 	
 	// invert the dragging Block when it crosses the =
-	//TODO buggy?
 	protected Block invertBlock(Block block) {
 		Block inverse = block.inverse();
 		block.showInverse();
@@ -129,7 +132,7 @@ public abstract class EquationManipulator extends PlayNObject {
 	
 	public Block dragBlock(Block sprite) {
 
-		if (solveActionCallback != null) {
+		if (shouldActionCallback()) {
 			draggingPreviousIndex = equation.indexOf(sprite);
 			draggingPreviousEquation = equation.copy();
 		}
@@ -185,7 +188,7 @@ public abstract class EquationManipulator extends PlayNObject {
 	 */
 	protected Block dropBlock(BaseBlock target) {
 
-		if (solveActionCallback != null) {
+		if (shouldActionCallback()) {
 			int targetIndex = equation.allBlocks.indexOf(target);
 			reportSolveAction(new DragAction(draggingPreviousIndex, targetIndex, target != draggingFrom));
 		}
@@ -248,7 +251,7 @@ public abstract class EquationManipulator extends PlayNObject {
 	public void reciprocateBlock(Block sprite) {
 		if (sprite instanceof VerticalModifierBlock) {
 			boolean success = ((ModifierBlock) sprite).canAddInverse(); 
-			if (solveActionCallback != null) {
+			if (shouldActionCallback()) {
 				reportSolveAction(new ReciprocalAction(equation.indexOf(sprite), success));
 			}
 			
@@ -279,13 +282,13 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 	
 	protected void startBlockReduce(Renderer problem, int answer, Stat stat, int level) {
-		if (solveActionCallback != null) {
+		if (shouldActionCallback()) {
 			reportSolveAction(new StartSimplifyingBlocksAction(problem.getPlainText(), answer));
 		}
 	}
 	
 	protected void finishBlockReduce(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success) {
-		if (solveActionCallback != null) {
+		if (shouldActionCallback()) {
 			// TODO: really should be a better way of reporting/representing this
 			// so not everything has to be passed
 			EquationBlockIndex baseIndex = equation.indexOf(sprite);
@@ -309,13 +312,13 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 	
 	protected void startSolving() {
-		if (solveActionCallback != null) {
+		if (shouldActionCallback()) {
 			reportSolveAction(new StartProblemAction(equation.getPlainText()));
 		}
 	}
 	
 	public void finishSolving() {
-		if (solveActionCallback != null) {
+		if (shouldActionCallback()) {
 			reportSolveAction(new FinishProblemAction(isEquationSolved(equation)));
 		}
 	}
