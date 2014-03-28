@@ -2,26 +2,33 @@ package tuxkids.tuxblocks.core.tutorial;
 
 
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
-import pythagoras.f.Vector;
 import pythagoras.i.Point;
-import tuxkids.tuxblocks.core.tutorial.FSMTutorial.State;
-import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.utils.Debug;
 
-class Tutorial0 extends FSMTutorial {
+public class Tutorial0 extends FSMTutorial {
 
-	public Tutorial0(int themeColor) {
-		super(themeColor);
+
+
+	public Tutorial0(StoryGameState storyGameState) {
+		super(storyGameState);
 	}
 
 	@Override
-	protected void addStates() {
-		State one = addStartState("id_nextWaveSoon");
-		State two = addState("id_shoreUpDefenses");
-		State three = addState("id_dragFirstTower");
-		final State four = addState("id_goodFirstPlacement");
-		final State five = addState("id_okayFirstPlacement");
-		State six = addState("id_secondTowerPlacement");
+	protected void setUpStates() {
+		FSMState one = addStartState("id_nextWaveSoon");
+		FSMState two = addState("id_shoreUpDefenses");
+		FSMState three = addState("id_dragFirstTower");
+		final FSMState four = addState("id_goodFirstPlacement");
+		final FSMState five = addState("id_okayFirstPlacement");
+		FSMState six = addState("id_secondTowerPlacement");
+		FSMState seven = new FSMState(){
+			@Override
+			public FSMState notifyMessageShown() {
+				gameState.level().startNextRound();
+				return super.notifyMessageShown();
+			}
+		};
 		
 		one.addTransition(two, TextBoxHidden);
 		two.addTransition(three, TextBoxHidden);
@@ -29,7 +36,7 @@ class Tutorial0 extends FSMTutorial {
 		three.addTransition(new StateChooser() {
 			
 			@Override
-			public State chooseState(Object extraInformation) {
+			public FSMState chooseState(Object extraInformation) {
 				if (extraInformation instanceof Point) {
 					Point point = (Point) extraInformation;
 					if (point.x == 5 && point.y == 2) {
@@ -42,7 +49,8 @@ class Tutorial0 extends FSMTutorial {
 		
 		four.addTransition(six, Defense_TowerDropped);
 		five.addTransition(six, Defense_TowerDropped);
-		six.addTransition(endState, Defense_RoundOver);
+		six.addTransition(seven, TextBoxHidden);
+		seven.addTransition(endState, Defense_RoundOver);
 		
 		handleBadTowerTransition(one);
 		handleBadTowerTransition(two);
@@ -51,8 +59,8 @@ class Tutorial0 extends FSMTutorial {
 		handleBadTowerTransition(five);
 	}
 
-	private void handleBadTowerTransition(final State originalState) {
-		State error = addState("id_badTowerPlacement");
+	private void handleBadTowerTransition(final FSMState originalState) {
+		FSMState error = addState("id_badTowerPlacement");
 		originalState.addTransition(error, Defense_BadTowerPlacement);
 		error.registerEpsilonTransition(originalState);
 		

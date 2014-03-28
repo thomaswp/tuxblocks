@@ -10,6 +10,7 @@ import tripleplay.game.Screen;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
+import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
 
@@ -118,10 +119,16 @@ public abstract class Tutorial extends PlayNObject {
 		if (instance != null) {
 			return;
 		}
+		FSMTutorial.setPrimaryColor(themeColor);
 //		start(new TutorialStart(themeColor, secondaryColor), Constant.TUTORIAL_START_PATH);
-		start(new Tutorial0(themeColor), "TutorialStory0.json");
+//		start(new Tutorial0(), "TutorialStory0.json");
 	}
 	
+	public static void start(int primaryColor, StoryGameState state) {
+		FSMTutorial.setPrimaryColor(primaryColor);
+		start(state.getCurrentTutorialInstance(), state.getCurrentTutorialScript());
+	}
+
 	protected static void start(final TutorialInstance tutorial, final String path) {
 		instance = tutorial;
 		Lang.getText(path, new Callback<String>() {

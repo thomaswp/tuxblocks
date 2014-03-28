@@ -67,17 +67,18 @@ public class StoryScreen extends GameScreen {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					Tutorial.start(background.primaryColor(), background.secondaryColor());
-					startGame();					
+					
+					startStory();					
 					
 				}
 			}
 		});
 	}
 	
-	private void startGame() {
-		GameState state = new StoryGameState();
+	private void startStory() {
+		StoryGameState state = new StoryGameState();
 		state.setBackground(background);
+		Tutorial.start(background.primaryColor(), state);
 		
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());

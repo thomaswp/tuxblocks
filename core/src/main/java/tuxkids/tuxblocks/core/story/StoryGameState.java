@@ -6,6 +6,9 @@ import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.tutorial.Tutorial0;
+import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 public class StoryGameState extends GameState {
 
@@ -40,6 +43,30 @@ public class StoryGameState extends GameState {
 		default:
 			break;
 		}
+	}
+
+	public TutorialInstance getCurrentTutorialInstance() {
+		
+		switch (lesson) {
+		case 0:
+			return new Tutorial0(this);
+			
+		default:
+			Debug.write("No script for "+lesson);
+			return null;
+		}
+	}
+
+	public String getCurrentTutorialScript() {
+		switch (lesson) {
+		case 0:
+			return "TutorialStory0.json";
+			
+		default:
+			Debug.write("No script for "+lesson);
+			return null;
+		}
+		
 	}
 
 }
