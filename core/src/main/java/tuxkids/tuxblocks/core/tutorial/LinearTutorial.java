@@ -85,7 +85,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 				String path = ((Segue) action).path;
 				TutorialInstance tutorial = ((Segue) action).tutorial;
 				destroy();
-				Tutorial.start(tutorial, path);
+				Tutorial.loadTutorial(tutorial, path);
 				return;
 			} else {
 				tutorialLayer.showMessage(action.message);

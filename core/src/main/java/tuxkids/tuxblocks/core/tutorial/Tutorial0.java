@@ -2,6 +2,9 @@ package tuxkids.tuxblocks.core.tutorial;
 
 
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
+
+import java.lang.Thread.State;
+
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.utils.Debug;
@@ -71,6 +74,8 @@ public class Tutorial0 extends FSMTutorial {
 	protected void endOfTutorial() {
 		Debug.write("End");
 		super.endOfTutorial();
+		
+		gameState.finishedLesson();
 	}
 
 }

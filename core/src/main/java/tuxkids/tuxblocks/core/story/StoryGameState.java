@@ -6,6 +6,7 @@ import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.Debug;
@@ -67,6 +68,12 @@ public class StoryGameState extends GameState {
 			return null;
 		}
 		
+	}
+
+	public void finishedLesson() {
+		lesson++;
+		//Tutorial.loadTutorial(getCurrentTutorialInstance(),getCurrentTutorialScript());
+		Tutorial.loadTutorial(new Tutorial0(this),"TutorialStory0.json");
 	}
 
 }
