@@ -47,6 +47,10 @@ public class IdealEquationSolver {
 	}
 
 	public List<Step> aStar(Equation start) {
+		return aStar(start, Integer.MAX_VALUE);
+	}
+	
+	public List<Step> aStar(Equation start, int maxSteps) {
 		// queue of paths to solution, sorted using the heuristic
 		PriorityQueue<List<Step>> paths = new PriorityQueue<List<Step>>(20, comparator);
 
@@ -58,13 +62,17 @@ public class IdealEquationSolver {
 		// a map of the shortest path lengths to a given node
 		HashMap<String, Integer> discoveredNodes = new HashMap<String, Integer>();
 
+		// count how many nodes we've expanded
+		int numExpanded = 0;
+		
 		while (paths.size() > 0) {
 			// seeAllAndHeuristics(paths);
 			List<Step> toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
-
-			// break if we win
-			if (EquationManipulator.isEquationSolved(last.result)) {
+			numExpanded++; //increment the number expanded
+			
+			// break if we win or excede the limit
+			if (numExpanded >= maxSteps || EquationManipulator.isEquationSolved(last.result)) {
 				return toExpand;
 			}
 

@@ -18,6 +18,7 @@ These were suggestions made by players during the beta:
 * Look into more interesting art for Towers and Walkers.
 * Add a visible Menu (or at least mute) button to the TitleScreen and DefenseScreen
 * Allow fast-forwarding during the defense portion
+* Buttons should not highlight when you mouse over them if the menu is open (unless the buttons are on the menu)
 
 Possible Issues
 ---------------------

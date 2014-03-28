@@ -10,7 +10,6 @@ import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Layer;
-import playn.core.PlayN;
 import playn.core.Pointer.Event;
 import playn.core.TextFormat;
 import playn.core.util.Clock;
@@ -30,9 +29,6 @@ import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
-import tuxkids.tuxblocks.core.solve.action.FinishProblemAction;
-import tuxkids.tuxblocks.core.solve.action.SolveAction;
-import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.build.BuildScreen;
@@ -43,8 +39,6 @@ import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
-import tuxkids.tuxblocks.core.utils.persist.PersistUtils;
-import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 /**
  * Responsible for manipulating {@link Equation} on the {@link SolveScreen}
@@ -141,8 +135,6 @@ public class BlockController extends EquationManipulator {
 		return listener;
 	}
 	
-	int solutionLength;
-	
 	public BlockController(Parent parent, float width, float height) {
 		this.parent = parent;
 		this.width = width;
@@ -154,25 +146,6 @@ public class BlockController extends EquationManipulator {
 				new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, 20)), Colors.WHITE));
 		centerImageLayer(equals);
 		layer.add(equals);
-		
-		solveActionCallback = new SolveActionCallback() {
-			@Override
-			public void onActionPerformed(SolveAction action, Equation before) {
-				if (!inBuildMode) {
-					debug(before.getPlainText() + " -> " + (action == null ? "[ ]" : action));
-					PersistUtils.persist(before, "lastSolution" + solutionLength);
-					solutionLength++;
-					PlayN.storage().setItem("lastSolutionLength", "" + solutionLength);
-					if (action instanceof StartProblemAction) {
-						solutionLength = 0;
-						int l = 0;
-						while (PlayN.storage().getItem("lastSolution" + l) != null) {
-							PlayN.storage().removeItem("lastSolution" + l);
-						}
-					}
-				}
-			}
-		};
 	}
 	
 	/** Clears and destroys the current {@link Equation} */
