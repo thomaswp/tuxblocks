@@ -1,0 +1,40 @@
+package tuxkids.tuxblocks.core.tutorial;
+
+
+import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
+import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.tutorial.FSMTutorial.FSMState;
+import tuxkids.tuxblocks.core.utils.Debug;
+
+
+public class Tutorial1 extends FSMTutorial {
+
+	public Tutorial1(StoryGameState storyGameState) {
+		super(storyGameState);
+	}
+
+	@Override
+	protected void setUpStates() {
+		FSMState one = addStartState("id_salvageAndBuild");
+		FSMState two = addState("id_goToEquationScreen");
+		FSMState three = addState("id_solveTheClues");
+		FSMState four = addState("id_selectFirstEquation");
+		
+		one.addTransition(two, TextBoxHidden);
+		two.addTransition(three, Select_Shown);
+		three.addTransition(four, TextBoxHidden);
+		
+		four.registerElseTransition(endState);
+		
+	}
+	
+	@Override
+	protected void endOfTutorial() {
+		Debug.write("End");
+		super.endOfTutorial();
+		gameState.finishedLesson();
+	}
+	
+	
+
+}

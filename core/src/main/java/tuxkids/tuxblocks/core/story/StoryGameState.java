@@ -5,15 +5,21 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
+import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
+import tuxkids.tuxblocks.core.tutorial.Tutorial1;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class StoryGameState extends GameState {
 
 	private int lesson = 0;
+	private int equationIndex = 0;
+	
 	private boolean hasSetupTowersForLesson = false;
 	
 	public StoryGameState() {
@@ -51,9 +57,10 @@ public class StoryGameState extends GameState {
 		switch (lesson) {
 		case 0:
 			return new Tutorial0(this);
-			
+		case 1:
+			return new Tutorial1(this);
 		default:
-			Debug.write("No script for "+lesson);
+			Debug.write("No lesson prepared for "+lesson);
 			return null;
 		}
 	}
@@ -62,6 +69,8 @@ public class StoryGameState extends GameState {
 		switch (lesson) {
 		case 0:
 			return "TutorialStory0.json";
+		case 1:
+			return "TutorialStory1-1.json";
 			
 		default:
 			Debug.write("No script for "+lesson);
@@ -72,8 +81,25 @@ public class StoryGameState extends GameState {
 
 	public void finishedLesson() {
 		lesson++;
-		//Tutorial.loadTutorial(getCurrentTutorialInstance(),getCurrentTutorialScript());
-		Tutorial.loadTutorial(new Tutorial0(this),"TutorialStory0.json");
+		Tutorial.loadTutorial(getCurrentTutorialInstance(),getCurrentTutorialScript());
 	}
+	
+	
+	private static final Equation[] equations = new Equation[2];
+	
+	static {
+		equations[0] = new Equation.Builder().addLeft(new VariableBlock("x"))
+				.addRight(new NumberBlock(4).times(3)).createEquation();
+		equations[1] = new Equation.Builder().addLeft(new VariableBlock("x"))
+				.addRight(new NumberBlock(6).minus(5)).createEquation();
+	}
+	
+	@Override
+	protected Equation createEquation(int difficulty, float percFinished) {
+		if (equationIndex < equations.length)
+			return equations[equationIndex++];
+		return super.createEquation(difficulty, percFinished);
+	}
+	
 
 }
