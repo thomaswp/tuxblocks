@@ -21,6 +21,7 @@ import com.sun.codemodel.JMod;
 public class Validator {
 	
 	private final static String INPUT_PATH = "../assets/src/main/resources/assets/text";
+	private final static String OUTPUT_PATH = "../core/src/main/java";
 	private final static PrintStream log = System.out;
 	private final static String TUTORIAL_ID = "tutorial_id";
 	private final static String DEFAULT_LANG = "en";
@@ -42,7 +43,7 @@ public class Validator {
 			log.println("Cannot open text assets directory: " + textDir.getAbsolutePath());
 		}
 		
-		codeModel.build(new File("."));
+		codeModel.build(new File(OUTPUT_PATH));
 	}
 
 	private void analyzeLangDir(File textDir, String dir, boolean master) throws FileNotFoundException {
@@ -92,7 +93,7 @@ public class Validator {
 			String[] keys = JSONObject.getNames(object);
 			for (String key : keys) {
 				String value = object.getString(key);
-				JFieldVar field = tutorial.field(JMod.PROTECTED | JMod.FINAL | JMod.STATIC, String.class, key);
+				JFieldVar field = tutorial.field(JMod.FINAL | JMod.STATIC, String.class, key);
 				field.javadoc().add(value);
 				field.init(JExpr.lit(key));
 			}
