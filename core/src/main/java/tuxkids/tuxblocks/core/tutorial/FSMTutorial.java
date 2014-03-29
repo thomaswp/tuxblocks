@@ -136,7 +136,8 @@ abstract class FSMTutorial implements TutorialInstance {
 			states[i].addTransition(states[i+1], Trigger.TextBoxHidden);
 		}
 	}
-	
+
+
 	public static void setPrimaryColor(int primaryColor) {
 		layerColor = primaryColor;
 	}

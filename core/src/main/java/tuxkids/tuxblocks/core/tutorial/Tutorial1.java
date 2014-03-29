@@ -86,15 +86,9 @@ public class Tutorial1 extends FSMTutorial {
 		handlePrematureSimplification(_3x4PrematureSimplify, _3x4Simplify5, _3x4Simplify1, _3x4Simplify2, _3x4Simplify3);
 		_3x4Simplify4.addTransition(_3x4Simplify5, NumberSelect_NumberSelected);
 		
+		_3x4PrematureSimplify.addTransition(_3x4Solved, Solve_Solved);
 		_3x4Simplify5.addTransition(_3x4Solved, Solve_Solved);
 		return _3x4Solved;
-	}
-
-	private void handlePrematureSimplification(FSMState simplifyNode, FSMState nodeToSkipTo,FSMState... skippableNodes) {
-		for(FSMState node:skippableNodes) {
-			node.addTransition(simplifyNode, NumberSelect_NumberSelected);
-		}
-		joinMultiTextStates(simplifyNode, nodeToSkipTo);	
 	}
 
 	private void solve3x4AsFirst_handleDrag(final FSMState startingNode) {
@@ -192,6 +186,7 @@ public class Tutorial1 extends FSMTutorial {
 		handlePrematureSimplification(_6m5PrematureSimplify, _6m5Simplify5, _6m5Simplify1, _6m5Simplify2, _6m5Simplify3);
 		_6m5Simplify4.addTransition(_6m5Simplify5, NumberSelect_NumberSelected);
 		
+		_6m5PrematureSimplify.addTransition(_6m5Solved, Solve_Solved);
 		_6m5Simplify5.addTransition(_6m5Solved, Solve_Solved);
 		return _6m5Solved;
 	}
@@ -272,6 +267,13 @@ public class Tutorial1 extends FSMTutorial {
 		_3x4FixedBadDrag.registerEpsilonTransition(startingNode);
 	}
 
+	private void handlePrematureSimplification(FSMState simplifyNode, FSMState nodeToSkipTo, FSMState... skippableNodes) {
+		for(FSMState node:skippableNodes) {
+			node.addTransition(simplifyNode, NumberSelect_NumberSelected);
+		}
+		joinMultiTextStates(simplifyNode, nodeToSkipTo);	
+	}
+	
 	@Override
 	protected void endOfTutorial() {
 		Debug.write("End");
