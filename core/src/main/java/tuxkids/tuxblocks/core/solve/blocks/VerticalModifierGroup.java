@@ -157,7 +157,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 	
 	@Override
-	public void placeButton(ModifierBlock sprite, ModifierBlock pair, Object tag, ButtonFactory factory) {
+	public void placeButton(Block sprite, ModifierBlock pair, Object tag, ButtonFactory factory) {
 		if (tag == Tag.CancelTimes) {
 			factory.getSimplifyButton(sprite, pair)
 			.setTranslation(sprite.x() + wrapSize(), parentRect.maxY());
@@ -180,22 +180,22 @@ public class VerticalModifierGroup extends ModifierGroup {
 	}
 
 	@Override
-	public void simplify(ModifierBlock sprite, ModifierBlock pair) {
-		if (sprite.inverse().equals(pair)) {
+	public void simplify(Block base, ModifierBlock pair) {
+		if (base.inverse().equals(pair)) {
 			// if the two cancel out, just remove them
-			blockListener.wasSimplified(sprite, pair, this, true);
-			removeChild(sprite, true);
+			blockListener.wasSimplified(base, pair, this, true);
+			removeChild((ModifierBlock) base, true);
 			removeChild(pair, true);
 		} else {
 			// otherwise, we either we're either combining or reducing
-			boolean spriteTimes = sprite instanceof TimesBlock;
+			boolean spriteTimes = base instanceof TimesBlock;
 			boolean pairTimes = pair instanceof TimesBlock;
 			if (spriteTimes == pairTimes) {
 				// combine two Times- or OverBlocks
-				reduceSame(sprite, pair, spriteTimes);
+				reduceSame((ModifierBlock) base, pair, spriteTimes);
 			} else {
 				// reduce a Times- and OverBlock to just one
-				reduceDif(sprite, pair, spriteTimes);
+				reduceDif((ModifierBlock) base, pair, spriteTimes);
 			}
 		}
 	}

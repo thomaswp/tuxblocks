@@ -192,20 +192,20 @@ public class HorizontalModifierGroup extends ModifierGroup {
 	}
 	
 	@Override
-	public void placeButton(ModifierBlock sprite, ModifierBlock pair,
+	public void placeButton(Block sprite, ModifierBlock pair,
 			Object tag, ButtonFactory factory) {
 		factory.getSimplifyButton(sprite, pair)
 		.setTranslation(sprite.x(), sprite.centerY());
 	}
 
 	@Override
-	public void simplify(final ModifierBlock sprite, final ModifierBlock pair) {
-		HorizontalModifierBlock hSprite = (HorizontalModifierBlock) sprite;
+	public void simplify(final Block base, final ModifierBlock pair) {
+		HorizontalModifierBlock hSprite = (HorizontalModifierBlock) base;
 		final HorizontalModifierBlock before = (HorizontalModifierBlock) pair;
-		if (sprite.inverse().equals(before)) {
+		if (base.inverse().equals(before)) {
 			// if the two are inverses (2 - 2) just simplify
-			blockListener.wasSimplified(sprite, pair, this, true);
-			removeChild(sprite, true);
+			blockListener.wasSimplified(base, pair, this, true);
+			removeChild((ModifierBlock) base, true);
 			removeChild(before, true);
 		} else {
 			// create a problem to combine the two blocks
@@ -221,11 +221,11 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			blockListener.wasReduced(problem, answer, start, stat, level, new SimplifyListener() {
 				@Override
 				public void wasSimplified(boolean success) {
-					blockListener.wasSimplified(sprite, pair, HorizontalModifierGroup.this, success);
+					blockListener.wasSimplified(base, pair, HorizontalModifierGroup.this, success);
 					if (success) {
 						// and if the succeed, remove the modifier block and add it to the other one
 						before.setPlusValue(answer);
-						removeChild(sprite, true);
+						removeChild((ModifierBlock) base, true);
 					}
 				}
 			});

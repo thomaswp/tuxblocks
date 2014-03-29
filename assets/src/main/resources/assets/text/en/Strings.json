@@ -57,12 +57,25 @@
 },
 
 "hint" : {
+	"stumped" : "Sorry - this one's got me stumped too... Maybe you should reset and try again.",
+	"solved" : "It looks like this one's solved. Press the check mark to continue.",
+
 	"drag-vague-variables" : "Try combining two Variables.",
 	"drag-vague-one-variable" : "Try moving a Variable block.",
 	"drag-vague-horizontal" : "Try dragging a Plus or Minus block.",
 	"drag-vague-vertical" : "Try dragging a Times or Divide block.",
-	"drag-specific" : "Take a look at the %s block",
-	"drag-bottom-out" : "You should drag the %s block to the %s block"
+	"drag-specific" : "Think about dragging the %s block",
+	"drag-bottom-out" : "You should drag the %s block to the %s block",
+	
+	"simplify-vague" : "Try simplifying a block.",
+	"simplify-specific-simplify" : "Could %s be simplified with something?",
+	"simplify-specific-cancel" : "Can you cancel something out?",
+	"simplify-bottom-out-simplify" : "You should probably combine %s and %s.",
+	"simplify-bottom-out-cancel" : "You should probably cancel %s with %s.",
+	
+	"reciprocate-vague" : "Do you need to multiply or divide the whole equation by something?",
+	"reciprocate-specific" : "Take a look at %s. How could you get rid of it?",
+	"reciprocate-bottom-out" : "You should double-%s on %s so you can get rid of it."  
 }
 
 }

@@ -27,4 +27,8 @@ public class EquationBlockIndex {
 	public String toString() {
 		return Formatter.format("{%d, %d, %d}", expressionIndex, blockIndex.depth, blockIndex.index);
 	}
+
+	public static EquationBlockIndex fromBaseBlockIndex(int index) {
+		return new EquationBlockIndex(index, ExpressionBlockIndex.makeExpressionBlockIndex(0, 0));
+	}
 }

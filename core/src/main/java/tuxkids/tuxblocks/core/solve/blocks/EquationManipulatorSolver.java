@@ -172,10 +172,10 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 				final int fd = depth;
 				simplifiable.addSimplifiableBlocks(new Aggregator() {
 					@Override
-					public void add(ModifierBlock sprite, ModifierBlock pair, Object tag) {
-						EquationBlockIndex spriteIndex = new EquationBlockIndex(fi, parent.indexOf(sprite));
+					public void add(Block base, ModifierBlock pair, Object tag) {
+						EquationBlockIndex baseIndex = new EquationBlockIndex(fi, parent.indexOf(base));
 						EquationBlockIndex pairIndex = (pair == null ? null : new EquationBlockIndex(fi, parent.indexOf(pair)));
-						actions.add(new FinishSimplifyAction(spriteIndex, pairIndex, fd, true));
+						actions.add(new FinishSimplifyAction(baseIndex, pairIndex, fd, true));
 					}
 				});
 				if (simplifiable instanceof BaseBlock) {
@@ -252,8 +252,8 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 		}
 		
 		base.addBlockListener(this);
-		ModifierBlock sprite = (ModifierBlock) base.getBlockAtIndex(action.baseIndex.blockIndex);
-		ModifierBlock pair = action.pairIndex == null ? null : (ModifierBlock) base.getBlockAtIndex(action.pairIndex.blockIndex); 
+		Block sprite = base.getBlockAtIndex(action.baseIndex.blockIndex);
+		ModifierBlock pair = (ModifierBlock) base.getBlockAtIndex(action.pairIndex.blockIndex); 
 		simplifiable.simplify(sprite, pair);
 		base.update(0);
 				

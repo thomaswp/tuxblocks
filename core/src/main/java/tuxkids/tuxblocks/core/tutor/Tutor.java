@@ -3,8 +3,10 @@ package tuxkids.tuxblocks.core.tutor;
 import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.lang.Strings_Hint;
+import tuxkids.tuxblocks.core.lang.Strings_Tutorial;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
@@ -14,6 +16,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierBlock;
+import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.KnowledgeComponent;
@@ -32,6 +35,8 @@ public class Tutor implements Strings_Hint {
 	
 	private StudentModel model;
 	private IdealEquationSolver solver = new IdealEquationSolver();
+	private Equation lastHintEquation;
+	private HintLevel lastHintLevel = HintLevel.Vague;
 
 	private List<StudentAction> previousSolutionOrientedActions;
 
@@ -85,9 +90,8 @@ public class Tutor implements Strings_Hint {
 		
 		public final static String DOMAIN = "hint";
 
-		public Hint(String text) {
-			this.action = null;
-			this.text = null;
+		public Hint(String key) {
+			this(null, key);
 		}
 		
 		public Hint(SolveAction action, String key, Object... args) {
@@ -95,13 +99,10 @@ public class Tutor implements Strings_Hint {
 			this.text = Formatter.format(Lang.getString(DOMAIN, key), args);
 		}
 		
-		public Hint(SolveAction action, String key) {
-			this.action = action;
-			this.text = Lang.getString(DOMAIN, key);
-		}
-		
-		public Hint addHighlight(EquationBlockIndex index) {
-			highlights.add(index);
+		public Hint addHighlights(EquationBlockIndex... indices) {
+			for (EquationBlockIndex index : indices) {
+				highlights.add(index);
+			}
 			return this;
 		}
 		
@@ -113,9 +114,20 @@ public class Tutor implements Strings_Hint {
 	
 	public Hint getHint(Equation equation) {
 		List<Step> solution = solver.aStar(equation, 1000);
-		if (solution == null) return new Hint("Sorry - this one's got me stumped too...");
-		if (solution.size() < 2) return new Hint("It looks like this one's solved. Press the check mark to continue.");
-		return getHint(equation, solution.get(1).actions.get(0), HintLevel.Specific);
+		if (solution == null) return new Hint(key_stumped);
+		if (solution.size() < 2) return new Hint(key_solved);
+		
+		if (lastHintEquation != null && 
+				equation.getPlainText().equals(lastHintEquation.getPlainText())) {
+			if (lastHintLevel != HintLevel.BottomOut) {
+				lastHintLevel = HintLevel.values()[lastHintLevel.ordinal() + 1];
+			}
+		} else {
+			lastHintLevel = HintLevel.Vague;
+			lastHintEquation = equation.copy();
+		}
+		
+		return getHint(equation, solution.get(1).actions.get(0), lastHintLevel);
 	}
 
 	private Hint getHint(Equation equation, SolveAction action, HintLevel level) {
@@ -152,18 +164,57 @@ public class Tutor implements Strings_Hint {
 		
 		if (level == HintLevel.Specific) {
 			return new Hint(action, key_dragSpecific, dragging.toString())
-			.addHighlight(action.fromIndex);
+			.addHighlights(action.fromIndex);
 		}
 		
-		return new Hint(action, key_dragBottomOut, 
-				dragging.toString(), dragTo.toString());
+		return new Hint(action, key_dragBottomOut, dragging.toString(), dragTo.toString())
+		.addHighlights(action.fromIndex, EquationBlockIndex.fromBaseBlockIndex(action.toIndex));
 	}
 	
 	private Hint getSimplifyHint(Equation equation, FinishSimplifyAction action, HintLevel level) {
-		return null;
+		if (level == HintLevel.Vague) {
+			return new Hint(action, key_simplifyVague);
+		}
+		
+		Block base = equation.getBlock(action.baseIndex);
+		ModifierBlock pair = (ModifierBlock) equation.getBlock(action.pairIndex);
+		
+		boolean cancel = false;
+		if (base instanceof ModifierBlock) {
+			if (((ModifierBlock) base).value() == pair.value()) cancel = true;
+		}
+		
+		if (level == HintLevel.Specific) {
+			if (!cancel) {
+				return new Hint(action, key_simplifySpecificSimplify, base.toString())
+				.addHighlights(action.baseIndex);
+			} else {
+				return new Hint(action, key_simplifySpecificCancel);
+			}
+		}
+		
+		if (!cancel) {
+			return new Hint(action, key_simplifyBottomOutSimplify, base.toString(), pair.toString())
+			.addHighlights(action.baseIndex, action.pairIndex);
+		} else {
+			return new Hint(action, key_simplifyBottomOutCancel, base.toString(), pair.toString())
+			.addHighlights(action.baseIndex, action.pairIndex);
+		}
 	}
 	
 	private Hint getReciprocalHint(Equation equation, ReciprocalAction action, HintLevel level) {
-		return null;
+		if (level == HintLevel.Vague) {
+			return new Hint(action, key_reciprocateVague);
+		}
+		
+		Block toCancel = equation.getBlock(action.index);
+		if (level == HintLevel.Specific) {
+			return new Hint(action, key_reciprocateSpecific, toCancel.toString())
+			.addHighlights(action.index);
+		}
+		
+		return new Hint(action, key_reciprocateBottomOut, 
+				Lang.getDeviceString("tutorial", Constant.TUTORIAL_TEXT_CLICK), toCancel)
+		.addHighlights(action.index);
 	}
 }
