@@ -86,7 +86,6 @@ public class Tutorial1 extends FSMTutorial {
 		handlePrematureSimplification(_3x4PrematureSimplify, _3x4Simplify5, _3x4Simplify1, _3x4Simplify2, _3x4Simplify3);
 		_3x4Simplify4.addTransition(_3x4Simplify5, NumberSelect_NumberSelected);
 		
-
 		_3x4Simplify5.addTransition(_3x4Solved, Solve_Solved);
 		return _3x4Solved;
 	}
@@ -175,8 +174,54 @@ public class Tutorial1 extends FSMTutorial {
 	}
 
 	private FSMState solve6m5asFirstEquation(FSMState _6m5One) {
-		// TODO Auto-generated method stub
-		return new FSMState();
+		FSMState _6m5Two = addState("id_solveForX");
+		final FSMState _6m5Three = addState("id_6m5simplifyMultiplicationPrompt");
+		FSMState _6m5Simplify1 = addState("id_6m5simplifyScreen1");
+		FSMState _6m5Simplify2 = addState("id_simplifyScreen2");
+		FSMState _6m5Simplify3 = addState("id_simplifyScreen3");
+		FSMState _6m5Simplify4 = addState("id_simplifyScreen4");
+		FSMState _6m5Simplify5 = addState("id_simplifyScreen5").addHighlightable(NumberSelect_Ok);
+		FSMState _6m5PrematureSimplify = addState("id_prematureSimplify");	
+		FSMState _6m5Solved = addState("id_6m5solved").addHighlightable(Solve_Ok);
+
+		joinMultiTextStates(_6m5One, _6m5Two, _6m5Three);
+		solve6m5AsFirst_handleDrag(_6m5Three);
+		
+		_6m5Three.addTransition(_6m5Simplify1, NumberSelect_Shown);
+		joinMultiTextStates(_6m5Simplify1, _6m5Simplify2, _6m5Simplify3, _6m5Simplify4);
+		handlePrematureSimplification(_6m5PrematureSimplify, _6m5Simplify5, _6m5Simplify1, _6m5Simplify2, _6m5Simplify3);
+		_6m5Simplify4.addTransition(_6m5Simplify5, NumberSelect_NumberSelected);
+		
+		_6m5Simplify5.addTransition(_6m5Solved, Solve_Solved);
+		return _6m5Solved;
+	}
+
+	private void solve6m5AsFirst_handleDrag(FSMState startingNode) {
+		final FSMState _6m5draggedOne = addState("id_didNotClickGreyCircle", new FSMState(){
+			@Override
+			public FSMState notifyMessageShown() {
+				hasCoachedOnExtraDragging  = true;
+				return super.notifyMessageShown();
+			}
+		});
+		FSMState _6m5dragged3Two = addState("id_6m5dragged5");
+		final FSMState _6m5FixedBadDrag = addState("id_6m5fixDrag");
+			
+		startingNode.addTransition(new StateChooser() {	
+			@Override
+			public FSMState chooseState(Object extraInformation) {
+				if (extraInformation instanceof EquationBlockIndex) {
+					if (((EquationBlockIndex) extraInformation).expressionIndex == 0) 
+						return _6m5draggedOne;
+					return _6m5FixedBadDrag;
+				}
+				Debug.write("no drag information?");
+				return _6m5FixedBadDrag;
+			}
+		}, Solve_BlockReleasedOnOther);		
+		joinMultiTextStates(_6m5draggedOne, _6m5dragged3Two);
+		_6m5dragged3Two.registerEpsilonTransition(startingNode);
+		_6m5FixedBadDrag.registerEpsilonTransition(startingNode);
 	}
 
 	private FSMState solve3x4asSecondEquation(FSMState _6m5SolvedFirst) {
