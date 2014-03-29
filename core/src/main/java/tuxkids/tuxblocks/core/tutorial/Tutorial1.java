@@ -25,10 +25,10 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 
 	@Override
 	protected void setUpStates() {
-		FSMState start = addStartState("id_salvageAndBuild");
-		final FSMState _3x4First = addState("id_equationSolvingScreen");
-		final FSMState _6m5First = addState("id_equationSolvingScreen");	//6m5 means 6 minus 5 (6-5)
-		FSMState letsGoSetupRobots = addState("id_letsGoSetupRobots").addHighlightable(Select_Return);
+		FSMState start = addStartState(id_salvageAndBuild);
+		final FSMState _3x4First = addState(id_equationSolvingScreen);
+		final FSMState _6m5First = addState(id_equationSolvingScreen);	//6m5 means 6 minus 5 (6-5)
+		FSMState letsGoSetupRobots = addState(id_letsGoSetupRobots).addHighlightable(Select_Return);
 		
 		this.promptSelectionOfFirstEquation(start, _3x4First, _6m5First);
 		
@@ -45,9 +45,9 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private void promptSelectionOfFirstEquation(FSMState one, final FSMState _3x4First, final FSMState _6m5First) {
-		FSMState two = addState("id_goToEquationScreen").addHighlightable(Defense_EquationSelectScreen);
-		FSMState three = addState("id_solveTheClues");
-		final FSMState four = addState("id_selectFirstEquation").addHighlightable(Select_FirstEquation).
+		FSMState two = addState(id_goToEquationScreen).addHighlightable(Defense_EquationSelectScreen);
+		FSMState three = addState(id_solveTheClues);
+		final FSMState four = addState(id_selectFirstEquation).addHighlightable(Select_FirstEquation).
 		addHighlightable(Select_SecondEquation);
 		
 		one.addTransition(two, TextBoxHidden);
@@ -74,15 +74,15 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private FSMState solve3x4asFirstEquation(final FSMState _3x4One) {
-		FSMState _3x4Two = addState("id_solveForX");
-		final FSMState _3x4Three = addState("id_3x4simplifyMultiplicationPrompt");
-		FSMState _3x4Simplify1 = addState("id_3x4simplifyScreen1");
-		FSMState _3x4Simplify2 = addState("id_simplifyScreen2");
-		FSMState _3x4Simplify3 = addState("id_simplifyScreen3");
-		FSMState _3x4Simplify4 = addState("id_simplifyScreen4");
-		FSMState _3x4Simplify5 = addState("id_simplifyScreen5").addHighlightable(NumberSelect_Ok);
-		FSMState _3x4PrematureSimplify = addState("id_prematureSimplify");	
-		FSMState _3x4Solved = addState("id_3x4solved").addHighlightable(Solve_Ok);
+		FSMState _3x4Two = addState(id_solveForX);
+		final FSMState _3x4Three = addState(id_3x4simplifyMultiplicationPrompt);
+		FSMState _3x4Simplify1 = addState(id_3x4simplifyScreen1);
+		FSMState _3x4Simplify2 = addState(id_simplifyScreen2);
+		FSMState _3x4Simplify3 = addState(id_simplifyScreen3);
+		FSMState _3x4Simplify4 = addState(id_simplifyScreen4);
+		FSMState _3x4Simplify5 = addState(id_simplifyScreen5).addHighlightable(NumberSelect_Ok);
+		FSMState _3x4PrematureSimplify = addState(id_prematureSimplify);	
+		FSMState _3x4Solved = addState(id_3x4solved).addHighlightable(Solve_Ok);
 
 		joinMultiTextStates(_3x4One, _3x4Two, _3x4Three);
 		solve3x4AsFirst_handleDrag(_3x4Three);
@@ -98,15 +98,15 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private void solve3x4AsFirst_handleDrag(final FSMState startingNode) {
-		final FSMState _3x4draggedOne = addState("id_didNotClickGreyCircle", new FSMState(){
+		final FSMState _3x4draggedOne = addState(id_didNotClickGreyCircle, new FSMState(){
 			@Override
 			public FSMState notifyMessageShown() {
 				hasCoachedOnExtraDragging  = true;
 				return super.notifyMessageShown();
 			}
 		});
-		FSMState _3x4dragged3Two = addState("id_3x4dragged3");
-		final FSMState _3x4FixedBadDrag = addState("id_3x4fixDrag");
+		FSMState _3x4dragged3Two = addState(id_3x4dragged3);
+		final FSMState _3x4FixedBadDrag = addState(id_3x4fixDrag);
 			
 		startingNode.addTransition(new StateChooser() {	
 			@Override
@@ -126,10 +126,10 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private FSMState solve6m5asSecondEquation(FSMState _3x4SolvedFirst) {
-		FSMState _6m5One = addState("id_unlockOther");
-		FSMState _6m5Two = addState("id_6m5secondSubtract");
-		FSMState _6m5Simplify = addState("id_6m5secondSimplify");
-		FSMState _6m5Solved = addState("id_secondSolved").addHighlightable(Solve_Ok);
+		FSMState _6m5One = addState(id_unlockOther);
+		FSMState _6m5Two = addState(id_6m5secondSubtract);
+		FSMState _6m5Simplify = addState(id_6m5secondSimplify);
+		FSMState _6m5Solved = addState(id_secondSolved).addHighlightable(Solve_Ok);
 
 		_3x4SolvedFirst.addTransition(_6m5One, Select_ScreenShown);
 		_6m5One.addTransition(_6m5Two, Solve_ScreenShown);
@@ -143,10 +143,10 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private void solve6m5AsSecond_handleDrag(FSMState _6m5Two) {
-		final FSMState _6m5Dragged = addState("id_didNotClickGreyCircle");
-		final FSMState _6m5DraggedTwo = addState("id_6m5dragged5");
-		final FSMState _6m5DraggedReminder = addState("id_6m5dragged5reminder");
-		final FSMState _6m5FixedBadDrag = addState("id_6m5fixDrag");
+		final FSMState _6m5Dragged = addState(id_didNotClickGreyCircle);
+		final FSMState _6m5DraggedTwo = addState(id_6m5dragged5);
+		final FSMState _6m5DraggedReminder = addState(id_6m5dragged5reminder);
+		final FSMState _6m5FixedBadDrag = addState(id_6m5fixDrag);
 		
 		_6m5Two.addTransition(new StateChooser() {
 			
@@ -174,15 +174,15 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private FSMState solve6m5asFirstEquation(FSMState _6m5One) {
-		FSMState _6m5Two = addState("id_solveForX");
-		final FSMState _6m5Three = addState("id_6m5simplifyMultiplicationPrompt");
-		FSMState _6m5Simplify1 = addState("id_6m5simplifyScreen1");
-		FSMState _6m5Simplify2 = addState("id_simplifyScreen2");
-		FSMState _6m5Simplify3 = addState("id_simplifyScreen3");
-		FSMState _6m5Simplify4 = addState("id_simplifyScreen4");
-		FSMState _6m5Simplify5 = addState("id_simplifyScreen5").addHighlightable(NumberSelect_Ok);
-		FSMState _6m5PrematureSimplify = addState("id_prematureSimplify");	
-		FSMState _6m5Solved = addState("id_6m5solved").addHighlightable(Solve_Ok);
+		FSMState _6m5Two = addState(id_solveForX);
+		final FSMState _6m5Three = addState(id_6m5simplifyMultiplicationPrompt);
+		FSMState _6m5Simplify1 = addState(id_6m5simplifyScreen1);
+		FSMState _6m5Simplify2 = addState(id_simplifyScreen2);
+		FSMState _6m5Simplify3 = addState(id_simplifyScreen3);
+		FSMState _6m5Simplify4 = addState(id_simplifyScreen4);
+		FSMState _6m5Simplify5 = addState(id_simplifyScreen5).addHighlightable(NumberSelect_Ok);
+		FSMState _6m5PrematureSimplify = addState(id_prematureSimplify);	
+		FSMState _6m5Solved = addState(id_6m5solved).addHighlightable(Solve_Ok);
 
 		joinMultiTextStates(_6m5One, _6m5Two, _6m5Three);
 		solve6m5AsFirst_handleDrag(_6m5Three);
@@ -198,15 +198,15 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private void solve6m5AsFirst_handleDrag(FSMState startingNode) {
-		final FSMState _6m5draggedOne = addState("id_didNotClickGreyCircle", new FSMState(){
+		final FSMState _6m5draggedOne = addState(id_didNotClickGreyCircle, new FSMState(){
 			@Override
 			public FSMState notifyMessageShown() {
 				hasCoachedOnExtraDragging  = true;
 				return super.notifyMessageShown();
 			}
 		});
-		FSMState _6m5dragged3Two = addState("id_6m5dragged5");
-		final FSMState _6m5FixedBadDrag = addState("id_6m5fixDrag");
+		FSMState _6m5dragged3Two = addState(id_6m5dragged5);
+		final FSMState _6m5FixedBadDrag = addState(id_6m5fixDrag);
 			
 		startingNode.addTransition(new StateChooser() {	
 			@Override
@@ -226,10 +226,10 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private FSMState solve3x4asSecondEquation(FSMState _6m5SolvedFirst) {
-		FSMState _3x4One = addState("id_unlockOther");
-		FSMState _3x4Two = addState("id_3x4secondMultiply");
-		FSMState _3x4Simplify = addState("id_3x4secondSimplify");
-		FSMState _3x4Solved = addState("id_secondSolved").addHighlightable(Solve_Ok);
+		FSMState _3x4One = addState(id_unlockOther);
+		FSMState _3x4Two = addState(id_3x4secondMultiply);
+		FSMState _3x4Simplify = addState(id_3x4secondSimplify);
+		FSMState _3x4Solved = addState(id_secondSolved).addHighlightable(Solve_Ok);
 
 		_6m5SolvedFirst.addTransition(_3x4One, Select_ScreenShown);
 		_3x4One.addTransition(_3x4Two, Solve_ScreenShown);
@@ -243,10 +243,10 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	private void solve3x4AsSecond_handleDrag(FSMState startingNode) {
-		final FSMState _3x4Dragged = addState("id_didNotClickGreyCircle");
-		final FSMState _3x4DraggedTwo = addState("id_3x4dragged3");
-		final FSMState _3x4DraggedReminder = addState("id_3x4dragged3reminder");
-		final FSMState _3x4FixedBadDrag = addState("id_3x4fixDrag");
+		final FSMState _3x4Dragged = addState(id_didNotClickGreyCircle);
+		final FSMState _3x4DraggedTwo = addState(id_3x4dragged3);
+		final FSMState _3x4DraggedReminder = addState(id_3x4dragged3reminder);
+		final FSMState _3x4FixedBadDrag = addState(id_3x4fixDrag);
 		
 		startingNode.addTransition(new StateChooser() {
 			
