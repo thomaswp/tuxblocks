@@ -216,7 +216,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 				}
 			}
 		});
-		registerHighlightable(buttonScratch, Tag.Number_Scratch);
+		registerHighlightable(buttonScratch, Tag.NumberSelect_Scratch);
 		
 		buttonClear.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -226,7 +226,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 				}
 			}
 		});
-		registerHighlightable(buttonClear, Tag.Number_Clear);
+		registerHighlightable(buttonClear, Tag.NumberSelect_Clear);
 	}
 	
 	// create the problem to be displayed on the header, and corresponding Buttons
@@ -248,7 +248,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		backImageCancel = PlayN.assets().getImage(Constant.BUTTON_CANCEL);
 		buttonBack = header.addLeftButton(backImageBack);
 		buttonBack.setNoSound();
-		registerHighlightable(buttonBack, Tag.Number_Ok);
+		registerHighlightable(buttonBack, Tag.NumberSelect_Ok);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {

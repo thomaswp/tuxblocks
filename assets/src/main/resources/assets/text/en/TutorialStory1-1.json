@@ -12,5 +12,9 @@
 			"id_simplifyScreen3":"For big numbers, you can also type in the answer.",
 			"id_simplifyScreen4":"When you're looking for a number, remember that going up or down one row makes the number change by 10, and going right or left one column makes it change by 1. Now, try finding the correct answer.",
 			"id_simplifyScreen5":"When you think you've got it, press the Ok button. If you're wrong, the check will turn into an X to let you know. Also, if you ever scroll too far in the wrong direction, press the Center button to get back to where you started.",
-			"id_didNotClickGreyCircle":"I see you figured out you can drag some of the blocks and hats.  We don't really need to do that for this problem, because the x was already by itself."		
-}
+			
+			"id_didNotClickGreyCircle":"I see you figured out you can drag some of the blocks and hats.  We don't really need to do that for this problem, because the x was already by itself.",
+			"id_3x4dragged3":"In case you are curious, your action just divided x by three.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.",
+					
+		"id_3x4solved":"Very good.  Now we have figured out the robot’s secret number is 12.  Go ahead and hit the check mark to unlock the robot"
+			}

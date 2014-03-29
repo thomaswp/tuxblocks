@@ -54,7 +54,7 @@ public class TutorialPlay extends LinearTutorial {
 		}
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.NumberSelect_NumberSelected)
-		.addHighlight(Tag.Number_Ok);
+		.addHighlight(Tag.NumberSelect_Ok);
 		addAction(Trigger.Solve_SimplifiedSuccess)
 		.dontRepeat();
 		addAction(Trigger.Solve_Solved)
@@ -77,9 +77,9 @@ public class TutorialPlay extends LinearTutorial {
 		.addHighlight(Tag.Solve_Reset);
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.NumberSelect_Shown)
-		.addHighlight(Tag.Number_Scratch);
+		.addHighlight(Tag.NumberSelect_Scratch);
 		addAction(Trigger.NumberSelect_Scratch)
-		.addHighlight(Tag.Number_Clear);
+		.addHighlight(Tag.NumberSelect_Clear);
 		addAction(Trigger.Select_ScreenShown);
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.TextBoxHidden)

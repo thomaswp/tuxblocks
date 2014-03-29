@@ -98,9 +98,9 @@ public abstract class Tutorial extends PlayNObject {
 		Solve_Ok, 
 		Solve_Reset,
 		
-		Number_Ok, 
-		Number_Scratch, 
-		Number_Clear, 
+		NumberSelect_Ok, 
+		NumberSelect_Scratch, 
+		NumberSelect_Clear, 
 		
 		Build_LeftPanel, 
 		Build_NumberSelect, 
