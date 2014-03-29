@@ -18,13 +18,13 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
 
 
-public class Validator {
+public class TutorialValidator {
 	
-	private final static String INPUT_PATH = "../assets/src/main/resources/assets/text";
-	private final static String OUTPUT_PATH = "../core/src/main/java";
+	public final static String INPUT_PATH = "../assets/src/main/resources/assets/text";
+	public final static String OUTPUT_PATH = "../core/src/main/java";
+	public final static String DEFAULT_LANG = "en";
 	private final static PrintStream log = System.out;
 	private final static String TUTORIAL_ID = "tutorial_id";
-	private final static String DEFAULT_LANG = "en";
 	private final static String PACKAGE = "tuxkids.tuxblocks.core.tutorial.gen";
 	
 	private HashMap<String, JSONObject> objects = new HashMap<String, JSONObject>();
@@ -108,6 +108,6 @@ public class Validator {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		new Validator().validate();;
+		new TutorialValidator().validate();;
 	}
 }
