@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.Lang;
+import tuxkids.tuxblocks.core.lang.Strings_Hint;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
@@ -23,7 +24,7 @@ import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
-public class Tutor {
+public class Tutor implements Strings_Hint {
 
 	public enum HintLevel {
 		Vague, Specific, BottomOut
@@ -114,7 +115,7 @@ public class Tutor {
 		List<Step> solution = solver.aStar(equation, 1000);
 		if (solution == null) return new Hint("Sorry - this one's got me stumped too...");
 		if (solution.size() < 2) return new Hint("It looks like this one's solved. Press the check mark to continue.");
-		return getHint(equation, solution.get(1).actions.get(0), HintLevel.Vague);
+		return getHint(equation, solution.get(1).actions.get(0), HintLevel.Specific);
 	}
 
 	private Hint getHint(Equation equation, SolveAction action, HintLevel level) {
@@ -137,24 +138,24 @@ public class Tutor {
 			String text;
 			if (dragging instanceof VariableBlock) {
 				if (dragTo instanceof VariableBlock) {
-					text = "drag-vague-variables";
+					text = dragVagueVariables;
 				} else {
-					text = "Try moving a Variable block.";
+					text = dragVagueOneVariable;
 				}
 			} else if (dragging instanceof HorizontalModifierBlock) {
-				text = "Try dragging a Plus or Minus block.";
+				text = dragVagueHorizontal;
 			} else {
-				text = "Try dragging a Time or Divide block.";
+				text = dragVagueVertical;
 			}
 			return new Hint(action, text);
 		}
 		
 		if (level == HintLevel.Specific) {
-			return new Hint(action, "Take a look at the %s block", dragging.toString())
+			return new Hint(action, dragSpecific, dragging.toString())
 			.addHighlight(action.fromIndex);
 		}
 		
-		return new Hint(action, "You should drag the %s block to the %s block", 
+		return new Hint(action, dragBottomOut, 
 				dragging.toString(), dragTo.toString());
 	}
 	

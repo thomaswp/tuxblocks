@@ -56,9 +56,13 @@
 	"menu-mobile" : "the Android menu button"
 },
 
-"hints" : {
+"hint" : {
 	"drag-vague-variables" : "Try combining two Variables.",
-
+	"drag-vague-one-variable" : "Try moving a Variable block.",
+	"drag-vague-horizontal" : "Try dragging a Plus or Minus block.",
+	"drag-vague-vertical" : "Try dragging a Times or Divide block.",
+	"drag-specific" : "Take a look at the %s block",
+	"drag-bottom-out" : "You should drag the %s block to the %s block"
 }
 
 }
