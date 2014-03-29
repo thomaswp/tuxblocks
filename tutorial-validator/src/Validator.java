@@ -18,14 +18,16 @@ public class Validator {
 		if (textDir.exists()) {
 			String[] langDirs = textDir.list();
 			for (String dir : langDirs) {
-				File langDir = new File(dir);
+				File langDir = new File(textDir, dir);
 				if (!langDir.isDirectory()) continue;
 				String[] files = langDir.list();
 				for (String file : files) {
 					if (!file.toLowerCase().endsWith(".json")) continue;
-					JSONTokener tokenizer = new JSONTokener(new FileInputStream(file));
+					JSONTokener tokenizer = new JSONTokener(new FileInputStream(new File(langDir, file)));
 					JSONObject object = new JSONObject(tokenizer);
-					object.get("tutorial_id");
+					if (!object.has(TUTORIAL_ID)) continue;
+					String id = object.getString(TUTORIAL_ID);
+					log.println(id);
 				}
 			}
 		} else {
