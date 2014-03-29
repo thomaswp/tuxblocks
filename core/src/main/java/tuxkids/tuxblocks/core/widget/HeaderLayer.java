@@ -13,7 +13,7 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
  */
 public class HeaderLayer extends LayerWrapper {
 	
-	public static float DEFAULT_ALPHA = 0.75f;
+	public final static float DEFAULT_ALPHA = 0.75f;
 	
 	protected final GroupLayer layer;
 	protected final float width, height;

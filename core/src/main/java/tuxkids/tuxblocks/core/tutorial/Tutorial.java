@@ -179,8 +179,7 @@ public abstract class Tutorial extends PlayNObject {
 			perc *= 2;		//double time for first 2 cycles
 			
 		perc = perc % 1;		//get fractional part
-		perc = Math.abs(perc - 0.5f)+.2f;		//I like the highlight a bit brighter	
-		return perc;
+		return Math.abs(perc - 0.5f)+.2f;		//I like the highlight a bit brighter	
 	}
 
 	/** Called from {@link TuxBlocksGame#update(int)} */
