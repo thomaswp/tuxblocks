@@ -46,14 +46,14 @@ public class TutorialPlay extends LinearTutorial {
 		.setSkip(Trigger.Solve_BlockReleasedOnOther);
 		addAction(Trigger.Solve_BlockReleasedOnOther);
 		addAction(Trigger.TextBoxHidden);
-		addAction(Trigger.Number_Shown);
+		addAction(Trigger.NumberSelect_Shown);
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.TextBoxHidden);
 		if (!PlayN.keyboard().hasHardwareKeyboard()) {
 			actions.remove(actions.size() - 1);
 		}
 		addAction(Trigger.TextBoxHidden);
-		addAction(Trigger.Number_NumberSelected)
+		addAction(Trigger.NumberSelect_NumberSelected)
 		.addHighlight(Tag.Number_Ok);
 		addAction(Trigger.Solve_SimplifiedSuccess)
 		.dontRepeat();
@@ -70,15 +70,15 @@ public class TutorialPlay extends LinearTutorial {
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.Solve_VerticalModifierDoubleClicked);
 		addAction(Trigger.Solve_Simplified);
-		addAction(Trigger.Number_Shown);
+		addAction(Trigger.NumberSelect_Shown);
 		addAction(Trigger.Solve_SimplifiedSuccess);
 		addAction(Trigger.Solve_BlockReleasedOnOther);
 		addAction(Trigger.Solve_VariablesStartedCombine)
 		.addHighlight(Tag.Solve_Reset);
 		addAction(Trigger.TextBoxHidden);
-		addAction(Trigger.Number_Shown)
+		addAction(Trigger.NumberSelect_Shown)
 		.addHighlight(Tag.Number_Scratch);
-		addAction(Trigger.Number_Scratch)
+		addAction(Trigger.NumberSelect_Scratch)
 		.addHighlight(Tag.Number_Clear);
 		addAction(Trigger.Select_ScreenShown);
 		addAction(Trigger.TextBoxHidden);

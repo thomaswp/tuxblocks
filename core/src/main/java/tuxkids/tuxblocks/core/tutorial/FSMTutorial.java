@@ -130,6 +130,13 @@ abstract class FSMTutorial implements TutorialInstance {
 		// repeat button pressed, message reshown
 	}
 	
+	//Convenience method for joining a bunch of text states
+	protected void joinMultiTextStates(FSMState... states) {
+		for(int i = 0;i<states.length-1;i++) {
+			states[i].addTransition(states[i+1], Trigger.TextBoxHidden);
+		}
+	}
+	
 	public static void setPrimaryColor(int primaryColor) {
 		layerColor = primaryColor;
 	}

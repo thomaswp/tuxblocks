@@ -62,9 +62,9 @@ public abstract class Tutorial extends PlayNObject {
 		Solve_Simplified, 
 		Solve_VariablesStartedCombine, 
 		
-		Number_Shown, 
-		Number_NumberSelected, 
-		Number_Scratch, 
+		NumberSelect_Shown, 
+		NumberSelect_NumberSelected, 
+		NumberSelect_Scratch, 
 		
 		Build_Shown,  
 	}
