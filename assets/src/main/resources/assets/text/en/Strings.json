@@ -27,7 +27,8 @@
 	"by" : "by",
 	"mentored-by" : "mentored by",
 	"play" : "Play",
-	"build" : "Build"
+	"build" : "Build",
+	"story" : "Story"
 },
 
 "difficulty" : {
@@ -38,6 +39,10 @@
 	"game-difficulty-desc" : "How difficult Blocks are to destroy",
 	"solve-time" : "Solve time:",
 	"solve-time-desc" : "How long you have to solve problems between rounds"	
+},
+
+"story" : {
+	"story" : "Story"
 },
 
 "tutorial" : {

@@ -125,7 +125,7 @@ public class DefenseScreen extends GameScreen {
 				}
 			}
 		});
-		registerHighlightable(buttonPlus, Tag.Defense_MoreTowers);
+		registerHighlightable(buttonPlus, Tag.Defense_EquationSelectScreen);
 	}
 	
 	// button for starting the round early

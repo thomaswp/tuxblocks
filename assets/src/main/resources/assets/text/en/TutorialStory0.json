@@ -1,9 +1,10 @@
 {
 	"id_nextWaveSoon":"Thank goodness HQ sent someone like you to help us.  The next wave of robots will be on us soon.",
 	"id_shoreUpDefenses":"We've got some towers in place already to waylay and destroy them.  The two towers you brought will help shore up our defenses.",
-	"id_dragFirstTower":"Go ahead and drag one of the two pea shooters onto the screen.  Put them anywhere, but I\'d suggest adding them to the first set of three, what I call \'the maze\'",
-	"id_goodFirstPlacement":"Excellent.  Now add the second tower",
+	"id_dragFirstTower":"Go ahead and drag one of the two pea shooters onto the screen.  Put them anywhere, but I'd suggest adding them to the first set of three, what I call 'the maze'",
+	"id_goodFirstPlacement":"Excellent.  Now add the second tower.",
 	"id_okayFirstPlacement":"Okay.  That should work.  Add the second tower and we’ll be in business.",
-	"id_secondTowerPlacement":"And now we wait for the next wave.  May our towers bring us strength."
+	"id_secondTowerPlacement":"And now we wait for the next wave.  May our towers bring us strength.",
+	"id_badTowerPlacement":"We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!"
 
 }

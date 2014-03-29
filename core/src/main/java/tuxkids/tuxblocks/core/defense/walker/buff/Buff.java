@@ -3,8 +3,8 @@ package tuxkids.tuxblocks.core.defense.walker.buff;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.utils.HashCode;
-import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
+import tuxkids.tuxblocks.core.utils.PlayNObject;
 
 /**
  * An effect that can be attached to a {@link Walker} to affect

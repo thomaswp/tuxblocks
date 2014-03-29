@@ -25,6 +25,8 @@ import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.build.BuildGameState;
 import tuxkids.tuxblocks.core.solve.build.BuildScreen;
+import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.story.StoryScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
@@ -57,8 +59,7 @@ public class TitleScreen extends BaseScreen {
 
 
 	private TextFormat authorFormat, superFormat, optionFormat;
-	private Button tutorialButton;
-//	private Button muteButton;
+
 	private ImageLayerTintable startHere;
 	private LanguageLayer languageLayer;
 	
@@ -127,34 +128,8 @@ public class TitleScreen extends BaseScreen {
 		float midY = (height() + titleLayer.height()) / 2 + authorFormat.font.size();
 		int tintPressed = Colors.WHITE, tintUnpressed = Color.rgb(200, 200, 200);
 		
-		final float buttonSize = height() / 6;
-		tutorialButton = new Button(Constant.IMAGE_CONFIRM, buttonSize, buttonSize, true);
-		tutorialButton.setPosition(width() / 2, midY);
-		tutorialButton.setTint(tintPressed, tintUnpressed);
-		fadeInLayer.add(tutorialButton.layerAddable());
-		
-//		muteButton = new Button(Constant.IMAGE_MUTE, buttonSize, buttonSize, true);
-//		muteButton.setPosition(width()/20, midY);
-//		muteButton.setTint(tintPressed, tintUnpressed);
-//		fadeInLayer.add(muteButton.layerAddable());
-		
 		startHere = new ImageLayerTintable();
-		Lang.getImage(Constant.IMAGE_START_LOCAL, new Callback<Image>() {
-			@Override
-			public void onSuccess(Image result) {
-				startHere.setImage(result);
-				startHere.setScale(0.8f * buttonSize / startHere.height());
-				startHere.setOrigin(result.width() * 0.8f, result.height());
-				startHere.setTranslation(tutorialButton.x() + tutorialButton.width() * 0.5f, 
-						tutorialButton.y() - tutorialButton.height() * 0.5f);
-				startHere.setTint(background.primaryColor());
-			}
 
-			@Override
-			public void onFailure(Throwable cause) {
-				cause.printStackTrace();
-			}
-		});
 		fadeInLayer.add(startHere.layerAddable());
 		
 		float size = (height() - titleLayer.height()) / 1.8f;
@@ -163,7 +138,7 @@ public class TitleScreen extends BaseScreen {
 		float buttonTextMaxWidth = size * 0.7f;
 		
 		Button playButton = new Button(modeImage, false);
-		playButton.setPosition(width() / 5, midY);
+		playButton.setPosition(width() / 6, midY);
 		playButton.setTint(tintPressed, tintUnpressed);
 		registerHighlightable(playButton, Tag.Title_Play);
 		fadeInLayer.add(playButton.layerAddable());
@@ -176,7 +151,7 @@ public class TitleScreen extends BaseScreen {
 		fadeInLayer.add(playText);
 		
 		Button buildButton = new Button(modeImage, false);
-		buildButton.setPosition(4 * width() / 5, midY);
+		buildButton.setPosition(3 * width() / 6, midY);
 		buildButton.setTint(tintPressed, tintUnpressed);
 		registerHighlightable(buildButton, Tag.Title_Build);
 		fadeInLayer.add(buildButton.layerAddable());
@@ -187,17 +162,19 @@ public class TitleScreen extends BaseScreen {
 		if (buildText.width() > buttonTextMaxWidth) buildText.setScale(buttonTextMaxWidth / buildText.width());
 		PlayNObject.centerImageLayer(buildText);
 		fadeInLayer.add(buildText);
-
-		tutorialButton.setOnReleasedListener(new OnReleasedListener() {
-			@Override
-			public void onRelease(Event event, boolean inButton) {
-				if (inButton) {
-					Tutorial.start(background.primaryColor(), background.secondaryColor());
-					tutorialButton.layerAddable().setVisible(false);
-					startHere.setVisible(false);
-				}
-			}
-		});
+		
+		Button storyButton = new Button(modeImage, false);
+		storyButton.setPosition(5 * width() / 6, midY);
+		storyButton.setTint(tintPressed, tintUnpressed);
+		registerHighlightable(storyButton, Tag.Title_Build);
+		fadeInLayer.add(storyButton.layerAddable());
+		
+		ImageLayer storyText = graphics().createImageLayer();
+		storyText.setImage(CanvasUtils.createText(getString("story"), optionFormat, Colors.WHITE));
+		storyText.setTranslation(storyButton.x(), storyButton.y());
+		if (storyText.width() > buttonTextMaxWidth) storyText.setScale(buttonTextMaxWidth / storyText.width());
+		PlayNObject.centerImageLayer(storyText);
+		fadeInLayer.add(storyText);
 		
 		playButton.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -216,7 +193,7 @@ public class TitleScreen extends BaseScreen {
 							}
 						});
 					} else {
-						// or if you're in the tutorial, just start a new one
+						// or if you're in the tutorial, just start a new game
 						toDifficultyScreen();
 					}
 				}
@@ -232,6 +209,19 @@ public class TitleScreen extends BaseScreen {
 					state.setBackground(background);
 					BuildScreen bs = new BuildScreen(screens, state);
 					pushScreen(bs, screens.slide().down());
+				}
+			}
+		});
+		
+		storyButton.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					Tutorial.trigger(Trigger.Title_Story);
+					GameState state = new StoryGameState();
+					state.setBackground(background);
+					StoryScreen screen = new StoryScreen(screens, state);
+					pushScreen(screen, screens.slide().left());
 				}
 			}
 		});
@@ -331,9 +321,6 @@ public class TitleScreen extends BaseScreen {
 
 		// show the start tutorial button iff it's not running
 		if (!Tutorial.running()) {
-			if (tutorialButton != null) {
-				tutorialButton.layerAddable().setVisible(true);
-			}
 			if (startHere != null) {
 				startHere.setVisible(true);
 			}

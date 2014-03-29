@@ -3,14 +3,14 @@ package tuxkids.tuxblocks.core.utils;
 import playn.core.CanvasImage;
 import playn.core.Color;
 import playn.core.Font.Style;
-import playn.core.util.TextBlock;
-import playn.core.util.TextBlock.Align;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
 import playn.core.TextWrap;
+import playn.core.util.TextBlock;
+import playn.core.util.TextBlock.Align;
 import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Cache.Key;
 

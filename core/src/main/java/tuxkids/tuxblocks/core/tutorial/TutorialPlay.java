@@ -37,7 +37,7 @@ public class TutorialPlay extends LinearTutorial {
 		addAction(Trigger.Defense_GridZoom)
 		.addHighlight(Tag.Defense_StartRound);
 		addAction(Trigger.Defense_RoundOver)
-		.addHighlight(Tag.Defense_MoreTowers);
+		.addHighlight(Tag.Defense_EquationSelectScreen);
 		
 		addAction(Trigger.Select_Shown)
 		.addHighlight(Tag.Select_FirstButton);

@@ -464,9 +464,10 @@ public class Grid extends PlayNObject implements Highlightable {
 		boolean canPlace = canPlace();
 		if (canPlace) {
 			placeTower(toPlace, toPlace.coordinates);
-			Tutorial.trigger(Trigger.Defense_TowerDropped);
+			Tutorial.trigger(Trigger.Defense_TowerDropped, toPlace.coordinates);
 		} else if (toPlace != null) {
 			toPlace.layer().destroy();
+			Tutorial.trigger(Trigger.Defense_BadTowerPlacement);
 		}
 		toPlace = null;
 		rangeIndicatorLayer.setImage(null);

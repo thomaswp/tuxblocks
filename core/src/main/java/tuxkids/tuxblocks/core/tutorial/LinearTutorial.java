@@ -7,6 +7,10 @@ import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
+/**
+ * @deprecated use FSMTutorial instead
+ */
+@Deprecated
 public abstract class LinearTutorial implements TutorialInstance {
 	
 	private final List<String> sections = new ArrayList<String>();
@@ -45,6 +49,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 		this.secondaryColor = secondaryColor;
 	}
 	
+	@Override
 	public void loadTextFile(String text) {
 		// load the text into lines
 		for (String line : text.split("\n")) {
@@ -61,10 +66,12 @@ public abstract class LinearTutorial implements TutorialInstance {
 		trigger(null);
 	}
 	
+	@Override
 	public void update(int delta) {
 		
 	}
 	
+	@Override
 	public void paint(Clock clock) {
 		if (tutorialLayer != null) {
 			tutorialLayer.paint(clock);
@@ -73,6 +80,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 
 	// called when something happens that might
 	// advance the tutorial
+	@Override
 	public void trigger(Trigger event) {
 		if (hasNext() && peek().trigger == event) {
 			// if the tirgger causes the next Action...
@@ -81,7 +89,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 				String path = ((Segue) action).path;
 				TutorialInstance tutorial = ((Segue) action).tutorial;
 				destroy();
-				Tutorial.start(tutorial, path);
+				Tutorial.loadTutorial(tutorial, path);
 				return;
 			} else {
 				tutorialLayer.showMessage(action.message);
@@ -106,6 +114,12 @@ public abstract class LinearTutorial implements TutorialInstance {
 		refreshHighlights();
 	}
 	
+	@Override
+	public void trigger(Trigger event, Object extraInformation) {
+		trigger(event); 
+	}
+	
+	@Override
 	public void destroy() {
 		tutorialLayer.destroy();
 		Tutorial.clearIndicators();
@@ -126,6 +140,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 		actions.clear();
 	}
 	
+	@Override
 	public void didLeaveScreen() {
 		if (actionIndex >= 0 && action().canRepeat) {
 			// alow the Action's message to be reshown, if applicable

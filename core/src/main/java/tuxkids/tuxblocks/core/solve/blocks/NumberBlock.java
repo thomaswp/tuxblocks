@@ -3,7 +3,6 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.ArrayList;
 
 import playn.core.ImageLayer;
-
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayerDefault;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;

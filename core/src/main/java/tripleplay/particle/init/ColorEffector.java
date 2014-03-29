@@ -1,11 +1,11 @@
 package tripleplay.particle.init;
 
+import static tripleplay.particle.ParticleBuffer.*;
 import playn.core.Color;
 import tripleplay.particle.Effector;
 import tripleplay.util.Colors;
 import tripleplay.util.Interpolator;
 import tuxkids.tuxblocks.core.utils.Debug;
-import static tripleplay.particle.ParticleBuffer.*;
 
 /**
  * An {@link Effector} which changes the color of a particle over time.

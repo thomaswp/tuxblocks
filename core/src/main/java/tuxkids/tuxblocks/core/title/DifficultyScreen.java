@@ -157,7 +157,7 @@ public class DifficultyScreen extends BaseScreen {
 	@Override
 	protected void popThis() {
 		Audio.se().play(Constant.SE_BACK);
-		super.popThis();
+		popThis(screens.slide().right());
 	}
 	
 	@Override

@@ -1,14 +1,6 @@
 package tripleplay.particle;
 
-import static tripleplay.particle.ParticleBuffer.ALPHA_RED;
-import static tripleplay.particle.ParticleBuffer.GREEN_BLUE;
-import static tripleplay.particle.ParticleBuffer.M00;
-import static tripleplay.particle.ParticleBuffer.M01;
-import static tripleplay.particle.ParticleBuffer.M10;
-import static tripleplay.particle.ParticleBuffer.M11;
-import static tripleplay.particle.ParticleBuffer.NUM_FIELDS;
-import static tripleplay.particle.ParticleBuffer.TX;
-import static tripleplay.particle.ParticleBuffer.TY;
+import static tripleplay.particle.ParticleBuffer.*;
 
 import java.util.List;
 

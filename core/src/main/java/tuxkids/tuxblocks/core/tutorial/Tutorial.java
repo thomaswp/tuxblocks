@@ -10,6 +10,7 @@ import tripleplay.game.Screen;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
+import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
 
@@ -63,7 +64,7 @@ public abstract class Tutorial extends PlayNObject {
 		Number_NumberSelected, 
 		Number_Scratch, 
 		
-		Build_Shown, 
+		Build_Shown, Title_Story, Defense_BadTowerPlacement, 
 	}
 	
 	/**
@@ -81,7 +82,7 @@ public abstract class Tutorial extends PlayNObject {
 		Defense_UpgradeTower,
 		Defense_DeleteTower,
 		Defense_StartRound, 
-		Defense_MoreTowers,
+		Defense_EquationSelectScreen,
 		Defense_PeaShooter,
 		
 		Menu_Lives,
@@ -107,6 +108,8 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	private static TutorialInstance instance;
+	private static float startTimeOfHighlightCycle;
+	private static boolean isFirstHighlightCycle;
 	private final static List<Highlightable> highlightables = new ArrayList<Highlightable>();
 
 	public static boolean running() {
@@ -114,15 +117,22 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	/** Starts the main tutorial. */
+	@Deprecated
 	public static void start(final int themeColor, final int secondaryColor) {
 		if (instance != null) {
 			return;
 		}
+		FSMTutorial.setPrimaryColor(themeColor);
 //		start(new TutorialStart(themeColor, secondaryColor), Constant.TUTORIAL_START_PATH);
-		start(new Tutorial0(themeColor), "TutorialTest.json");
+//		start(new Tutorial0(), "TutorialStory0.json");
 	}
 	
-	protected static void start(final TutorialInstance tutorial, final String path) {
+	public static void start(int primaryColor, StoryGameState state) {
+		FSMTutorial.setPrimaryColor(primaryColor);
+		loadTutorial(state.getCurrentTutorialInstance(), state.getCurrentTutorialScript());
+	}
+
+	public static void loadTutorial(final TutorialInstance tutorial, final String path) {
 		instance = tutorial;
 		Lang.getText(path, new Callback<String>() {
 			@Override
@@ -141,15 +151,35 @@ public abstract class Tutorial extends PlayNObject {
 	public static void paint(Clock clock) {
 		if (instance != null) {
 			instance.paint(clock);
-		}
-		float perc = (float)(System.currentTimeMillis() % HIGHLIGHT_CYCLE) / 
-				HIGHLIGHT_CYCLE;
-		perc = Math.abs(perc - 0.5f);
+		}	
+		paintHighlightables(clock);
+	}
+
+	private static void paintHighlightables(Clock clock) {
+		Float perc = null;
 		for (Highlightable highlightable : highlightables) {
 			if (highlightable.highlighter().highlighted()) {
+				if (perc == null)
+					perc = calculatePercentHighlighted(clock);
 				highlightable.highlighter().setTint(HIGHLIGHT_COLOR_1, HIGHLIGHT_COLOR_2, perc);
 			}
 		}
+	}
+
+	private static float calculatePercentHighlighted(Clock clock) {
+		if (startTimeOfHighlightCycle < 0) {
+			startTimeOfHighlightCycle = clock.time();
+			return 0;
+		}
+		float perc = (clock.time()-startTimeOfHighlightCycle) / HIGHLIGHT_CYCLE;
+		if (perc > 1.0f && isFirstHighlightCycle) {
+			isFirstHighlightCycle = false;
+		}
+		if (isFirstHighlightCycle) 
+			perc *= 2;		//double time for first 2 cycles
+			
+		perc = perc % 1;		//get fractional part
+		return Math.abs(perc - 0.5f)+.2f;		//I like the highlight a bit brighter	
 	}
 
 	/** Called from {@link TuxBlocksGame#update(int)} */
@@ -159,10 +189,16 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 
-	/** Indicate that a {@link Trigger} has occured in the game. */
+	/** Indicate that a {@link Trigger} has occurred in the game. */
 	public static void trigger(Trigger event) {
 		if (instance != null) {
 			instance.trigger(event);
+		}
+	}
+	
+	public static void trigger(Trigger event, Object extraInfo) {
+		if (instance != null) {
+			instance.trigger(event, extraInfo);
 		}
 	}
 	
@@ -180,6 +216,7 @@ public abstract class Tutorial extends PlayNObject {
 	/** Register a {@link Highlightable} object on-screen */
 	public static void addHighlightable(Highlightable highlightable) {
 		highlightables.add(highlightable);
+		//Debug.write(highlightable);
 		if (instance != null) instance.refreshHighlights();
 	}
 
@@ -199,6 +236,8 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	protected static void refreshHighlights(List<Tag> highlights) {
+		startTimeOfHighlightCycle = -1.0f;
+		isFirstHighlightCycle = true;
 		for (Highlightable highlightable : highlightables) {
 			highlightable.highlighter().setHighlighted(
 					highlightable.highlighter().hasTags(highlights));

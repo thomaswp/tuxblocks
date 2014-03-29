@@ -1,8 +1,8 @@
 package tuxkids.tuxblocks.core;
 
 import playn.core.Image;
-import playn.core.PlayN;
 import playn.core.Json.Object;
+import playn.core.PlayN;
 import playn.core.json.JsonParserException;
 import playn.core.util.Callback;
 import tuxkids.tuxblocks.core.utils.Formatter;
@@ -153,7 +153,7 @@ public class Lang extends PlayNObject {
 		if (result == null) {
 			PlayN.log().warn(Formatter.format(
 					"No value found for key '%s%s' in '%s%s/Strings.json' or the default '%s%s/Strings.json'.", 
-					domain == null ? "" : domain + ":", key, TEXT_PATH, language, TEXT_PATH, DEFAULT_LANGUAGE));
+					domain == null ? "[null]" : domain + ":", key, TEXT_PATH, language, TEXT_PATH, DEFAULT_LANGUAGE));
 		}
 		return result;
 	}
