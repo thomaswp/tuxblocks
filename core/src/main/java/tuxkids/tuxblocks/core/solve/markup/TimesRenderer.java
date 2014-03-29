@@ -1,9 +1,9 @@
 package tuxkids.tuxblocks.core.solve.markup;
 
 import playn.core.Canvas;
+import playn.core.Canvas.LineCap;
 import playn.core.Path;
 import playn.core.TextFormat;
-import playn.core.Canvas.LineCap;
 import pythagoras.f.Vector;
 
 /** 

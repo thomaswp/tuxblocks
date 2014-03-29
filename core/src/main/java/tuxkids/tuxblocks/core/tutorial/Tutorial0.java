@@ -4,6 +4,7 @@ package tuxkids.tuxblocks.core.tutorial;
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class Tutorial0 extends FSMTutorial {
@@ -18,7 +19,7 @@ public class Tutorial0 extends FSMTutorial {
 	protected void setUpStates() {
 		FSMState one = addStartState("id_nextWaveSoon");
 		FSMState two = addState("id_shoreUpDefenses");
-		FSMState three = addState("id_dragFirstTower");
+		FSMState three = addState("id_dragFirstTower").addHighlightable(Tag.Defense_PeaShooter);
 		final FSMState four = addState("id_goodFirstPlacement");
 		final FSMState five = addState("id_okayFirstPlacement");
 		FSMState six = addState("id_secondTowerPlacement");

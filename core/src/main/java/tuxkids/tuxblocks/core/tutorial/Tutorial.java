@@ -82,7 +82,7 @@ public abstract class Tutorial extends PlayNObject {
 		Defense_UpgradeTower,
 		Defense_DeleteTower,
 		Defense_StartRound, 
-		Defense_MoreTowers,
+		Defense_EquationSelectScreen,
 		Defense_PeaShooter,
 		
 		Menu_Lives,
@@ -193,6 +193,7 @@ public abstract class Tutorial extends PlayNObject {
 	/** Register a {@link Highlightable} object on-screen */
 	public static void addHighlightable(Highlightable highlightable) {
 		highlightables.add(highlightable);
+		//Debug.write(highlightable);
 		if (instance != null) instance.refreshHighlights();
 	}
 

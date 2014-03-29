@@ -1,8 +1,8 @@
 package tuxkids.tuxblocks.core.solve.markup;
 
 import playn.core.Canvas;
-import playn.core.TextFormat;
 import playn.core.Canvas.LineCap;
+import playn.core.TextFormat;
 import pythagoras.f.Vector;
 
 /** Renders a base Renderer, divided by the given divisors */

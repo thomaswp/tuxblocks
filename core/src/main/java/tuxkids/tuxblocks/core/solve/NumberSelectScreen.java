@@ -39,8 +39,8 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
-import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
+import tuxkids.tuxblocks.core.widget.HeaderLayer;
 import tuxkids.tuxblocks.core.widget.menu.MainMenuLayer;
 import tuxkids.tuxblocks.core.widget.menu.MenuLayer;
 

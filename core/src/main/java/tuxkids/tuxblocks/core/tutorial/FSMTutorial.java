@@ -8,6 +8,7 @@ import playn.core.Json;
 import playn.core.PlayN;
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.Debug;
 
@@ -95,6 +96,7 @@ abstract class FSMTutorial implements TutorialInstance {
 			refreshHighlights();
 			if (currentState.message != null) layer.showMessage(currentState.message);
 			currentState = currentState.notifyMessageShown();
+			refreshHighlights();
 		}
 		if (nextState == endState) {
 			endOfTutorial();
@@ -114,7 +116,8 @@ abstract class FSMTutorial implements TutorialInstance {
 
 	@Override
 	public void refreshHighlights() {
-		Tutorial.refreshHighlights(new ArrayList<Tutorial.Tag>()); //TODO: correct list
+		if (currentState != null)
+			Tutorial.refreshHighlights(this.currentState.highlightables); //TODO: correct list
 	}
 
 	@Override
@@ -156,7 +159,7 @@ abstract class FSMTutorial implements TutorialInstance {
 	
 	protected class FSMState {
 		public String message = null;
-		public final List<Highlightable> highlightables = new ArrayList<Highlightable>();
+		public final List<Tag> highlightables = new ArrayList<Tag>(2);
 		private final HashMap<Trigger, StateChooser> transitions = new HashMap<Trigger, StateChooser>();
 		private FSMState elseState;
 		private FSMState epsilonState;
@@ -179,7 +182,7 @@ abstract class FSMTutorial implements TutorialInstance {
 		
 		
 
-		public final FSMState addHighlightable(Highlightable highlightable) {
+		public final FSMState addHighlightable(Tag highlightable) {
 			highlightables.add(highlightable);
 			return this;
 		}

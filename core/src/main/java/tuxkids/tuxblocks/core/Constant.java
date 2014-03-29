@@ -1,7 +1,7 @@
 package tuxkids.tuxblocks.core;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import playn.core.PlayN;
 

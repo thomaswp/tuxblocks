@@ -2,8 +2,6 @@ package tuxkids.tuxblocks.core.tutor;
 
 import java.util.Random;
 
-import static java.lang.Math.*;
-import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;

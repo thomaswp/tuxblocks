@@ -1,11 +1,6 @@
 package tripleplay.particle.init;
 
-import static tripleplay.particle.ParticleBuffer.M00;
-import static tripleplay.particle.ParticleBuffer.M01;
-import static tripleplay.particle.ParticleBuffer.M10;
-import static tripleplay.particle.ParticleBuffer.M11;
-import static tripleplay.particle.ParticleBuffer.VEL_X;
-import static tripleplay.particle.ParticleBuffer.VEL_Y;
+import static tripleplay.particle.ParticleBuffer.*;
 import pythagoras.f.FloatMath;
 import tripleplay.particle.Initializer;
 

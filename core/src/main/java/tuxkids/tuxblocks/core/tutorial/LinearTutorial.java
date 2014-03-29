@@ -7,6 +7,10 @@ import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
+/**
+ * @deprecated use FSMTutorial instead
+ */
+@Deprecated
 public abstract class LinearTutorial implements TutorialInstance {
 	
 	private final List<String> sections = new ArrayList<String>();
@@ -112,7 +116,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 	
 	@Override
 	public void trigger(Trigger event, Object extraInformation) {
-		trigger(event);  //TODO: handle extraInfo
+		trigger(event); 
 	}
 	
 	@Override
