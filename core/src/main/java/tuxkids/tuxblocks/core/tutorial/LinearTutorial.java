@@ -8,9 +8,8 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 /**
- * @deprecated use FSMTutorial instead
+ * Use FSMTutorial instead
  */
-@Deprecated
 public abstract class LinearTutorial implements TutorialInstance {
 	
 	private final List<String> sections = new ArrayList<String>();
