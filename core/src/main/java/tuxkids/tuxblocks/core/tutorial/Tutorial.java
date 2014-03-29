@@ -129,12 +129,12 @@ public abstract class Tutorial extends PlayNObject {
 	
 	public static void start(int primaryColor, StoryGameState state) {
 		FSMTutorial.setPrimaryColor(primaryColor);
-		loadTutorial(state.getCurrentTutorialInstance(), state.getCurrentTutorialScript());
+		loadTutorial(state.getCurrentTutorialInstance());
 	}
 
-	public static void loadTutorial(final TutorialInstance tutorial, final String path) {
+	public static void loadTutorial(final TutorialInstance tutorial) {
 		instance = tutorial;
-		Lang.getText(path, new Callback<String>() {
+		Lang.getText(tutorial.filename(), new Callback<String>() {
 			@Override
 			public void onSuccess(String result) {
 				tutorial.loadTextFile(result);

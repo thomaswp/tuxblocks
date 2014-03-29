@@ -65,23 +65,10 @@ public class StoryGameState extends GameState {
 		}
 	}
 
-	public String getCurrentTutorialScript() {
-		switch (lesson) {
-		case 0:
-			return "TutorialStory0.json";
-		case 1:
-			return "TutorialStory1-1.json";
-			
-		default:
-			Debug.write("No script for "+lesson);
-			return null;
-		}
-		
-	}
-
 	public void finishedLesson() {
 		lesson++;
-		Tutorial.loadTutorial(getCurrentTutorialInstance(),getCurrentTutorialScript());
+		TutorialInstance nextTutorial = getCurrentTutorialInstance();
+		if (nextTutorial != null) Tutorial.loadTutorial(nextTutorial);
 	}
 	
 	

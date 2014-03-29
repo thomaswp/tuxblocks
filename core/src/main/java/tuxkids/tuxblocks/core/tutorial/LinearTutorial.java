@@ -86,10 +86,9 @@ public abstract class LinearTutorial implements TutorialInstance {
 			// if the tirgger causes the next Action...
 			Action action = nextAction();
 			if (action instanceof Segue) {
-				String path = ((Segue) action).path;
 				TutorialInstance tutorial = ((Segue) action).tutorial;
 				destroy();
-				Tutorial.loadTutorial(tutorial, path);
+				Tutorial.loadTutorial(tutorial);
 				return;
 			} else {
 				tutorialLayer.showMessage(action.message);

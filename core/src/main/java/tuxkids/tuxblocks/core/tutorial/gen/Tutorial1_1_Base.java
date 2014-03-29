@@ -5,6 +5,11 @@ package tuxkids.tuxblocks.core.tutorial.gen;
 public interface Tutorial1_1_Base {
 
     /**
+     * The file name of this tutorial
+     * 
+     */
+    final static String filename = "TutorialStory1-1.json";
+    /**
      * For big numbers, you can also type in the answer.
      * 
      */
@@ -29,11 +34,6 @@ public interface Tutorial1_1_Base {
      * 
      */
     final static String id_simplifyScreen5 = "id_simplifyScreen5";
-    /**
-     * Tutorial1_1
-     * 
-     */
-    final static String tutorial_id = "tutorial_id";
     /**
      * The engineers have already loaded in the equation.  Now, we need to solve for the mystery number, called 'x'
      * 

@@ -12,6 +12,11 @@ public class TutorialStart extends LinearTutorial {
 	}
 
 	@Override
+	public String filename() {
+		return Constant.TUTORIAL_START_PATH;
+	}
+
+	@Override
 	protected void addActions() {
 		addAction(null);
 		addAction(Trigger.TextBoxHidden);

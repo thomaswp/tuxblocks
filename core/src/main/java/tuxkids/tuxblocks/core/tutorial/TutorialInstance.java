@@ -14,5 +14,6 @@ public interface TutorialInstance {
 	void destroy();
 	void refreshHighlights();
 	void wasRepeated();
+	String filename();
 
 }

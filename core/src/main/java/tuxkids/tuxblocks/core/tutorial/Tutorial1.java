@@ -15,6 +15,11 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	}
 
 	@Override
+	public String filename() {
+		return filename;
+	}
+
+	@Override
 	protected void setUpStates() {
 		FSMState one = addStartState(id_salvageAndBuild);
 		FSMState two = addState(id_goToEquationScreen).addHighlightable(Defense_EquationSelectScreen);
@@ -35,7 +40,5 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 		super.endOfTutorial();
 		gameState.finishedLesson();
 	}
-	
-	
 
 }

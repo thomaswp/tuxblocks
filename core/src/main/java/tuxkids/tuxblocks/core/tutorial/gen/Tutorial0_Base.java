@@ -5,6 +5,11 @@ package tuxkids.tuxblocks.core.tutorial.gen;
 public interface Tutorial0_Base {
 
     /**
+     * The file name of this tutorial
+     * 
+     */
+    final static String filename = "TutorialStory0.json";
+    /**
      * Excellent.  Now add the second tower.
      * 
      */
@@ -24,11 +29,6 @@ public interface Tutorial0_Base {
      * 
      */
     final static String id_badTowerPlacement = "id_badTowerPlacement";
-    /**
-     * Tutorial0
-     * 
-     */
-    final static String tutorial_id = "tutorial_id";
     /**
      * We've got some towers in place already to waylay and destroy them.  The two towers you brought will help shore up our defenses.
      * 

@@ -57,7 +57,7 @@ public class Validator {
 			if (!object.has(TUTORIAL_ID)) continue;
 			if (master) {
 				objects.put(file, object);
-				createInterface(object);
+				createInterface(object, file);
 			} else {
 				JSONObject oldObject = objects.get(file);
 				if (oldObject == null) {
@@ -85,13 +85,17 @@ public class Validator {
 		}
 	}
 	
-	private void createInterface(JSONObject object) {
+	private void createInterface(JSONObject object, String filename) {
 		String id = object.getString(TUTORIAL_ID);
 		
 		try {
 			JDefinedClass tutorial = codeModel._class(PACKAGE + "." + id + "_Base", ClassType.INTERFACE);
+			JFieldVar filenameField = tutorial.field(JMod.FINAL | JMod.STATIC, String.class, "filename");
+			filenameField.javadoc().add("The file name of this tutorial");
+			filenameField.init(JExpr.lit(filename));
 			String[] keys = JSONObject.getNames(object);
 			for (String key : keys) {
+				if (TUTORIAL_ID.equals(key)) continue;
 				String value = object.getString(key);
 				JFieldVar field = tutorial.field(JMod.FINAL | JMod.STATIC, String.class, key);
 				field.javadoc().add(value);

@@ -17,6 +17,11 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 	}
 
 	@Override
+	public String filename() {
+		return filename;
+	}
+	
+	@Override
 	protected void setUpStates() {
 		FSMState one = addStartState(id_nextWaveSoon);
 		FSMState two = addState(id_shoreUpDefenses);

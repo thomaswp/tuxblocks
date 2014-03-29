@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.tutorial;
 
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
@@ -8,6 +9,11 @@ class TutorialBuild extends LinearTutorial {
 
 	public TutorialBuild(int themeColor, int secondaryColor) {
 		super(themeColor, secondaryColor);
+	}
+
+	@Override
+	public String filename() {
+		return Constant.TUTORIAL_BUILD_PATH;
 	}
 
 	@Override
@@ -32,5 +38,4 @@ class TutorialBuild extends LinearTutorial {
 		.dontRepeat();
 		addAction(Trigger.Build_Shown);
 	}
-
 }
