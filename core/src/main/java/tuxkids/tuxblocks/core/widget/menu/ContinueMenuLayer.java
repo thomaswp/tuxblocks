@@ -38,7 +38,7 @@ public class ContinueMenuLayer extends MenuLayer {
 		
 		TextFormat format = createFormat(height / 6);
 		textLayer = graphics().createImageLayer();
-		textLayer.setImage(CanvasUtils.createText(getString("continue-from-save"), format, Colors.BLACK));
+		textLayer.setImage(CanvasUtils.createText(getString(key_continueFromSave), format, Colors.BLACK));
 		textLayer.setTy(height * -0.2f);
 		centerImageLayer(textLayer);
 		layer.add(textLayer);
@@ -46,7 +46,7 @@ public class ContinueMenuLayer extends MenuLayer {
 		float buttonTextSize = height / 8f;
 		buttonContinue = new Button(null, false);
 		buttonContinue.setPosition(width * -0.25f, height * 0.2f);
-		setButton(buttonContinue, buttonWidth, getString("continue"), buttonTextSize, new OnReleasedListener() {
+		setButton(buttonContinue, buttonWidth, getString(key_continue), buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton && listener != null) {
@@ -59,7 +59,7 @@ public class ContinueMenuLayer extends MenuLayer {
 		
 		buttonStartOver = new Button(null, false);
 		buttonStartOver.setPosition(width * 0.25f, height * 0.2f);
-		setButton(buttonStartOver, buttonWidth, getString("start-over"), buttonTextSize, new OnReleasedListener() {
+		setButton(buttonStartOver, buttonWidth, getString(key_startOver), buttonTextSize, new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton && listener != null) {

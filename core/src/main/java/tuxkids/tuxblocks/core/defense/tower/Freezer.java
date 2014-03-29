@@ -59,7 +59,7 @@ public class Freezer extends Tower {
 
 	@Override
 	public String nameKey() {
-		return "freezer";
+		return key_freezer;
 	}
 
 	@Override

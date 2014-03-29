@@ -3,7 +3,7 @@ package tuxkids.tuxblocks.core.tutor;
 import java.util.ArrayList;
 import java.util.List;
 
-import tuxkids.tuxblocks.core.Lang;
+import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.lang.Strings_Hint;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
@@ -138,24 +138,24 @@ public class Tutor implements Strings_Hint {
 			String text;
 			if (dragging instanceof VariableBlock) {
 				if (dragTo instanceof VariableBlock) {
-					text = dragVagueVariables;
+					text = key_dragVagueVariables;
 				} else {
-					text = dragVagueOneVariable;
+					text = key_dragVagueOneVariable;
 				}
 			} else if (dragging instanceof HorizontalModifierBlock) {
-				text = dragVagueHorizontal;
+				text = key_dragVagueHorizontal;
 			} else {
-				text = dragVagueVertical;
+				text = key_dragVagueVertical;
 			}
 			return new Hint(action, text);
 		}
 		
 		if (level == HintLevel.Specific) {
-			return new Hint(action, dragSpecific, dragging.toString())
+			return new Hint(action, key_dragSpecific, dragging.toString())
 			.addHighlight(action.fromIndex);
 		}
 		
-		return new Hint(action, dragBottomOut, 
+		return new Hint(action, key_dragBottomOut, 
 				dragging.toString(), dragTo.toString());
 	}
 	

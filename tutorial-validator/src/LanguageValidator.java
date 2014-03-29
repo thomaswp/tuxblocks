@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -136,8 +135,7 @@ public class LanguageValidator {
 				String[] keys = JSONObject.getNames(domainObject);
 				for (String key : keys) {
 					String value = domainObject.getString(key);
-					String className = camelCase(key);
-					if (Arrays.binarySearch(keywords, className) >= 0) className += "_";
+					String className = "key_" + camelCase(key);
 					JFieldVar field = domainBase.field(JMod.FINAL | JMod.STATIC, String.class, className);
 					field.javadoc().add(value);
 					field.init(JExpr.lit(key));

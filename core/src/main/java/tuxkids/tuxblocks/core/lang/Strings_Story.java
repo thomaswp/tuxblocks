@@ -8,6 +8,6 @@ public interface Strings_Story {
      * Story
      * 
      */
-    final static String story = "story";
+    final static String key_story = "story";
 
 }

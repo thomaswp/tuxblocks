@@ -11,12 +11,13 @@ import playn.core.util.Clock;
 import pythagoras.f.Vector;
 import pythagoras.i.Point;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.defense.DiscreteGridObject;
 import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
 import tuxkids.tuxblocks.core.defense.walker.Walker;
 import tuxkids.tuxblocks.core.defense.walker.buff.Buff;
+import tuxkids.tuxblocks.core.lang.Lang;
+import tuxkids.tuxblocks.core.lang.Strings_Tower;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 
@@ -24,7 +25,7 @@ import tuxkids.tuxblocks.core.utils.CanvasUtils;
  * Represents a tower the player can place on the {@link Grid}
  * to shoot at {@link Walker}s and create a maze.
  */
-public abstract class Tower extends DiscreteGridObject {
+public abstract class Tower extends DiscreteGridObject implements Strings_Tower {
 
 	// when you destory a tower you get points as a refund equal
 	// to the cost() of the tower time this multiplier

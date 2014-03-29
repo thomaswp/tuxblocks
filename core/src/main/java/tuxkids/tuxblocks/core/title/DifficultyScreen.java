@@ -16,6 +16,7 @@ import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
+import tuxkids.tuxblocks.core.lang.Strings_Difficulty;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
@@ -37,7 +38,7 @@ import tuxkids.tuxblocks.core.widget.HeaderLayer;
  * Screen for selecting the difficulty of a new game.
  * Sets the properties of a new {@link Difficulty}.
  */
-public class DifficultyScreen extends BaseScreen {
+public class DifficultyScreen extends BaseScreen implements Strings_Difficulty {
 	
 	
 	protected final List<DiscreteSlideLayer> slideLayers = new ArrayList<DiscreteSlideLayer>();
@@ -61,7 +62,7 @@ public class DifficultyScreen extends BaseScreen {
 		
 		// text prompt 
 		ImageLayer titleLayer = graphics().createImageLayer();
-		titleLayer.setImage(CanvasUtils.createTextCached(getString("choose-difficulty"), 
+		titleLayer.setImage(CanvasUtils.createTextCached(getString(key_chooseDifficulty), 
 				Cache.createFormat(header.height() * 0.5f), Colors.BLACK));
 		titleLayer.setDepth(1);
 		titleLayer.setTranslation(width() / 2, header.height() / 2);
@@ -80,10 +81,10 @@ public class DifficultyScreen extends BaseScreen {
 		// math difficulty slider
 		String[] mathDifficulties = new String[Difficulty.MAX_MATH_DIFFICULTY + 1];
 		for (int i = 0; i < mathDifficulties.length; i++) mathDifficulties[i] = "" + (i+1);
-		mathSlider = createSlideLyer(getString("math-difficulty"), null, 0.5f * spacing + offY, mathDifficulties);
+		mathSlider = createSlideLyer(getString(key_mathDifficulty), null, 0.5f * spacing + offY, mathDifficulties);
 
 		final ImageLayer descriptionLayer = graphics().createImageLayer();
-		descriptionLayer.setImage(CanvasUtils.createTextCached(getString("sample-problem"), descriptionFormat, Colors.WHITE));
+		descriptionLayer.setImage(CanvasUtils.createTextCached(getString(key_sampleProblem), descriptionFormat, Colors.WHITE));
 		layer.add(descriptionLayer);
 		
 		// create the preview equation layer
@@ -115,14 +116,14 @@ public class DifficultyScreen extends BaseScreen {
 		// game difficulty slider
 		String[] gameDifficulties = new String[Difficulty.MAX_GAME_DIFFICULTY + 1];
 		for (int i = 0; i < gameDifficulties.length; i++) gameDifficulties[i] = "" + (i+1);
-		gameSlider = createSlideLyer(getString("game-difficulty"), getString("game-difficulty-desc"),
+		gameSlider = createSlideLyer(getString(key_gameDifficulty), getString(key_gameDifficultyDesc),
 				2f * spacing + offY, gameDifficulties);
 		
 		// time difficulty slider
 		String[] timeStops = new String[Difficulty.TIMES.length];
 		timeStops[0] = Constant.INFINITY_SYMBOL;
 		for (int i = 1; i < timeStops.length; i++) timeStops[i] = Difficulty.TIMES[i] + "s";
-		timeSlider = createSlideLyer(getString("solve-time"), getString("solve-time-desc"),
+		timeSlider = createSlideLyer(getString(key_solveTime), getString(key_solveTimeDesc),
 				3f * spacing + offY, timeStops);
 		
 		// start sliders in the middle

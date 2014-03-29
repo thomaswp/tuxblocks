@@ -8,51 +8,51 @@ public interface Strings_Menu {
      * Victory!
      * 
      */
-    final static String victory = "victory";
+    final static String key_victory = "victory";
     /**
      * Music Volume
      * 
      */
-    final static String musicVolume = "music-volume";
+    final static String key_musicVolume = "music-volume";
     /**
      * Save and Quit
      * 
      */
-    final static String saveAndQuit = "save-and-quit";
+    final static String key_saveAndQuit = "save-and-quit";
     /**
      * Continue
      * 
      */
-    final static String continue_ = "continue";
+    final static String key_continue = "continue";
     /**
      * Start Over
      * 
      */
-    final static String startOver = "start-over";
+    final static String key_startOver = "start-over";
     /**
      * Effects Volume
      * 
      */
-    final static String effectsVolume = "effects-volume";
+    final static String key_effectsVolume = "effects-volume";
     /**
      * Round
      * 
      */
-    final static String round = "round";
+    final static String key_round = "round";
     /**
      * Game Over
      * 
      */
-    final static String gameOver = "game-over";
+    final static String key_gameOver = "game-over";
     /**
      * About TuxBlocks
      * 
      */
-    final static String aboutTuxblocks = "about-tuxblocks";
+    final static String key_aboutTuxblocks = "about-tuxblocks";
     /**
      * Continue from save?
      * 
      */
-    final static String continueFromSave = "continue-from-save";
+    final static String key_continueFromSave = "continue-from-save";
 
 }

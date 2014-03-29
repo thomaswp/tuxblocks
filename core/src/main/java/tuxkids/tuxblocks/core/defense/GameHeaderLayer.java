@@ -18,8 +18,9 @@ import tuxkids.tuxblocks.core.Cache;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
-import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.defense.round.Round;
+import tuxkids.tuxblocks.core.lang.Lang;
+import tuxkids.tuxblocks.core.lang.Strings_Menu;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.layers.LayerLike;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
@@ -43,7 +44,7 @@ import tuxkids.tuxblocks.core.widget.HeaderLayer;
  * <li> {@link Upgrade}, created with the {@link GameHeaderLayer#createUpgrades()} method
  * </ul>
  */
-public abstract class GameHeaderLayer extends HeaderLayer {
+public abstract class GameHeaderLayer extends HeaderLayer implements Strings_Menu {
 
 	private final static int BEAT_TIME = 300; // ms that a pulse lasts when a value changes
 	private final static float ITEM_ALPHA = (1 + Button.DEFAULT_UNPRESSED_ALPHA) / 2;
@@ -332,7 +333,7 @@ public abstract class GameHeaderLayer extends HeaderLayer {
 				if (time == Difficulty.ROUND_TIME_INFINITE) {
 					text = Constant.INFINITY_SYMBOL; // infinite time
 				} else if (time == DURING_ROUND) {
-					text = Lang.getString("menu","round") +" "+state.level().roundNumber(); // during round
+					text = Lang.getString("menu", key_round) + " " + state.level().roundNumber(); // during round
 					tf = barTextFormat;
 				} else {
 					text = "" + time; // waiting for next round

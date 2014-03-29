@@ -1,10 +1,11 @@
-package tuxkids.tuxblocks.core;
+package tuxkids.tuxblocks.core.lang;
 
 import playn.core.Image;
 import playn.core.Json.Object;
 import playn.core.PlayN;
 import playn.core.json.JsonParserException;
 import playn.core.util.Callback;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.utils.Formatter;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 

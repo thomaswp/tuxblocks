@@ -3,8 +3,8 @@ import playn.core.CanvasImage;
 import playn.core.PlayN;
 import playn.html.HtmlGame;
 import playn.html.HtmlPlatform;
-import tuxkids.tuxblocks.core.Lang.Language;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
+import tuxkids.tuxblocks.core.lang.Lang.Language;
 import tuxkids.tuxblocks.core.utils.CanvasUtils.PixelSetter;
 
 import com.google.gwt.i18n.client.LocaleInfo;

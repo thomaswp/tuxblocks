@@ -10,7 +10,7 @@ import playn.core.TextFormat;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
-import tuxkids.tuxblocks.core.Lang.Language;
+import tuxkids.tuxblocks.core.lang.Lang.Language;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;

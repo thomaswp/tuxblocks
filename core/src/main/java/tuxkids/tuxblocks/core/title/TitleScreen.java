@@ -19,8 +19,9 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
+import tuxkids.tuxblocks.core.lang.Lang;
+import tuxkids.tuxblocks.core.lang.Strings_Title;
 import tuxkids.tuxblocks.core.layers.ImageLayerTintable;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.build.BuildGameState;
@@ -45,7 +46,7 @@ import tuxkids.tuxblocks.core.widget.menu.ContinueMenuLayer.ResponseListener;
  * Screen shown when the game first starts. Gives options to
  * enter Play or Build modes.
  */
-public class TitleScreen extends BaseScreen {
+public class TitleScreen extends BaseScreen implements Strings_Title {
 
 	// Time after the title is first show to snap the
 	// TitleLayer into place
@@ -119,10 +120,10 @@ public class TitleScreen extends BaseScreen {
 		languageLayer.setTranslation(width() / 2, height() * 0.97f);
 		fadeInLayer.add(languageLayer.layerAddable());
 		
-		ImageLayer tuxLayer = createTextLayer(getString("a-tux4kids-game"), width() / 5);
-		createSuperTextLayer(getString("by"), width() / 2);
+		ImageLayer tuxLayer = createTextLayer(getString(key_aTux4kidsGame), width() / 5);
+		createSuperTextLayer(getString(key_by), width() / 2);
 		createTextLayer("Thomas Price", width() / 2);
-		createSuperTextLayer(getString("mentored-by"), 4 * width() / 5);
+		createSuperTextLayer(getString(key_mentoredBy), 4 * width() / 5);
 		createTextLayer("Aaditya Maheshwari", 4 * width() / 5);
 		
 		float midY = (height() + titleLayer.height()) / 2 + authorFormat.font.size();
@@ -144,7 +145,7 @@ public class TitleScreen extends BaseScreen {
 		fadeInLayer.add(playButton.layerAddable());
 		
 		ImageLayer playText = graphics().createImageLayer();
-		playText.setImage(CanvasUtils.createText(getString("play"), optionFormat, Colors.WHITE));
+		playText.setImage(CanvasUtils.createText(getString(key_play), optionFormat, Colors.WHITE));
 		playText.setTranslation(playButton.x(), playButton.y());
 		if (playText.width() > buttonTextMaxWidth) playText.setScale(buttonTextMaxWidth / playText.width());
 		PlayNObject.centerImageLayer(playText);
@@ -157,7 +158,7 @@ public class TitleScreen extends BaseScreen {
 		fadeInLayer.add(buildButton.layerAddable());
 		
 		ImageLayer buildText = graphics().createImageLayer();
-		buildText.setImage(CanvasUtils.createText(getString("build"), optionFormat, Colors.WHITE));
+		buildText.setImage(CanvasUtils.createText(getString(key_build), optionFormat, Colors.WHITE));
 		buildText.setTranslation(buildButton.x(), buildButton.y());
 		if (buildText.width() > buttonTextMaxWidth) buildText.setScale(buttonTextMaxWidth / buildText.width());
 		PlayNObject.centerImageLayer(buildText);
@@ -170,7 +171,7 @@ public class TitleScreen extends BaseScreen {
 		fadeInLayer.add(storyButton.layerAddable());
 		
 		ImageLayer storyText = graphics().createImageLayer();
-		storyText.setImage(CanvasUtils.createText(getString("story"), optionFormat, Colors.WHITE));
+		storyText.setImage(CanvasUtils.createText(getString(key_story), optionFormat, Colors.WHITE));
 		storyText.setTranslation(storyButton.x(), storyButton.y());
 		if (storyText.width() > buttonTextMaxWidth) storyText.setScale(buttonTextMaxWidth / storyText.width());
 		PlayNObject.centerImageLayer(storyText);
