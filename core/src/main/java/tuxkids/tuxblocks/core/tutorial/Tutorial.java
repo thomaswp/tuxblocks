@@ -253,7 +253,8 @@ public abstract class Tutorial extends PlayNObject {
 		
 		String domain = "tutorial";
 		// replace platform-specific text
-		line = line.replace("<click>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICK));
+		line = line.replace("<click>", Lang.getDeviceString(domain, "click"));
+		line = line.replace("<Click>", Lang.getDeviceString(domain, "Click"));
 		line = line.replace("<clicking>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICKING));
 		line = line.replace("<mouse>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_MOUSE));
 		line = line.replace("<esc>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_MENU));
