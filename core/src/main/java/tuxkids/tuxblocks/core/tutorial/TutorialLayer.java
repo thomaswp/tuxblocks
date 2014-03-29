@@ -24,16 +24,14 @@ public class TutorialLayer extends LayerWrapper implements Listener {
 	protected final ImageLayer touchCatcher;
 	protected final TextBoxLayer textBox; 
 	protected final Button buttonRepeat, buttonCancel;
-	protected final int themeColor;
 	
 	protected boolean cancelling;
 	
-	public TutorialLayer(int themeColor) {
+	public TutorialLayer() {
 		super(graphics().createGroupLayer());
 		layer = (GroupLayer) layerAddable();
 		width = graphics().width();
 		height = graphics().height();
-		this.themeColor = themeColor;
 		setDepth(50);
 		graphics().rootLayer().add(layer);
 		

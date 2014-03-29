@@ -13,6 +13,7 @@ import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.TutorialLayer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.widget.Button;
@@ -34,6 +35,8 @@ public class SolveScreen extends EquationScreen {
 	private boolean simplifyCorrect;
 	private int simplifyLevel;
 	private Stat simplifyStat;
+	private boolean showHints;
+	private TutorialLayer hintMessageBox;
 	
 	@Override
 	protected float equationXPercent() {
@@ -75,6 +78,25 @@ public class SolveScreen extends EquationScreen {
 			}
 		});
 		layer.add(buttonReset.layerAddable());
+		
+		if (true) {
+			float hintButtonSize = height() * 0.11f;
+			Button buttonHints = new Button(Constant.IMAGE_CONFIRM, hintButtonSize, hintButtonSize, true);
+			buttonHints.setTint(background.secondaryColor());
+			buttonHints.setPosition(hintButtonSize * 0.65f, height() - hintButtonSize * 0.65f);
+			layer.add(buttonHints.layerAddable());
+			
+			hintMessageBox = new TutorialLayer();
+			
+			buttonHints.setOnReleasedListener(new OnReleasedListener() {
+				@Override
+				public void onRelease(Event event, boolean inButton) {
+					if (inButton) {
+						
+					}
+				}
+			});
+		}
 	}
 	
 	@Override

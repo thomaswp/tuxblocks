@@ -8,10 +8,6 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 /** Tutorial for Play mode */
 public class TutorialPlay extends LinearTutorial {
 
-	public TutorialPlay(int themeColor, int secondaryColor) {
-		super(themeColor, secondaryColor);
-	}
-
 	@Override
 	public String filename() {
 		return Constant.TUTORIAL_PLAY_PATH;

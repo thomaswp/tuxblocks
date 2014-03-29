@@ -118,17 +118,15 @@ public abstract class Tutorial extends PlayNObject {
 	
 	/** Starts the main tutorial. */
 	@Deprecated
-	public static void start(final int themeColor, final int secondaryColor) {
+	public static void start() {
 		if (instance != null) {
 			return;
 		}
-		FSMTutorial.setPrimaryColor(themeColor);
 //		start(new TutorialStart(themeColor, secondaryColor), Constant.TUTORIAL_START_PATH);
 //		start(new Tutorial0(), "TutorialStory0.json");
 	}
 	
-	public static void start(int primaryColor, StoryGameState state) {
-		FSMTutorial.setPrimaryColor(primaryColor);
+	public static void start(StoryGameState state) {
 		loadTutorial(state.getCurrentTutorialInstance());
 	}
 

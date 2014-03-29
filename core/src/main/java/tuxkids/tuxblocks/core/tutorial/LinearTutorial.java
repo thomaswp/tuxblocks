@@ -15,7 +15,6 @@ public abstract class LinearTutorial implements TutorialInstance {
 	private final List<String> sections = new ArrayList<String>();
 	
 	protected final List<Action> actions = new ArrayList<Action>();
-	protected final int themeColor, secondaryColor;
 
 	protected TutorialLayer tutorialLayer;
 	protected int actionIndex = -1;
@@ -43,11 +42,6 @@ public abstract class LinearTutorial implements TutorialInstance {
 		return actionIndex < actions.size() - 1;
 	}
 	
-	public LinearTutorial(int themeColor, int secondaryColor) {
-		this.themeColor = themeColor;
-		this.secondaryColor = secondaryColor;
-	}
-	
 	@Override
 	public void loadTextFile(String text) {
 		// load the text into lines
@@ -61,7 +55,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 		
 		addActions();
 
-		tutorialLayer = new TutorialLayer(themeColor);
+		tutorialLayer = new TutorialLayer();
 		trigger(null);
 	}
 	

@@ -14,7 +14,6 @@ import tuxkids.tuxblocks.core.utils.Debug;
 
 abstract class FSMTutorial implements TutorialInstance {
 
-	private static int layerColor;
 	protected final FSMState anyState = new FSMState();
 	protected final FSMState endState = new FSMState();
 
@@ -28,7 +27,7 @@ abstract class FSMTutorial implements TutorialInstance {
 	protected abstract void setUpStates();
 	
 	public FSMTutorial(StoryGameState storyGameState) {
-		layer = new TutorialLayer(layerColor);
+		layer = new TutorialLayer();
 		this.gameState = storyGameState;
 	}
 	
@@ -128,10 +127,6 @@ abstract class FSMTutorial implements TutorialInstance {
 	@Override
 	public void wasRepeated() {
 		// repeat button pressed, message reshown
-	}
-	
-	public static void setPrimaryColor(int primaryColor) {
-		layerColor = primaryColor;
 	}
 
 	/**

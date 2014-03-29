@@ -6,11 +6,7 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 /** Tutorial for Build mode */
 class TutorialBuild extends LinearTutorial {
-
-	public TutorialBuild(int themeColor, int secondaryColor) {
-		super(themeColor, secondaryColor);
-	}
-
+	
 	@Override
 	public String filename() {
 		return Constant.TUTORIAL_BUILD_PATH;

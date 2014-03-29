@@ -78,7 +78,7 @@ public class StoryScreen extends GameScreen {
 	private void startStory() {
 		StoryGameState state = new StoryGameState();
 		state.setBackground(background);
-		Tutorial.start(background.primaryColor(), state);
+		Tutorial.start(state);
 		
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());
