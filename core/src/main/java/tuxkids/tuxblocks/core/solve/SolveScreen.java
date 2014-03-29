@@ -12,10 +12,12 @@ import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
-import tuxkids.tuxblocks.core.tutorial.TutorialLayer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.tutorial.TutorialLayer;
+import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 import tuxkids.tuxblocks.core.widget.HeaderLayer;
@@ -37,6 +39,7 @@ public class SolveScreen extends EquationScreen {
 	private Stat simplifyStat;
 	private boolean showHints;
 	private TutorialLayer hintMessageBox;
+	private Tutor tutor = new Tutor();
 	
 	@Override
 	protected float equationXPercent() {
@@ -86,13 +89,13 @@ public class SolveScreen extends EquationScreen {
 			buttonHints.setPosition(hintButtonSize * 0.65f, height() - hintButtonSize * 0.65f);
 			layer.add(buttonHints.layerAddable());
 			
-			hintMessageBox = new TutorialLayer();
+//			hintMessageBox = new TutorialLayer();
 			
 			buttonHints.setOnReleasedListener(new OnReleasedListener() {
 				@Override
 				public void onRelease(Event event, boolean inButton) {
 					if (inButton) {
-						
+						Debug.write(tutor.getHint(controller.equation()));
 					}
 				}
 			});

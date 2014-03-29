@@ -1,17 +1,36 @@
 package tuxkids.tuxblocks.core.tutor;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import tuxkids.tuxblocks.core.Lang;
+import tuxkids.tuxblocks.core.solve.action.DragAction;
+import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
+import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
+import tuxkids.tuxblocks.core.solve.action.SolveAction;
+import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
+import tuxkids.tuxblocks.core.solve.blocks.Block;
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
+import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
+import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.KnowledgeComponent;
 import tuxkids.tuxblocks.core.student.StudentAction;
 import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.SolutionPackage;
+import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
+import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class Tutor {
 
+	public enum HintLevel {
+		Vague, Specific, BottomOut
+	}
+	
 	private StudentModel model;
-	private IdealEquationSolver solver;
+	private IdealEquationSolver solver = new IdealEquationSolver();
 
 	private List<StudentAction> previousSolutionOrientedActions;
 
@@ -57,4 +76,93 @@ public class Tutor {
 		return model.getKnowledgeComponentForAction(a);
 	}
 
+
+	public static class Hint {
+		public final String text;
+		public final SolveAction action;
+		public final List<EquationBlockIndex> highlights = new ArrayList<EquationBlockIndex>();
+		
+		public final static String DOMAIN = "hint";
+
+		public Hint(String text) {
+			this.action = null;
+			this.text = null;
+		}
+		
+		public Hint(SolveAction action, String key, Object... args) {
+			this.action = action;
+			this.text = Formatter.format(Lang.getString(DOMAIN, key), args);
+		}
+		
+		public Hint(SolveAction action, String key) {
+			this.action = action;
+			this.text = Lang.getString(DOMAIN, key);
+		}
+		
+		public Hint addHighlight(EquationBlockIndex index) {
+			highlights.add(index);
+			return this;
+		}
+		
+		@Override
+		public String toString() {
+			return text;
+		}
+	}
+	
+	public Hint getHint(Equation equation) {
+		List<Step> solution = solver.aStar(equation, 1000);
+		if (solution == null) return new Hint("Sorry - this one's got me stumped too...");
+		if (solution.size() < 2) return new Hint("It looks like this one's solved. Press the check mark to continue.");
+		return getHint(equation, solution.get(1).actions.get(0), HintLevel.Vague);
+	}
+
+	private Hint getHint(Equation equation, SolveAction action, HintLevel level) {
+		if (action instanceof DragAction) {
+			return getDragHint(equation, (DragAction) action, level);
+		} else if (action instanceof FinishSimplifyAction) {
+			return getSimplifyHint(equation, (FinishSimplifyAction) action, level);
+		} else if (action instanceof ReciprocalAction) {
+			return getReciprocalHint(equation, (ReciprocalAction) action, level);
+		}
+		Debug.write("Unkown action: " + action);
+		return null;
+	}
+	
+	private Hint getDragHint(Equation equation, DragAction action, HintLevel level) {
+		Block dragging = equation.getBlock(action.fromIndex);
+		BaseBlock dragTo = equation.getBaseBlock(action.toIndex);
+		
+		if (level == HintLevel.Vague) {
+			String text;
+			if (dragging instanceof VariableBlock) {
+				if (dragTo instanceof VariableBlock) {
+					text = "drag-vague-variables";
+				} else {
+					text = "Try moving a Variable block.";
+				}
+			} else if (dragging instanceof HorizontalModifierBlock) {
+				text = "Try dragging a Plus or Minus block.";
+			} else {
+				text = "Try dragging a Time or Divide block.";
+			}
+			return new Hint(action, text);
+		}
+		
+		if (level == HintLevel.Specific) {
+			return new Hint(action, "Take a look at the %s block", dragging.toString())
+			.addHighlight(action.fromIndex);
+		}
+		
+		return new Hint(action, "You should drag the %s block to the %s block", 
+				dragging.toString(), dragTo.toString());
+	}
+	
+	private Hint getSimplifyHint(Equation equation, FinishSimplifyAction action, HintLevel level) {
+		return null;
+	}
+	
+	private Hint getReciprocalHint(Equation equation, ReciprocalAction action, HintLevel level) {
+		return null;
+	}
 }

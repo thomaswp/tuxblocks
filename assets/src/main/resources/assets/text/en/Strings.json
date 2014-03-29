@@ -54,6 +54,11 @@
 	"mouse-mobile" : "finger",
 	"menu-pc" : "the Esc button on the keyboard",
 	"menu-mobile" : "the Android menu button"
+},
+
+"hints" : {
+	"drag-vague-variables" : "Try combining two Variables.",
+
 }
 
 }
