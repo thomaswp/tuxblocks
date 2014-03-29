@@ -8,8 +8,8 @@ import playn.core.util.Callback;
 import playn.core.util.Clock;
 import tripleplay.game.Screen;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
+import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
@@ -120,23 +120,21 @@ public abstract class Tutorial extends PlayNObject {
 	
 	/** Starts the main tutorial. */
 	@Deprecated
-	public static void start(final int themeColor, final int secondaryColor) {
+	public static void start() {
 		if (instance != null) {
 			return;
 		}
-		FSMTutorial.setPrimaryColor(themeColor);
 //		start(new TutorialStart(themeColor, secondaryColor), Constant.TUTORIAL_START_PATH);
 //		start(new Tutorial0(), "TutorialStory0.json");
 	}
 	
-	public static void start(int primaryColor, StoryGameState state) {
-		FSMTutorial.setPrimaryColor(primaryColor);
-		loadTutorial(state.getCurrentTutorialInstance(), state.getCurrentTutorialScript());
+	public static void start(StoryGameState state) {
+		loadTutorial(state.getCurrentTutorialInstance());
 	}
 
-	public static void loadTutorial(final TutorialInstance tutorial, final String path) {
+	public static void loadTutorial(final TutorialInstance tutorial) {
 		instance = tutorial;
-		Lang.getText(path, new Callback<String>() {
+		Lang.getText(tutorial.filename(), new Callback<String>() {
 			@Override
 			public void onSuccess(String result) {
 				tutorial.loadTextFile(result);

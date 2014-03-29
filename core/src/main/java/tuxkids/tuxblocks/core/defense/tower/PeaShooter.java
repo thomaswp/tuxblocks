@@ -54,7 +54,7 @@ public class PeaShooter extends Tower {
 
 	@Override
 	public String nameKey() {
-		return "pea-shooter";
+		return key_peaShooter;
 	}
 
 	@Override

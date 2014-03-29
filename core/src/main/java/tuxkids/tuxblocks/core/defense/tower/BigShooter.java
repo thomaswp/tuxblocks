@@ -52,7 +52,7 @@ public class BigShooter extends Tower {
 
 	@Override
 	public String nameKey() {
-		return "big-shooter";
+		return key_bigShooter;
 	}
 
 	@Override

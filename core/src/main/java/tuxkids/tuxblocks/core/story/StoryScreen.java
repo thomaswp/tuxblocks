@@ -11,8 +11,9 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
-import tuxkids.tuxblocks.core.Lang;
 import tuxkids.tuxblocks.core.defense.DefenseScreen;
+import tuxkids.tuxblocks.core.lang.Lang;
+import tuxkids.tuxblocks.core.lang.Strings_Story;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
@@ -21,7 +22,7 @@ import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
 
-public class StoryScreen extends GameScreen {
+public class StoryScreen extends GameScreen implements Strings_Story {
 
 	public StoryScreen(ScreenStack screens, GameState state) {
 		super(screens, state);
@@ -55,7 +56,7 @@ public class StoryScreen extends GameScreen {
 		layer.add(startButton.layerAddable());
 		
 		ImageLayer startText = graphics().createImageLayer();
-		startText.setImage(CanvasUtils.createText(getString("story"), optionFormat, Colors.WHITE));
+		startText.setImage(CanvasUtils.createText(getString(key_story), optionFormat, Colors.WHITE));
 		startText.setTranslation(startButton.x(), startButton.y());
 		if (startText.width() > buttonTextMaxWidth) startText.setScale(buttonTextMaxWidth / startText.width());
 		PlayNObject.centerImageLayer(startText);
@@ -78,7 +79,7 @@ public class StoryScreen extends GameScreen {
 	private void startStory() {
 		StoryGameState state = new StoryGameState();
 		state.setBackground(background);
-		Tutorial.start(background.primaryColor(), state);
+		Tutorial.start(state);
 		
 		DefenseScreen ds = new DefenseScreen(screens, state);
 		pushScreen(ds, screens.slide().down());

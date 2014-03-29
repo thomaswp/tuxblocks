@@ -70,7 +70,7 @@ public class Zapper extends Tower {
 
 	@Override
 	public String nameKey() {
-		return "zapper";
+		return key_zapper;
 	}
 
 	@Override

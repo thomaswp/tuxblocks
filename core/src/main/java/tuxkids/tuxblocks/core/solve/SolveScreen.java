@@ -2,7 +2,9 @@ package tuxkids.tuxblocks.core.solve;
 
 import playn.core.Image;
 import playn.core.PlayN;
+import playn.core.Mouse.LayerAdapter;
 import playn.core.Pointer.Event;
+import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
@@ -12,6 +14,9 @@ import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutor.Tutor;
+import tuxkids.tuxblocks.core.tutor.Tutor.Hint;
+import tuxkids.tuxblocks.core.tutorial.TextBoxDisplayLayer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
@@ -34,6 +39,8 @@ public class SolveScreen extends EquationScreen {
 	private boolean simplifyCorrect;
 	private int simplifyLevel;
 	private Stat simplifyStat;
+	private TextBoxDisplayLayer hintMessageBox;
+	private Tutor tutor = new Tutor();
 	
 	@Override
 	protected float equationXPercent() {
@@ -75,6 +82,29 @@ public class SolveScreen extends EquationScreen {
 			}
 		});
 		layer.add(buttonReset.layerAddable());
+		
+		float hintButtonSize = height() * 0.11f;
+		Button buttonHints = new Button(Constant.IMAGE_CONFIRM, hintButtonSize, hintButtonSize, true);
+		buttonHints.setTint(background.secondaryColor());
+		buttonHints.setPosition(hintButtonSize * 0.65f, height() - hintButtonSize * 0.65f);
+		layer.add(buttonHints.layerAddable());
+		
+		hintMessageBox = new TextBoxDisplayLayer();
+		hintMessageBox.setDepth(100);
+		layer.add(hintMessageBox.layerAddable());
+		
+		buttonHints.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					displayHint(tutor.getHint(controller.equation()));
+				}
+			}
+		});
+	}
+
+	private void displayHint(Hint hint) {
+		hintMessageBox.showMessage(hint.text);
 	}
 	
 	@Override
@@ -101,6 +131,7 @@ public class SolveScreen extends EquationScreen {
 		} else {
 			Audio.se().play(Constant.SE_BACK);
 		}
+		hintMessageBox.hide();
 	}
 	
 	@Override
@@ -125,7 +156,12 @@ public class SolveScreen extends EquationScreen {
 		} else {
 			buttonBack.setImage(buttonImageBack);
 		}
-		
+	}
+	
+	@Override
+	public void paint(Clock clock) {
+		super.paint(clock);
+		hintMessageBox.paint(clock);
 	}
 	
 	private void clearSolve() {

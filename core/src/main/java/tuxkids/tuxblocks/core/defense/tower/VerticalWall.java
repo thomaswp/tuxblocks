@@ -49,7 +49,7 @@ public class VerticalWall extends Tower {
 
 	@Override
 	public String nameKey() {
-		return "vertical-wall";
+		return key_verticalWall;
 	}
 
 	@Override

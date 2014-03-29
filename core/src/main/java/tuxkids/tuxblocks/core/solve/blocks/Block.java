@@ -238,6 +238,6 @@ public abstract class Block extends Sprite implements Hashable {
 	
 	@Override
 	public String toString() {
-		return text();
+		return "[" + text() + "]";
 	}
 }

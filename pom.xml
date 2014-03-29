@@ -44,5 +44,6 @@
   <modules>
     <module>assets</module>
     <module>core</module>
+	<module>tutorial-validator</module>
   </modules>
 </project>

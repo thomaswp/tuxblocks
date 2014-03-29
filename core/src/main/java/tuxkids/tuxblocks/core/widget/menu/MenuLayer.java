@@ -15,7 +15,8 @@ import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.Lang;
+import tuxkids.tuxblocks.core.lang.Lang;
+import tuxkids.tuxblocks.core.lang.Strings_Menu;
 import tuxkids.tuxblocks.core.layers.LayerWrapper;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
@@ -29,7 +30,7 @@ import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
  * for the menu to function correctly. You must also call {@link MenuLayer#clear()}
  * before the game starts, in case any static references remain.
  */
-public abstract class MenuLayer extends LayerWrapper {
+public abstract class MenuLayer extends LayerWrapper implements Strings_Menu {
 
 	protected static int BACKGROUND_COLOR = Color.rgb(102, 107, 164);
 	protected static int BACKGROUND_BORDER_COLOR = Color.rgb(45, 47, 104);

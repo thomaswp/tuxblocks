@@ -7,6 +7,7 @@ import playn.core.Font.Style;
 import playn.core.Image;
 import playn.core.PlayN;
 import playn.core.TextFormat;
+import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.utils.HashCode;
 import tuxkids.tuxblocks.core.utils.HashCode.Hashable;
 import tuxkids.tuxblocks.core.utils.PlayNObject;

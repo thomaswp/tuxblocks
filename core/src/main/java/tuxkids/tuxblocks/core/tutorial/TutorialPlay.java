@@ -1,14 +1,16 @@
 package tuxkids.tuxblocks.core.tutorial;
 
 import playn.core.PlayN;
+import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 /** Tutorial for Play mode */
 public class TutorialPlay extends LinearTutorial {
 
-	public TutorialPlay(int themeColor, int secondaryColor) {
-		super(themeColor, secondaryColor);
+	@Override
+	public String filename() {
+		return Constant.TUTORIAL_PLAY_PATH;
 	}
 
 	@Override

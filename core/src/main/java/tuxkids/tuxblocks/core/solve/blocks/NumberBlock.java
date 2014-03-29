@@ -143,24 +143,24 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	public void addSimplifiableBlocks(Aggregator ag) {
 		if (modifiers.children.size() > 0) {
 			// simplify with the closest HorizontalModifierBlock
-			ag.add(modifiers.children.get(0), Tag.Horizontal);
+			ag.add(this, modifiers.children.get(0), Tag.Horizontal);
 		} else if (modifiers.modifiers != null) {
 			// or if there isn't one, simplify with any direct VerticalModifierBlock
 			VerticalModifierGroup mods = (VerticalModifierGroup) modifiers.modifiers;
 			if (mods.timesBlocks.size() > 0) {
-				ag.add(mods.timesBlocks.get(0), Tag.Times);
+				ag.add(this, mods.timesBlocks.get(0), Tag.Times);
 			}
 			if (mods.overBlocks.size() > 0) {
 				if (value % mods.overBlocks.get(0).value == 0) {
 					// only add divisible OverBlocks
-					ag.add(mods.overBlocks.get(0), Tag.Over);
+					ag.add(this, mods.overBlocks.get(0), Tag.Over);
 				}
 			}
 		}
 	}
 	
 	@Override
-	public void placeButton(ModifierBlock sprite, ModifierBlock pair,
+	public void placeButton(Block sprite, ModifierBlock pair,
 			Object tag, ButtonFactory factory) {
 		ImageLayer simplifyButton = factory.getSimplifyButton(sprite, pair);
 		if (tag == Tag.Horizontal) {
@@ -173,7 +173,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 	}
 
 	@Override
-	public void simplify(final ModifierBlock sprite, final ModifierBlock pair) { //ignore pair argument
+	public void simplify(final Block base, final ModifierBlock pair) { //ignore pair argument
 		if (blockListener != null) { // again, not sure why this check is necessary but...
 
 			final int answer; // the answer to the problem 
@@ -184,25 +184,25 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			
 			// create the renderer
 			Renderer renderer = new BaseRenderer("" + value);
-			int[] operands = new int[] { sprite.value };
-			if (sprite instanceof TimesBlock) {
-				TimesBlock times = (TimesBlock) sprite;
+			int[] operands = new int[] { pair.value };
+			if (pair instanceof TimesBlock) {
+				TimesBlock times = (TimesBlock) pair;
 				answer = value * times.value;
 				renderer = new TimesRenderer(renderer, operands);
 				stat = Stat.Times;
 				level = Difficulty.rankTimes(value, times.value);
 				autoAnswer = value == 1 || times.value == 1;
 				if (value * times.value < 0) start = 0;
-			} else if (sprite instanceof OverBlock) {
-				OverBlock over = (OverBlock) sprite;
+			} else if (pair instanceof OverBlock) {
+				OverBlock over = (OverBlock) pair;
 				answer = value / over.value;
 				renderer = new OverRenderer(renderer, operands);
 				stat = Stat.Over;
 				level = Difficulty.rankOver(value, over.value);
 				start = 0;
 				autoAnswer = over.value == 1;
-			} else if (sprite instanceof HorizontalModifierBlock) {
-				HorizontalModifierBlock plus = (HorizontalModifierBlock) sprite;
+			} else if (pair instanceof HorizontalModifierBlock) {
+				HorizontalModifierBlock plus = (HorizontalModifierBlock) pair;
 				answer = value + plus.plusValue();
 				operands[0] = plus.plusValue();
 				renderer = new AddRenderer(renderer, operands);
@@ -220,12 +220,12 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 				@Override
 				public void wasSimplified(boolean success) {
 					if (blockListener != null) {
-						blockListener.wasSimplified(sprite, pair, null, success);
+						blockListener.wasSimplified(base, pair, null, success);
 					}
 					if (success) {
 						// change this block's value, remove the modifier
 						setValue(answer);
-						sprite.group.removeChild(sprite, true);
+						pair.group.removeChild(pair, true);
 					}
 				}
 			};

@@ -6,15 +6,21 @@ import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.tutorial.gen.Tutorial1_1_Base;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 
-public class Tutorial1 extends FSMTutorial {
+public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 
 	protected boolean hasCoachedOnExtraDragging = false;
 
 	public Tutorial1(StoryGameState storyGameState) {
 		super(storyGameState);
+	}
+
+	@Override
+	public String filename() {
+		return filename;
 	}
 
 	@Override
@@ -280,7 +286,5 @@ public class Tutorial1 extends FSMTutorial {
 		super.endOfTutorial();
 		gameState.finishedLesson();
 	}
-	
-	
 
 }

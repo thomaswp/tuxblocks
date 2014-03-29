@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>tuxkids</groupId>
+    <artifactId>tuxblocks</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>tuxblocks-tutorial-validator</artifactId>
+  <packaging>jar</packaging>
+  <name>Tuxblocks Tutorial Validator</name>
+
+  <properties>
+    <mainClass>Validator</mainClass>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20140107</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.sun.codemodel</groupId>
+    	<artifactId>codemodel</artifactId>
+    	<version>2.6</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- allows testing of Java backend via: mvn test -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <configuration>
+              <target>
+                <java fork="true" classname="${mainClass}" classpathref="maven.test.classpath">
+                </java>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

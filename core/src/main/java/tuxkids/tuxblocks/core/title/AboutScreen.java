@@ -15,7 +15,7 @@ import playn.core.util.TextBlock.Align;
 import tripleplay.game.ScreenStack;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
-import tuxkids.tuxblocks.core.Lang;
+import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
