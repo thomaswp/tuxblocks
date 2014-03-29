@@ -10,6 +10,81 @@ public interface Tutorial1_1_Base {
      */
     final static String filename = "TutorialStory1-1.json";
     /**
+     * x is by itself once more. <Click> on the grey circle to simplify the multiplication.
+     * 
+     */
+    final static String id_3x4fixDrag = "id_3x4fixDrag";
+    /**
+     * And now solve the multiplication.
+     * 
+     */
+    final static String id_3x4secondSimplify = "id_3x4secondSimplify";
+    /**
+     * Very good.  Now we have figured out the robot’s secret number is 12.  Go ahead and hit the check mark to unlock the robot.
+     * 
+     */
+    final static String id_3x4solved = "id_3x4solved";
+    /**
+     * We’ve cracked all the robots so far.  Let’s set up those towers before the next robots come.
+     * 
+     */
+    final static String id_letsGoSetupRobots = "id_letsGoSetupRobots";
+    /**
+     * Very good.  Now we have figured out the robot’s secret number is 1.  Go ahead and hit the check mark to unlock the robot.
+     * 
+     */
+    final static String id_6m5solved = "id_6m5solved";
+    /**
+     * Excellent.  We’ve been able to salvage enough material to build one pea shooter. Let’s unlock the other robot too.
+     * 
+     */
+    final static String id_unlockOther = "id_unlockOther";
+    /**
+     * Hey, did you see that?  Some of the robots weren’t destroyed.  Maybe we can salvage them and build more towers.
+     * 
+     */
+    final static String id_salvageAndBuild = "id_salvageAndBuild";
+    /**
+     * And now solve the subtraction.
+     * 
+     */
+    final static String id_6m5secondSimplify = "id_6m5secondSimplify";
+    /**
+     * Since x is already by itself, all we need to do is simplify the right side. <Click> on the grey circle to simplify the multiplication.
+     * 
+     */
+    final static String id_3x4simplifyMultiplicationPrompt = "id_3x4simplifyMultiplicationPrompt";
+    /**
+     * In case you are curious, your action just added 5 to x.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started. 
+     * 
+     */
+    final static String id_6m5dragged5 = "id_6m5dragged5";
+    /**
+     * Since x is already by itself, all we need to do is simplify the right side. <Click> on the grey circle to simplify the subtraction.
+     * 
+     */
+    final static String id_6m5simplifyMultiplicationPrompt = "id_6m5simplifyMultiplicationPrompt";
+    /**
+     * Select one of these clues, or 'equations' to go to the solve screen, where our engineers have a surprise.
+     * 
+     */
+    final static String id_selectFirstEquation = "id_selectFirstEquation";
+    /**
+     * This clue is also set up where x is all by itself.  Just like with the multiplication, click the grey dot to perform the subtraction.
+     * 
+     */
+    final static String id_6m5secondSubtract = "id_6m5secondSubtract";
+    /**
+     * This clue is also set up where x is all by itself.  Just like with the subtraction, click the grey dot to perform the multiplication.
+     * 
+     */
+    final static String id_3x4secondMultiply = "id_3x4secondMultiply";
+    /**
+     * This is our equation solving screen, set up with a couple of tools to help us figure out the robots' clues.
+     * 
+     */
+    final static String id_equationSolvingScreen = "id_equationSolvingScreen";
+    /**
      * For big numbers, you can also type in the answer.
      * 
      */
@@ -25,6 +100,11 @@ public interface Tutorial1_1_Base {
      */
     final static String id_simplifyScreen2 = "id_simplifyScreen2";
     /**
+     * Nice.  Click the check to unlock the second robot.
+     * 
+     */
+    final static String id_secondSolved = "id_secondSolved";
+    /**
      * Our engineers say that the robots are rigged to explode if they aren’t disarmed with their 'hidden number'.  I guess we’ll have to solve the clues printed on the robots.
      * 
      */
@@ -35,44 +115,54 @@ public interface Tutorial1_1_Base {
      */
     final static String id_simplifyScreen5 = "id_simplifyScreen5";
     /**
-     * The engineers have already loaded in the equation.  Now, we need to solve for the mystery number, called 'x'
+     * Your action just added 5 to x, but we didn't need to do that as x was already by itself.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started.
+     * 
+     */
+    final static String id_6m5dragged5reminder = "id_6m5dragged5reminder";
+    /**
+     * Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.
+     * 
+     */
+    final static String id_3x4dragged3reminder = "id_3x4dragged3reminder";
+    /**
+     * The engineers have already loaded in the equation.  Now, we need to solve for the mystery number, called 'x'.
      * 
      */
     final static String id_solveForX = "id_solveForX";
     /**
-     * Hey, did you see that?  Some of the robots weren’t destroyed.  Maybe we can salvage them and build more towers.
+     * x is by itself once more. <Click> on the grey circle to simplify the subtraction.
      * 
      */
-    final static String id_salvageAndBuild = "id_salvageAndBuild";
+    final static String id_6m5fixDrag = "id_6m5fixDrag";
     /**
-     * Since x is already by itself, all we need to do is simplify the right side. Click on the grey circle to simplify the multiplication.
+     * This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 3*4. The problem is written at the top of the screen. This one's pretty simple, right?
      * 
      */
-    final static String id_3x4simplifyMultiplicationPrompt = "id_3x4simplifyMultiplicationPrompt";
+    final static String id_3x4simplifyScreen1 = "id_3x4simplifyScreen1";
     /**
      * I see you figured out you can drag some of the blocks and hats.  We don't really need to do that for this problem, because the x was already by itself.
      * 
      */
     final static String id_didNotClickGreyCircle = "id_didNotClickGreyCircle";
     /**
-     * This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 4*3. The problem is written at the top of the screen. This one's pretty simple, right?
+     * Yep! That's how you select an answer. 
      * 
      */
-    final static String id_3x4simplifyScreen1 = "id_3x4simplifyScreen1";
+    final static String id_prematureSimplify = "id_prematureSimplify";
+    /**
+     * This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 6-5. The problem is written at the top of the screen. This one's pretty simple, right?
+     * 
+     */
+    final static String id_6m5simplifyScreen1 = "id_6m5simplifyScreen1";
     /**
      * Go ahead, <click> the button to go see what we salvaged.
      * 
      */
     final static String id_goToEquationScreen = "id_goToEquationScreen";
     /**
-     * Select one of these clues, or 'equations' to go to the solve screen, where our engineers have a surprise
+     * In case you are curious, your action just divided x by three.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.
      * 
      */
-    final static String id_selectFirstEquation = "id_selectFirstEquation";
-    /**
-     * This is our equation solving screen, set up with a couple of tools to help us figure out the robots' clues.
-     * 
-     */
-    final static String id_equationSolvingScreen = "id_equationSolvingScreen";
+    final static String id_3x4dragged3 = "id_3x4dragged3";
 
 }
