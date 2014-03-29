@@ -5,7 +5,7 @@
 	"id_selectFirstEquation":"Select one of these clues, or 'equations' to go to the solve screen, where our engineers have a surprise.",
 		"id_equationSolvingScreen":"This is our equation solving screen, set up with a couple of tools to help us figure out the robots' clues.",
 		"id_solveForX":"The engineers have already loaded in the equation.  Now, we need to solve for the mystery number, called 'x'",
-		"id_3x4simplifyMultiplicationPrompt":"Since x is already by itself, all we need to do is simplify the right side. Click on the grey circle to simplify the multiplication.",
+		"id_3x4simplifyMultiplicationPrompt":"Since x is already by itself, all we need to do is simplify the right side. <Click> on the grey circle to simplify the multiplication.",
 		
 			"id_3x4simplifyScreen1":"This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 4*3. The problem is written at the top of the screen. This one's pretty simple, right?",
 			"id_simplifyScreen2":"You can solve the problem by <clicking> on the right solution. If you don't see the number you want, you can pan around by dragging the screen.",
@@ -15,6 +15,16 @@
 			
 			"id_didNotClickGreyCircle":"I see you figured out you can drag some of the blocks and hats.  We don't really need to do that for this problem, because the x was already by itself.",
 			"id_3x4dragged3":"In case you are curious, your action just divided x by three.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.",
+			"id_3x4fixDrag":"x is by itself once more. <Click> on the grey circle to simplify the multiplication.",
 					
-		"id_3x4solved":"Very good.  Now we have figured out the robot’s secret number is 12.  Go ahead and hit the check mark to unlock the robot"
+		"id_3x4solved":"Very good.  Now we have figured out the robot’s secret number is 12.  Go ahead and hit the check mark to unlock the robot.",
+		"id_unlockOther":"Excellent.  We’ve been able to salvage enough material to build one pea shooter. Let’s unlock the other robot too.",
+		"id_6-5secondSubtract":"This clue is also set up where x is all by itself.  Just like with the multiplication, click the grey dot to perform the subtraction.",
+			"id_secondSimplify":"Excellent!",
+			"id_6-5secondDragged5":"In case you are curious, your action just added 5 to x.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started. ",
+			"id_6-5secondDragged5reminder":"Your action just added 5 to x, but we didn't need to do that as x was already by itself.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started.",
+		"id_secondSolved":"Nice.  Click the check to unlock the second robot.",	
+	"id_letsGoSetupRobots": "We’ve cracked all the robots so far.  Let’s set up those towers before the next robots come."	
+	
+	
 			}
