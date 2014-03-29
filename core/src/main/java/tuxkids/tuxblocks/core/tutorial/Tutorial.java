@@ -108,6 +108,8 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	private static TutorialInstance instance;
+	private static float startTimeOfHighlightCycle;
+	private static boolean isFirstHighlightCycle;
 	private final static List<Highlightable> highlightables = new ArrayList<Highlightable>();
 
 	public static boolean running() {
@@ -115,6 +117,7 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	/** Starts the main tutorial. */
+	@Deprecated
 	public static void start(final int themeColor, final int secondaryColor) {
 		if (instance != null) {
 			return;
@@ -148,15 +151,36 @@ public abstract class Tutorial extends PlayNObject {
 	public static void paint(Clock clock) {
 		if (instance != null) {
 			instance.paint(clock);
-		}
-		float perc = (float)(System.currentTimeMillis() % HIGHLIGHT_CYCLE) / 
-				HIGHLIGHT_CYCLE;
-		perc = Math.abs(perc - 0.5f);
+		}	
+		paintHighlightables(clock);
+	}
+
+	private static void paintHighlightables(Clock clock) {
+		Float perc = null;
 		for (Highlightable highlightable : highlightables) {
 			if (highlightable.highlighter().highlighted()) {
+				if (perc == null)
+					perc = calculatePercentHighlighted(clock);
 				highlightable.highlighter().setTint(HIGHLIGHT_COLOR_1, HIGHLIGHT_COLOR_2, perc);
 			}
 		}
+	}
+
+	private static float calculatePercentHighlighted(Clock clock) {
+		if (startTimeOfHighlightCycle < 0) {
+			startTimeOfHighlightCycle = clock.time();
+			return 0;
+		}
+		float perc = (clock.time()-startTimeOfHighlightCycle) / HIGHLIGHT_CYCLE;
+		if (perc > 1.0f && isFirstHighlightCycle) {
+			isFirstHighlightCycle = false;
+		}
+		if (isFirstHighlightCycle) 
+			perc *= 2;		//double time for first 2 cycles
+			
+		perc = perc % 1;		//get fractional part
+		perc = Math.abs(perc - 0.5f)+.2f;		//I like the highlight a bit brighter	
+		return perc;
 	}
 
 	/** Called from {@link TuxBlocksGame#update(int)} */
@@ -166,7 +190,7 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 
-	/** Indicate that a {@link Trigger} has occured in the game. */
+	/** Indicate that a {@link Trigger} has occurred in the game. */
 	public static void trigger(Trigger event) {
 		if (instance != null) {
 			instance.trigger(event);
@@ -213,6 +237,8 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	protected static void refreshHighlights(List<Tag> highlights) {
+		startTimeOfHighlightCycle = -1.0f;
+		isFirstHighlightCycle = true;
 		for (Highlightable highlightable : highlightables) {
 			highlightable.highlighter().setHighlighted(
 					highlightable.highlighter().hasTags(highlights));
