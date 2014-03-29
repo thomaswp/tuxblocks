@@ -21,9 +21,9 @@
 		"id_3x4solved":"Very good.  Now we have figured out the robot’s secret number is 12.  Go ahead and hit the check mark to unlock the robot.",
 		"id_unlockOther":"Excellent.  We’ve been able to salvage enough material to build one pea shooter. Let’s unlock the other robot too.",
 		"id_6m5secondSubtract":"This clue is also set up where x is all by itself.  Just like with the multiplication, click the grey dot to perform the subtraction.",
-			"id_secondSimplify":"And now solve the subtraction.",
-			"id_6m5secondDragged5":"In case you are curious, your action just added 5 to x.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started. ",
-			"id_6m5secondDragged5reminder":"Your action just added 5 to x, but we didn't need to do that as x was already by itself.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started.",
+			"id_6m5secondSimplify":"And now solve the subtraction.",
+			"id_6m5dragged5":"In case you are curious, your action just added 5 to x.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started. ",
+			"id_6m5dragged5reminder":"Your action just added 5 to x, but we didn't need to do that as x was already by itself.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started.",
 			"id_6m5fixDrag":"x is by itself once more. <Click> on the grey circle to simplify the subtraction.",
 		"id_secondSolved":"Nice.  Click the check to unlock the second robot.",	
 	"id_letsGoSetupRobots": "We’ve cracked all the robots so far.  Let’s set up those towers before the next robots come.",
@@ -31,9 +31,10 @@
 		"id_6m5simplifyMultiplicationPrompt":"Since x is already by itself, all we need to do is simplify the right side. <Click> on the grey circle to simplify the subtraction.",
 			"id_6m5simplifyScreen1":"This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 6-5. The problem is written at the top of the screen. This one's pretty simple, right?",
 			
-			"id_6m5dragged5":"In case you are curious, your action just added 5 to x.  Go ahead and drag the red +5 block back to the right side, to get back to where we started.",
-
 			
-		"id_6m5solved":"Very good.  Now we have figured out the robot’s secret number is 1.  Go ahead and hit the check mark to unlock the robot."
-		
-			}
+		"id_6m5solved":"Very good.  Now we have figured out the robot’s secret number is 1.  Go ahead and hit the check mark to unlock the robot.",
+		"id_3x4secondMultiply":"This clue is also set up where x is all by itself.  Just like with the subtraction, click the grey dot to perform the multiplication.",
+			"id_3x4secondSimplify":"And now solve the multiplication.",
+		"id_3x4dragged3reminder": "Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started."
+			
+}

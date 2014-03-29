@@ -128,7 +128,7 @@ public class Tutorial1 extends FSMTutorial {
 	private FSMState solve6m5asSecondEquation(FSMState _3x4SolvedFirst) {
 		FSMState _6m5One = addState("id_unlockOther");
 		FSMState _6m5Two = addState("id_6m5secondSubtract");
-		FSMState _6m5Simplify = addState("id_secondSimplify");
+		FSMState _6m5Simplify = addState("id_6m5secondSimplify");
 		FSMState _6m5Solved = addState("id_secondSolved").addHighlightable(Solve_Ok);
 
 		_3x4SolvedFirst.addTransition(_6m5One, Select_ScreenShown);
@@ -144,8 +144,8 @@ public class Tutorial1 extends FSMTutorial {
 
 	private void solve6m5AsSecond_handleDrag(FSMState _6m5Two) {
 		final FSMState _6m5Dragged = addState("id_didNotClickGreyCircle");
-		final FSMState _6m5DraggedTwo = addState("id_6m5secondDragged5");
-		final FSMState _6m5DraggedReminder = addState("id_6m5secondDragged5reminder");
+		final FSMState _6m5DraggedTwo = addState("id_6m5dragged5");
+		final FSMState _6m5DraggedReminder = addState("id_6m5dragged5reminder");
 		final FSMState _6m5FixedBadDrag = addState("id_6m5fixDrag");
 		
 		_6m5Two.addTransition(new StateChooser() {
@@ -225,8 +225,51 @@ public class Tutorial1 extends FSMTutorial {
 	}
 
 	private FSMState solve3x4asSecondEquation(FSMState _6m5SolvedFirst) {
-		// TODO Auto-generated method stub
-		return new FSMState();
+		FSMState _3x4One = addState("id_unlockOther");
+		FSMState _3x4Two = addState("id_3x4secondMultiply");
+		FSMState _3x4Simplify = addState("id_3x4secondSimplify");
+		FSMState _3x4Solved = addState("id_secondSolved").addHighlightable(Solve_Ok);
+
+		_6m5SolvedFirst.addTransition(_3x4One, Select_ScreenShown);
+		_3x4One.addTransition(_3x4Two, Solve_ScreenShown);
+		
+		solve3x4AsSecond_handleDrag(_3x4Two);
+		
+		_3x4Two.addTransition(_3x4Simplify, NumberSelect_Shown);
+		_3x4Simplify.addTransition(_3x4Solved, Solve_Solved);
+		
+		return _3x4Solved;
+	}
+
+	private void solve3x4AsSecond_handleDrag(FSMState startingNode) {
+		final FSMState _3x4Dragged = addState("id_didNotClickGreyCircle");
+		final FSMState _3x4DraggedTwo = addState("id_3x4dragged3");
+		final FSMState _3x4DraggedReminder = addState("id_3x4dragged3reminder");
+		final FSMState _3x4FixedBadDrag = addState("id_3x4fixDrag");
+		
+		startingNode.addTransition(new StateChooser() {
+			
+			@Override
+			public FSMState chooseState(Object extraInformation) {
+				if (extraInformation instanceof EquationBlockIndex) {
+					if (((EquationBlockIndex) extraInformation).expressionIndex == 0) {
+						if (hasCoachedOnExtraDragging) {
+							return _3x4DraggedReminder;
+						} 
+						return _3x4Dragged;
+					}
+					return _3x4FixedBadDrag;
+				}
+				Debug.write("no drag information?");
+				return _3x4FixedBadDrag;
+			}
+		}, Solve_BlockReleasedOnOther);
+		
+		joinMultiTextStates(_3x4Dragged, _3x4DraggedTwo);
+		
+		_3x4DraggedReminder.registerEpsilonTransition(startingNode);
+		_3x4DraggedTwo.registerEpsilonTransition(startingNode);
+		_3x4FixedBadDrag.registerEpsilonTransition(startingNode);
 	}
 
 	@Override
