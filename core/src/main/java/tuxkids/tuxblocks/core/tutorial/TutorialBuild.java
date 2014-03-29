@@ -27,7 +27,7 @@ class TutorialBuild extends LinearTutorial {
 		.addHighlight(Tag.Number_Ok);
 		addAction(Trigger.Build_Shown)
 		.addHighlight(Tag.Build_Ok);
-		addAction(Trigger.Solve_Shown)
+		addAction(Trigger.Solve_ScreenShown)
 		.addHighlight(Tag.Solve_Ok)
 		.dontRepeat();
 		addAction(Trigger.Build_Shown);

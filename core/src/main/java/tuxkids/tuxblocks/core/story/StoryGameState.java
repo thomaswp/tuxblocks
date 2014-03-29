@@ -89,9 +89,9 @@ public class StoryGameState extends GameState {
 	
 	static {
 		equations[0] = new Equation.Builder().addLeft(new VariableBlock("x"))
-				.addRight(new NumberBlock(4).times(3)).createEquation();
+				.addRight(new NumberBlock(4).times(3)).createEquation().name("3x4");
 		equations[1] = new Equation.Builder().addLeft(new VariableBlock("x"))
-				.addRight(new NumberBlock(6).minus(5)).createEquation();
+				.addRight(new NumberBlock(6).minus(5)).createEquation().name("6-5");
 	}
 	
 	@Override

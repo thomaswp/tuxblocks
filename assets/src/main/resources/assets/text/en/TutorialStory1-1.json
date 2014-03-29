@@ -2,7 +2,7 @@
 	"id_salvageAndBuild":"Hey, did you see that?  Some of the robots weren’t destroyed.  Maybe we can salvage them and build more towers.",
 	"id_goToEquationScreen":"Go ahead, <click> the button to go see what we salvaged.",
 	"id_solveTheClues":"Our engineers say that the robots are rigged to explode if they aren’t disarmed with their 'hidden number'.  I guess we’ll have to solve the clues printed on the robots.",
-	"id_selectFirstEquation":"Select one of these clues, or 'equations' to go to the solve screen, where our engineers have a surprise",
+	"id_selectFirstEquation":"Select one of these clues, or 'equations' to go to the solve screen, where our engineers have a surprise.",
 		"id_equationSolvingScreen":"This is our equation solving screen, set up with a couple of tools to help us figure out the robots' clues.",
 		"id_solveForX":"The engineers have already loaded in the equation.  Now, we need to solve for the mystery number, called 'x'",
 		"id_3x4simplifyMultiplicationPrompt":"Since x is already by itself, all we need to do is simplify the right side. Click on the grey circle to simplify the multiplication.",

@@ -78,8 +78,8 @@ public class SolveScreen extends EquationScreen {
 	}
 	
 	@Override
-	protected Trigger wasShownTrigger() {
-		return Trigger.Solve_Shown;
+	protected void triggeringShown() {
+		Tutorial.trigger(Trigger.Solve_ScreenShown, originalEquation);
 	}
 	
 	@Override 

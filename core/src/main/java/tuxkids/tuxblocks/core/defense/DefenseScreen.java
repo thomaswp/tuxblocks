@@ -101,7 +101,7 @@ public class DefenseScreen extends GameScreen {
 	
 	@Override
 	protected Trigger wasShownTrigger() {
-		return Trigger.Defense_Shown;
+		return Trigger.Defense_ScreenShown;
 	}
 	
 	@Override

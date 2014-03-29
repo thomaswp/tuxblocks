@@ -15,7 +15,7 @@ public class TutorialPlay extends LinearTutorial {
 	protected void addActions() {
 		addAction(Trigger.Difficulty_Shown)
 		.addHighlight(Tag.Difficulty_Start);
-		addAction(Trigger.Defense_Shown)
+		addAction(Trigger.Defense_ScreenShown)
 		.addHighlight(Tag.Defense_Grid);
 		addAction(Trigger.TextBoxHidden)
 		.addHighlight(Tag.Defense_Towers);
@@ -39,9 +39,9 @@ public class TutorialPlay extends LinearTutorial {
 		addAction(Trigger.Defense_RoundOver)
 		.addHighlight(Tag.Defense_EquationSelectScreen);
 		
-		addAction(Trigger.Select_Shown)
-		.addHighlight(Tag.Select_FirstButton);
-		addAction(Trigger.Solve_Shown);
+		addAction(Trigger.Select_ScreenShown)
+		.addHighlight(Tag.Select_FirstEquation);
+		addAction(Trigger.Solve_ScreenShown);
 		addAction(Trigger.Solve_BlockReleased)
 		.setSkip(Trigger.Solve_BlockReleasedOnOther);
 		addAction(Trigger.Solve_BlockReleasedOnOther);
@@ -60,9 +60,9 @@ public class TutorialPlay extends LinearTutorial {
 		addAction(Trigger.Solve_Solved)
 		.addHighlight(Tag.Solve_Ok);
 
-		addAction(Trigger.Select_Shown)
-		.addHighlight(Tag.Select_SecondButton);
-		addAction(Trigger.Solve_Shown);
+		addAction(Trigger.Select_ScreenShown)
+		.addHighlight(Tag.Select_SecondEquation);
+		addAction(Trigger.Solve_ScreenShown);
 		addAction(Trigger.Solve_BlockReleasedOnBlank);
 		addAction(Trigger.Solve_BlockWithModifiersReleasedOnBlank);
 		addAction(Trigger.TextBoxHidden);
@@ -80,11 +80,11 @@ public class TutorialPlay extends LinearTutorial {
 		.addHighlight(Tag.Number_Scratch);
 		addAction(Trigger.Number_Scratch)
 		.addHighlight(Tag.Number_Clear);
-		addAction(Trigger.Select_Shown);
+		addAction(Trigger.Select_ScreenShown);
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.TextBoxHidden)
 		.addHighlight(Tag.Select_Return);
-		addAction(Trigger.Defense_Shown)
+		addAction(Trigger.Defense_ScreenShown)
 		.addHighlight(Tag.Defense_PeaShooter);
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.TextBoxHidden);
