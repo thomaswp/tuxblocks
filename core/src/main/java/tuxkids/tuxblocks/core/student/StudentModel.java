@@ -1,8 +1,9 @@
 package tuxkids.tuxblocks.core.student;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
-public interface StudentModel {
+public interface StudentModel extends Persistable {
 	
 	public static final double L0_HIGH =.7;
 	public static final double L0_MED  =.4;

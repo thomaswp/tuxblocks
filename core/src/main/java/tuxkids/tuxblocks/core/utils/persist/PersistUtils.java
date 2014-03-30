@@ -20,6 +20,7 @@ import tuxkids.tuxblocks.core.solve.blocks.PlusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VerticalModifierGroup;
+import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
@@ -53,6 +54,7 @@ public class PersistUtils {
 		constructorMap.put(VerticalModifierGroup.class, VerticalModifierGroup.constructor());
 		constructorMap.put(HorizontalModifierGroup.class, HorizontalModifierGroup.constructor());
 		constructorMap.put(Level1.class, Level1.constructor());
+		constructorMap.put(StoryGameState.class, StoryGameState.constructor());
 		
 		for (Class<?> key : constructorMap.keySet()) {
 			nameMap.put(key.getName(), key);

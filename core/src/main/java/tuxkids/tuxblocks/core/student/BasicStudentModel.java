@@ -2,7 +2,6 @@ package tuxkids.tuxblocks.core.student;
 
 import static tuxkids.tuxblocks.core.student.ActionType.*;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,9 +9,9 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 
-public class BasicStudentModel implements StudentModel, Serializable {
+public class BasicStudentModel implements StudentModel {
 
-	private Map<ActionType, KnowledgeComponent> knowledgeBits = new HashMap<ActionType, KnowledgeComponent>();
+	private final Map<ActionType, KnowledgeComponent> knowledgeBits = new HashMap<ActionType, KnowledgeComponent>();
 
 	public BasicStudentModel() {
 		initializeKnowledgeComponents();
@@ -112,6 +111,14 @@ public class BasicStudentModel implements StudentModel, Serializable {
 	public Equation getNextGeneralEquation() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	
+	
+	@Override
+	public void persist(Data data) throws ParseDataException, NumberFormatException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -350,6 +350,7 @@ public class GameState implements Persistable {
 		}
 	}
 	
+	//Used for both saving and loading
 	@Override
 	public void persist(Data data) throws ParseDataException,
 			NumberFormatException {
