@@ -70,7 +70,7 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 	
 	@Override
 	public Trigger wasShownTrigger() {
-		return Trigger.Select_Shown;
+		return Trigger.Select_ScreenShown;
 	}
 	
 	@Override
@@ -144,9 +144,9 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		
 		// for the Tutorial
 		if (problemButtons.size() == 0) {
-			registerHighlightable(pb, Tag.Select_FirstButton);
+			registerHighlightable(pb, Tag.Select_FirstEquation);
 		} else if (problemButtons.size() == 1) {
-			registerHighlightable(pb, Tag.Select_SecondButton);
+			registerHighlightable(pb, Tag.Select_SecondEquation);
 		}
 		
 		problemButtons.add(pb);

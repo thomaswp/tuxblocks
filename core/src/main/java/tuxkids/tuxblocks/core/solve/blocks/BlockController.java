@@ -547,7 +547,7 @@ public class BlockController extends EquationManipulator {
 				if (dragging instanceof BaseBlock) {
 					Tutorial.trigger(Trigger.Solve_BaseBlockReleasedOnOther);
 				}
-				Tutorial.trigger(Trigger.Solve_BlockReleasedOnOther);
+				Tutorial.trigger(Trigger.Solve_BlockReleasedOnOther, equation.indexOf(target));
 			}
 			Tutorial.trigger(Trigger.Solve_BlockReleased);
 			

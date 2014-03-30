@@ -37,18 +37,20 @@ public abstract class Tutorial extends PlayNObject {
 		Title_Build, 
 		
 		Difficulty_Shown,
+		Title_Story, 
 		
-		Defense_Shown, 
-		Defense_TowerDropped, 
+		Defense_ScreenShown, 
+		Defense_TowerDropped,
+		Defense_BadTowerPlacement,
 		Defense_GridZoom, 
 		Defense_TowerSelected, 
 		Defense_TowerUpgraded, 
 		Defense_StartRound, 
 		Defense_RoundOver, 
 		
-		Select_Shown, 
+		Select_ScreenShown, 
 		
-		Solve_Shown, 
+		Solve_ScreenShown, 
 		Solve_BlockReleased, 
 		Solve_BlockReleasedOnOther, 
 		Solve_SimplifiedSuccess, 
@@ -60,11 +62,11 @@ public abstract class Tutorial extends PlayNObject {
 		Solve_Simplified, 
 		Solve_VariablesStartedCombine, 
 		
-		Number_Shown, 
-		Number_NumberSelected, 
-		Number_Scratch, 
+		NumberSelect_Shown, 
+		NumberSelect_NumberSelected, 
+		NumberSelect_Scratch, 
 		
-		Build_Shown, Title_Story, Defense_BadTowerPlacement, 
+		Build_Shown,  
 	}
 	
 	/**
@@ -90,15 +92,15 @@ public abstract class Tutorial extends PlayNObject {
 		Menu_Upgrades, 
 		
 		Select_Return, 
-		Select_FirstButton,
-		Select_SecondButton,
+		Select_FirstEquation,
+		Select_SecondEquation,
 		
 		Solve_Ok, 
 		Solve_Reset,
 		
-		Number_Ok, 
-		Number_Scratch, 
-		Number_Clear, 
+		NumberSelect_Ok, 
+		NumberSelect_Scratch, 
+		NumberSelect_Clear, 
 		
 		Build_LeftPanel, 
 		Build_NumberSelect, 
@@ -189,13 +191,13 @@ public abstract class Tutorial extends PlayNObject {
 
 	/** Indicate that a {@link Trigger} has occurred in the game. */
 	public static void trigger(Trigger event) {
-		if (instance != null) {
+		if (instance != null && event != null) {
 			instance.trigger(event);
 		}
 	}
 	
 	public static void trigger(Trigger event, Object extraInfo) {
-		if (instance != null) {
+		if (instance != null && event != null) {
 			instance.trigger(event, extraInfo);
 		}
 	}
@@ -249,7 +251,8 @@ public abstract class Tutorial extends PlayNObject {
 		
 		String domain = "tutorial";
 		// replace platform-specific text
-		line = line.replace("<click>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICK));
+		line = line.replace("<click>", Lang.getDeviceString(domain, "click"));
+		line = line.replace("<Click>", Lang.getDeviceString(domain, "Click"));
 		line = line.replace("<clicking>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_CLICKING));
 		line = line.replace("<mouse>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_MOUSE));
 		line = line.replace("<esc>", Lang.getDeviceString(domain, Constant.TUTORIAL_TEXT_MENU));

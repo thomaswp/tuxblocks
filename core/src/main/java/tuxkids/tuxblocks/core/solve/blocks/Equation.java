@@ -24,6 +24,7 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 	@SuppressWarnings("unchecked")
 	protected final MultiList<BaseBlock> allBlocks = new MultiList<BaseBlock>(leftSide, rightSide);
 	private Renderer renderer;
+	private String machineReadableName;
 	
 	/** Returns the left side of the equation. */
 	public Iterable<BaseBlock> leftSide() {
@@ -260,5 +261,19 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 			NumberFormatException {
 		data.persistList(leftSide);
 		data.persistList(rightSide);
+	}
+
+	/**
+	 * Allows us to internally distinguish equations for things like tutorials
+	 * @param newName
+	 * @return
+	 */
+	public Equation name(String newName) {
+		this.machineReadableName = newName;
+		return this;
+	}
+	
+	public String name(){
+		return this.machineReadableName;
 	}
 }

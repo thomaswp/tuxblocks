@@ -185,7 +185,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	@Override
 	public Trigger wasShownTrigger() {
-		return Trigger.Number_Shown;
+		return Trigger.NumberSelect_Shown;
 	}
 	
 	// create and position the ScratchLayer and its corresponding Buttons
@@ -212,11 +212,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					scratchMode = !scratchMode;
-					Tutorial.trigger(Trigger.Number_Scratch);
+					Tutorial.trigger(Trigger.NumberSelect_Scratch);
 				}
 			}
 		});
-		registerHighlightable(buttonScratch, Tag.Number_Scratch);
+		registerHighlightable(buttonScratch, Tag.NumberSelect_Scratch);
 		
 		buttonClear.setOnReleasedListener(new OnReleasedListener() {
 			@Override
@@ -226,7 +226,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 				}
 			}
 		});
-		registerHighlightable(buttonClear, Tag.Number_Clear);
+		registerHighlightable(buttonClear, Tag.NumberSelect_Clear);
 	}
 	
 	// create the problem to be displayed on the header, and corresponding Buttons
@@ -248,7 +248,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		backImageCancel = PlayN.assets().getImage(Constant.BUTTON_CANCEL);
 		buttonBack = header.addLeftButton(backImageBack);
 		buttonBack.setNoSound();
-		registerHighlightable(buttonBack, Tag.Number_Ok);
+		registerHighlightable(buttonBack, Tag.NumberSelect_Ok);
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
@@ -531,11 +531,11 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 			selected = selected * 10 + digit;
 			if (Math.abs(selected) < 1500) {
 				selectedPoint = getPoint(selected);
-				Tutorial.trigger(Trigger.Number_NumberSelected);
+				Tutorial.trigger(Trigger.NumberSelect_NumberSelected);
 			}
 		} else if (selected != 0 && c == '-') {
 			selectedPoint = getPoint(-selected); 
-			Tutorial.trigger(Trigger.Number_NumberSelected);
+			Tutorial.trigger(Trigger.NumberSelect_NumberSelected);
 		}
 	}
 	
@@ -607,7 +607,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 				// select the point
 				selectedPoint = point;
 				Audio.se().play(Constant.SE_TICK);
-				Tutorial.trigger(Trigger.Number_NumberSelected);
+				Tutorial.trigger(Trigger.NumberSelect_NumberSelected);
 			}
 		}
 

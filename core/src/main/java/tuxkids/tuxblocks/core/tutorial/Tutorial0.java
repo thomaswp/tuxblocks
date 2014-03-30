@@ -29,6 +29,8 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 		final FSMState four = addState(id_goodFirstPlacement);
 		final FSMState five = addState(id_okayFirstPlacement);
 		FSMState six = addState(id_secondTowerPlacement);
+
+//non message state that starts the round
 		FSMState seven = new FSMState(){
 			@Override
 			public FSMState notifyMessageShown() {
@@ -37,8 +39,9 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 			}
 		};
 		
-		one.addTransition(two, TextBoxHidden);
-		two.addTransition(three, TextBoxHidden);
+		//one.addTransition(two, TextBoxHidden);
+		//two.addTransition(three, TextBoxHidden);
+		joinMultiTextStates(one,two,three);
 		
 		three.addTransition(new StateChooser() {
 			

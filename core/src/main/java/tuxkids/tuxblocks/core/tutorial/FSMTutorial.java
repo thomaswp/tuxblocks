@@ -128,6 +128,14 @@ abstract class FSMTutorial implements TutorialInstance {
 	public void wasRepeated() {
 		// repeat button pressed, message reshown
 	}
+	
+	
+	//Convenience method for joining a bunch of text states
+	protected void joinMultiTextStates(FSMState... states) {
+		for(int i = 0;i<states.length-1;i++) {
+			states[i].addTransition(states[i+1], Trigger.TextBoxHidden);
+		}
+	}
 
 	/**
 	 * Allows a transition (given a trigger) to go to one of many states depending on

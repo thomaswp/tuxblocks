@@ -24,12 +24,12 @@ class TutorialBuild extends LinearTutorial {
 		.addHighlight(Tag.Build_NumberDown);
 		addAction(Trigger.TextBoxHidden)
 		.addHighlight(Tag.Build_NumberSelect);
-		addAction(Trigger.Number_Shown);
-		addAction(Trigger.Number_NumberSelected)
-		.addHighlight(Tag.Number_Ok);
+		addAction(Trigger.NumberSelect_Shown);
+		addAction(Trigger.NumberSelect_NumberSelected)
+		.addHighlight(Tag.NumberSelect_Ok);
 		addAction(Trigger.Build_Shown)
 		.addHighlight(Tag.Build_Ok);
-		addAction(Trigger.Solve_Shown)
+		addAction(Trigger.Solve_ScreenShown)
 		.addHighlight(Tag.Solve_Ok)
 		.dontRepeat();
 		addAction(Trigger.Build_Shown);

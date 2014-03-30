@@ -467,13 +467,24 @@ public class Grid extends PlayNObject implements Highlightable {
 			Tutorial.trigger(Trigger.Defense_TowerDropped, toPlace.coordinates);
 		} else if (toPlace != null) {
 			toPlace.layer().destroy();
-			Tutorial.trigger(Trigger.Defense_BadTowerPlacement);
+			if (!outOfGrid(toPlace))
+				Tutorial.trigger(Trigger.Defense_BadTowerPlacement);
 		}
 		toPlace = null;
 		rangeIndicatorLayer.setImage(null);
 		return canPlace;
 	}
 	
+
+	private boolean outOfGrid(Tower tower) {
+		Point p = tower.coordinates();
+		int rows = tower.rows(), cols = tower.cols();
+
+		if (p.x < 0 || p.x + rows > this.rows || p.y < 0 || p.y + cols > this.cols){
+			return true;
+		}
+		return false;
+	}
 
 	/** Adds the given Tower to this Grid at the given coordinates */
 	public void placeTower(Tower tower, Point point) {
@@ -507,6 +518,9 @@ public class Grid extends PlayNObject implements Highlightable {
 
 		// if it's out of the grid, return false
 		if (p.x < 0 || p.x + rows > this.rows || p.y < 0 || p.y + cols > this.cols){
+			return false;
+		}
+		if (outOfGrid(toPlace)) {
 			return false;
 		}
 

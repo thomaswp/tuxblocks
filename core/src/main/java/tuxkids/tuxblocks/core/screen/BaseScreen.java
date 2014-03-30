@@ -101,6 +101,10 @@ public abstract class BaseScreen extends Screen implements Listener {
 		entering = false;
 		lastTx = 0;
 		lastTy = 0;
+		triggeringShown();
+	}
+
+	protected void triggeringShown() {
 		Tutorial.trigger(wasShownTrigger());
 	}
 	

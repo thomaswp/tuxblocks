@@ -46,6 +46,8 @@
 },
 
 "tutorial" : {
+	"Click-pc" : "Click",
+	"Click-mobile" : "Tap",
 	"click-pc" : "click",
 	"click-mobile" : "tap",
 	"clicking-pc" : "clicking",

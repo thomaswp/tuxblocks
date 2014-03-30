@@ -17,7 +17,7 @@ public class TutorialPlay extends LinearTutorial {
 	protected void addActions() {
 		addAction(Trigger.Difficulty_Shown)
 		.addHighlight(Tag.Difficulty_Start);
-		addAction(Trigger.Defense_Shown)
+		addAction(Trigger.Defense_ScreenShown)
 		.addHighlight(Tag.Defense_Grid);
 		addAction(Trigger.TextBoxHidden)
 		.addHighlight(Tag.Defense_Towers);
@@ -41,30 +41,30 @@ public class TutorialPlay extends LinearTutorial {
 		addAction(Trigger.Defense_RoundOver)
 		.addHighlight(Tag.Defense_EquationSelectScreen);
 		
-		addAction(Trigger.Select_Shown)
-		.addHighlight(Tag.Select_FirstButton);
-		addAction(Trigger.Solve_Shown);
+		addAction(Trigger.Select_ScreenShown)
+		.addHighlight(Tag.Select_FirstEquation);
+		addAction(Trigger.Solve_ScreenShown);
 		addAction(Trigger.Solve_BlockReleased)
 		.setSkip(Trigger.Solve_BlockReleasedOnOther);
 		addAction(Trigger.Solve_BlockReleasedOnOther);
 		addAction(Trigger.TextBoxHidden);
-		addAction(Trigger.Number_Shown);
+		addAction(Trigger.NumberSelect_Shown);
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.TextBoxHidden);
 		if (!PlayN.keyboard().hasHardwareKeyboard()) {
 			actions.remove(actions.size() - 1);
 		}
 		addAction(Trigger.TextBoxHidden);
-		addAction(Trigger.Number_NumberSelected)
-		.addHighlight(Tag.Number_Ok);
+		addAction(Trigger.NumberSelect_NumberSelected)
+		.addHighlight(Tag.NumberSelect_Ok);
 		addAction(Trigger.Solve_SimplifiedSuccess)
 		.dontRepeat();
 		addAction(Trigger.Solve_Solved)
 		.addHighlight(Tag.Solve_Ok);
 
-		addAction(Trigger.Select_Shown)
-		.addHighlight(Tag.Select_SecondButton);
-		addAction(Trigger.Solve_Shown);
+		addAction(Trigger.Select_ScreenShown)
+		.addHighlight(Tag.Select_SecondEquation);
+		addAction(Trigger.Solve_ScreenShown);
 		addAction(Trigger.Solve_BlockReleasedOnBlank);
 		addAction(Trigger.Solve_BlockWithModifiersReleasedOnBlank);
 		addAction(Trigger.TextBoxHidden);
@@ -72,21 +72,21 @@ public class TutorialPlay extends LinearTutorial {
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.Solve_VerticalModifierDoubleClicked);
 		addAction(Trigger.Solve_Simplified);
-		addAction(Trigger.Number_Shown);
+		addAction(Trigger.NumberSelect_Shown);
 		addAction(Trigger.Solve_SimplifiedSuccess);
 		addAction(Trigger.Solve_BlockReleasedOnOther);
 		addAction(Trigger.Solve_VariablesStartedCombine)
 		.addHighlight(Tag.Solve_Reset);
 		addAction(Trigger.TextBoxHidden);
-		addAction(Trigger.Number_Shown)
-		.addHighlight(Tag.Number_Scratch);
-		addAction(Trigger.Number_Scratch)
-		.addHighlight(Tag.Number_Clear);
-		addAction(Trigger.Select_Shown);
+		addAction(Trigger.NumberSelect_Shown)
+		.addHighlight(Tag.NumberSelect_Scratch);
+		addAction(Trigger.NumberSelect_Scratch)
+		.addHighlight(Tag.NumberSelect_Clear);
+		addAction(Trigger.Select_ScreenShown);
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.TextBoxHidden)
 		.addHighlight(Tag.Select_Return);
-		addAction(Trigger.Defense_Shown)
+		addAction(Trigger.Defense_ScreenShown)
 		.addHighlight(Tag.Defense_PeaShooter);
 		addAction(Trigger.TextBoxHidden);
 		addAction(Trigger.TextBoxHidden);

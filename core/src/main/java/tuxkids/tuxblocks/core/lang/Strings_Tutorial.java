@@ -20,10 +20,20 @@ public interface Strings_Tutorial {
      */
     final static String key_clickingPc = "clicking-pc";
     /**
+     * Click
+     * 
+     */
+    final static String key_ClickPc = "Click-pc";
+    /**
      * finger
      * 
      */
     final static String key_mouseMobile = "mouse-mobile";
+    /**
+     * Tap
+     * 
+     */
+    final static String key_ClickMobile = "Click-mobile";
     /**
      * tap
      * 
