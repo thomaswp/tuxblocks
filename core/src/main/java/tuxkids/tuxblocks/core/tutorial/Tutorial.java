@@ -10,7 +10,9 @@ import tripleplay.game.Screen;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.lang.Lang;
+import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
 
@@ -113,7 +115,12 @@ public abstract class Tutorial extends PlayNObject {
 	private static float startTimeOfHighlightCycle;
 	private static boolean isFirstHighlightCycle;
 	private final static List<Highlightable> highlightables = new ArrayList<Highlightable>();
+	private final static ArrayList<EquationBlockIndex> highlightableBlocks = new ArrayList<EquationBlockIndex>();
 
+	public static ArrayList<EquationBlockIndex> highlightableBlocks() {
+		return highlightableBlocks;
+	}
+	
 	public static boolean running() {
 		return instance != null;
 	}
@@ -225,6 +232,8 @@ public abstract class Tutorial extends PlayNObject {
 		if (instance != null) {
 			instance.destroy();
 			instance = null;
+			highlightables.clear();
+			highlightableBlocks.clear();
 		}
 	}
 	
@@ -259,5 +268,11 @@ public abstract class Tutorial extends PlayNObject {
 		
 		return line;
 	}
-	
+
+	public static void refreshBlockHighlights(
+			List<EquationBlockIndex> highlightableBlocks) {
+		Debug.write(highlightableBlocks.size());
+		Tutorial.highlightableBlocks.clear();
+		Tutorial.highlightableBlocks.addAll(highlightableBlocks);
+	}
 }

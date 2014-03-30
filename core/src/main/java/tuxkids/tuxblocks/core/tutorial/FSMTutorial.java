@@ -7,6 +7,7 @@ import java.util.List;
 import playn.core.Json;
 import playn.core.PlayN;
 import playn.core.util.Clock;
+import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
@@ -115,8 +116,10 @@ abstract class FSMTutorial implements TutorialInstance {
 
 	@Override
 	public void refreshHighlights() {
-		if (currentState != null)
-			Tutorial.refreshHighlights(this.currentState.highlightables); //TODO: correct list
+		if (currentState != null) {
+			Tutorial.refreshHighlights(this.currentState.highlightables);
+			Tutorial.refreshBlockHighlights(this.currentState.highlightableBlocks);
+		}
 	}
 
 	@Override
@@ -163,6 +166,7 @@ abstract class FSMTutorial implements TutorialInstance {
 	protected class FSMState {
 		public String message = null;
 		public final List<Tag> highlightables = new ArrayList<Tag>(2);
+		public final List<EquationBlockIndex> highlightableBlocks = new ArrayList<EquationBlockIndex>(2);
 		private final HashMap<Trigger, StateChooser> transitions = new HashMap<Trigger, StateChooser>();
 		private FSMState elseState;
 		private FSMState epsilonState;
@@ -241,6 +245,12 @@ abstract class FSMTutorial implements TutorialInstance {
 			}
 			Debug.write("Epsilon transition to "+epsilonState);
 			return epsilonState;
+		}
+
+		public FSMState addHighlightableBlock(
+				EquationBlockIndex equationBlockIndex) {
+			highlightableBlocks.add(equationBlockIndex);
+			return this;
 		}
 	}
 
