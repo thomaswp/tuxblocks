@@ -6,6 +6,7 @@ import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.tutorial.gen.Tutorial1_1_Base;
 import tuxkids.tuxblocks.core.utils.Debug;
 
@@ -278,6 +279,16 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 			node.addTransition(simplifyNode, NumberSelect_NumberSelected);
 		}
 		joinMultiTextStates(simplifyNode, nodeToSkipTo);	
+	}
+	
+	
+	@Override
+	protected boolean handleTriggerPermissions(Trigger event) {
+		if (event == Solve_GoBack) {
+			showMessage(getLocalizedText(cant_go_back));
+			return false;
+		}
+		return true;
 	}
 	
 	@Override

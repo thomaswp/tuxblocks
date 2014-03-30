@@ -63,8 +63,10 @@ public class SolveScreen extends EquationScreen {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					controller.finishSolving();
-					popThis();
+					if (buttonBack.image() == buttonImageOk || Tutorial.askPermission(Trigger.Solve_GoBack)) {
+						controller.finishSolving();
+						popThis();
+					}
 				}
 			}
 		});

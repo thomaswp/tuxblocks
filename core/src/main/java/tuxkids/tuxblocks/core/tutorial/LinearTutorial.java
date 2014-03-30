@@ -107,6 +107,11 @@ public abstract class LinearTutorial implements TutorialInstance {
 	}
 	
 	@Override
+	public boolean askPermission(Trigger event) {
+		return true;
+	}
+	
+	@Override
 	public void trigger(Trigger event, Object extraInformation) {
 		trigger(event); 
 	}

@@ -6,6 +6,8 @@
 	"id_goodFirstPlacement":"Excellent.  Now add the second tower.",
 	"id_okayFirstPlacement":"Okay.  That should work.  Add the second tower and we’ll be in business.",
 	"id_secondTowerPlacement":"And now we wait for the next wave.  May our towers bring us strength.",
-	"id_badTowerPlacement":"We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!"
+	"id_badTowerPlacement":"We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!",
+	"cant_skip_ahead2": "This button is for when all of your towers are in place.  We still have two towers left to place, so don't hit this quite yet.",
+	"cant_skip_ahead1": "This button is for when all of your towers are in place.  We still have a tower left to place."
 
 }

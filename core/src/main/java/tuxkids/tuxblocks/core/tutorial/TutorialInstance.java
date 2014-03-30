@@ -15,5 +15,6 @@ public interface TutorialInstance {
 	void refreshHighlights();
 	void wasRepeated();
 	String filename();
+	boolean askPermission(Trigger event);
 
 }

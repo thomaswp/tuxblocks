@@ -130,12 +130,13 @@ public class DefenseScreen extends GameScreen {
 	
 	// button for starting the round early
 	private void createStartButton() {
-		Button buttonStart = header.addRightButton(Constant.BUTTON_OK);
-		buttonStart.setSuccessSound();
+		final Button buttonStart = header.addRightButton(Constant.BUTTON_OK);
+		
 		buttonStart.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
-				if (inButton) {
+				if (inButton && Tutorial.askPermission(Trigger.Defense_StartRound)) {
+					Audio.se().play(Constant.SE_SUCCESS);
 					state.level().startNextRound();
 					Tutorial.trigger(Trigger.Defense_StartRound);
 				}

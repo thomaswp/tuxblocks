@@ -1,5 +1,6 @@
 {
 	"tutorial_id":"Tutorial1_1",
+	"cant_go_back": "No, don't leave!  You can totally solve this clue",
 	"id_salvageAndBuild":"Hey, did you see that?  Some of the robots weren’t destroyed.  Maybe we can salvage them and build more towers.",
 	"id_goToEquationScreen":"Go ahead, <click> the button to go see what we salvaged.",
 	"id_solveTheClues":"Our engineers say that the robots are rigged to explode if they aren’t disarmed with their 'hidden number'.  I guess we’ll have to solve the clues printed on the robots.",
@@ -37,5 +38,7 @@
 		"id_3x4secondMultiply":"This clue is also set up where x is all by itself.  Just like with the subtraction, click the grey dot to perform the multiplication.",
 			"id_3x4secondSimplify":"And now solve the multiplication.",
 		"id_3x4dragged3reminder": "Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started."
+		
+	
 			
 }

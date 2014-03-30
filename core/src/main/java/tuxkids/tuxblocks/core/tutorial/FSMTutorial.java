@@ -20,7 +20,7 @@ abstract class FSMTutorial implements TutorialInstance {
 
 	private FSMState startState = null;	
 	private TutorialLayer layer;
-	private FSMState currentState = startState;
+	protected FSMState currentState = startState;
 	private Json.Object messages;
 	protected StoryGameState gameState;
 	private static final Object NO_EXTRA_INFO = new Object();
@@ -51,14 +51,19 @@ abstract class FSMTutorial implements TutorialInstance {
 	}
 	
 	protected FSMState addState(String idOfText, FSMState baseState) {
+		String text = getLocalizedText(idOfText);
+		baseState.setMessage(text);
+		return baseState;
+	}
+
+	protected String getLocalizedText(String idOfText) {
 		String text = messages.getString(idOfText);
 		if (text == null) {
 			Debug.write("WARNING: no such tutorial text with id: " + idOfText);
 			text = "";
 		}
 		text = Tutorial.prepareMessage(text);
-		baseState.setMessage(text);
-		return baseState;
+		return text;
 	}
 	
 	@Override
@@ -94,13 +99,35 @@ abstract class FSMTutorial implements TutorialInstance {
 		if (nextState != null) {
 			currentState = nextState;
 			refreshHighlights();
-			if (currentState.message != null) layer.showMessage(currentState.message);
+			if (currentState.message != null) showMessage(currentState.message);
 			currentState = currentState.notifyMessageShown();
 			refreshHighlights();
 		}
 		if (nextState == endState) {
 			endOfTutorial();
 		}
+	}
+
+	protected void showMessage(String message) {
+		layer.showMessage(message);
+	}
+	
+	/**
+	 * By default, blocking of actions can depend on states
+	 */
+	@Override
+	public boolean askPermission(Trigger event) {
+		if (currentState == endState || currentState == null) return true;
+		
+		return handleTriggerPermissions(event);
+	}
+
+	protected boolean handleTriggerPermissions(Trigger event) {
+		if (currentState.hasBlockOnTrigger(event)) {
+			showMessage(currentState.blockMessageForEvent(event));
+			return false;
+		}
+		return true;
 	}
 
 	protected void endOfTutorial() {
@@ -168,11 +195,21 @@ abstract class FSMTutorial implements TutorialInstance {
 		public final List<Tag> highlightables = new ArrayList<Tag>(2);
 		public final List<EquationBlockIndex> highlightableBlocks = new ArrayList<EquationBlockIndex>(2);
 		private final HashMap<Trigger, StateChooser> transitions = new HashMap<Trigger, StateChooser>();
+		private final HashMap<Trigger, String> blocksAndMessages = new HashMap<Trigger, String>(0);
+		
 		private FSMState elseState;
 		private FSMState epsilonState;
 
 		private final void setMessage(String text) {
 			this.message = text;
+		}
+
+		public String blockMessageForEvent(Trigger event) {
+			return blockMessageForEvent(event);
+		}
+
+		public boolean hasBlockOnTrigger(Trigger event) {
+			return blocksAndMessages.containsKey(event);
 		}
 
 		//shouldn't need to override this.  override notifyMessageShown() if you want to perform

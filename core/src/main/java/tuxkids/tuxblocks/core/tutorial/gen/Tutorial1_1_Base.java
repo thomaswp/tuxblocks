@@ -30,6 +30,11 @@ public interface Tutorial1_1_Base {
      */
     final static String id_letsGoSetupRobots = "id_letsGoSetupRobots";
     /**
+     * No, don't leave!  You can totally solve this clue
+     * 
+     */
+    final static String cant_go_back = "cant_go_back";
+    /**
      * Very good.  Now we have figured out the robot’s secret number is 1.  Go ahead and hit the check mark to unlock the robot.
      * 
      */
