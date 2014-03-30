@@ -2,7 +2,6 @@ package tuxkids.tuxblocks.core.solve;
 
 import playn.core.Image;
 import playn.core.PlayN;
-import playn.core.Mouse.LayerAdapter;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
@@ -63,7 +62,7 @@ public class SolveScreen extends EquationScreen {
 		buttonBack.setOnReleasedListener(new OnReleasedListener() {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
-				if (inButton) {
+				if (inButton && Tutorial.askPermission(Trigger.Solve_GoBack)) {
 					controller.finishSolving();
 					popThis();
 				}

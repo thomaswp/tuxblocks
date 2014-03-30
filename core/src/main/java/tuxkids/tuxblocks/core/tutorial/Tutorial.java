@@ -60,7 +60,8 @@ public abstract class Tutorial extends PlayNObject {
 		Solve_BaseBlockReleasedOnOther, 
 		Solve_VerticalModifierDoubleClicked, 
 		Solve_Simplified, 
-		Solve_VariablesStartedCombine, 
+		Solve_VariablesStartedCombine,
+		Solve_GoBack,
 		
 		NumberSelect_Shown, 
 		NumberSelect_NumberSelected, 
