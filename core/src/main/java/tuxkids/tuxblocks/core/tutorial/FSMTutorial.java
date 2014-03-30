@@ -19,7 +19,7 @@ abstract class FSMTutorial implements TutorialInstance {
 
 	private FSMState startState = null;	
 	private TutorialLayer layer;
-	private FSMState currentState = startState;
+	protected FSMState currentState = startState;
 	private Json.Object messages;
 	protected StoryGameState gameState;
 	private static final Object NO_EXTRA_INFO = new Object();
