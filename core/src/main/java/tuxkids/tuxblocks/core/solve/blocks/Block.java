@@ -240,4 +240,8 @@ public abstract class Block extends Sprite implements Hashable {
 	public String toString() {
 		return "[" + text() + "]";
 	}
+	
+	public void lerpAlpha(float targetAlpha, float dt) {
+		lerpAlpha(layer, targetAlpha, 0.995f, dt);
+	}
 }

@@ -2,7 +2,6 @@ package tuxkids.tuxblocks.core.solve;
 
 import playn.core.Image;
 import playn.core.PlayN;
-import playn.core.Mouse.LayerAdapter;
 import playn.core.Pointer.Event;
 import playn.core.util.Clock;
 import tripleplay.game.ScreenStack;
@@ -105,6 +104,8 @@ public class SolveScreen extends EquationScreen {
 
 	private void displayHint(Hint hint) {
 		hintMessageBox.showMessage(hint.text);
+		controller.clearHighlights();
+		controller.addHighlights(hint.highlights);
 	}
 	
 	@Override
