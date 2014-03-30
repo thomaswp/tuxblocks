@@ -321,6 +321,10 @@ public class BlockController extends EquationManipulator {
 		// Update highlighted blocks
 		if (dragging == null) {
 			ArrayList<Block> toHighlight = new ArrayList<Block>();
+			List<EquationBlockIndex> highlightBlocks = this.highlightBlocks;
+			if (Tutorial.highlightableBlocks().size() > 0) {
+				highlightBlocks = Tutorial.highlightableBlocks();
+			}
 			for (EquationBlockIndex index : highlightBlocks) {
 				toHighlight.add(equation.getBlock(index));
 			}
