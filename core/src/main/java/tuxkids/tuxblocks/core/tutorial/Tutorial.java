@@ -188,6 +188,13 @@ public abstract class Tutorial extends PlayNObject {
 			instance.update(delta);
 		}
 	}
+	
+	public static boolean askPermission(Trigger event) {
+		if (instance != null && event != null) {
+			return instance.askPermission(event);
+		}
+		return true;
+	}
 
 	/** Indicate that a {@link Trigger} has occurred in the game. */
 	public static void trigger(Trigger event) {

@@ -25,6 +25,16 @@ public interface Tutorial0_Base {
      */
     final static String id_nextWaveSoon = "id_nextWaveSoon";
     /**
+     * This button is for when all of your towers are in place.  We still have two towers left to place, so don't hit this quite yet.
+     * 
+     */
+    final static String cant_skip_ahead2 = "cant_skip_ahead2";
+    /**
+     * This button is for when all of your towers are in place.  We still have a tower left to place.
+     * 
+     */
+    final static String cant_skip_ahead1 = "cant_skip_ahead1";
+    /**
      * We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!
      * 
      */

@@ -17,7 +17,7 @@ import tuxkids.tuxblocks.core.utils.Debug;
 
 public class StoryGameState extends GameState {
 
-	private int lesson = 1;
+	private int lesson = 0;
 	private int equationIndex = 0;
 	
 	private boolean hasSetupTowersForLesson = false;
@@ -25,7 +25,7 @@ public class StoryGameState extends GameState {
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
 		addItem(TowerType.PeaShooter, -1);		//start with two towers
-		//problems().clear(); 					//no problems
+		problems().clear(); 					//no problems
 		
 	}
 	
