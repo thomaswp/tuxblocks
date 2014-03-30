@@ -9,6 +9,7 @@ import playn.core.Keyboard.Event;
 import playn.core.Keyboard.Listener;
 import playn.core.Keyboard.TypedEvent;
 import playn.core.Layer;
+import playn.core.Platform.Type;
 import playn.core.PlayN;
 import pythagoras.f.Vector;
 import tripleplay.game.Screen;
@@ -205,7 +206,8 @@ public abstract class BaseScreen extends Screen implements Listener {
 
 	@Override
 	public void onKeyDown(Event event) {
-		if (event.key() == Key.BACK || event.key() == Key.B) {
+		if ((PlayN.platformType() == Type.ANDROID && event.key() == Key.BACK) || 
+				event.key() == Key.B) {
 			// back button (mainly for Android support)
 			if (MainMenuLayer.showing()) {
 				MainMenuLayer.toggle(this);

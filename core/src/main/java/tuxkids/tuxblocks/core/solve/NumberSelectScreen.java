@@ -102,6 +102,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	private ScratchLayer scratchLayer;
 	private boolean scratchMode;
 	
+	private boolean primedNegative;
+	
 	/** Returns the currently selected answer, or null if none is selected */
 	public Integer selectedAnswer() {
 		if (selectedPoint == null) return null;
@@ -489,6 +491,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		}
 		
 		dragging = true;
+		primedNegative = false;
 		dragOffset.set(position.x + event.x(), position.y + event.y());
 		positionTrail.clear();
 		timeTrail.clear();
@@ -527,14 +530,18 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		char c = event.typedChar();
 		if (c >= '0' && c <= '9') {
 			int digit = Integer.parseInt("" + c);
-			if (selected < 0) digit *= -1;
+			if (selected < 0 || (selected == 0 && primedNegative)) digit *= -1;
 			selected = selected * 10 + digit;
 			if (Math.abs(selected) < 1500) {
 				selectedPoint = getPoint(selected);
 				Tutorial.trigger(Trigger.NumberSelect_NumberSelected);
 			}
-		} else if (selected != 0 && c == '-') {
-			selectedPoint = getPoint(-selected); 
+		} else if (c == '-') {
+			if (selected != 0) {
+				selectedPoint = getPoint(-selected);
+			} else {
+				primedNegative = true;
+			}
 			Tutorial.trigger(Trigger.NumberSelect_NumberSelected);
 		}
 	}
@@ -544,7 +551,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		super.onKeyDown(event);
 		if (MenuLayer.showing()) return;
 		
-		if (event.key() == Key.BACKSPACE) {
+		if (event.key() == Key.BACKSPACE || event.key() == Key.DELETE) {
 			Integer s = selectedAnswer();
 			if (s == null) return;
 			int selected = s;
