@@ -42,4 +42,31 @@ public class ExpressionBlockIndex {
 	public String toString() {
 		return Formatter.format("{%d, %d}", depth, index);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + depth;
+		result = prime * result + index;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExpressionBlockIndex other = (ExpressionBlockIndex) obj;
+		if (depth != other.depth)
+			return false;
+		if (index != other.index)
+			return false;
+		return true;
+	}
+	
+	
 }

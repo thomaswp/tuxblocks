@@ -69,6 +69,10 @@ public abstract class EquationManipulator extends PlayNObject {
 		this.solveActionCallback = solveActionCallback;
 	}
 	
+	protected void actionPerformed() {
+		
+	}
+	
 	protected void clearDragData() {
 		dragging = tempDragging = null;
 		draggingPreviousIndex = null;
@@ -131,7 +135,8 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 	
 	public Block dragBlock(Block sprite) {
-
+		actionPerformed();
+		
 		if (shouldActionCallback()) {
 			draggingPreviousIndex = equation.indexOf(sprite);
 			draggingPreviousEquation = equation.copy();
@@ -187,7 +192,8 @@ public abstract class EquationManipulator extends PlayNObject {
 	 * Block you're looking for. Sorry. TODO: uncomplicate
 	 */
 	protected Block dropBlock(BaseBlock target) {
-
+		actionPerformed();
+		
 		if (shouldActionCallback()) {
 			int targetIndex = equation.allBlocks.indexOf(target);
 			reportSolveAction(new DragAction(draggingPreviousIndex, targetIndex, target != draggingFrom));
@@ -250,6 +256,8 @@ public abstract class EquationManipulator extends PlayNObject {
 
 	public void reciprocateBlock(Block sprite) {
 		if (sprite instanceof VerticalModifierBlock) {
+			actionPerformed();
+			
 			boolean success = ((ModifierBlock) sprite).canAddInverse(); 
 			if (shouldActionCallback()) {
 				reportSolveAction(new ReciprocalAction(equation.indexOf(sprite), success));
@@ -282,12 +290,14 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 	
 	protected void startBlockReduce(Renderer problem, int answer, Stat stat, int level) {
+		actionPerformed();
 		if (shouldActionCallback()) {
 			reportSolveAction(new StartSimplifyingBlocksAction(problem.getPlainText(), answer));
 		}
 	}
 	
 	protected void finishBlockReduce(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success) {
+		actionPerformed();
 		if (shouldActionCallback()) {
 			// TODO: really should be a better way of reporting/representing this
 			// so not everything has to be passed
@@ -318,6 +328,7 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 	
 	public void finishSolving() {
+		actionPerformed();
 		if (shouldActionCallback()) {
 			reportSolveAction(new FinishProblemAction(isEquationSolved(equation)));
 		}

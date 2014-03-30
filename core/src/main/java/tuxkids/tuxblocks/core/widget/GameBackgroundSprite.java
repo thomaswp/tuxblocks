@@ -77,6 +77,8 @@ public class GameBackgroundSprite extends PlayNObject {
 		offset.y += y;
 	}
 	
+	
+	
 	public GameBackgroundSprite() {
 		groupLayer = graphics().createGroupLayer();
 		groupLayer.setDepth(-100);
@@ -97,9 +99,13 @@ public class GameBackgroundSprite extends PlayNObject {
 	}
 	
 
-	/** Changes the primary color and its corresponding colors */
 	public void newThemeColor() {
-		primaryHue = (float)Math.random();
+		newThemeColor((float) Math.random());
+	}
+	
+	/** Changes the primary color and its corresponding colors */
+	public void newThemeColor(float primaryHue) {
+		this.primaryHue = primaryHue;
 		primaryColor = CanvasUtils.hsvToRgb(primaryHue, 1, 1);
 		secondaryColor = CanvasUtils.hsvToRgb(primaryHue + HUE_OFFSET_1, 1, 1);
 		ternaryColor = CanvasUtils.hsvToRgb(primaryHue + HUE_OFFSET_2, 1, 1);

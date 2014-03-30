@@ -31,4 +31,35 @@ public class EquationBlockIndex {
 	public static EquationBlockIndex fromBaseBlockIndex(int index) {
 		return new EquationBlockIndex(index, ExpressionBlockIndex.makeExpressionBlockIndex(0, 0));
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((blockIndex == null) ? 0 : blockIndex.hashCode());
+		result = prime * result + expressionIndex;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EquationBlockIndex other = (EquationBlockIndex) obj;
+		if (blockIndex == null) {
+			if (other.blockIndex != null)
+				return false;
+		} else if (!blockIndex.equals(other.blockIndex))
+			return false;
+		if (expressionIndex != other.expressionIndex)
+			return false;
+		return true;
+	}
+	
+	
 }

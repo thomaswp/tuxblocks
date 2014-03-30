@@ -70,6 +70,8 @@ public class BlockController extends EquationManipulator {
 	
 	private BuildToolbox buildToolbox; // if inBuildMode, we need a reference to the BuildToolbox
 	
+	private final List<EquationBlockIndex> highlightBlocks = new ArrayList<EquationBlockIndex>();
+	
 	@Override
 	protected boolean hasSprites() {
 		return true;
@@ -112,6 +114,18 @@ public class BlockController extends EquationManipulator {
 	
 	// the left and top sides of the equation manipulation area
 	
+	public void clearHighlights() {
+		highlightBlocks.clear();
+	}
+	
+	public void addHighlight(EquationBlockIndex highlight) {
+		highlightBlocks.add(highlight);
+	}
+	
+	public void addHighlights(List<EquationBlockIndex> highlights) {
+		highlightBlocks.addAll(highlights);
+	}
+	
 	private float offX() {
 		return getGlobalTx(layer);
 	}
@@ -151,6 +165,7 @@ public class BlockController extends EquationManipulator {
 	/** Clears and destroys the current {@link Equation} */
 	public void clear() {
 		equation.clear();
+		highlightBlocks.clear();
 		solved = false;
 		dragging = draggingFrom = null;
 	}
@@ -283,6 +298,11 @@ public class BlockController extends EquationManipulator {
 		}
 	}
 	
+	@Override
+	protected void actionPerformed() {
+		highlightBlocks.clear();
+	}
+	
 	public void paint(Clock clock) {
 		for (BaseBlock sprite : equation) {
 			sprite.paint(clock);
@@ -291,9 +311,38 @@ public class BlockController extends EquationManipulator {
 		updateExpressionPositions(0.99f, clock.dt());
 		updateRemoving(0.99f, clock.dt());
 		
-		if (dragging != null) dragging.paint(clock);
+		if (dragging != null) {
+			dragging.paint(clock);
+			dragging.lerpAlpha(1, clock.dt());
+		}
 		updatePosition();
 		particles.paint(clock);
+		
+		// Update highlighted blocks
+		if (dragging == null) {
+			ArrayList<Block> toHighlight = new ArrayList<Block>();
+			for (EquationBlockIndex index : highlightBlocks) {
+				toHighlight.add(equation.getBlock(index));
+			}
+			
+			for (BaseBlock baseBlock : equation) {
+				for (Block block : baseBlock.getAllBlocks()) {
+					float targetAlpha;
+					if (highlightBlocks.size() == 0) {
+						targetAlpha = 1;
+					} else {
+						targetAlpha = 0.4f;
+						for (Block b : toHighlight) {
+							if (b == block) {
+								targetAlpha = 1;
+								break;
+							}
+						}
+					}
+					block.lerpAlpha(targetAlpha, clock.dt());
+				}
+			}
+		}
 	}
 	
 	private void updateRemoving(float base, float dt) {

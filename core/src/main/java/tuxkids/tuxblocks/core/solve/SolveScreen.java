@@ -104,6 +104,8 @@ public class SolveScreen extends EquationScreen {
 
 	private void displayHint(Hint hint) {
 		hintMessageBox.showMessage(hint.text);
+		controller.clearHighlights();
+		controller.addHighlights(hint.highlights);
 	}
 	
 	@Override

@@ -77,6 +77,7 @@ public class StoryScreen extends GameScreen implements Strings_Story {
 	}
 	
 	private void startStory() {
+		background.newThemeColor(0.2f + 0.6f * (float) Math.random());
 		StoryGameState state = new StoryGameState();
 		state.setBackground(background);
 		Tutorial.start(state);
