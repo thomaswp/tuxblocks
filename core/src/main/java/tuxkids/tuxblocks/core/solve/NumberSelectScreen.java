@@ -525,7 +525,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		if (MenuLayer.showing()) return;
 		
 		Integer s = selectedAnswer();
-		int selected = s == null ? 0 : s;
+		int selected = s == null ? 0 : s.intValue();
 		
 		char c = event.typedChar();
 		if (c >= '0' && c <= '9') {

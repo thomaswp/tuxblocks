@@ -15,9 +15,9 @@ These were suggestions made by players during the beta:
 * The tutorial level should start out with part of a maze of Towers already built, to demonstrate the technique.
 * Add the ability to change a tower's placement immediately after it's been placed, in case the player makes a mistake.
 * Make enemies faster (and perhaps weaker to balance things) so the rounds go quicker, especially since players can't do anything during them.
-* Write 3(x) as 3x.
 * Look into more interesting art for Towers and Walkers.
 * Add a visible Menu (or at least mute) button to the TitleScreen and DefenseScreen
+* Allow fast-forwarding during the defense portion
 
 Possible Issues
 ---------------------
