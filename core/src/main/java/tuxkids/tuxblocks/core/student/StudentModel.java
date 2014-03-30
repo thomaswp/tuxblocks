@@ -1,5 +1,7 @@
 package tuxkids.tuxblocks.core.student;
 
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
+
 public interface StudentModel {
 	
 	public static final double L0_HIGH =.7;
@@ -15,5 +17,11 @@ public interface StudentModel {
 	public static final double TRANSITION_LOW =.05;
 	
 	KnowledgeComponent getKnowledgeComponentForAction(StudentAction a);
+
+	boolean isReadyForNextStarred();
+
+	Equation getNextStarredEquation();
+
+	Equation getNextGeneralEquation();
 	
 }

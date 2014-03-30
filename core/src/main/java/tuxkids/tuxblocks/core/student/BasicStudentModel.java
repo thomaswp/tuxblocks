@@ -6,6 +6,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
+import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
+
 public class BasicStudentModel implements StudentModel, Serializable {
 
 	private Map<ActionType, KnowledgeComponent> knowledgeBits = new HashMap<ActionType, KnowledgeComponent>();
@@ -82,6 +86,32 @@ public class BasicStudentModel implements StudentModel, Serializable {
 	@Override
 	public KnowledgeComponent getKnowledgeComponentForAction(StudentAction a) {
 		return knowledgeBits.get(a.type);
+	}
+	
+	private static final Equation[] starredEquations = new Equation[2];
+	private int equationIndex = 0;
+	
+	static {
+		starredEquations[0] = new Equation.Builder().addLeft(new VariableBlock("x"))
+				.addRight(new NumberBlock(4).times(3)).createEquation().name("3x4");
+		starredEquations[1] = new Equation.Builder().addLeft(new VariableBlock("x"))
+				.addRight(new NumberBlock(6).minus(5)).createEquation().name("6-5");
+	}
+
+	@Override
+	public boolean isReadyForNextStarred() {
+		return equationIndex < 2;
+	}
+
+	@Override
+	public Equation getNextStarredEquation() {
+		return starredEquations[equationIndex++];
+	}
+
+	@Override
+	public Equation getNextGeneralEquation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
