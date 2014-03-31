@@ -28,9 +28,17 @@ public class StoryGameState extends GameState {
 	
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
-		addItem(TowerType.PeaShooter, -1);		//start with two towers
-		problems().clear(); 					//no problems
-		
+
+	}
+	
+	@Override
+	protected void setUpProblems() {
+		//The student model gets these.
+	}
+	
+	@Override
+	protected void setUpTowers() {
+		addItem(TowerType.PeaShooter, 2);
 	}
 	
 	public static Constructor constructor() {

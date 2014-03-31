@@ -69,6 +69,26 @@ public class GameState implements Persistable {
 	// object representing all towers on the grid (for persisting)
 	protected TowerState loadedTowerState;
 	
+	public GameState(Difficulty difficulty) {
+		this.difficulty = difficulty;
+		towerCounts = new int[Tower.towerCount()];
+		problems = new ArrayList<Problem>();
+		level = Level.generate(difficulty.roundTime);
+		// start with 3 PeaShooters and 2 problems to solve
+		setUpTowers();
+		setUpProblems();
+	}
+
+	protected void setUpTowers() {
+		addItem(TowerType.PeaShooter, 3);
+	}
+
+	protected void setUpProblems() {
+		for (int i = 0; i < 2; i++) {
+			addProblemWithReward(0);
+		}
+	}
+
 	public Grid grid() {
 		return grid;
 	}
@@ -135,18 +155,6 @@ public class GameState implements Persistable {
 	
 	public void setBackground(GameBackgroundSprite background) {
 		this.background = background;
-	}
-	
-	public GameState(Difficulty difficulty) {
-		this.difficulty = difficulty;
-		towerCounts = new int[Tower.towerCount()];
-		problems = new ArrayList<Problem>();
-		level = Level.generate(difficulty.roundTime);
-		// start with 3 PeaShooters and 2 problems to solve
-		addItem(TowerType.PeaShooter, 3);
-		for (int i = 0; i < 2; i++) {
-			addProblemWithReward(0);
-		}
 	}
 	
 	public int getStatLevel(Stat stat) {
