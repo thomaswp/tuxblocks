@@ -62,8 +62,12 @@ public class HeaderLayer extends LayerWrapper {
 	/** Creates a menu button and sets it in the right corner */
 	public Button addRightButton(Image image) {
 		rightButton = addButton(image);
-		rightButton.setPosition(width - rightButton.width() * 0.6f, height / 2);
+		positionRightButton(rightButton);
 		return rightButton;
+	}
+	
+	public void positionRightButton(Button b) {
+		b.setPosition(width - b.width() * 0.6f, height / 2);
 	}
 	
 	/** Creates a menu button */
@@ -76,6 +80,10 @@ public class HeaderLayer extends LayerWrapper {
 		layer.add(button.layerAddable());
 		button.layerAddable().setDepth(1);
 		return button;
+	}
+	
+	public Button makeButton(String imagePath) {
+		return addButton(assets().getImage(imagePath));
 	}
 	
 	public Button createButton(Image image) {

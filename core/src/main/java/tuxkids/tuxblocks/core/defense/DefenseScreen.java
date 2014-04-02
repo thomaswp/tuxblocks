@@ -7,6 +7,7 @@ import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.defense.Grid.DoubleClickListener;
 import tuxkids.tuxblocks.core.defense.select.SelectScreen;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
@@ -36,6 +37,8 @@ public class DefenseScreen extends GameScreen {
 	private GroupLayer layer;
 	private boolean zoomed; // zoomed in on the grid
 	private float maxScale; // max scale for zooming in
+	private Button buttonFastFoward;
+	private Button buttonNormalSpeed;
 	
 	public DefenseScreen(ScreenStack screens, GameState gameState) {
 		super(screens, gameState);
@@ -96,7 +99,8 @@ public class DefenseScreen extends GameScreen {
 		
 		createPlusButton();
 		createStartButton();
-		
+		createNormalSpeedButton();
+		createFastForwardButton();
 	}
 	
 	@Override
@@ -136,12 +140,45 @@ public class DefenseScreen extends GameScreen {
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
+					buttonFastFoward.layerAddable().setVisible(true);
 					state.level().startNextRound();
 					Tutorial.trigger(Trigger.Defense_StartRound);
 				}
 			}
 		});
 		registerHighlightable(buttonStart, Tag.Defense_StartRound);
+	}
+	
+	private void createNormalSpeedButton() {
+		buttonNormalSpeed = header.makeButton(Constant.BUTTON_NORMALSPEED);
+		header.positionRightButton(buttonNormalSpeed);
+		
+		buttonNormalSpeed.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					buttonFastFoward.layerAddable().setVisible(true);
+					buttonNormalSpeed.layerAddable().setVisible(false);
+					TuxBlocksGame.doubleTime(false);
+				}
+			}
+		});
+	}
+	
+	private void createFastForwardButton() {
+		buttonFastFoward = header.makeButton(Constant.BUTTON_FASTFORWARD);
+		header.positionRightButton(buttonFastFoward);
+
+		buttonFastFoward.setOnReleasedListener(new OnReleasedListener() {
+			@Override
+			public void onRelease(Event event, boolean inButton) {
+				if (inButton) {
+					buttonFastFoward.layerAddable().setVisible(false);
+					buttonNormalSpeed.layerAddable().setVisible(true);
+					TuxBlocksGame.doubleTime(true);
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -163,6 +200,12 @@ public class DefenseScreen extends GameScreen {
 		// nor can we go to another screen 
 		header.leftButton().layerAddable().setVisible(
 				!duringRound && state.problems().size() > 0);
+		
+		buttonFastFoward.layerAddable().setVisible(
+				buttonFastFoward.layerAddable().visible() && duringRound);
+		
+		buttonNormalSpeed.layerAddable().setVisible(
+				buttonNormalSpeed.layerAddable().visible() && duringRound);
 		
 		// win or lose
 		if (!exiting() && state.lives() <= 0) {
@@ -193,6 +236,8 @@ public class DefenseScreen extends GameScreen {
 		float scale = zoomed ? maxScale : 1;
 		layer.setScale(PlayNObject.lerpTime(layer.scaleX(), scale, 0.99f, clock.dt(), 0.001f));
 	}
+	
+	
 	
 	public void pushSelectScreen() {
 		pushScreen(selectScreen, screens.slide().right());
