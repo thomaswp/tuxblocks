@@ -257,6 +257,8 @@ public abstract class Tower extends DiscreteGridObject {
 		super.update(delta);
 		if (destroyed) return true;
 		
+		fireTimer+=delta;
+		
 		int fireRate = fireRate();
 		if (fireRate > 0 && fireTimer > fireRate) {
 			if (fire()) {
@@ -267,12 +269,12 @@ public abstract class Tower extends DiscreteGridObject {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void paint(Clock clock) {
 		// in case we ever modify the Tower's image based on this value we
 		// update it in the paint method instead of update
-		fireTimer += clock.dt();
+		//fireTimer += clock.dt();
 	}
 	
 	/** Sets this tower's upgrade level (usually when loading a saved game) */

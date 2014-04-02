@@ -223,6 +223,8 @@ public abstract class Walker extends DiscreteGridObject {
 			return false;
 		}
 		
+		walkingMs+=delta;
+		
 		if (walkingMs >= walkCellTime()) {
 			// move the discrete position
 			walkingMs -= walkCellTime();
@@ -268,7 +270,7 @@ public abstract class Walker extends DiscreteGridObject {
 		if (hp > 0) {
 			// slowing a Walker just makes it update slower
 			for (Buff buff : buffs) dt = buff.modifySpeed(dt);
-			walkingMs += dt;
+			//walkingMs += dt;
 		} else {
 			// fade out if dead
 			layer.setAlpha(lerpTime(layer.alpha(), 0, 0.995f, dt));
