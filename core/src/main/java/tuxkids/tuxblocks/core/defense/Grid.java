@@ -23,6 +23,7 @@ import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.defense.effect.Effect;
 import tuxkids.tuxblocks.core.defense.projectile.ChainProjectile;
 import tuxkids.tuxblocks.core.defense.projectile.Projectile;
@@ -688,6 +689,7 @@ public class Grid extends PlayNObject implements Highlightable {
 
 	// called when the Round is over
 	private void onRoundCompleted(Round round) {
+		TuxBlocksGame.doubleTime(false);
 		round.winRound(state);
 		Tutorial.trigger(Trigger.Defense_RoundOver);
 	}

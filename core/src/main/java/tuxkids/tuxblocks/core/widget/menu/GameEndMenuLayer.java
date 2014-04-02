@@ -7,6 +7,7 @@ import playn.core.TextFormat;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Audio;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 import tuxkids.tuxblocks.core.widget.Button.OnReleasedListener;
@@ -22,6 +23,7 @@ public class GameEndMenuLayer extends MenuLayer {
 	
 	/** Shows this menu, showing either vicotry or game over */
 	public static void show(boolean victory, Runnable onDismiss) {
+		TuxBlocksGame.doubleTime(false);
 		if (instance == null || instance.destroyed()) {
 			instance = new GameEndMenuLayer();
 		}
