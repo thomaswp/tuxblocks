@@ -54,6 +54,8 @@ public class Constant {
 	
 	public final static String BUTTON_BACK = preloadImage(IMAGE_PATH + "back.png");
 	public final static String BUTTON_FORWARD = preloadImage(IMAGE_PATH + "forward.png");
+	public final static String BUTTON_FASTFORWARD = preloadImage(IMAGE_PATH + "fastForward.png");
+	public final static String BUTTON_NORMALSPEED = preloadImage(IMAGE_PATH + "normalSpeed.png");
 	public final static String BUTTON_UP = preloadImage(IMAGE_PATH + "up.png");
 	public final static String BUTTON_DOWN = preloadImage(IMAGE_PATH + "down.png");
 	public final static String BUTTON_OK = preloadImage(IMAGE_PATH + "ok.png");
