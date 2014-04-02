@@ -1,7 +1,6 @@
 package tuxkids.tuxblocks.core;
 
-import static playn.core.PlayN.currentTime;
-import static playn.core.PlayN.graphics;
+import static playn.core.PlayN.*;
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Color;
@@ -24,6 +23,9 @@ public class TuxBlocksGame extends Game.Default {
 	// max milliseconds per update call
 	private final static int MAX_DELTA = (int)(UPDATE_RATE * 1.5f);
 	private final static boolean SHOW_FPS = false;
+	
+	private boolean speedUpRendering = false;
+	
 	
 	protected final SolidClock clock = new SolidClock(UPDATE_RATE);
 
@@ -51,10 +53,6 @@ public class TuxBlocksGame extends Game.Default {
 		this.languageCode = languageCode;
 //		Debug.write("Setting default language to: " + languageCode);
 	}
-	
-	public TuxBlocksGame() {
-		this(null);
-	}
 
 	private static void reset() {
 		//Clear static classes for Android because the JVM is maintained
@@ -66,7 +64,7 @@ public class TuxBlocksGame extends Game.Default {
 	}
 	
 	@Override
-	public void init() {	
+	public void init() {
 		reset();
 		
 		Constant.preloadImages();
@@ -136,6 +134,8 @@ public class TuxBlocksGame extends Game.Default {
 	@Override
 	public void update(int delta) {
 		delta = Math.min(delta, MAX_DELTA);
+		if (speedUpRendering)
+			delta *=2;
 		clock.update(delta);
 		background.update(delta);
         screens.update(delta);
@@ -152,5 +152,9 @@ public class TuxBlocksGame extends Game.Default {
         Tutorial.paint(clock);
         MenuLayer.paint(clock);
         if (SHOW_FPS) updateFPS();
+	}
+	
+	public static void doubleTime(boolean enabled) {
+		instance.speedUpRendering = enabled;
 	}
 }
