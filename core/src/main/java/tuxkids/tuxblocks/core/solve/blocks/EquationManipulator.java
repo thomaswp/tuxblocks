@@ -12,6 +12,7 @@ import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
 import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
@@ -30,6 +31,8 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected BaseBlock draggingFrom, tempDraggingFrom; // which BaseBlock the currently dragging Block is coming from
 	protected List<BaseBlock> draggingFromSide; // which side the currently dragging Block is coming from
 	protected SolveActionCallback solveActionCallback; // callback for when a SolveAction is performed
+	
+	protected StudentModel studentModel;
 
 	protected abstract boolean hasSprites();
 	
@@ -39,6 +42,10 @@ public abstract class EquationManipulator extends PlayNObject {
 
 	protected void triggerTutorial(Trigger trigger) {
 
+	}
+	
+	public void setStudentModel(StudentModel studentModel) {
+		this.studentModel = studentModel;
 	}
 
 	protected List<BaseBlock> leftSide() {

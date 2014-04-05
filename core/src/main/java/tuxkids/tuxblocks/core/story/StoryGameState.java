@@ -15,7 +15,6 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial1;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
-import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 
 public class StoryGameState extends GameState {
 
@@ -25,6 +24,10 @@ public class StoryGameState extends GameState {
 	private int lesson = 0;
 	
 	private boolean hasSetupTowersForLesson = false;
+	
+	public StudentModel studentModel() {
+		return studentModel;
+	}
 	
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));

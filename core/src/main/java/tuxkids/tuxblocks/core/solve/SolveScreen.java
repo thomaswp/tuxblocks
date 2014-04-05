@@ -13,6 +13,8 @@ import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.tutor.Tutor.Hint;
 import tuxkids.tuxblocks.core.tutorial.TextBoxDisplayLayer;
@@ -102,6 +104,11 @@ public class SolveScreen extends EquationScreen {
 				}
 			}
 		});
+		
+		if (gameState instanceof StoryGameState) {
+			StudentModel studentModel = ((StoryGameState) gameState).studentModel();
+			controller.setStudentModel(studentModel);
+		}
 	}
 
 	private void displayHint(Hint hint) {
