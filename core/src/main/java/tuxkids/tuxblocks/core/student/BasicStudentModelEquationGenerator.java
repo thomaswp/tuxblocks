@@ -32,7 +32,7 @@ public class BasicStudentModelEquationGenerator extends EquationGenerator {
 				
 			}
 			private Equation generateSubtraction() {
-				int firstNum = randomNonZero(random, 50);
+				int firstNum = randomNonZero(random, 30);
 				int secondNum = randomNonZero(random, firstNum);
 				
 				return new Equation.Builder().
@@ -42,8 +42,8 @@ public class BasicStudentModelEquationGenerator extends EquationGenerator {
 			}
 			
 			private Equation generateAddition() {
-				int answer = random.nextInt(50);
-				int addend = random.nextInt(51-answer);
+				int answer = random.nextInt(30);
+				int addend = random.nextInt(31-answer);
 				return new Equation.Builder().
 				addLeft(new VariableBlock("x")).
 				addRight(new NumberBlock(answer - addend).plus(addend)).
@@ -69,8 +69,8 @@ public class BasicStudentModelEquationGenerator extends EquationGenerator {
 				
 			}
 			private Equation generateDivision() {
-				int answer = random.nextInt(9);
-				int divisor = random.nextInt(9);
+				int answer = random.nextInt(6);
+				int divisor = random.nextInt(6);
 				
 				return new Equation.Builder().
 						addLeft(new VariableBlock("x")).
@@ -78,8 +78,8 @@ public class BasicStudentModelEquationGenerator extends EquationGenerator {
 						createEquation();
 			}
 			private Equation generateMultiplication() {
-				int firstFactor = random.nextInt(9);
-				int secondFactor = random.nextInt(9);
+				int firstFactor = random.nextInt(6);
+				int secondFactor = random.nextInt(6);
 				return new Equation.Builder().
 				addLeft(new VariableBlock("x")).
 				addRight(new NumberBlock(firstFactor).times(secondFactor)).
