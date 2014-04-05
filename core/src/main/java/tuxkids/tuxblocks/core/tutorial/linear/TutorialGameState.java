@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.tutorial;
+package tuxkids.tuxblocks.core.tutorial.linear;
 
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;

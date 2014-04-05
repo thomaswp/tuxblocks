@@ -252,7 +252,7 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 	
-	protected static void refreshHighlights(List<Tag> highlights) {
+	public static void refreshHighlights(List<Tag> highlights) {
 		startTimeOfHighlightCycle = -1.0f;
 		isFirstHighlightCycle = true;
 		for (Highlightable highlightable : highlightables) {
@@ -261,7 +261,7 @@ public abstract class Tutorial extends PlayNObject {
 		}
 	}
 	
-	protected static String prepareMessage(String line) {
+	public static String prepareMessage(String line) {
 		if (line == null) return null;
 
 		line = line.replace("\n", "").replace("\r", "");
