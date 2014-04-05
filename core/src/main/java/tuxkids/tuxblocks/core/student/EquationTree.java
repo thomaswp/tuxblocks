@@ -65,9 +65,7 @@ public class EquationTree {
 
 	public EquationTreeNode addInitialNode(EGenerator generator) {
 		EquationTreeNode newNode = addNode(root, generator, new BlankCriteria());
-		
-		newNode.unlocked = true;
-		
+			
 		return newNode;
 	}
 
@@ -75,6 +73,8 @@ public class EquationTree {
 		EquationTreeNode newNode = new EquationTreeNode(generator);
 		
 		newNode.preRequisites.put(c, parent);
+		
+		equationNodes.add(newNode);	//cache the tree into a linear list for easy access
 		
 		return newNode;
 	}
@@ -84,18 +84,20 @@ public class EquationTree {
 
 		private Map<Criteria, EquationTreeNode> preRequisites = new HashMap<Criteria, EquationTreeNode>();
 
-		private boolean unlocked;
 		private float confidence;
 		
 		private EquationTreeNode(EGenerator generator) {
 			this.generator = generator;
-			this.unlocked = false;
 			this.confidence = 0;
 		}
 		
 
 		public boolean isUnlocked() {
-			return unlocked;
+			for(Criteria c: preRequisites.keySet()) {
+				if (!c.hasBeenSatisfied())
+					return false;
+			}
+			return true;
 		}
 
 		public Equation equation() {

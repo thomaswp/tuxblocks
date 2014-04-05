@@ -23,18 +23,19 @@ public class BasicStudentModel implements StudentModel {
 	private Random rand = new Random();
 	
 	//stored to disk
-	private List<Float> equationTreeConfidences = equationTree.confidences();
+	private List<Float> equationTreeConfidences;
 	
 	public BasicStudentModel() {
 		initializeKnowledgeComponents();
 		initializeEquationTree();
+		equationTreeConfidences = equationTree.confidences();
 	}
 
 	private void initializeEquationTree() {
 		this.equationTree = new EquationTree();
 
 		EquationTreeNode firstLevelMD = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelMD());
-		
+		EquationTreeNode firstLevelAS= equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelAS());
 		
 		
 	}
@@ -110,7 +111,7 @@ public class BasicStudentModel implements StudentModel {
 	}
 	
 	private static final Equation[] starredEquations = new Equation[2];
-	private int equationIndex = 0;
+	private int starredEquationIndex = 0;
 	
 	static {
 		starredEquations[0] = new Equation.Builder().addLeft(new VariableBlock("x"))
@@ -121,17 +122,17 @@ public class BasicStudentModel implements StudentModel {
 
 	@Override
 	public boolean isReadyForNextStarred() {
-		return equationIndex < 2;
+		return starredEquationIndex < 2;
 	}
 
 	@Override
 	public Equation getNextStarredEquation() {
-		return starredEquations[equationIndex++];
+		return starredEquations[starredEquationIndex++];
 	}
 
 	@Override
 	public Equation getNextGeneralEquation() {
-		for (int i = equationTree.size(); i>=0;i--) {
+		for (int i = equationTree.size()-1; i>=0;i--) {
 			if (equationTree.unlocked(i)) {
 				if (equationTreeConfidences.get(i) < rand.nextFloat()) {
 					return equationTree.equation(i);

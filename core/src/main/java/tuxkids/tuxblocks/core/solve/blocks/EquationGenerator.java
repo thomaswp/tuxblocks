@@ -178,6 +178,11 @@ public class EquationGenerator extends PlayNObject {
 	private static int factorSigned() {
 		return rand(MIN_FACTOR, maxFactor()) * randSign();
 	}
+	
+	//with a max value
+	private static int factorSigned(int cap) {
+		return rand(MIN_FACTOR, cap) * randSign();
+	}
 
 	// or with a value that its guaranteed not to be
 	private static int factorNot(int not) {
