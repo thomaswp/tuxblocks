@@ -49,12 +49,31 @@ public class EquationTree {
 		return node(i).equation();
 	}
 
-	public EquationTreeNode randomUnlockedNode(Random rand) {
-		EquationTreeNode toReturn = node(rand.nextInt(size()));
-		while (!toReturn.isUnlocked()) {
-			toReturn = node(rand.nextInt(size()));
+	public EquationTreeNode randomWeightedUnlockedNode(Random rand) {
+		
+		float totalWeights = 0.0f;
+		for(EquationTreeNode node: equationNodes) {
+			if (node.isUnlocked()) {
+				totalWeights += (1 - node.confidence);
+			}
 		}
-		return toReturn;
+		
+		float randomWeight = totalWeights *= rand.nextFloat();
+		
+		EquationTreeNode lastNode = root;
+		
+		for(EquationTreeNode node: equationNodes) {
+			if (node.isUnlocked()) {
+				randomWeight -= (1 - node.confidence);
+				if (randomWeight <= 0.0f) {
+					return node;
+				}
+				lastNode = node;
+			}
+		}
+		
+		return lastNode;	
+		
 	}
 
 	public EquationTreeNode root() {

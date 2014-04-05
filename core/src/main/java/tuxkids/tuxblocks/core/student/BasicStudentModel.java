@@ -2,14 +2,12 @@ package tuxkids.tuxblocks.core.student;
 
 import static tuxkids.tuxblocks.core.student.ActionType.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
-import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
@@ -28,7 +26,6 @@ public class BasicStudentModel implements StudentModel {
 	public BasicStudentModel() {
 		initializeKnowledgeComponents();
 		initializeEquationTree();
-		equationTreeConfidences = equationTree.confidences();
 	}
 
 	private void initializeEquationTree() {
@@ -132,14 +129,8 @@ public class BasicStudentModel implements StudentModel {
 
 	@Override
 	public Equation getNextGeneralEquation() {
-		for (int i = equationTree.size()-1; i>=0;i--) {
-			if (equationTree.unlocked(i)) {
-				if (equationTreeConfidences.get(i) < rand.nextFloat()) {
-					return equationTree.equation(i);
-				}
-			}
-		}
-		return equationTree.randomUnlockedNode(rand).equation();
+
+		return equationTree.randomWeightedUnlockedNode(rand).equation();
 	}
 
 	
