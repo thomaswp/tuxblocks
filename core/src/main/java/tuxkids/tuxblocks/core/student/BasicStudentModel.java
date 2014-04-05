@@ -2,8 +2,11 @@ package tuxkids.tuxblocks.core.student;
 
 import static tuxkids.tuxblocks.core.student.ActionType.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
@@ -13,6 +16,13 @@ public class BasicStudentModel implements StudentModel {
 
 	private final Map<ActionType, KnowledgeComponent> knowledgeBits = new HashMap<ActionType, KnowledgeComponent>();
 
+	private EquationTree equationTree;
+	
+	private Random rand = new Random();
+	
+	//stored to disk
+	private List<Float> equationTreeConfidences = equationTree.confidences();
+	
 	public BasicStudentModel() {
 		initializeKnowledgeComponents();
 	}
@@ -109,8 +119,14 @@ public class BasicStudentModel implements StudentModel {
 
 	@Override
 	public Equation getNextGeneralEquation() {
-		// TODO Auto-generated method stub
-		return null;
+		for (int i = equationTree.size(); i>=0;i--) {
+			if (equationTree.unlocked(i)) {
+				if (equationTreeConfidences.get(i) < rand.nextFloat()) {
+					return equationTree.equation(i);
+				}
+			}
+		}
+		return equationTree.randomUnlockedNode(rand).equation();
 	}
 
 	

@@ -14,13 +14,13 @@ public class EquationGenerator extends PlayNObject {
 
 	// allows us to create store our rules for generation
 	// as inner/anonymous classes
-	private static interface Generator {
+	public static interface EGenerator {
 		public Equation generate();
 	}
 
 	// Generates equations with a since x and a given number
 	// of modifier blocks (the operations parameter).
-	private static class StandardGenerator implements Generator {
+	private static class StandardGenerator implements EGenerator {
 
 		private final int operations;
 
@@ -36,7 +36,7 @@ public class EquationGenerator extends PlayNObject {
 
 	// Generates equations which are combinations of two other
 	// Standard equations with the same answer.
-	private static class CompositeGenerator implements Generator {
+	private static class CompositeGenerator implements EGenerator {
 		public final int minSteps, maxSteps, expressions;
 
 		public CompositeGenerator(int minSteps, int maxSteps, int expressions) {
@@ -53,35 +53,35 @@ public class EquationGenerator extends PlayNObject {
 
 	// Generators for the various advanced prestructured forms
 	
-	private static Generator gA1 = new Generator() {
+	private static EGenerator gA1 = new EGenerator() {
 		@Override
 		public Equation generate() {
 			return generateFormA1();
 		}
 	};
 
-	private static Generator gA2 = new Generator() {
+	private static EGenerator gA2 = new EGenerator() {
 		@Override
 		public Equation generate() {
 			return generateFormA2();
 		}
 	};
 
-	private static Generator gA3 = new Generator() {
+	private static EGenerator gA3 = new EGenerator() {
 		@Override
 		public Equation generate() {
 			return generateFormA3();
 		}
 	};
 
-	private static Generator gB1 = new Generator() {
+	private static EGenerator gB1 = new EGenerator() {
 		@Override
 		public Equation generate() {
 			return generateFormB1();
 		}
 	};
 
-	private static Generator gB2 = new Generator() {
+	private static EGenerator gB2 = new EGenerator() {
 		@Override
 		public Equation generate() {
 			return generateFormB2();
@@ -89,14 +89,14 @@ public class EquationGenerator extends PlayNObject {
 	};
 	
 	// Lists of generators for every difficulty level
-	public static Generator[][] generators = new Generator[][] {
+	public static EGenerator[][] generators = new EGenerator[][] {
 		// Level 1
-		new Generator[] {
+		new EGenerator[] {
 				new StandardGenerator(1),
 		},
 
 		// Level 2
-		new Generator[] {
+		new EGenerator[] {
 				new StandardGenerator(2),
 				new StandardGenerator(2),
 				new CompositeGenerator(1, 1, 2),
@@ -104,7 +104,7 @@ public class EquationGenerator extends PlayNObject {
 		},
 
 		// Level 3
-		new Generator[] {
+		new EGenerator[] {
 				new StandardGenerator(3),
 				new StandardGenerator(3),
 				new CompositeGenerator(1, 2, 2),
@@ -112,7 +112,7 @@ public class EquationGenerator extends PlayNObject {
 		},
 
 		// Level 4
-		new Generator[] {
+		new EGenerator[] {
 				new StandardGenerator(4),
 				new StandardGenerator(4),
 				new CompositeGenerator(2, 3, 2),
@@ -120,7 +120,7 @@ public class EquationGenerator extends PlayNObject {
 		},
 
 		// Level 5
-		new Generator[] {
+		new EGenerator[] {
 				new StandardGenerator(5),
 				new CompositeGenerator(3, 3, 2),
 				new CompositeGenerator(1, 2, 3),
@@ -204,7 +204,7 @@ public class EquationGenerator extends PlayNObject {
 		EquationGenerator.percFinished = percFinished;
 		EquationGenerator.difficulty = difficulty;
 		
-		Generator[] gens = generators[difficulty];
+		EGenerator[] gens = generators[difficulty];
 		return gens[rand.nextInt(gens.length)].generate();
 	}
 	
@@ -216,7 +216,7 @@ public class EquationGenerator extends PlayNObject {
 	 */
 	public static Equation generateSample(int difficulty) {
 		EquationGenerator.difficulty = difficulty;
-		Generator[] gens = generators[difficulty];
+		EGenerator[] gens = generators[difficulty];
 		return gens[rand.nextInt(gens.length)].generate();
 		
 	}
