@@ -6,7 +6,6 @@ import java.util.List;
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.lang.Strings_Hint;
-import tuxkids.tuxblocks.core.lang.Strings_Tutorial;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
@@ -113,7 +112,7 @@ public class Tutor implements Strings_Hint {
 	}
 	
 	public Hint getHint(Equation equation) {
-		List<Step> solution = solver.aStar(equation, 1000);
+		List<Step> solution = solver.aStar(equation, 100);
 		if (solution == null) return new Hint(key_stumped);
 		if (solution.size() < 2) return new Hint(key_solved);
 		

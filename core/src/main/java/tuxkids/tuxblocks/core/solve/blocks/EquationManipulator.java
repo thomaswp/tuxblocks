@@ -11,6 +11,7 @@ import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
 import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
+import tuxkids.tuxblocks.core.solve.action.callbacks.SolveActionCallback;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
@@ -46,6 +47,9 @@ public abstract class EquationManipulator extends PlayNObject {
 	
 	public void setStudentModel(StudentModel studentModel) {
 		this.studentModel = studentModel;
+		if (solveActionCallback == null) {
+//			solveActionCallback = new 
+		}
 	}
 
 	protected List<BaseBlock> leftSide() {
@@ -341,7 +345,7 @@ public abstract class EquationManipulator extends PlayNObject {
 		}
 	}
 	
-	protected void reportSolveAction(SolveAction action) {
+	protected void reportSolveAction(SolveAction action) {		
 		if (solveActionCallback == null) return;
 		
 		// if we have a stored equation from a drag action use it
@@ -351,9 +355,5 @@ public abstract class EquationManipulator extends PlayNObject {
 		solveActionCallback.onActionPerformed(action, send);
 		
 		draggingPreviousEquation = null;
-	}
-	
-	public interface SolveActionCallback {
-		void onActionPerformed(SolveAction action, Equation before);
 	}
 }
