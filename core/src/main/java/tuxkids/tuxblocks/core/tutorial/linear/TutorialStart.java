@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.tutorial;
+package tuxkids.tuxblocks.core.tutorial.linear;
 
 import tuxkids.tuxblocks.core.Constant;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;

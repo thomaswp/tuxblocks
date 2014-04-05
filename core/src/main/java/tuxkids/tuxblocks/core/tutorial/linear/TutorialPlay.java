@@ -1,4 +1,4 @@
-package tuxkids.tuxblocks.core.tutorial;
+package tuxkids.tuxblocks.core.tutorial.linear;
 
 import playn.core.PlayN;
 import tuxkids.tuxblocks.core.Constant;

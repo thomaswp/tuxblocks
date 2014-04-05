@@ -1,9 +1,12 @@
-package tuxkids.tuxblocks.core.tutorial;
+package tuxkids.tuxblocks.core.tutorial.linear;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import playn.core.util.Clock;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
+import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
+import tuxkids.tuxblocks.core.tutorial.TutorialLayer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
