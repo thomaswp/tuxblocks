@@ -4,6 +4,7 @@ import java.util.Random;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
+import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 
@@ -85,6 +86,16 @@ public class BasicStudentModelEquationGenerator extends EquationGenerator {
 				createEquation();
 			}
 		};
+	}
+
+	public static EGenerator singleDragAS() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static EGenerator firstLevelMDAS() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

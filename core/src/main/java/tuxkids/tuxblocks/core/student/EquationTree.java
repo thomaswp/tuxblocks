@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.student;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,15 +84,15 @@ public class EquationTree {
 	
 
 	public EquationTreeNode addInitialNode(EGenerator generator) {
-		EquationTreeNode newNode = addNode(root, generator, new BlankCriteria());
+		EquationTreeNode newNode = addNode(generator, new BlankCriteria(), root);
 			
 		return newNode;
 	}
 
-	public EquationTreeNode addNode(EquationTreeNode parent, EGenerator generator, Criteria c) {
+	public EquationTreeNode addNode(EGenerator generator, Criteria c, EquationTreeNode... parents) {
 		EquationTreeNode newNode = new EquationTreeNode(generator);
 		
-		newNode.preRequisites.put(c, parent);
+		newNode.preRequisites.put(c, Arrays.asList(parents));
 		
 		equationNodes.add(newNode);	//cache the tree into a linear list for easy access
 		
@@ -101,7 +102,7 @@ public class EquationTree {
 	public static class EquationTreeNode {
 		private EGenerator generator;
 
-		private Map<Criteria, EquationTreeNode> preRequisites = new HashMap<Criteria, EquationTreeNode>();
+		private Map<Criteria, List<EquationTreeNode>> preRequisites = new HashMap<Criteria, List<EquationTreeNode>>();
 
 		private float confidence;
 		
@@ -113,7 +114,8 @@ public class EquationTree {
 
 		public boolean isUnlocked() {
 			for(Criteria c: preRequisites.keySet()) {
-				if (!c.hasBeenSatisfied())
+				if (!c.hasBeenSatisfied())		//TODO is it more efficient to pass the list here or to use the final 
+												//references in the student model
 					return false;
 			}
 			return true;

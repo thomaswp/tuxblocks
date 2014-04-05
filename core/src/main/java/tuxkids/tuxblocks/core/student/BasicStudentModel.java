@@ -21,6 +21,7 @@ public class BasicStudentModel implements StudentModel {
 	private Random rand = new Random();
 	
 	//stored to disk
+	@SuppressWarnings("unused")
 	private List<Float> equationTreeConfidences;
 	
 	public BasicStudentModel() {
@@ -31,10 +32,27 @@ public class BasicStudentModel implements StudentModel {
 	private void initializeEquationTree() {
 		this.equationTree = new EquationTree();
 
-		EquationTreeNode firstLevelMD = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelMD());
-		EquationTreeNode firstLevelAS= equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelAS());
+		final EquationTreeNode firstLevelMD = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelMD());
+		final EquationTreeNode firstLevelAS = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelAS());
 		
+		@SuppressWarnings("unused")
+		final EquationTreeNode singleDragAS = equationTree.addNode(BasicStudentModelEquationGenerator.singleDragAS(), new Criteria() {
+			
+			@Override
+			public boolean hasBeenSatisfied() {
+				return firstLevelAS.confidence()>.8;
+			}
+		}, firstLevelAS);
 		
+		@SuppressWarnings("unused")
+		final EquationTreeNode firstLevelMDAS = equationTree.addNode(BasicStudentModelEquationGenerator.firstLevelMDAS(), new Criteria() {
+			
+			@Override
+			public boolean hasBeenSatisfied() {
+				return Math.min(firstLevelMD.confidence(), firstLevelAS.confidence()) > .7;
+			}
+		}, firstLevelAS, firstLevelMD);
+
 	}
 
 	private void initializeKnowledgeComponents() {
