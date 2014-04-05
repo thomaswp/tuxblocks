@@ -11,11 +11,20 @@ import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;
 
 
 public class EquationTree {
-	
-	
-	//generated at runtime
+
 	private List<EquationTreeNode> equationNodes = new ArrayList<EquationTreeNode>();
-	
+	private EquationTreeNode root;
+
+	public EquationTree() {
+		root = new EquationTreeNode(null) {
+			@Override
+			public Equation equation() {
+				throw new RuntimeException("Root node is just a place holder.  It should never actually be called");
+			}
+		};
+
+	}
+
 	public EquationTreeNode node(int index) {
 		return equationNodes.get(index);
 	}
@@ -47,38 +56,75 @@ public class EquationTree {
 		}
 		return toReturn;
 	}
+
+	public EquationTreeNode root() {
+		return root;
+	}
 	
 	
+
+	public EquationTreeNode addInitialNode(EGenerator generator) {
+		EquationTreeNode newNode = addNode(root, generator, new BlankCriteria());
+		
+		newNode.unlocked = true;
+		
+		return newNode;
+	}
+
+	public EquationTreeNode addNode(EquationTreeNode parent, EGenerator generator, Criteria c) {
+		EquationTreeNode newNode = new EquationTreeNode(generator);
+		
+		newNode.preRequisites.put(c, parent);
+		
+		return newNode;
+	}
+
+	public static class EquationTreeNode {
+		private EGenerator generator;
+
+		private Map<Criteria, EquationTreeNode> preRequisites = new HashMap<Criteria, EquationTreeNode>();
+
+		private boolean unlocked;
+		private float confidence;
+		
+		private EquationTreeNode(EGenerator generator) {
+			this.generator = generator;
+			this.unlocked = false;
+			this.confidence = 0;
+		}
+		
+
+		public boolean isUnlocked() {
+			return unlocked;
+		}
+
+		public Equation equation() {
+			return generator.generate();
+		}
+
+		public float confidence() {
+			return confidence;
+		}
+
+		private void setConfidence(float newConfidence) {
+			this.confidence = newConfidence;
+		}
+
+
+	}
 }
 
-
-class EquationTreeNode {
-	private EGenerator generator;
-	
-	private Map<Criteria, EquationTreeNode> ancestors = new HashMap<Criteria, EquationTreeNode>();
-	
-	private boolean unlocked;
-	private float confidence;
-
-	public boolean isUnlocked() {
-		return unlocked;
+class BlankCriteria implements Criteria {
+	@Override
+	public boolean hasBeenSatisfied() {
+		return true;
 	}
-
-	public Equation equation() {
-		return generator.generate();
-	}
-
-	public float confidence() {
-		return confidence;
-	}
-	
-	
 }
 
+interface Criteria {
 
-class Criteria {
 	//TODO: this class will represent what knowledge components need to advance to
 	//what levels to progress.
-	
+	boolean hasBeenSatisfied();
 	//or something like that.  Perhaps be an interface with a single method.
 }

@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Random;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
+import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
 
 public class BasicStudentModel implements StudentModel {
 
@@ -25,6 +27,16 @@ public class BasicStudentModel implements StudentModel {
 	
 	public BasicStudentModel() {
 		initializeKnowledgeComponents();
+		initializeEquationTree();
+	}
+
+	private void initializeEquationTree() {
+		this.equationTree = new EquationTree();
+
+		EquationTreeNode firstLevelMD = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelMD());
+		
+		
+		
 	}
 
 	private void initializeKnowledgeComponents() {
