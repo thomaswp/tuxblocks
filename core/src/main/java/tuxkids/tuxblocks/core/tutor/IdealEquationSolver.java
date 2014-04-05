@@ -24,6 +24,8 @@ import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.StudentAction;
+import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.utils.Formatter;
 
 public class IdealEquationSolver {
 
@@ -190,9 +192,10 @@ public class IdealEquationSolver {
 		public String toString() {
 			if (ignore)
 				return "";
+			//TODO: fix formatting - doesn't current support %1.2f and the like - just %s/%f/%d, etc.
 			if (!hasBeenHandled)
-				return String.format("[%1.2f+%1.2f?]%s", termsScore, pendingScore, isEventualCombine ? "`" : "");
-			return String.format("[%1.2f+%1.2f]%s", termsScore, pendingScore, isEventualCombine ? "`" : "");
+				return Formatter.format("[%1.2f+%1.2f?]%s", termsScore, pendingScore, isEventualCombine ? "`" : "");
+			return Formatter.format("[%1.2f+%1.2f]%s", termsScore, pendingScore, isEventualCombine ? "`" : "");
 		}
 
 		public void queueUpScore(double d) {
@@ -280,7 +283,7 @@ public class IdealEquationSolver {
 		score += rightSideEventualCombinationScore;
 
 		if (debugHeuristic) {
-			System.out.printf("\t\tLSECS=%1.2f LSDCS=%1.2f | RSECS=%1.2f RSDCS=%1.2f ", leftSideEasyCombinationScore,
+			Debug.write("\t\tLSECS=%1.2f LSDCS=%1.2f | RSECS=%1.2f RSDCS=%1.2f ", leftSideEasyCombinationScore,
 					leftSideEventualCombinationScore, rightSideEasyCombinationScore, rightSideEventualCombinationScore);
 		}
 
@@ -303,7 +306,7 @@ public class IdealEquationSolver {
 				System.out.print(rightSideTerms.get(i) + " + ");
 			}
 		
-			System.out.printf("\tgL = %d, gR = %d, vL = %d, vR = %d%n", generalLeftTerms, generalRightTerms,
+			Debug.write("\tgL = %d, gR = %d, vL = %d, vR = %d%n", generalLeftTerms, generalRightTerms,
 					leftVarTerms, rightVarTerms);
 		}
 
