@@ -3,12 +3,11 @@ package tuxkids.tuxblocks.core.student;
 import java.util.Random;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
-import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 
-public class BasicStudentModelEquationGenerator extends EquationGenerator {
+public class BasicStudentModelEquationGenerator {
 	
 	
 	protected static int randomPlusOrMinus(Random rand, int bounds) {
@@ -69,8 +68,8 @@ public class BasicStudentModelEquationGenerator extends EquationGenerator {
 				
 			}
 			private Equation generateDivision() {
-				int answer = random.nextInt(6);
-				int divisor = random.nextInt(6);
+				int answer = randomNonZero(random, 6);
+				int divisor = randomNonZero(random, 5) + 1;
 				
 				return new Equation.Builder().
 						addLeft(new VariableBlock("x")).
@@ -94,8 +93,39 @@ public class BasicStudentModelEquationGenerator extends EquationGenerator {
 	}
 
 	public static EGenerator firstLevelMDAS() {
-		// TODO Auto-generated method stub
-		return null;
+		return new EGenerator() {
+			Random random = new Random();
+			@Override
+			public Equation generate() {
+				
+				if (random.nextBoolean()) {
+					return generateFirstRoundAddition();
+				}
+				return generateFirstRoundSubtraction();
+				
+			}
+			private Equation generateFirstRoundSubtraction() {
+				int firstNum = randomNonZero(random, 10);
+				int secondNum = randomNonZero(random, firstNum);
+				int factor = randomNonZero(random, 5) + 1;
+				
+				return new Equation.Builder().
+						addLeft(new VariableBlock("x")).
+						addRight(new NumberBlock(firstNum).minus(secondNum).times(factor)).
+						createEquation();
+			}
+			
+			private Equation generateFirstRoundAddition() {
+				int answer = randomNonZero(random, 10);
+				int secondNum = randomNonZero(random, 10-answer);
+				int factor = randomNonZero(random, 6);
+				
+				return new Equation.Builder().
+						addLeft(new VariableBlock("x")).
+						addRight(new NumberBlock(answer-secondNum).plus(secondNum).times(factor)).
+						createEquation();
+			}
+		};
 	}
 
 }
