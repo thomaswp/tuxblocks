@@ -72,9 +72,5 @@ public class Base64 {
             buffer[index++]= (byte)(((c2 << 6) | c3) & mask);
         }
         return buffer;
-    } 
-
-    public static String compressString(String input) {
-    	return encode(input.getBytes());
     }
 }

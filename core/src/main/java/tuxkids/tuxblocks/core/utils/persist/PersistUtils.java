@@ -22,9 +22,11 @@ import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VerticalModifierGroup;
 import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.utils.Base64;
 import tuxkids.tuxblocks.core.utils.persist.Persistable.Constructor;
 import tuxkids.tuxblocks.core.utils.persist.Persistable.Data;
 import tuxkids.tuxblocks.core.utils.persist.Persistable.ParseDataException;
+import tuxkids.tuxblocks.core.utils.persist.compress.LZ4JavaCompression;
 
 /**
  * Allows for the persistence and reconstruction of {@link Persistable} 
@@ -67,22 +69,18 @@ public class PersistUtils {
 	// a buffer for our persisting data
 	private static LinkedList<String> store = new LinkedList<String>();
 	
-	// saves the collected data to storage
-	private static void saveStore(String tag) {
+	private static String readStore() {
 		StringBuilder sb = new StringBuilder();
 		for (String line : store) {
 			if (sb.length() > 0) sb.append("\n");
 			sb.append(line == null ? NULL : line);
 		}
-		String value = sb.toString();
-		PlayN.storage().setItem(tag, value);
 		store.clear();
+		return sb.toString();
 	}
 	
-	// loads the collected data from storage
-	private static void loadStore(String tag) {
+	private static void writeStore(String data) {
 		store.clear();
-		String data = PlayN.storage().getItem(tag);
 		if (data == null) return;
 		String[] lines = data.split("\n");
 		for (String line : lines) {
@@ -95,6 +93,14 @@ public class PersistUtils {
 	 * the given identifier tag.
 	 */
 	public static void persist(Persistable persistable, String tag) {
+		PlayN.storage().setItem(tag, persistToString(persistable));
+	}
+	
+	/**
+	 * Persists the given object and returns it as a String without
+	 * storing it.
+	 */
+	public static String persistToString(Persistable persistable) {
 		Data data = new Data(true);
 		store.clear();
 		try {
@@ -102,18 +108,27 @@ public class PersistUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		saveStore(tag);
+		return compressString(readStore());
 	}
 
 	/** 
 	 * Fetches the given object from {@link Storage}, using
 	 * the given identifier tag. Returns null if fetching fails.
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T fetch(Class<T> clazz, String tag) {
+		String data = PlayN.storage().getItem(tag);
+		return fetchFromString(clazz, data);
+	}
+	
+	/** 
+	 * Fetches the given object from the provided data string.
+	 * Returns null if fetching fails.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T fetchFromString(Class<T> clazz, String dataString) {
 		Data data = new Data(false);
 		try {
-			loadStore(tag);
+			writeStore(decompressString(dataString));
 			if (store == null) return null;
 			
 			Persistable obj = construct(clazz.getName());
@@ -166,6 +181,32 @@ public class PersistUtils {
 	 */
 	protected static void write(String data) {
 		store.add(data);
+	}
+	
+	private final static int LENGTH_DIGITS = 6;
+	
+	public static String compressString(String str) {
+		if (str == null) return null;
+		byte[] bytes = str.getBytes();
+		int length = bytes.length;
+		String base = Base64.encode(LZ4JavaCompression.INSTANCE.compress(bytes));
+		String lString = "" + length;
+		while (lString.length() < LENGTH_DIGITS) lString = "0" + lString;
+		return lString + base;
+	}
+	
+	public static String decompressString(String str) {
+		if (str == null || str.length() < LENGTH_DIGITS) return null;
+		try {
+			int length = Integer.parseInt(str.substring(0, LENGTH_DIGITS));
+			str = str.substring(LENGTH_DIGITS);
+			byte[] buf = new byte[length];
+			LZ4JavaCompression.INSTANCE.decompress(Base64.decode(str), buf);
+			return new String(buf);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

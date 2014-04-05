@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core;
 
-import static playn.core.PlayN.*;
+import static playn.core.PlayN.currentTime;
+import static playn.core.PlayN.graphics;
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Color;
@@ -62,7 +63,7 @@ public class TuxBlocksGame extends Game.Default {
 	}
 	
 	@Override
-	public void init() {
+	public void init() {		
 		reset();
 		
 		Constant.preloadImages();
