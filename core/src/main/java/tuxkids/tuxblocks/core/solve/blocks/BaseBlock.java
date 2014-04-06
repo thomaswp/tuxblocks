@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import playn.core.GroupLayer;
@@ -145,19 +146,29 @@ public abstract class BaseBlock extends Block {
 		return null;
 	}
 	
-	/** Creates and returns a list of all Blocks (including this) in this expression */
-	public List<Block> getAllBlocks() {
-		final ArrayList<Block> blocks = new ArrayList<Block>();
-		performAction(new Action() {
-			@Override
-			public void run(Sprite sprite) {
-				if (sprite instanceof Block) {
-					blocks.add((Block) sprite);
-				}
+	// to avoid creating anonymous classes
+	private static class GetAllBlocksAction implements Action {
+		public List<Block> blocks;
+		@Override
+		public void run(Sprite sprite) {
+			if (sprite instanceof Block) {
+				blocks.add((Block) sprite);
 			}
-		});
-		return blocks;
+		}
 	}
+	private static GetAllBlocksAction getAllBlocksAction = new GetAllBlocksAction();
+
+	public List<Block> getAllBlocks() {
+		return getAllBlocks(new LinkedList<Block>());
+	}
+	
+	/** Creates and returns a list of all Blocks (including this) in this expression */
+	public List<Block> getAllBlocks(final List<Block> blocks) {
+		getAllBlocksAction.blocks = blocks;
+		performAction(getAllBlocksAction);
+		getAllBlocksAction.blocks = null;
+		return blocks;
+	}	
 	
 	/** Creates and returns a list of all Sprites (including this) in this expression */
 	public List<Sprite> getAllSprites() {

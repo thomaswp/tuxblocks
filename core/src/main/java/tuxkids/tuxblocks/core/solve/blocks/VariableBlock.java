@@ -175,7 +175,7 @@ public class VariableBlock extends BaseBlock {
 								modChildren.add(modifiers.removeChild(modifiers.children.get(0)));
 							}
 							if (modifiers.modifiers != null) modifiers.removeModifiers();
-							if (answer != 1) addModifier(new TimesBlock(answer), true);
+							if (answer != 1) addModifier(new TimesBlock(answer), true); //TODO: This could create * 0
 							while (!modChildren.isEmpty()) {
 								addBlock(modChildren.remove(0), false);
 							}

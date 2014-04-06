@@ -212,7 +212,7 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 	protected void initSpriteImpl() { }
 	
 	/** 
-	 * Returns a working copy of this Sprite. Not all fields are copied, just a value fields
+	 * Returns a working copy of this Sprite. Not all fields are copied, just value fields
 	 * such a {@link NumberBlock}'s number.
 	 */
 	public final Sprite copy() {
@@ -225,7 +225,7 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 	}
 	
 	/**
-	 * Returns a working copy of this Sprite. Not all fields are copied, just a value fields
+	 * Returns a working copy of this Sprite. Not all fields are copied, just value fields
 	 * such a {@link NumberBlock}'s number. Optionally initializes the Sprite for display.
 	 */
 	public final Sprite copy(boolean init) {

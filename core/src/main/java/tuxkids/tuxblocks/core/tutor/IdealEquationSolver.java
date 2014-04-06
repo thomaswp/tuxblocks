@@ -29,6 +29,8 @@ public class IdealEquationSolver {
 
 	private static final int MAX_TERMS_PER_SIDE = 7;
 	
+	private static final int MAX_ASTAR_QUEUE_SIZE = 50;
+	
 	//can be used for observing the inner steps of the heuristic
 	private static boolean debugHeuristic = false;
 
@@ -48,10 +50,10 @@ public class IdealEquationSolver {
 	
 	public static List<Step> aStar(Equation start, int maxSteps) {
 		// queue of paths to solution, sorted using the heuristic
-		PriorityQueue<List<Step>> paths = new PriorityQueue<List<Step>>(20, comparator);
-
+		PriorityQueue<PathList> paths = new PriorityQueue<PathList>(20);
+		
 		// add an empty start path
-		List<Step> startPath = new ArrayList<Step>();
+		PathList startPath = new PathList();
 		startPath.add(new Step(start));
 		paths.add(startPath);
 
@@ -63,7 +65,7 @@ public class IdealEquationSolver {
 		
 		while (paths.size() > 0) {
 			// seeAllAndHeuristics(paths);
-			List<Step> toExpand = paths.poll(); // get the best estimated path
+			PathList toExpand = paths.poll(); // get the best estimated path
 			Step last = toExpand.get(toExpand.size() - 1); // get the last state of the equation
 			numExpanded++; //increment the number expanded
 			
@@ -80,15 +82,38 @@ public class IdealEquationSolver {
 				}
 
 				// add them all as children, branching from the original path
-				List<Step> nPath = new ArrayList<Step>(toExpand);
+				PathList nPath = new PathList(toExpand);
 				nPath.add(step);
 				paths.add(nPath);
+			}
+			
+			if (paths.size() > MAX_ASTAR_QUEUE_SIZE * 2) {
+				PriorityQueue<PathList> ps = new PriorityQueue<PathList>(MAX_ASTAR_QUEUE_SIZE);
+				for (int i = 0; i < MAX_ASTAR_QUEUE_SIZE; i++) {
+					ps.add(paths.poll());
+				}
+				paths = ps;
 			}
 		}
 
 		// this will almost certainly never happen...
 		// but if it does, the equation is unsolvable
 		return null;
+	}
+	
+	@SuppressWarnings("serial")
+	private static class PathList extends ArrayList<Step> implements Comparable<PathList> {
+		
+		public PathList() { }
+		
+		public PathList(PathList copyFrom) {
+			super(copyFrom);
+		}
+		
+		@Override
+		public int compareTo(PathList other) {
+			return comparator.compare(this, other);
+		}
 	}
 
 	// returns a list of all steps that can be taken for the given equation
@@ -317,6 +342,8 @@ public class IdealEquationSolver {
 
 	}
 
+	private static List<Block> tempBlockList = new ArrayList<Block>();
+	
 	/**
 	 * Handles combinable terms like 
 	 * 3x` + 2x` = 5  (known as potentialTimes)
@@ -342,7 +369,8 @@ public class IdealEquationSolver {
 				continue;
 			BaseBlock thisBlock = thisTerm.term;
 
-			List<Block> attachedBlocks = thisBlock.getAllBlocks();
+			tempBlockList.clear();
+			List<Block> attachedBlocks = thisBlock.getAllBlocks(tempBlockList);
 			if (thisBlock instanceof VariableBlock && attachedBlocks.size() <= 2) {
 				// Either the block is solo or three is one times block at index 1
 				if (attachedBlocks.size() <= 1 || attachedBlocks.get(1) instanceof TimesBlock) {
@@ -420,7 +448,8 @@ public class IdealEquationSolver {
 			BaseBlock thisBlock = thisTerm.term;
 
 			// if the block and
-			List<Block> attachedBlocks = thisBlock.getAllBlocks();
+			tempBlockList.clear();
+			List<Block> attachedBlocks = thisBlock.getAllBlocks(tempBlockList);
 			if (thisBlock instanceof VariableBlock) {
 				if (attachedBlocks.size() <= 1) {
 					potentialTimesHandled.add(thisTerm);
@@ -469,7 +498,8 @@ public class IdealEquationSolver {
 			if (thisTerm.hasBeenHandled || thisTerm.term instanceof BlockHolder)
 				continue;
 
-			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
+			tempBlockList.clear();
+			List<Block> attachedBlockList = thisTerm.term.getAllBlocks(tempBlockList);
 			
 			if (thisTerm.term instanceof VariableBlock) {	
 				handleIsolatedVariableBlock(thisTerm, attachedBlockList);
@@ -548,7 +578,8 @@ public class IdealEquationSolver {
 
 			skipIndicies.clear();
 
-			List<Block> attachedBlockList = thisTerm.term.getAllBlocks();
+			tempBlockList.clear();
+			List<Block> attachedBlockList = thisTerm.term.getAllBlocks(tempBlockList);
 			Collections.reverse(attachedBlockList);
 
 			double conditionalScore = 0; // score to be added if there is a times or over eventually
