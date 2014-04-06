@@ -229,8 +229,6 @@ public class BasicStudentModel implements StudentModel {
 	public void addStartSimplifyTags(StartSimplifyingBlocksAction action,
 			Renderer problem, int answer, Stat stat, int level) {
 		
-		System.out.println(level);
-		
 		ActionType algebraTag = null;
 		switch (stat) {
 		case Plus: 
