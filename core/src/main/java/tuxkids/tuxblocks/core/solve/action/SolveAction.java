@@ -13,7 +13,7 @@ public abstract class SolveAction {
 	private final List<Object> tags = new ArrayList<Object>();
 	
 	public Iterable<Object> tags() {
-		return tags();
+		return tags;
 	}
 	
 	public SolveAction addTag(Object tag) {

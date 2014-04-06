@@ -1,0 +1,6 @@
+"Time", "Before", "Action", "Success", "Tags", "Description"
+"1.396745586329E12", "[(x) / 12] + [12(x - 1)] = [278] + [ ]", "StartProblemAction", "true", "[]", "StartProblemAction: [(x) / 12] + [12(x - 1)] = [278] + [ ]"
+"1.396745623439E12", "[(x) / 12] + [12(x - 1)] = [278] + [ ]", "DragAction", "true", "[]", "DragAction: {2, 0, 0} -> 3"
+"1.396745630361E12", "[(x) / 12] + [12(x - 1)] = [ ] + [278]", "DragAction", "true", "[]", "DragAction: {1, 1, 0} -> 2"
+"1.396745646397E12", "[(x) / 12] + [12x] = [12(1)] + [278]", "FinishSimplify", "true", "[]", "FinishSimplify: {2, 0, 0} <-> {2, 2, 0}"
+"1.396745674099E12", "[(x) / 12] + [12x] = [12] + [278]", "StartProblemAction", "true", "[]", "StartProblemAction: [(x) / 12] + [12x] = [12] + [278]"

@@ -2,13 +2,18 @@ package tuxkids.tuxblocks.java;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
@@ -19,6 +24,9 @@ import playn.core.CanvasImage;
 import playn.core.PlayN;
 import playn.java.JavaPlatform;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
+import tuxkids.tuxblocks.core.solve.action.SolveAction;
+import tuxkids.tuxblocks.core.solve.action.callbacks.SolveActionCallback;
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.utils.ImageSaver;
 
 public class TuxBlocksGameJava {
@@ -66,7 +74,9 @@ public class TuxBlocksGameJava {
 //		graphics.registerFont("Raavi", "fonts/RAAVI.TTF");
 //		graphics.registerFont("Mangal", "fonts/MANGAL.TTF");
 	
-		PlayN.run(new TuxBlocksGame(Locale.getDefault().getLanguage()));
+		TuxBlocksGame game = new TuxBlocksGame(Locale.getDefault().getLanguage());
+		TuxBlocksGame.loggingCallback = new LogCallback();
+		PlayN.run(game);
 	}
 
 	// modified from: http://www.jpct.net/forum2/index.php?topic=795.0
@@ -99,5 +109,45 @@ public class TuxBlocksGameJava {
 		}
 
 		return temp;
+	}
+	
+	private static class LogCallback implements SolveActionCallback {
+
+		PrintWriter writer;
+		
+		public LogCallback() {
+			try {
+				File f = new File("logging.csv");
+				boolean start = !f.exists();
+				FileOutputStream fos = new FileOutputStream(f, true);
+				writer = new PrintWriter(fos);
+				if (start) {
+					writeLine("Time", "Before", "Action", "Success", "Tags", "Description");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		private void writeLine(Object... cols) {
+			for (int i = 0; i < cols.length; i++) {
+				if (i != 0) writer.print(", ");
+				writer.print(sanitize(cols[i].toString()));
+			}
+			writer.println();
+			writer.flush();
+		}
+		
+		private String sanitize(String txt) {
+			txt = txt.replace("\"", "\"\"");
+			return "\"" + txt + "\"";
+		}
+		
+		@Override
+		public void onActionPerformed(SolveAction action, Equation before) {
+			writeLine(action.timestamp, before.getPlainText(), action.name(), 
+					action.success, action.tags(), action);
+		}
+		
 	}
 }

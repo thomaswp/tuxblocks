@@ -12,6 +12,7 @@ import playn.core.util.Callback;
 import tripleplay.game.ScreenStack;
 import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.lang.Lang.Language;
+import tuxkids.tuxblocks.core.solve.action.callbacks.SolveActionCallback;
 import tuxkids.tuxblocks.core.title.TitleScreen;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.utils.SolidClock;
@@ -25,6 +26,8 @@ public class TuxBlocksGame extends Game.Default {
 	// max milliseconds per update call
 	private final static int MAX_DELTA = (int)(UPDATE_RATE * 1.5f);
 	private final static boolean SHOW_FPS = false;
+	
+	public static SolveActionCallback loggingCallback;
 	
 	protected final SolidClock clock = new SolidClock(UPDATE_RATE);
 
