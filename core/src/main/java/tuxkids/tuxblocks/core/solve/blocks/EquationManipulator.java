@@ -213,7 +213,11 @@ public abstract class EquationManipulator extends PlayNObject {
 		
 		if (shouldActionCallback()) {
 			int targetIndex = equation.allBlocks.indexOf(target);
-			reportSolveAction(new DragAction(draggingPreviousIndex, targetIndex, target != draggingFrom));
+			DragAction action = new DragAction(draggingPreviousIndex, targetIndex, target != draggingFrom);
+			if (studentModel != null) {
+				studentModel.addDragActionTags(action, draggingPreviousEquation == null ? equation : draggingPreviousEquation);
+			}
+			reportSolveAction(action);
 		}
 		
 		Block added = null;

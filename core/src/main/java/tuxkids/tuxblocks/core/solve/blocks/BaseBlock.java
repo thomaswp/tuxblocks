@@ -83,6 +83,14 @@ public abstract class BaseBlock extends Block {
 		return modifiers.offsetX();
 	}
 	
+	public boolean isModifiedVertically() {
+		return modifiers.isModifiedVertically();
+	}
+	
+	public boolean isModifiedHorizontally() {
+		return modifiers.isModifiedHorizontally();
+	}
+	
 	public BaseBlock() {
 		modifiers = new HorizontalModifierGroup();
 	}

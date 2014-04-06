@@ -1458,3 +1458,102 @@ Sun Apr 06 17:11:40 EDT 2014,1396818700073,[x + 14] = [40],DragAction,true,[],"D
 Sun Apr 06 17:11:40 EDT 2014,1396818700076,[x] = [40 - 14],DragAction,true,[],"DragAction: {1, 1, 0} -> 0"
 Sun Apr 06 17:11:43 EDT 2014,1396818703704,[x + 14] = [40],FinishProblem,false,[],~FinishProblem
 Sun Apr 06 17:11:44 EDT 2014,1396818704495,[x + 14] = [40],StartProblemAction,true,[],StartProblemAction: [x + 14] = [40]
+Sun Apr 06 17:27:30 EDT 2014,1396819650948,[ ] = [ ],StartProblemAction,true,[],StartProblemAction: [ ] = [ ]
+Sun Apr 06 17:27:40 EDT 2014,1396819660349,[ ] + [2·1x] + [2x] = [ ],StartProblemAction,true,[],StartProblemAction: [ ] + [2·1x] + [2x] = [ ]
+Sun Apr 06 17:27:41 EDT 2014,1396819661379,[ ] + [2·1x] + [2x] = [ ],FinishSimplify,true,[],"FinishSimplify: {1, 2, 1} <-> {1, 2, 0}"
+Sun Apr 06 17:27:42 EDT 2014,1396819662676,[ ] + [2x] + [2x] = [ ],FinishProblem,false,[],~FinishProblem
+Sun Apr 06 17:27:46 EDT 2014,1396819666348,[ ] + [2·2x] + [2x] = [ ],StartProblemAction,true,[],StartProblemAction: [ ] + [2·2x] + [2x] = [ ]
+Sun Apr 06 17:27:47 EDT 2014,1396819667160,[ ] + [2·2x] + [2x] = [ ],StartSimplify,true,[],StartSimplify: 2·2x = [?]x -> 4
+Sun Apr 06 17:27:55 EDT 2014,1396819675898,[ ] + [2·2x] + [2x] = [ ],FinishSimplify,false,[],"~FinishSimplify: {1, 2, 1} <-> {1, 2, 0}"
+Sun Apr 06 17:28:11 EDT 2014,1396819691248,[ ] + [2·2x] + [2x] = [ ],StartSimplify,true,[],StartSimplify: 2·2x = [?]x -> 4
+Sun Apr 06 17:28:13 EDT 2014,1396819693924,[ ] + [2·2x] + [2x] = [ ],FinishSimplify,true,[],"FinishSimplify: {1, 2, 1} <-> {1, 2, 0}"
+Sun Apr 06 17:28:14 EDT 2014,1396819694807,[ ] + [4x] + [2x] = [ ],DragAction,true,[],"DragAction: {2, 0, 0} -> 1"
+Sun Apr 06 17:28:14 EDT 2014,1396819694808,[ ] + [4x] + [ ] = [ ],StartSimplify,true,[],StartSimplify: 4x + 2x = [?]x -> 6
+Sun Apr 06 17:38:32 EDT 2014,1396820312800,[ ] = [ ],StartProblemAction,true,[],StartProblemAction: [ ] = [ ]
+Sun Apr 06 17:38:40 EDT 2014,1396820320952,[ ] + [(2x) / 4] = [ ],StartProblemAction,true,[],StartProblemAction: [ ] + [(2x) / 4] = [ ]
+Sun Apr 06 17:38:42 EDT 2014,1396820322122,[ ] + [(2x) / 4] = [ ],StartSimplify,true,[],StartSimplify: (2x) / 4 = (x) / [?] -> 2
+Sun Apr 06 17:39:05 EDT 2014,1396820345364,[ ] = [ ],StartProblemAction,true,[],StartProblemAction: [ ] = [ ]
+Sun Apr 06 17:39:15 EDT 2014,1396820355804,[ ] + [(x) / (2·2)] = [ ],StartProblemAction,true,[],StartProblemAction: [ ] + [(x) / (2·2)] = [ ]
+Sun Apr 06 17:39:16 EDT 2014,1396820356742,[ ] + [(x) / (2·2)] = [ ],StartSimplify,true,[],StartSimplify: (x) / (2·2) = (x) / [?] -> 4
+Sun Apr 06 17:39:24 EDT 2014,1396820364951,[ ] + [(x) / (2·2)] = [ ],FinishSimplify,false,[],"~FinishSimplify: {1, 2, 1} <-> {1, 2, 0}"
+Sun Apr 06 17:39:26 EDT 2014,1396820366268,[ ] + [(x) / (2·2)] = [ ],FinishProblem,false,[],~FinishProblem
+Sun Apr 06 17:39:31 EDT 2014,1396820371681,[ ] + [(4x) / 2] = [ ],StartProblemAction,true,[],StartProblemAction: [ ] + [(4x) / 2] = [ ]
+Sun Apr 06 17:39:32 EDT 2014,1396820372803,[ ] + [(4x) / 2] = [ ],StartSimplify,true,[],StartSimplify: (4x) / 2 = [?]x -> 2
+Sun Apr 06 18:09:08 EDT 2014,1396822148800,[6x + 4] = [7x - 12] + [ ],StartProblemAction,true,[],StartProblemAction: [6x + 4] = [7x - 12] + [ ]
+Sun Apr 06 18:09:38 EDT 2014,1396822178435,[6x + 4] = [7x - 12] + [ ],DragAction,true,[],"DragAction: {1, 3, 0} -> 2"
+Sun Apr 06 18:09:40 EDT 2014,1396822180084,[6x + 4] = [7x] + [-12],DragAction,true,[ADD_EQUATION_SIDES],"DragAction: {0, 3, 0} -> 2"
+Sun Apr 06 18:09:57 EDT 2014,1396822197253,[6x] = [7x] + [-12 - 4],StartSimplify,true,[SUBTRACT_INTEGERS],StartSimplify: -12 - 4 = [?] -> -16
+Sun Apr 06 18:10:01 EDT 2014,1396822201597,[6x] = [7x] + [-12 - 4],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 1, 0}"
+Sun Apr 06 18:10:14 EDT 2014,1396822214630,[6x] = [7x] + [-16],FinishProblem,false,[],~FinishProblem
+Sun Apr 06 18:12:01 EDT 2014,1396822321697,[8x] + [(x - 5) / 2] = [-11],StartProblemAction,true,[],StartProblemAction: [8x] + [(x - 5) / 2] = [-11]
+Sun Apr 06 18:12:07 EDT 2014,1396822327457,[8x] + [(x - 5) / 2] = [-11],DragAction,true,[SUBTRACT_EQUATION_SIDES],"DragAction: {2, 0, 0} -> 0"
+Sun Apr 06 18:12:14 EDT 2014,1396822334524,[8x + 11] + [(x - 5) / 2] = [ ],DragAction,true,[DISTRIBUTION],"DragAction: {1, 1, 0} -> 2"
+Sun Apr 06 18:12:45 EDT 2014,1396822365033,[8x + 11] + [(x) / 2] = [(5) / 2],DragAction,true,"[ADD_EQUATION_SIDES, COMBINATION]","DragAction: {2, 0, 0} -> 1"
+Sun Apr 06 18:13:06 EDT 2014,1396822386133,[8x + 11] + [(x - 5) / 2] = [ ],DragAction,false,"[DISTRIBUTION, COMBINATION, SUBTRACT_EQUATION_SIDES]","~DragAction: {1, 1, 0} -> 1"
+Sun Apr 06 18:13:37 EDT 2014,1396822417634,[8x + 11] + [(x - 5) / 2] = [ ],DragAction,true,[DISTRIBUTION],"DragAction: {1, 1, 0} -> 2"
+Sun Apr 06 18:16:11 EDT 2014,1396822571233,[8x + 11] + [(x) / 2] = [(5) / 2],DragAction,true,"[ADD_EQUATION_SIDES, COMBINATION]","DragAction: {2, 0, 0} -> 1"
+Sun Apr 06 18:16:13 EDT 2014,1396822573367,[8x + 11] + [(x - 5) / 2] = [ ],DragAction,true,[],"DragAction: {0, 3, 0} -> 2"
+Sun Apr 06 18:16:14 EDT 2014,1396822574483,[8x] + [(x - 5) / 2] = [-11],ReciprocalAction,true,[DIVIDE_MULTIPLE_SIDES],"ReciprocalAction: {1, 2, 0}"
+Sun Apr 06 18:16:15 EDT 2014,1396822575001,[2·8x] + [(2(x - 5)) / 2] = [2(-11)],FinishSimplify,true,"[SIMPLIFY_DIFFERENT_FACTORS, CANCEL_FACTORS]","FinishSimplify: {1, 2, 1} <-> {1, 2, 0}"
+Sun Apr 06 18:16:18 EDT 2014,1396822578667,[2·8x] + [x - 5] = [2(-11)],DragAction,true,[SUBTRACT_EQUATION_SIDES],"DragAction: {1, 1, 0} -> 2"
+Sun Apr 06 18:16:19 EDT 2014,1396822579668,[2·8x] + [x] = [2(-11) + 5],StartSimplify,true,[MULTIPLY_INTEGERS_LOW],StartSimplify: 8·2x = [?]x -> 16
+Sun Apr 06 18:16:21 EDT 2014,1396822581382,[2·8x] + [x] = [2(-11) + 5],FinishSimplify,true,[SIMPLIFY_LIKE_FACTORS],"FinishSimplify: {0, 2, 1} <-> {0, 2, 0}"
+Sun Apr 06 18:16:22 EDT 2014,1396822582149,[16x] + [x] = [2(-11) + 5],DragAction,true,[COMBINE_UNKNOWNS],"DragAction: {1, 0, 0} -> 0"
+Sun Apr 06 18:16:22 EDT 2014,1396822582150,[16x] + [ ] = [2(-11) + 5],FinishSimplify,true,[],"FinishSimplify: {0, 0, 0} <<-"
+Sun Apr 06 18:16:23 EDT 2014,1396822583965,[17x] + [ ] = [2(-11) + 5],StartSimplify,true,[MULTIPLY_INTEGERS_LOW],StartSimplify: 2(-11) = [?] -> -22
+Sun Apr 06 18:16:25 EDT 2014,1396822585957,[17x] + [ ] = [2(-11) + 5],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 2, 0}"
+Sun Apr 06 18:16:26 EDT 2014,1396822586807,[17x] + [ ] = [-22 + 5],StartSimplify,true,[ADD_INTEGERS],StartSimplify: -22 + 5 = [?] -> -17
+Sun Apr 06 18:16:28 EDT 2014,1396822588973,[17x] + [ ] = [-22 + 5],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 1, 0}"
+Sun Apr 06 18:16:30 EDT 2014,1396822590173,[17x] + [ ] = [-17],DragAction,true,[MULTIPLY_SINGLE_SIDE],"DragAction: {0, 2, 0} -> 2"
+Sun Apr 06 18:16:30 EDT 2014,1396822590673,[x] + [ ] = [(-17) / 17],StartSimplify,true,[DIVIDE_INTEGERS_HIGH],StartSimplify: (-17) / 17 = [?] -> -1
+Sun Apr 06 18:16:32 EDT 2014,1396822592732,[x] + [ ] = [(-17) / 17],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 2, 0}"
+Sun Apr 06 18:16:34 EDT 2014,1396822594049,[x] + [ ] = [-1],FinishProblem,true,[],FinishProblem
+Sun Apr 06 18:21:10 EDT 2014,1396822870573,[8x - 10] = [11x + 14] + [ ],StartProblemAction,true,[],StartProblemAction: [8x - 10] = [11x + 14] + [ ]
+Sun Apr 06 18:21:11 EDT 2014,1396822871841,[8x - 10] = [11x + 14] + [ ],DragAction,true,[],"DragAction: {1, 3, 0} -> 2"
+Sun Apr 06 18:21:12 EDT 2014,1396822872892,[8x - 10] = [11x] + [14],DragAction,true,[ADD_EQUATION_SIDES],"DragAction: {0, 3, 0} -> 2"
+Sun Apr 06 18:21:13 EDT 2014,1396822873742,[8x] = [11x] + [14 + 10],ReciprocalAction,true,[MULTIPLY_MULTIPLE_SIDES],"ReciprocalAction: {1, 2, 0}"
+Sun Apr 06 18:21:14 EDT 2014,1396822874726,[(8x) / 11] = [(11x) / 11] + [(14 + 10) / 11],FinishSimplify,true,[CANCEL_FACTORS],"FinishSimplify: {1, 2, 0} <-> {1, 2, 1}"
+Sun Apr 06 18:21:18 EDT 2014,1396822878542,[(8x) / 11] = [x] + [(14 + 10) / 11],ReciprocalAction,true,[DIVIDE_MULTIPLE_SIDES],"ReciprocalAction: {0, 2, 1}"
+Sun Apr 06 18:21:19 EDT 2014,1396822879309,[(11·8x) / 11] = [11x] + [(11(14 + 10)) / 11],FinishSimplify,true,[CANCEL_FACTORS],"FinishSimplify: {0, 2, 2} <-> {0, 2, 1}"
+Sun Apr 06 18:21:20 EDT 2014,1396822880026,[8x] = [11x] + [(11(14 + 10)) / 11],FinishSimplify,true,[CANCEL_FACTORS],"FinishSimplify: {2, 2, 1} <-> {2, 2, 0}"
+Sun Apr 06 18:21:24 EDT 2014,1396822884191,[8x] = [11x] + [14 + 10],DragAction,true,[COMBINE_UNKNOWNS],"DragAction: {1, 0, 0} -> 0"
+Sun Apr 06 18:21:24 EDT 2014,1396822884192,[8x] = [ ] + [14 + 10],StartSimplify,true,[ADD_INTEGERS],StartSimplify: 8x + -11x = [?]x -> -3
+Sun Apr 06 18:21:27 EDT 2014,1396822887799,[8x] = [ ] + [14 + 10],FinishSimplify,true,[],"FinishSimplify: {0, 0, 0} <<-"
+Sun Apr 06 18:21:32 EDT 2014,1396822892149,[-3x] = [ ] + [14 + 10],StartSimplify,true,[ADD_INTEGERS],StartSimplify: 14 + 10 = [?] -> 24
+Sun Apr 06 18:21:34 EDT 2014,1396822894434,[-3x] = [ ] + [14 + 10],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 1, 0}"
+Sun Apr 06 18:21:40 EDT 2014,1396822900105,[-3x] = [ ] + [24],DragAction,true,[DIVIDE_SINGLE_SIDE],"DragAction: {0, 2, 0} -> 2"
+Sun Apr 06 18:21:40 EDT 2014,1396822900705,[x] = [ ] + [(24) / -3],StartSimplify,true,[DIVIDE_INTEGERS_LOW],StartSimplify: (24) / -3 = [?] -> -8
+Sun Apr 06 18:21:45 EDT 2014,1396822905133,[x] = [ ] + [(24) / -3],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 2, 0}"
+Sun Apr 06 18:22:06 EDT 2014,1396822926629,[x] = [ ] + [-8],FinishProblem,true,[],FinishProblem
+Sun Apr 06 18:22:07 EDT 2014,1396822927859,[-5x - 11] = [54],StartProblemAction,true,[],StartProblemAction: [-5x - 11] = [54]
+Sun Apr 06 18:22:08 EDT 2014,1396822928946,[-5x - 11] = [54],DragAction,true,[ADD_EQUATION_SIDES],"DragAction: {0, 3, 0} -> 1"
+Sun Apr 06 18:22:09 EDT 2014,1396822929679,[-5x] = [54 + 11],DragAction,true,[DIVIDE_SINGLE_SIDE],"DragAction: {0, 2, 0} -> 1"
+Sun Apr 06 18:22:10 EDT 2014,1396822930396,[x] = [(54 + 11) / -5],StartSimplify,true,[ADD_INTEGERS],StartSimplify: 54 + 11 = [?] -> 65
+Sun Apr 06 18:22:15 EDT 2014,1396822935279,[x] = [(54 + 11) / -5],FinishSimplify,true,[],"FinishSimplify: {1, 0, 0} <-> {1, 1, 0}"
+Sun Apr 06 18:22:16 EDT 2014,1396822936179,[x] = [(65) / -5],StartSimplify,true,[DIVIDE_INTEGERS_MED],StartSimplify: (65) / -5 = [?] -> -13
+Sun Apr 06 18:22:21 EDT 2014,1396822941000,[x] = [(65) / -5],FinishSimplify,true,[],"FinishSimplify: {1, 0, 0} <-> {1, 2, 0}"
+Sun Apr 06 18:22:44 EDT 2014,1396822964184,[x] = [-13],FinishProblem,true,[],FinishProblem
+Sun Apr 06 18:22:53 EDT 2014,1396822973458,[-12(x - 17) + 24] + [(12x - 10) / 2] = [91] + [ ],StartProblemAction,true,[],StartProblemAction: [-12(x - 17) + 24] + [(12x - 10) / 2] = [91] + [ ]
+Sun Apr 06 18:22:54 EDT 2014,1396822974814,[-12(x - 17) + 24] + [(12x - 10) / 2] = [91] + [ ],DragAction,true,[],"DragAction: {2, 0, 0} -> 3"
+Sun Apr 06 18:22:58 EDT 2014,1396822978215,[-12(x - 17) + 24] + [(12x - 10) / 2] = [ ] + [91],DragAction,true,[SUBTRACT_EQUATION_SIDES],"DragAction: {0, 3, 0} -> 2"
+Sun Apr 06 18:22:58 EDT 2014,1396822978915,[-12(x - 17)] + [(12x - 10) / 2] = [-24] + [91],DragAction,true,[ADD_EQUATION_SIDES],"DragAction: {2, 0, 0} -> 3"
+Sun Apr 06 18:22:59 EDT 2014,1396822979849,[-12(x - 17)] + [(12x - 10) / 2] = [ ] + [91 - 24],StartSimplify,true,[SUBTRACT_INTEGERS],StartSimplify: 91 - 24 = [?] -> 67
+Sun Apr 06 18:23:02 EDT 2014,1396822982201,[-12(x - 17)] + [(12x - 10) / 2] = [ ] + [91 - 24],FinishSimplify,false,[],"~FinishSimplify: {3, 0, 0} <-> {3, 1, 0}"
+Sun Apr 06 18:23:05 EDT 2014,1396822985683,[-12(x - 17)] + [(12x - 10) / 2] = [ ] + [91 - 24],DragAction,true,"[DISTRIBUTION, ADD_EQUATION_SIDES]","DragAction: {1, 3, 0} -> 2"
+Sun Apr 06 18:23:12 EDT 2014,1396822992133,[-12(x - 17)] + [(12x) / 2] = [(10) / 2] + [91 - 24],DragAction,true,"[SUBTRACT_EQUATION_SIDES, COMBINATION]","DragAction: {2, 0, 0} -> 1"
+Sun Apr 06 18:23:21 EDT 2014,1396823001251,[-12(x - 17)] + [(12x - 10) / 2] = [ ] + [91 - 24],StartSimplify,true,[SUBTRACT_INTEGERS],StartSimplify: 91 - 24 = [?] -> 67
+Sun Apr 06 18:23:28 EDT 2014,1396823008833,[-12(x - 17)] + [(12x - 10) / 2] = [ ] + [91 - 24],FinishSimplify,true,[],"FinishSimplify: {3, 0, 0} <-> {3, 1, 0}"
+Sun Apr 06 18:24:17 EDT 2014,1396823057117,[-12(x - 17)] + [(12x - 10) / 2] = [ ] + [67],DragAction,true,"[DISTRIBUTION, ADD_EQUATION_SIDES]","DragAction: {1, 3, 0} -> 2"
+Sun Apr 06 18:24:17 EDT 2014,1396823057683,[-12(x - 17)] + [(12x) / 2] = [(10) / 2] + [67],StartSimplify,true,[DIVIDE_INTEGERS_LOW],StartSimplify: (10) / 2 = [?] -> 5
+Sun Apr 06 18:24:19 EDT 2014,1396823059949,[-12(x - 17)] + [(12x) / 2] = [(10) / 2] + [67],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 2, 0}"
+Sun Apr 06 18:27:47 EDT 2014,1396823267438,[-3(x - 21) - 21] = [36],StartProblemAction,true,[],StartProblemAction: [-3(x - 21) - 21] = [36]
+Sun Apr 06 18:27:48 EDT 2014,1396823268388,[-3(x - 21) - 21] = [36],DragAction,true,[ADD_EQUATION_SIDES],"DragAction: {0, 3, 0} -> 1"
+Sun Apr 06 18:27:49 EDT 2014,1396823269238,[-3(x - 21)] = [36 + 21],DragAction,true,[DIVIDE_SINGLE_SIDE],"DragAction: {0, 2, 0} -> 1"
+Sun Apr 06 18:27:50 EDT 2014,1396823270921,[x - 21] = [(36 + 21) / -3],DragAction,true,[ADD_EQUATION_SIDES],"DragAction: {0, 1, 0} -> 1"
+Sun Apr 06 18:27:51 EDT 2014,1396823271873,[x] = [(36 + 21) / -3 + 21],StartSimplify,true,[ADD_INTEGERS],StartSimplify: 36 + 21 = [?] -> 57
+Sun Apr 06 18:27:55 EDT 2014,1396823275329,[x] = [(36 + 21) / -3 + 21],FinishSimplify,true,[SIMPLIFY_ADDENS],"FinishSimplify: {1, 0, 0} <-> {1, 1, 0}"
+Sun Apr 06 18:27:56 EDT 2014,1396823276429,[x] = [(57) / -3 + 21],StartSimplify,true,[DIVIDE_INTEGERS_MED],StartSimplify: (57) / -3 = [?] -> -19
+Sun Apr 06 18:27:59 EDT 2014,1396823279872,[x] = [(57) / -3 + 21],FinishSimplify,true,[SIMPLIFY_DIFFERENT_FACTORS],"FinishSimplify: {1, 0, 0} <-> {1, 2, 0}"
+Sun Apr 06 18:28:00 EDT 2014,1396823280806,[x] = [-19 + 21],StartSimplify,true,[ADD_INTEGERS],StartSimplify: -19 + 21 = [?] -> 2
+Sun Apr 06 18:28:02 EDT 2014,1396823282018,[x] = [-19 + 21],FinishSimplify,true,[SIMPLIFY_ADDENS],"FinishSimplify: {1, 0, 0} <-> {1, 1, 0}"
+Sun Apr 06 18:28:03 EDT 2014,1396823283951,[x] = [2],FinishProblem,true,[],FinishProblem

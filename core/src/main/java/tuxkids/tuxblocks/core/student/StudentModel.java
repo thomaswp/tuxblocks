@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.student;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
@@ -32,12 +33,14 @@ public interface StudentModel extends Persistable, SolveActionCallback {
 
 	Equation getNextGeneralEquation();
 
-	void addFinishSimplifyTags(FinishSimplifyAction action, Block sprite,
+	void addFinishSimplifyTags(FinishSimplifyAction action, Block base,
 			ModifierBlock pair, ModifierGroup modifiers);
 
 	void addStartSimplifyTags(StartSimplifyingBlocksAction action,
 			Renderer problem, int answer, Stat stat, int level);
 
 	void addReciprocalActionTags(ReciprocalAction action, Block block);
+
+	void addDragActionTags(DragAction action, Equation before);
 	
 }

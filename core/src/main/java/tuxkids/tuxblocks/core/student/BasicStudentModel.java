@@ -2,10 +2,12 @@ package tuxkids.tuxblocks.core.student;
 
 import static tuxkids.tuxblocks.core.student.ActionType.ADD_EQUATION_SIDES;
 import static tuxkids.tuxblocks.core.student.ActionType.ADD_INTEGERS;
-import static tuxkids.tuxblocks.core.student.ActionType.ADD_UNKNOWNS;
 import static tuxkids.tuxblocks.core.student.ActionType.BUILDING_SYMBOLIC_EQUATIONS;
 import static tuxkids.tuxblocks.core.student.ActionType.BUILDING_WRITTEN_EQUATIONS;
+import static tuxkids.tuxblocks.core.student.ActionType.CANCEL_ADDENS;
+import static tuxkids.tuxblocks.core.student.ActionType.CANCEL_FACTORS;
 import static tuxkids.tuxblocks.core.student.ActionType.COMBINATION;
+import static tuxkids.tuxblocks.core.student.ActionType.COMBINE_UNKNOWNS;
 import static tuxkids.tuxblocks.core.student.ActionType.DISTRIBUTION;
 import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_INTEGERS_HIGH;
 import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_INTEGERS_LOW;
@@ -17,9 +19,11 @@ import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_INTEGERS_LOW;
 import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_INTEGERS_MED;
 import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_MULTIPLE_SIDES;
 import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_SINGLE_SIDE;
+import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_ADDENS;
+import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_DIFFERENT_FACTORS;
+import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_LIKE_FACTORS;
 import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_EQUATION_SIDES;
 import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_INTEGERS;
-import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_UNKNOWNS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,17 +31,26 @@ import java.util.List;
 import java.util.Map;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
 import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
+import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
+import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierBlock;
+import tuxkids.tuxblocks.core.solve.blocks.MinusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierGroup;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
+import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
+import tuxkids.tuxblocks.core.solve.blocks.PlusBlock;
+import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
+import tuxkids.tuxblocks.core.solve.blocks.VerticalModifierBlock;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 public class BasicStudentModel implements StudentModel {
@@ -76,11 +89,8 @@ public class BasicStudentModel implements StudentModel {
 				"Divide Integers 10+", L0_MED, BASE_SLIP, BASE_GUESS,
 				TRANSITION_MED));
 
-		knowledgeBits.put(ADD_UNKNOWNS, new KnowledgeComponent("Add Unknowns",
-				L0_MED, BASE_SLIP, BASE_GUESS, TRANSITION_MED));
-		knowledgeBits.put(SUBTRACT_UNKNOWNS, new KnowledgeComponent(
-				"Subtract Unknowns", L0_MED, BASE_SLIP, BASE_GUESS,
-				TRANSITION_MED));
+		knowledgeBits.put(COMBINE_UNKNOWNS, new KnowledgeComponent(
+				"Combine Unknowns", L0_MED, BASE_SLIP, BASE_GUESS, TRANSITION_MED));
 
 		knowledgeBits.put(ADD_EQUATION_SIDES, new KnowledgeComponent(
 				"Add Sides of Equations", L0_MED, BASE_SLIP, BASE_GUESS,
@@ -100,6 +110,22 @@ public class BasicStudentModel implements StudentModel {
 				BASE_GUESS, TRANSITION_LOW));
 		knowledgeBits.put(DIVIDE_MULTIPLE_SIDES, new KnowledgeComponent(
 				"Divide Sides of Equations 2+ terms", L0_LOW, BASE_SLIP,
+				BASE_GUESS, TRANSITION_LOW));
+		
+		knowledgeBits.put(SIMPLIFY_ADDENS, new KnowledgeComponent(
+				"Combine two addens", L0_LOW, BASE_SLIP,
+				BASE_GUESS, TRANSITION_LOW));
+		knowledgeBits.put(SIMPLIFY_DIFFERENT_FACTORS, new KnowledgeComponent(
+				"Combine a times and over block", L0_LOW, BASE_SLIP,
+				BASE_GUESS, TRANSITION_LOW));
+		knowledgeBits.put(SIMPLIFY_LIKE_FACTORS, new KnowledgeComponent(
+				"Combine two times or over blocks", L0_LOW, BASE_SLIP,
+				BASE_GUESS, TRANSITION_LOW));
+		knowledgeBits.put(CANCEL_ADDENS, new KnowledgeComponent(
+				"Cancel two negating addens", L0_LOW, BASE_SLIP,
+				BASE_GUESS, TRANSITION_LOW));
+		knowledgeBits.put(CANCEL_FACTORS, new KnowledgeComponent(
+				"Cancel two negating factors", L0_LOW, BASE_SLIP,
 				BASE_GUESS, TRANSITION_LOW));
 
 		knowledgeBits.put(DISTRIBUTION, new KnowledgeComponent("Distribution",
@@ -168,22 +194,123 @@ public class BasicStudentModel implements StudentModel {
 
 	@Override
 	public void addFinishSimplifyTags(FinishSimplifyAction action,
-			Block sprite, ModifierBlock pair, ModifierGroup modifiers) {
-		// TODO Auto-generated method stub
-		
+			Block base, ModifierBlock pair, ModifierGroup modifiers) {
+		if (base instanceof VerticalModifierBlock && 
+				pair instanceof VerticalModifierBlock) {
+			if (base instanceof TimesBlock != pair instanceof TimesBlock) {
+				if (((ModifierBlock) base).value() == ((ModifierBlock) pair).value()) {
+					action.addTag(CANCEL_FACTORS);
+				} else {
+					action.addTag(SIMPLIFY_DIFFERENT_FACTORS);
+				}
+			} else {
+				action.addTag(SIMPLIFY_LIKE_FACTORS);
+			}
+		} else if (base instanceof HorizontalModifierBlock &&
+				pair instanceof HorizontalModifierBlock) {
+			if (((ModifierBlock) base).value() == ((ModifierBlock) pair).value()) {
+				action.addTag(CANCEL_ADDENS);
+			} else {
+				action.addTag(SIMPLIFY_ADDENS);
+			}
+		}
+		if (base instanceof NumberBlock) {
+			if (pair instanceof PlusBlock || pair instanceof MinusBlock) {
+				action.addTag(SIMPLIFY_ADDENS);
+			} else if (pair instanceof TimesBlock) {
+				action.addTag(SIMPLIFY_LIKE_FACTORS);
+			} else if (pair instanceof OverBlock) {
+				action.addTag(SIMPLIFY_DIFFERENT_FACTORS);
+			}
+		}
 	}
 
 	@Override
 	public void addStartSimplifyTags(StartSimplifyingBlocksAction action,
 			Renderer problem, int answer, Stat stat, int level) {
-		// TODO Auto-generated method stub
 		
+		System.out.println(level);
+		
+		ActionType algebraTag = null;
+		switch (stat) {
+		case Plus: 
+			algebraTag = ADD_INTEGERS;
+			break;
+		case Minus: 
+			algebraTag = SUBTRACT_INTEGERS;
+			break;
+		case Times: 
+			if (level < 3) algebraTag = MULTIPLY_INTEGERS_LOW;
+			else if (level < 5) algebraTag = MULTIPLY_INTEGERS_MED;
+			else algebraTag = MULTIPLY_INTEGERS_HIGH;
+			break;
+		case Over:
+			if (level < 3) algebraTag = DIVIDE_INTEGERS_LOW;
+			else if (level < 5) algebraTag = DIVIDE_INTEGERS_MED;
+			else algebraTag = DIVIDE_INTEGERS_HIGH;
+			break;
+		}
+		
+		action.addTag(algebraTag);
 	}
 
 	@Override
 	public void addReciprocalActionTags(ReciprocalAction action, Block block) {
-		// TODO Auto-generated method stub
+		if (block instanceof TimesBlock) {
+			action.addTag(MULTIPLY_MULTIPLE_SIDES);
+		} else {
+			action.addTag(DIVIDE_MULTIPLE_SIDES);
+		}
+	}
+
+	@Override
+	public void addDragActionTags(DragAction action, Equation before) {
+		boolean fromLeft = action.fromIndex.expressionIndex < before.leftCount();
+		boolean toLeft = action.toIndex < before.leftCount();
 		
+		Block dragging = before.getBlock(action.fromIndex);
+		BaseBlock draggingTo = before.getBaseBlock(action.toIndex);
+
+		if (dragging instanceof HorizontalModifierBlock) {
+			ModifierGroup group = ((HorizontalModifierBlock) dragging).group();
+			if (group != null && group.isModifiedVertically()) {
+				action.addTag(DISTRIBUTION);
+				if (!(draggingTo instanceof BlockHolder)) {
+					action.addTag(COMBINATION);
+				}
+			}
+		}
+		
+		if (draggingTo instanceof BlockHolder && fromLeft == toLeft) {
+			//TODO: consider a KC for moving stuff around?
+			return;
+		}
+		
+		// all of these are counter-intuitive, but remember
+		// if you're dragging a PlusBlock, you're really
+		// subtracting both sides by its value
+		if (dragging instanceof PlusBlock) {
+			action.addTag(SUBTRACT_EQUATION_SIDES);
+		} else if (dragging instanceof MinusBlock) {
+			action.addTag(ADD_EQUATION_SIDES);
+		} else if (dragging instanceof TimesBlock) {
+			action.addTag(DIVIDE_SINGLE_SIDE);
+		} else if (dragging instanceof OverBlock) {
+			action.addTag(MULTIPLY_SINGLE_SIDE);
+		} else if (dragging instanceof NumberBlock) {
+			if (((NumberBlock) dragging).value() > 0) {
+				action.addTag(SUBTRACT_EQUATION_SIDES);
+			} else {
+				action.addTag(ADD_EQUATION_SIDES);
+			}
+			if (((NumberBlock) dragging).isModifiedVertically()) {
+				action.addTag(COMBINATION);
+			}
+		} else if (dragging instanceof VariableBlock) {
+			if (draggingTo instanceof VariableBlock) {
+				action.addTag(COMBINE_UNKNOWNS);
+			}
+		}
 	}
 
 }
