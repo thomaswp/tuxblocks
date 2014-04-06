@@ -6,8 +6,6 @@ import tuxkids.tuxblocks.core.defense.Grid;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
-import tuxkids.tuxblocks.core.student.BasicStudentModel;
-import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
@@ -18,16 +16,9 @@ import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public class StoryGameState extends GameState {
 
-	
-	private final StudentModel studentModel = new BasicStudentModel();
-	
 	private int lesson = 0;
 	
 	private boolean hasSetupTowersForLesson = false;
-	
-	public StudentModel studentModel() {
-		return studentModel;
-	}
 	
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));

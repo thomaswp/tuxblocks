@@ -30,7 +30,7 @@ import tuxkids.tuxblocks.core.utils.Formatter;
 public class IdealEquationSolver {
 
 	private static final int MAX_TERMS_PER_SIDE = 7;
-
+	
 	//can be used for observing the inner steps of the heuristic
 	private static boolean debugHeuristic = false;
 
@@ -48,11 +48,11 @@ public class IdealEquationSolver {
 		return null;
 	}
 
-	public List<Step> aStar(Equation start) {
+	public static List<Step> aStar(Equation start) {
 		return aStar(start, Integer.MAX_VALUE);
 	}
 	
-	public List<Step> aStar(Equation start, int maxSteps) {
+	public static List<Step> aStar(Equation start, int maxSteps) {
 		// queue of paths to solution, sorted using the heuristic
 		PriorityQueue<List<Step>> paths = new PriorityQueue<List<Step>>(20, comparator);
 
@@ -98,7 +98,7 @@ public class IdealEquationSolver {
 	}
 
 	// returns a list of all steps that can be taken for the given equation
-	private List<Step> expandState(Equation state) {
+	private static List<Step> expandState(Equation state) {
 		List<Step> steps = new ArrayList<Step>();
 		EquationManipulatorSolver solver = new EquationManipulatorSolver(state);
 		for (SolveAction action : solver.getAllActions()) {
@@ -114,7 +114,7 @@ public class IdealEquationSolver {
 		return steps;
 	}
 
-	private boolean registerNode(Step currentStep, HashMap<String, Integer> discoveredNodes, int pathLength) {
+	private static boolean registerNode(Step currentStep, HashMap<String, Integer> discoveredNodes, int pathLength) {
 
 		// hash it using its text function... TODO: use a quicker/more accurate hash
 		String text = currentStep.equationString();

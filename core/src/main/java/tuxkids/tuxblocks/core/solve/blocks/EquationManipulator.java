@@ -1,5 +1,6 @@
 package tuxkids.tuxblocks.core.solve.blocks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import playn.core.PlayN;
@@ -13,7 +14,6 @@ import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
 import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
 import tuxkids.tuxblocks.core.solve.action.callbacks.SolveActionCallback;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
-import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
@@ -31,25 +31,17 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected Block dragging, tempDragging; // which block is currently dragging
 	protected BaseBlock draggingFrom, tempDraggingFrom; // which BaseBlock the currently dragging Block is coming from
 	protected List<BaseBlock> draggingFromSide; // which side the currently dragging Block is coming from
-	protected SolveActionCallback solveActionCallback; // callback for when a SolveAction is performed
+	// callback for when a SolveAction is performed
+	protected List<SolveActionCallback> solveActionCallbacks = new ArrayList<SolveActionCallback>(); 
 	
-	protected StudentModel studentModel;
-
 	protected abstract boolean hasSprites();
 	
 	protected boolean shouldActionCallback() {
-		return !inBuildMode && solveActionCallback != null;
+		return !inBuildMode && solveActionCallbacks.size() > 0;
 	}
 
 	protected void triggerTutorial(Trigger trigger) {
 
-	}
-	
-	public void setStudentModel(StudentModel studentModel) {
-		this.studentModel = studentModel;
-		if (solveActionCallback == null) {
-//			solveActionCallback = new 
-		}
 	}
 
 	protected List<BaseBlock> leftSide() {
@@ -76,8 +68,8 @@ public abstract class EquationManipulator extends PlayNObject {
 		return index < leftSide().size() ? Side.Left : Side.Right;
 	}
 	
-	public void setSolveActionCallback(SolveActionCallback solveActionCallback) {
-		this.solveActionCallback = solveActionCallback;
+	public void addSolveActionCallback(SolveActionCallback solveActionCallback) {
+		this.solveActionCallbacks.add(solveActionCallback);
 	}
 	
 	protected void actionPerformed() {
@@ -346,13 +338,15 @@ public abstract class EquationManipulator extends PlayNObject {
 	}
 	
 	protected void reportSolveAction(SolveAction action) {		
-		if (solveActionCallback == null) return;
+		if (solveActionCallbacks == null) return;
 		
 		// if we have a stored equation from a drag action use it
 		Equation send = draggingPreviousEquation;
 		// otherwise the current equation should be representative
 		if (send == null) send = equation;
-		solveActionCallback.onActionPerformed(action, send);
+		for (SolveActionCallback callback : solveActionCallbacks) {
+			callback.onActionPerformed(action, send);
+		}
 		
 		draggingPreviousEquation = null;
 	}

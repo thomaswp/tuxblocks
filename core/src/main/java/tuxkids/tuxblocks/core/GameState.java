@@ -12,6 +12,8 @@ import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
+import tuxkids.tuxblocks.core.student.BasicStudentModel;
+import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
@@ -36,6 +38,9 @@ public class GameState implements Persistable {
 			return symbol;
 		}
 	}
+
+	// student model for keeping track of what the player knows
+	protected final StudentModel studentModel = new BasicStudentModel();
 
 	// base exp for solving an arithmetic problem
 	private static final int SOLVE_EXP_BASE = 10;
@@ -68,6 +73,10 @@ public class GameState implements Persistable {
 	protected Grid grid;
 	// object representing all towers on the grid (for persisting)
 	protected TowerState loadedTowerState;
+
+	public StudentModel studentModel() {
+		return studentModel;
+	}
 	
 	public GameState(Difficulty difficulty) {
 		this.difficulty = difficulty;

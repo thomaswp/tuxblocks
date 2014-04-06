@@ -1,9 +1,10 @@
 package tuxkids.tuxblocks.core.student;
 
+import tuxkids.tuxblocks.core.solve.action.callbacks.SolveActionCallback;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
-public interface StudentModel extends Persistable {
+public interface StudentModel extends Persistable, SolveActionCallback {
 	
 	public static final double L0_HIGH =.7;
 	public static final double L0_MED  =.4;
