@@ -17,8 +17,6 @@ import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
-import tuxkids.tuxblocks.core.student.KnowledgeComponent;
-import tuxkids.tuxblocks.core.student.StudentAction;
 import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.utils.Debug;
@@ -35,11 +33,6 @@ public class Tutor implements Strings_Hint {
 	private StudentModel model;
 	private Equation lastHintEquation;
 	private HintLevel lastHintLevel = HintLevel.Vague;
-
-	public KnowledgeComponent getKnowledgeComponentForAction(StudentAction a) {
-		return model.getKnowledgeComponentForAction(a);
-	}
-
 
 	public static class Hint {
 		public final String text;

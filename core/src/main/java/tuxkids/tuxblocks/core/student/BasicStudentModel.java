@@ -26,12 +26,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
+import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
+import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
+import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
+import tuxkids.tuxblocks.core.solve.blocks.ModifierGroup;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
+import tuxkids.tuxblocks.core.solve.markup.Renderer;
 
 public class BasicStudentModel implements StudentModel {
 
@@ -107,11 +114,6 @@ public class BasicStudentModel implements StudentModel {
 				"Building Written Equations", L0_MED, BASE_SLIP, BASE_GUESS,
 				TRANSITION_MED));
 	}
-
-	@Override
-	public KnowledgeComponent getKnowledgeComponentForAction(StudentAction a) {
-		return knowledgeBits.get(a.type);
-	}
 	
 	private static final Equation[] starredEquations = new Equation[2];
 	private int equationIndex = 0;
@@ -161,6 +163,26 @@ public class BasicStudentModel implements StudentModel {
 			currentStudentActions.clear();
 			currentEquation = null;
 		}
+		
+	}
+
+	@Override
+	public void addFinishSimplifyTags(FinishSimplifyAction action,
+			Block sprite, ModifierBlock pair, ModifierGroup modifiers) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addStartSimplifyTags(StartSimplifyingBlocksAction action,
+			Renderer problem, int answer, Stat stat, int level) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addReciprocalActionTags(ReciprocalAction action, Block block) {
+		// TODO Auto-generated method stub
 		
 	}
 

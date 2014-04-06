@@ -15,6 +15,7 @@ import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
 import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
 import tuxkids.tuxblocks.core.solve.action.callbacks.SolveActionCallback;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 
@@ -35,7 +36,13 @@ public abstract class EquationManipulator extends PlayNObject {
 	// callback for when a SolveAction is performed
 	protected List<SolveActionCallback> solveActionCallbacks = new ArrayList<SolveActionCallback>(); 
 	
+	protected StudentModel studentModel;
+	
 	protected abstract boolean hasSprites();
+	
+	public void setStudentModel(StudentModel studentModel) {
+		this.studentModel = studentModel;
+	}
 	
 	protected boolean shouldActionCallback() {
 		return !inBuildMode && solveActionCallbacks.size() > 0;
@@ -264,13 +271,17 @@ public abstract class EquationManipulator extends PlayNObject {
 		return added;
 	}
 
-	public void reciprocateBlock(Block sprite) {
-		if (sprite instanceof VerticalModifierBlock) {
+	public void reciprocateBlock(Block block) {
+		if (block instanceof VerticalModifierBlock) {
 			actionPerformed();
 			
-			boolean success = ((ModifierBlock) sprite).canAddInverse(); 
+			boolean success = ((ModifierBlock) block).canAddInverse(); 
 			if (shouldActionCallback()) {
-				reportSolveAction(new ReciprocalAction(equation.indexOf(sprite), success));
+				ReciprocalAction action = new ReciprocalAction(equation.indexOf(block), success);
+				if (studentModel != null) {
+					studentModel.addReciprocalActionTags(action, block);
+				}
+				reportSolveAction(action);
 			}
 			
 			if (!success) return;
@@ -280,8 +291,8 @@ public abstract class EquationManipulator extends PlayNObject {
 			// one that was double-clicked
 
 			float y;
-			if (sprite instanceof TimesBlock) {
-				if (((VerticalModifierBlock) sprite).value == -1) {
+			if (block instanceof TimesBlock) {
+				if (((VerticalModifierBlock) block).value == -1) {
 					y = -graphics().height() / 2;
 				} else {
 					y = graphics().height() / 2;
@@ -291,7 +302,7 @@ public abstract class EquationManipulator extends PlayNObject {
 			}
 			for (BaseBlock base : equation) {
 				if (!(base instanceof BlockHolder)) {
-					ModifierBlock inverse = (ModifierBlock) ((VerticalModifierBlock) sprite).inverse().copy(hasSprites());
+					ModifierBlock inverse = (ModifierBlock) ((VerticalModifierBlock) block).inverse().copy(hasSprites());
 					if (hasSprites()) inverse.interpolateRect(base.offsetX(), y, base.totalWidth(), inverse.height(), 0, 1);
 					base.addModifier(inverse, false);
 				}
@@ -302,7 +313,11 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected void startBlockReduce(Renderer problem, int answer, Stat stat, int level) {
 		actionPerformed();
 		if (shouldActionCallback()) {
-			reportSolveAction(new StartSimplifyingBlocksAction(problem.getPlainText(), answer));
+			StartSimplifyingBlocksAction action = new StartSimplifyingBlocksAction(problem.getPlainText(), answer);
+			if (studentModel != null) {
+				studentModel.addStartSimplifyTags(action, problem, answer, stat, level);
+			}
+			reportSolveAction(action);
 		}
 	}
 	
@@ -327,7 +342,11 @@ public abstract class EquationManipulator extends PlayNObject {
 				}
 			}
 			
-			reportSolveAction(new FinishSimplifyAction(baseIndex, pairIndex, modifierDepth, success));
+			FinishSimplifyAction action = new FinishSimplifyAction(baseIndex, pairIndex, modifierDepth, success);
+			if (studentModel != null) {
+				studentModel.addFinishSimplifyTags(action, sprite, pair, modifiers);
+			}
+			reportSolveAction(action);
 		}
 	}
 	

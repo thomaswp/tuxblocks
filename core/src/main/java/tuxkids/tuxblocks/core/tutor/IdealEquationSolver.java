@@ -18,12 +18,10 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulator;
 import tuxkids.tuxblocks.core.solve.blocks.EquationManipulatorSolver;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
-import tuxkids.tuxblocks.core.solve.blocks.MutableEquation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.OverBlock;
 import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
-import tuxkids.tuxblocks.core.student.StudentAction;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
@@ -43,10 +41,6 @@ public class IdealEquationSolver {
 			return Double.compare(heuristic(eq1) + o1.size(), heuristic(eq2) + o2.size());
 		}
 	};
-
-	public SolutionPackage getIdealSolution(MutableEquation e) {
-		return null;
-	}
 
 	public static List<Step> aStar(Equation start) {
 		return aStar(start, Integer.MAX_VALUE);
@@ -711,11 +705,6 @@ public class IdealEquationSolver {
 			}
 			throw new RuntimeException("Equation is not simplified: " + result.getPlainText());
 		}
-	}
-
-	public static class SolutionPackage {
-		int numSteps;
-		List<StudentAction> solutionOrientedActions;
 	}
 
 }

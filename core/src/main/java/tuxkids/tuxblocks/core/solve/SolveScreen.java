@@ -105,6 +105,7 @@ public class SolveScreen extends EquationScreen {
 		
 		StudentModel studentModel = gameState.studentModel();
 		if (studentModel != null) {
+			controller.setStudentModel(studentModel);
 			controller.addSolveActionCallback(studentModel);
 		}
 	}
