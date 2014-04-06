@@ -65,7 +65,6 @@ public class SolveScreen extends EquationScreen {
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
 					if (buttonBack.image() == buttonImageOk || Tutorial.askPermission(Trigger.Solve_GoBack)) {
-						controller.finishSolving();
 						popThis();
 					}
 				}
@@ -134,6 +133,7 @@ public class SolveScreen extends EquationScreen {
 	
 	@Override
 	protected void popThis() {
+		controller.finishSolving();
 		popThis(screens.slide().up());
 		if (controller.solved()) {
 			Audio.se().play(Constant.SE_SUCCESS);

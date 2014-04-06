@@ -18,3 +18,4 @@ android/gen
 ios/assets/*
 cmd.exe.lnk
 android/pw.txt
+java/logging.csv

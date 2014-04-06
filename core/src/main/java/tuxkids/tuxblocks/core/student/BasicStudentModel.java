@@ -32,8 +32,6 @@ import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
-import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
-import tuxkids.tuxblocks.core.tutor.Tutor;
 
 public class BasicStudentModel implements StudentModel {
 

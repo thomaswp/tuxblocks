@@ -1,6 +1,20 @@
-"Time", "Before", "Action", "Success", "Tags", "Description"
-"1.396745586329E12", "[(x) / 12] + [12(x - 1)] = [278] + [ ]", "StartProblemAction", "true", "[]", "StartProblemAction: [(x) / 12] + [12(x - 1)] = [278] + [ ]"
-"1.396745623439E12", "[(x) / 12] + [12(x - 1)] = [278] + [ ]", "DragAction", "true", "[]", "DragAction: {2, 0, 0} -> 3"
-"1.396745630361E12", "[(x) / 12] + [12(x - 1)] = [ ] + [278]", "DragAction", "true", "[]", "DragAction: {1, 1, 0} -> 2"
-"1.396745646397E12", "[(x) / 12] + [12x] = [12(1)] + [278]", "FinishSimplify", "true", "[]", "FinishSimplify: {2, 0, 0} <-> {2, 2, 0}"
-"1.396745674099E12", "[(x) / 12] + [12x] = [12] + [278]", "StartProblemAction", "true", "[]", "StartProblemAction: [(x) / 12] + [12x] = [12] + [278]"
+Date,MS,Before,Action,Success,Tags,Description
+Sat Apr 05 21:05:09 EDT 2014,1.396746309291E12,[x + 17] + [x + 8] = [13] + [ ],StartProblemAction,true,[],StartProblemAction: [x + 17] + [x + 8] = [13] + [ ]
+Sat Apr 05 21:05:10 EDT 2014,1.396746310587E12,[x + 17] + [x + 8] = [13] + [ ],DragAction,true,[],"DragAction: {1, 1, 0} -> 3"
+Sat Apr 05 21:05:11 EDT 2014,1.396746311037E12,[x + 17] + [x] = [13] + [-8],DragAction,true,[],"DragAction: {2, 0, 0} -> 3"
+Sat Apr 05 21:05:11 EDT 2014,1.396746311603E12,[x + 17] + [x] = [ ] + [-8 + 13],DragAction,true,[],"DragAction: {3, 0, 0} -> 2"
+Sat Apr 05 21:05:12 EDT 2014,1.396746312372E12,[x + 17] + [x] = [-8 + 13] + [ ],StartSimplify,true,[],StartSimplify: -8 + 13 = [?] -> 5
+Sat Apr 05 21:05:16 EDT 2014,1.396746316373E12,[x + 17] + [x] = [-8 + 13] + [ ],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 1, 0}"
+Sat Apr 05 21:05:18 EDT 2014,1.396746318239E12,[x + 17] + [x] = [5] + [ ],DragAction,true,[],"DragAction: {0, 1, 0} -> 2"
+Sat Apr 05 21:05:19 EDT 2014,1.396746319089E12,[x] + [x] = [5 - 17] + [ ],StartSimplify,true,[],StartSimplify: 5 - 17 = [?] -> -12
+Sat Apr 05 21:05:21 EDT 2014,1.396746321841E12,[x] + [x] = [5 - 17] + [ ],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 1, 0}"
+Sat Apr 05 21:05:22 EDT 2014,1.396746322924E12,[x] + [x] = [-12] + [ ],DragAction,true,[],"DragAction: {1, 0, 0} -> 0"
+Sat Apr 05 21:05:22 EDT 2014,1.396746322925E12,[x] + [ ] = [-12] + [ ],FinishSimplify,true,[],"FinishSimplify: {0, 0, 0} <<-"
+Sat Apr 05 21:05:24 EDT 2014,1.396746324108E12,[2x] + [ ] = [-12] + [ ],DragAction,true,[],"DragAction: {0, 2, 0} -> 2"
+Sat Apr 05 21:05:24 EDT 2014,1.396746324741E12,[x] + [ ] = [(-12) / 2] + [ ],StartSimplify,true,[],StartSimplify: (-12) / 2 = [?] -> -6
+Sat Apr 05 21:05:26 EDT 2014,1.396746326889E12,[x] + [ ] = [(-12) / 2] + [ ],FinishSimplify,true,[],"FinishSimplify: {2, 0, 0} <-> {2, 2, 0}"
+Sat Apr 05 21:05:28 EDT 2014,1.396746328239E12,[x] + [ ] = [-6] + [ ],FinishProblem,true,[],FinishProblem
+Sat Apr 05 21:07:12 EDT 2014,1396746432575,[5x - 24] + [-12(x - 14)] = [151] + [ ],StartProblemAction,true,[],StartProblemAction: [5x - 24] + [-12(x - 14)] = [151] + [ ]
+Sat Apr 05 21:07:14 EDT 2014,1396746434033,[5x - 24] + [-12(x - 14)] = [151] + [ ],DragAction,true,[],"DragAction: {2, 0, 0} -> 3"
+Sat Apr 05 21:07:29 EDT 2014,1396746449437,[2(x - 16)] + [2x + 24] = [36] + [ ],StartProblemAction,true,[],StartProblemAction: [2(x - 16)] + [2x + 24] = [36] + [ ]
+Sat Apr 05 21:07:30 EDT 2014,1396746450803,[2(x - 16)] + [2x + 24] = [36] + [ ],DragAction,true,[],"DragAction: {2, 0, 0} -> 3"

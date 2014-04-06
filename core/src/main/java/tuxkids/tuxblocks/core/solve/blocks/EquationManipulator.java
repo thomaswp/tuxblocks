@@ -3,10 +3,9 @@ package tuxkids.tuxblocks.core.solve.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import playn.core.Log;
 import playn.core.PlayN;
-import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishProblemAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;

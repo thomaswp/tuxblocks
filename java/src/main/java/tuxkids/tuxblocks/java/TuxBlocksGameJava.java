@@ -2,7 +2,6 @@ package tuxkids.tuxblocks.java;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,8 +11,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
@@ -122,7 +120,7 @@ public class TuxBlocksGameJava {
 				FileOutputStream fos = new FileOutputStream(f, true);
 				writer = new PrintWriter(fos);
 				if (start) {
-					writeLine("Time", "Before", "Action", "Success", "Tags", "Description");
+					writeLine("Date", "MS", "Before", "Action", "Success", "Tags", "Description");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -131,7 +129,7 @@ public class TuxBlocksGameJava {
 		
 		private void writeLine(Object... cols) {
 			for (int i = 0; i < cols.length; i++) {
-				if (i != 0) writer.print(", ");
+				if (i != 0) writer.print(",");
 				writer.print(sanitize(cols[i].toString()));
 			}
 			writer.println();
@@ -139,13 +137,19 @@ public class TuxBlocksGameJava {
 		}
 		
 		private String sanitize(String txt) {
-			txt = txt.replace("\"", "\"\"");
-			return "\"" + txt + "\"";
+			boolean quote = txt.contains("\"") || txt.contains(",") || txt.startsWith("=") || txt.contains("\n");
+			if (quote) {
+				txt = txt.replace("\"", "\"\"");
+				txt = "\"" + txt + "\""; 
+			}
+			return txt;
 		}
 		
 		@Override
 		public void onActionPerformed(SolveAction action, Equation before) {
-			writeLine(action.timestamp, before.getPlainText(), action.name(), 
+			long ms = (long) action.timestamp;
+			Date date = new Date(ms);
+			writeLine(date.toString(), ms, before.getPlainText(), action.name(), 
 					action.success, action.tags(), action);
 		}
 		
