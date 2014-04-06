@@ -1434,3 +1434,27 @@ Sun Apr 06 16:44:22 EDT 2014,1396817062014,[(2(x + 21)) / 2] = [43],DragAction,t
 Sun Apr 06 16:44:22 EDT 2014,1396817062015,[x] = [43 - 21],DragAction,true,[],"DragAction: {1, 1, 0} -> 0"
 Sun Apr 06 16:44:22 EDT 2014,1396817062015,[x] = [(86) / 2 - 21],DragAction,true,[],"DragAction: {1, 3, 0} -> 0"
 Sun Apr 06 16:44:27 EDT 2014,1396817067623,[-7(2(x + 21) - 12)] = [-518],DragAction,true,[],"DragAction: {0, 4, 0} -> 1"
+Sun Apr 06 17:06:15 EDT 2014,1396818375293,[(-7x + 3) / 2] = [89],StartProblemAction,true,[],StartProblemAction: [(-7x + 3) / 2] = [89]
+Sun Apr 06 17:11:27 EDT 2014,1396818687571,[-4x] + [x - 11] = [-53] + [ ],StartProblemAction,true,[],StartProblemAction: [-4x] + [x - 11] = [-53] + [ ]
+Sun Apr 06 17:11:29 EDT 2014,1396818689333,[-4x] + [x - 11] = [-53] + [ ],FinishProblem,false,[],~FinishProblem
+Sun Apr 06 17:11:30 EDT 2014,1396818690114,[(x + 14) / 5] = [8],StartProblemAction,true,[],StartProblemAction: [(x + 14) / 5] = [8]
+Sun Apr 06 17:11:32 EDT 2014,1396818692450,[(x + 14) / 5] = [8],DragAction,true,[],"DragAction: {0, 2, 0} -> 1"
+Sun Apr 06 17:11:33 EDT 2014,1396818693768,[x + 14] = [5(8)],DragAction,true,[],"DragAction: {1, 2, 0} -> 0"
+Sun Apr 06 17:11:34 EDT 2014,1396818694884,[(x + 14) / 5] = [8],DragAction,true,[],"DragAction: {0, 2, 0} -> 1"
+Sun Apr 06 17:11:35 EDT 2014,1396818695703,[x + 14] = [5(8)],StartSimplify,true,[],StartSimplify: 5(8) = [?] -> 40
+Sun Apr 06 17:11:37 EDT 2014,1396818697665,[x + 14] = [5(8)],FinishSimplify,true,[],"FinishSimplify: {1, 0, 0} <-> {1, 2, 0}"
+Sun Apr 06 17:11:38 EDT 2014,1396818698408,[x + 14] = [40],DragAction,true,[],"DragAction: {0, 1, 0} -> 1"
+Sun Apr 06 17:11:38 EDT 2014,1396818698411,[x] = [40 - 14],DragAction,true,[],"DragAction: {1, 3, 0} -> 0"
+Sun Apr 06 17:11:38 EDT 2014,1396818698413,[x + 14] = [40],DragAction,true,[],"DragAction: {0, 1, 0} -> 1"
+Sun Apr 06 17:11:38 EDT 2014,1396818698414,[x + 14] = [40],DragAction,true,[],"DragAction: {1, 0, 0} -> 0"
+Sun Apr 06 17:11:38 EDT 2014,1396818698416,[x + 14 - 40] = [ ],DragAction,true,[],"DragAction: {0, 0, 0} -> 1"
+Sun Apr 06 17:11:38 EDT 2014,1396818698417,[x + 14 - 40] = [ ],DragAction,true,[],"DragAction: {0, 1, 0} -> 1"
+Sun Apr 06 17:11:38 EDT 2014,1396818698419,[x + 14 - 40] = [ ],DragAction,true,[],"DragAction: {0, 1, 1} -> 1"
+Sun Apr 06 17:11:38 EDT 2014,1396818698424,[x - 40] = [-14],DragAction,true,[],"DragAction: {0, 1, 0} -> 1"
+Sun Apr 06 17:11:38 EDT 2014,1396818698425,[x - 40] = [-14],DragAction,true,[],"DragAction: {1, 0, 0} -> 0"
+Sun Apr 06 17:11:38 EDT 2014,1396818698428,[x] = [-14 + 40],DragAction,true,[],"DragAction: {1, 1, 0} -> 0"
+Sun Apr 06 17:11:40 EDT 2014,1396818700072,[x + 14] = [40],DragAction,true,[],"DragAction: {0, 1, 0} -> 1"
+Sun Apr 06 17:11:40 EDT 2014,1396818700073,[x + 14] = [40],DragAction,true,[],"DragAction: {1, 0, 0} -> 0"
+Sun Apr 06 17:11:40 EDT 2014,1396818700076,[x] = [40 - 14],DragAction,true,[],"DragAction: {1, 1, 0} -> 0"
+Sun Apr 06 17:11:43 EDT 2014,1396818703704,[x + 14] = [40],FinishProblem,false,[],~FinishProblem
+Sun Apr 06 17:11:44 EDT 2014,1396818704495,[x + 14] = [40],StartProblemAction,true,[],StartProblemAction: [x + 14] = [40]

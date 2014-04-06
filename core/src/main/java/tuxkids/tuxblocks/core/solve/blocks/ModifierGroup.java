@@ -67,9 +67,9 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	public abstract double evaluate(double base);
 
 	protected GroupLayer layer;
-	protected Rectangle rect;
+	protected Rectangle rect = new Rectangle();
 	// rect of this group's parent
-	protected Rectangle parentRect;
+	protected Rectangle parentRect = new Rectangle();
 	// passed from the update method, indicates if there are 
 	// multiple BaseBlocks on this side of the equation
 	protected boolean multiExpression;
@@ -156,8 +156,6 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 
 		toRemove = new ArrayList<ModifierBlock>();
 		destroying = new ArrayList<ModifierBlock>();
-		rect = new Rectangle();
-		parentRect = new Rectangle();
 		
 		layer = graphics().createGroupLayer();
 		int index = 0;
@@ -299,7 +297,6 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 	 * {@link ModifierGroup#updateParentRect(float, float, float, float)} 
 	 */
 	protected void updateParentRect(Sprite parent) {
-		if (!hasSprite()) return;
 		updateParentRect(parent.x(), parent.y(), parent.width(), parent.height());
 	}
 
@@ -394,18 +391,14 @@ public abstract class ModifierGroup extends Sprite implements Hashable, Simplifi
 			// add it here if possible
 			addChild(sprite);
 			if (snap) {
-				if (hasSprite()) {
-					updateRect();
-					updateChildren(0, 1);
-				}
+				updateRect();
+				if (hasSprite()) updateChildren(0, 1);
 			}
 		} else {
 			// or propagate upward
 			if (modifiers == null) addNewModifiers();
-			if (hasSprite()) {
-				if (snap) updateRect();
-				modifiers.updateParentRect(this);
-			}
+			if (snap) updateRect();
+			modifiers.updateParentRect(this);
 			modifiers.addModifier(sprite, snap);
 		}
 		return sprite;
