@@ -52,12 +52,16 @@ import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VerticalModifierBlock;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
+import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
+import tuxkids.tuxblocks.core.tutor.Tutor;
+import tuxkids.tuxblocks.core.utils.Debug;
 
 public class BasicStudentModel implements StudentModel {
 
 	private final Map<ActionType, KnowledgeComponent> knowledgeBits = new HashMap<ActionType, KnowledgeComponent>();
 	private final List<SolveAction> currentStudentActions = new ArrayList<SolveAction>();
-	private Equation currentEquation;
+	private final List<Equation> currentEquations = new ArrayList<Equation>();
 
 	public BasicStudentModel() {
 		initializeKnowledgeComponents();
@@ -177,19 +181,38 @@ public class BasicStudentModel implements StudentModel {
 	@Override
 	public void onActionPerformed(SolveAction action, Equation before) {
 		if (action instanceof StartProblemAction) {		
-			currentEquation = before.copy();
+			currentEquations.clear();
+			currentStudentActions.clear();
 		} else {
+			currentEquations.add(before.copy());
 			currentStudentActions.add(action);
 		}
 		
 		if (action instanceof FinishSimplifyAction) {
-			for (SolveAction pastAction : currentStudentActions) {
-				
-			}
+			updateModel();
 			currentStudentActions.clear();
-			currentEquation = null;
+			currentEquations.clear();
 		}
 		
+	}
+
+	private void updateModel() {
+		if (currentEquations.size() < 2) return;
+		int maxSteps = Tutor.MAX_HINT_ITERATIONS;
+		List<Step> previousSolution = null;
+		for (int i = 0; i < currentEquations.size(); i++) {
+			List<Step> currentSolution = IdealEquationSolver.aStar(
+					currentEquations.get(0), maxSteps);
+			if (previousSolution != null) {
+				SolveAction c = currentStudentActions.get(i);
+				if (currentSolution.size() + 1 > previousSolution.size()) {
+					Debug.write("Incorrect: " + c);
+				} else {
+					Debug.write("Correct: " + c);
+				}
+			}
+			previousSolution = currentSolution;
+		}
 	}
 
 	@Override
