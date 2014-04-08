@@ -736,6 +736,16 @@ public class IdealEquationSolver {
 			}
 			throw new RuntimeException("Equation is not simplified: " + result.getPlainText());
 		}
+		
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder(equationString);
+			if (actions.size() > 0) {
+				sb.append(" - ");
+				sb.append(actions);
+			}
+			return sb.toString();
+		}
 	}
 
 }

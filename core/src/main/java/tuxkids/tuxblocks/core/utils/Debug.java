@@ -12,7 +12,7 @@ public class Debug {
 	public static boolean DEBUG = true;
 	
 	/** Set to true to show what class is printing a debug statement */
-	public static boolean SHOW_TRACE = false;
+	public static boolean SHOW_TRACE = true;
 	
 	public static void write(long x) {
 		write("" + x);
