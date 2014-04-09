@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
@@ -56,6 +57,7 @@ import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.utils.Debug;
+import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
 
 public class BasicStudentModel implements StudentModel {
 
@@ -63,8 +65,43 @@ public class BasicStudentModel implements StudentModel {
 	private final List<SolveAction> currentStudentActions = new ArrayList<SolveAction>();
 	private final List<Equation> currentEquations = new ArrayList<Equation>();
 
+	private EquationTree equationTree;
+	
+	private Random rand = new Random();
+	
+	//stored to disk
+	@SuppressWarnings("unused")
+	private List<Float> equationTreeConfidences;
+	
 	public BasicStudentModel() {
 		initializeKnowledgeComponents();
+		initializeEquationTree();
+	}
+
+	private void initializeEquationTree() {
+		this.equationTree = new EquationTree();
+
+		final EquationTreeNode firstLevelMD = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelMD());
+		final EquationTreeNode firstLevelAS = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelAS());
+		
+		@SuppressWarnings("unused")
+		final EquationTreeNode singleDragAS = equationTree.addNode(BasicStudentModelEquationGenerator.singleDragAS(), new Criteria() {
+			
+			@Override
+			public boolean hasBeenSatisfied() {
+				return firstLevelAS.confidence()>.8;
+			}
+		}, firstLevelAS);
+		
+		@SuppressWarnings("unused")
+		final EquationTreeNode firstLevelMDAS = equationTree.addNode(BasicStudentModelEquationGenerator.firstLevelMDAS(), new Criteria() {
+			
+			@Override
+			public boolean hasBeenSatisfied() {
+				return Math.min(firstLevelMD.confidence(), firstLevelAS.confidence()) > .7;
+			}
+		}, firstLevelAS, firstLevelMD);
+
 	}
 
 	private void initializeKnowledgeComponents() {
@@ -146,7 +183,7 @@ public class BasicStudentModel implements StudentModel {
 	}
 	
 	private static final Equation[] starredEquations = new Equation[2];
-	private int equationIndex = 0;
+	private int starredEquationIndex = 0;
 	
 	static {
 		starredEquations[0] = new Equation.Builder().addLeft(new VariableBlock("x"))
@@ -157,18 +194,18 @@ public class BasicStudentModel implements StudentModel {
 
 	@Override
 	public boolean isReadyForNextStarred() {
-		return equationIndex < 2;
+		return starredEquationIndex < 2;
 	}
 
 	@Override
 	public Equation getNextStarredEquation() {
-		return starredEquations[equationIndex++];
+		return starredEquations[starredEquationIndex++];
 	}
 
 	@Override
 	public Equation getNextGeneralEquation() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return equationTree.randomWeightedUnlockedNode(rand).equation();
 	}
 
 	
