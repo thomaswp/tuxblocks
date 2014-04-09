@@ -325,7 +325,7 @@ public abstract class EquationManipulator extends PlayNObject {
 		}
 	}
 	
-	protected void finishBlockReduce(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success) {
+	protected void finishBlockReduce(Block sprite, ModifierBlock pair, ModifierGroup modifiers, int fails, boolean success) {
 		actionPerformed();
 		if (shouldActionCallback()) {
 			// TODO: really should be a better way of reporting/representing this
@@ -346,7 +346,7 @@ public abstract class EquationManipulator extends PlayNObject {
 				}
 			}
 			
-			FinishSimplifyAction action = new FinishSimplifyAction(baseIndex, pairIndex, modifierDepth, success);
+			FinishSimplifyAction action = new FinishSimplifyAction(baseIndex, pairIndex, modifierDepth, fails, success);
 			if (studentModel != null) {
 				studentModel.addFinishSimplifyTags(action, sprite, pair, modifiers);
 			}

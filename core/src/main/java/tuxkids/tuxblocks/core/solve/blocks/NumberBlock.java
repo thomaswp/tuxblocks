@@ -218,9 +218,9 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			
 			SimplifyListener listener = new SimplifyListener() {
 				@Override
-				public void wasSimplified(boolean success) {
+				public void wasSimplified(int fails, boolean success) {
 					if (blockListener != null) {
-						blockListener.wasSimplified(base, pair, null, success);
+						blockListener.wasSimplified(base, pair, null, fails, success);
 					}
 					if (success) {
 						// change this block's value, remove the modifier
@@ -231,7 +231,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			};
 			
 			if (autoAnswer) {
-				listener.wasSimplified(true);
+				listener.wasSimplified(0, true);
 			} else {
 				blockListener.wasReduced(renderer, answer, start, stat, level, listener);
 			}

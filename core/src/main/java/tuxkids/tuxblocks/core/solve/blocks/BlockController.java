@@ -633,8 +633,8 @@ public class BlockController extends EquationManipulator {
 		}
 
 		@Override
-		public void wasSimplified(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success) {
-			finishBlockReduce(sprite, pair, modifiers, success);
+		public void wasSimplified(Block sprite, ModifierBlock pair, ModifierGroup modifiers, int fails, boolean success) {
+			finishBlockReduce(sprite, pair, modifiers, fails, success);
 			if (success) {
 				refreshEquation = true;
 				Tutorial.trigger(Trigger.Solve_Simplified);

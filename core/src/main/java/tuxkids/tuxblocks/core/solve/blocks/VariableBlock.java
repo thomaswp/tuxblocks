@@ -153,9 +153,9 @@ public class VariableBlock extends BaseBlock {
 			
 			SimplifyListener r = new SimplifyListener() {
 				@Override
-				public void wasSimplified(boolean success) {
+				public void wasSimplified(int fails, boolean success) {
 					if (blockListener != null) {
-						blockListener.wasSimplified(VariableBlock.this, null, null, success);
+						blockListener.wasSimplified(VariableBlock.this, null, null, fails, success);
 					}
 					if (success) {
 						if (myFactor != null) {
@@ -190,13 +190,13 @@ public class VariableBlock extends BaseBlock {
 			//if it's not just a +1, make them solve it
 			if (mustSolve) {
 				if (previewAdd()) {
-					r.wasSimplified(true); //show preview
+					r.wasSimplified(0, true); //show preview
 				} else if (blockListener != null){
 					blockListener.wasReduced(problem, answer, myValue, Stat.Plus, 
 							Difficulty.rankPlus(myValue, spriteValue), r);
 				}
 			} else {
-				r.wasSimplified(true);
+				r.wasSimplified(0, true);
 			}
 			
 			

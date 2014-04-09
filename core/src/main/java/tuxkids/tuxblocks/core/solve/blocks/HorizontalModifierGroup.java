@@ -204,7 +204,7 @@ public class HorizontalModifierGroup extends ModifierGroup {
 		final HorizontalModifierBlock before = (HorizontalModifierBlock) pair;
 		if (base.inverse().equals(before)) {
 			// if the two are inverses (2 - 2) just simplify
-			blockListener.wasSimplified(base, pair, this, true);
+			blockListener.wasSimplified(base, pair, this, 0, true);
 			removeChild((ModifierBlock) base, true);
 			removeChild(before, true);
 		} else {
@@ -220,8 +220,8 @@ public class HorizontalModifierGroup extends ModifierGroup {
 			// show it to the player
 			blockListener.wasReduced(problem, answer, start, stat, level, new SimplifyListener() {
 				@Override
-				public void wasSimplified(boolean success) {
-					blockListener.wasSimplified(base, pair, HorizontalModifierGroup.this, success);
+				public void wasSimplified(int fails, boolean success) {
+					blockListener.wasSimplified(base, pair, HorizontalModifierGroup.this, fails, success);
 					if (success) {
 						// and if the succeed, remove the modifier block and add it to the other one
 						before.setPlusValue(answer);

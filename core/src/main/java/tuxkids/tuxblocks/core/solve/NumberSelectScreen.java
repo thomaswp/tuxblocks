@@ -89,7 +89,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	// point to go back to when buttonCenter is pressed
 	private Point recenterPoint = new Point();
 	// indicates if the player has guessed a wrong answer this showing
-	private boolean madeMistake;
+	private int mistakes;
 
 	// list of points and corresponding images shown on screen
 	private List<Point> numberPoints = new ArrayList<Point>();
@@ -128,8 +128,8 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	}
 	
 	/** Returns true if the player has not selected any incorrect answer since this screen was shown */
-	public boolean noMistakes() {
-		return !madeMistake;
+	public int mistakes() {
+		return mistakes;
 	}
 	
 	@Override
@@ -168,7 +168,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		selectedNumberLayer.setDepth(15);
 		foregroundLayer.add(selectedNumberLayer.layerAddable());
 		
-		madeMistake = false;
+		mistakes = 0;
 		
 		createScratch();
 		
@@ -286,7 +286,7 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 		if (selectedPoint != null && !hasCorrectAnswer()) {
 			buttonBack.setImage(backImageCancel);
 			Audio.se().play(Constant.SE_BACK);
-			madeMistake = true;
+			mistakes++;
 		} else {
 			popThis();
 		}

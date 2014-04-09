@@ -183,7 +183,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 	public void simplify(Block base, ModifierBlock pair) {
 		if (base.inverse().equals(pair)) {
 			// if the two cancel out, just remove them
-			blockListener.wasSimplified(base, pair, this, true);
+			blockListener.wasSimplified(base, pair, this, 0, true);
 			removeChild((ModifierBlock) base, true);
 			removeChild(pair, true);
 		} else {
@@ -223,10 +223,10 @@ public class VerticalModifierGroup extends ModifierGroup {
 		
 		SimplifyListener listener = new SimplifyListener() {
 			@Override
-			public void wasSimplified(boolean success) {
+			public void wasSimplified(int fails, boolean success) {
 				ModifierBlock sprite = aTimes ? a : b;
 				ModifierBlock pair = aTimes ? b : a;
-				blockListener.wasSimplified(sprite, pair, VerticalModifierGroup.this, success);
+				blockListener.wasSimplified(sprite, pair, VerticalModifierGroup.this, fails, success);
 				if (success) {
 					// set A's new smaller value and remove B 
 					a.setValue(answer);
@@ -237,7 +237,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 		
 		if (a.value == 1 || b.value == 1) {
 			// just automatically simplify if one of the terms is 1
-			listener.wasSimplified(true);
+			listener.wasSimplified(0, true);
 		} else {
 			// otherwise show the NumberSelectScreen for the problem
 			blockListener.wasReduced(problem, answer, 0, Stat.Over, 
@@ -266,8 +266,8 @@ public class VerticalModifierGroup extends ModifierGroup {
 			
 			SimplifyListener listener = new SimplifyListener() {
 				@Override
-				public void wasSimplified(boolean success) {
-					blockListener.wasSimplified(a, b, VerticalModifierGroup.this, success);
+				public void wasSimplified(int fails, boolean success) {
+					blockListener.wasSimplified(a, b, VerticalModifierGroup.this, fails, success);
 					if (success) {
 						// set B's value and remove A 
 						b.setValue(answer);
@@ -278,7 +278,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 			
 			if (a.value == 1 || b.value == 1) {
 				// automatically combine if one is 1
-				listener.wasSimplified(true);
+				listener.wasSimplified(0, true);
 			} else {
 				// show the NumberSelectScreen
 				blockListener.wasReduced(problem, answer, b.value, Stat.Times, 

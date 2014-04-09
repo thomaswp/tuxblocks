@@ -250,7 +250,7 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 		/** Called when a Sprite is double-clicked by the player */
 		void wasDoubleClicked(Block sprite, Event event);
 		/** Called when a Sprite is simplified and the equation need refreshing */
-		void wasSimplified(Block sprite, ModifierBlock pair, ModifierGroup modifiers, boolean success);
+		void wasSimplified(Block sprite, ModifierBlock pair, ModifierGroup modifiers, int fails, boolean success);
 		/** Called when a Sprite needs the {@link SolveScreen} to reduce */
 		void wasReduced(Renderer problem, int answer, int startNumber, 
 				Stat stat, int level, SimplifyListener callback);
@@ -268,6 +268,6 @@ public abstract class Sprite extends PlayNObject implements Persistable {
 	
 	/** Callback for {@link BlockListener#wasReduced(Renderer, int, int, Stat, int, SimplifyListener)} */
 	public interface SimplifyListener {
-		void wasSimplified(boolean success);
+		void wasSimplified(int fails, boolean success);
 	}
 }

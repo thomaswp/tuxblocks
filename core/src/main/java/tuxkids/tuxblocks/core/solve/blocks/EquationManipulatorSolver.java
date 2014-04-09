@@ -175,7 +175,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 					public void add(Block base, ModifierBlock pair, Object tag) {
 						EquationBlockIndex baseIndex = new EquationBlockIndex(fi, parent.indexOf(base));
 						EquationBlockIndex pairIndex = (pair == null ? null : new EquationBlockIndex(fi, parent.indexOf(pair)));
-						actions.add(new FinishSimplifyAction(baseIndex, pairIndex, fd, true));
+						actions.add(new FinishSimplifyAction(baseIndex, pairIndex, fd, 0, true));
 					}
 				});
 				if (simplifiable instanceof BaseBlock) {
@@ -270,13 +270,13 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	public void wasReduced(Renderer problem, int answer, int startNumber,
 			Stat stat, int level, SimplifyListener callback) {
 		extraActions.add(new StartSimplifyingBlocksAction(problem.getPlainText(), answer));
-		callback.wasSimplified(true);
+		callback.wasSimplified(0, true);
 	}
 
 	@Override
 	public void wasSimplified(Block sprite, ModifierBlock pair,
-			ModifierGroup modifiers, boolean success) {
-		extraActions.add(new FinishSimplifyAction(null, null, 0, success));
+			ModifierGroup modifiers, int fails, boolean success) {
+		extraActions.add(new FinishSimplifyAction(null, null, 0, fails, success));
 	}
 
 	@Override

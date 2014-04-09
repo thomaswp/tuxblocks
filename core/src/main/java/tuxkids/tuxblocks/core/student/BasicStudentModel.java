@@ -217,6 +217,10 @@ public class BasicStudentModel implements StudentModel {
 
 	@Override
 	public void onActionPerformed(SolveAction action, Equation before) {
+		if (action instanceof FinishSimplifyAction) {
+			Debug.write(((FinishSimplifyAction) action).fails);
+		}
+		
 		if (action instanceof StartProblemAction) {		
 			currentEquations.clear();
 			currentStudentActions.clear();

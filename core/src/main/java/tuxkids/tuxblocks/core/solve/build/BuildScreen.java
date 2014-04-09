@@ -96,7 +96,7 @@ public class BuildScreen extends EquationScreen implements NumberSelectListener 
 	public void showNumberSelectScreen(Renderer problem, int answer,
 			int startNumber, Stat stat, int level, SimplifyListener callback) {
 		// automatically simplify numbers if the player wants it
-		callback.wasSimplified(true);
+		callback.wasSimplified(0, true);
 	}
 
 	@Override

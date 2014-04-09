@@ -37,6 +37,7 @@ public class SolveScreen extends EquationScreen {
 	// NumberSelectScreen
 	private SimplifyListener simplifyCallback;
 	private boolean simplifyCorrect;
+	private int simplifyMistakes;
 	private int simplifyLevel;
 	private Stat simplifyStat;
 	private TextBoxDisplayLayer hintMessageBox;
@@ -150,7 +151,7 @@ public class SolveScreen extends EquationScreen {
 		if (simplifyCorrect && !entering()) {
 			// if we just correctly simplified and we're fully entered...
 			// tell the block it was simplified
-			simplifyCallback.wasSimplified(true);
+			simplifyCallback.wasSimplified(simplifyMistakes, true);
 			if (simplifyStat != null) {
 				// add experience for the simplification
 				state.addExpForSolving(simplifyStat, simplifyLevel);
@@ -192,12 +193,13 @@ public class SolveScreen extends EquationScreen {
 			// store the callback info for when the player returns
 			simplifyCallback = callback;
 			simplifyCorrect = false;
+			simplifyMistakes = 0;
 			simplifyStat = stat;
 			simplifyLevel = level;
 			pushScreen(nss, screens.slide().left());
 		} else {
 			// if they're high enough level, simply solve the problem
-			callback.wasSimplified(true);
+			callback.wasSimplified(0, true);
 		}
 	}
 
@@ -208,12 +210,13 @@ public class SolveScreen extends EquationScreen {
 			NumberSelectScreen nss = (NumberSelectScreen) screen;
 			if (nss.hasCorrectAnswer()) {
 				simplifyCorrect = true;
+				simplifyMistakes = nss.mistakes();
 				// if they had a mistake when simplifying, don't give experience
-				if (!nss.noMistakes()) simplifyStat = null;
+				if (simplifyMistakes > 0) simplifyStat = null;
 				Tutorial.trigger(Trigger.Solve_SimplifiedSuccess);
 			} else {
 				// tell the blocks the simplify failed
-				simplifyCallback.wasSimplified(false);
+				simplifyCallback.wasSimplified(nss.mistakes(), false);
 				clearSolve();
 			}
 		}
