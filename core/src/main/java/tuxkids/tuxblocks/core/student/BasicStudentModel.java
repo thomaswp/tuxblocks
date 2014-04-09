@@ -28,16 +28,16 @@ import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_INTEGERS;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
+import tuxkids.tuxblocks.core.solve.action.FinishProblemAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
-import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
+import tuxkids.tuxblocks.core.solve.action.StartSimplifyAction;
 import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
@@ -53,15 +53,15 @@ import tuxkids.tuxblocks.core.solve.blocks.TimesBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VerticalModifierBlock;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.utils.Debug;
-import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
 
 public class BasicStudentModel implements StudentModel {
 
-	private final Map<ActionType, KnowledgeComponent> knowledgeBits = new HashMap<ActionType, KnowledgeComponent>();
+	private final HashMap<ActionType, KnowledgeComponent> knowledgeBits = new HashMap<ActionType, KnowledgeComponent>();
 	private final List<SolveAction> currentStudentActions = new ArrayList<SolveAction>();
 	private final List<Equation> currentEquations = new ArrayList<Equation>();
 
@@ -216,11 +216,7 @@ public class BasicStudentModel implements StudentModel {
 	}
 
 	@Override
-	public void onActionPerformed(SolveAction action, Equation before) {
-		if (action instanceof FinishSimplifyAction) {
-			Debug.write(((FinishSimplifyAction) action).fails);
-		}
-		
+	public void onActionPerformed(SolveAction action, Equation before) {	
 		if (action instanceof StartProblemAction) {		
 			currentEquations.clear();
 			currentStudentActions.clear();
@@ -229,7 +225,7 @@ public class BasicStudentModel implements StudentModel {
 			currentStudentActions.add(action);
 		}
 		
-		if (action instanceof FinishSimplifyAction) {
+		if (action instanceof FinishProblemAction) {
 			updateModel();
 			currentStudentActions.clear();
 			currentEquations.clear();
@@ -238,21 +234,58 @@ public class BasicStudentModel implements StudentModel {
 	}
 
 	private void updateModel() {
-		if (currentEquations.size() < 2) return;
+		Debug.write("size: " + currentEquations.size());
+		if (currentEquations.size() < 1) return;
 		int maxSteps = Tutor.MAX_HINT_ITERATIONS;
 		List<Step> previousSolution = null;
 		for (int i = 0; i < currentEquations.size(); i++) {
-			List<Step> currentSolution = IdealEquationSolver.aStar(
-					currentEquations.get(0), maxSteps);
-			if (previousSolution != null) {
+//			List<Step> currentSolution = IdealEquationSolver.aStar(
+//					currentEquations.get(0), maxSteps);
+//			if (previousSolution != null) {
 				SolveAction c = currentStudentActions.get(i);
-				if (currentSolution.size() + 1 > previousSolution.size()) {
-					Debug.write("Incorrect: " + c);
-				} else {
-					Debug.write("Correct: " + c);
+				
+				if (c instanceof FinishSimplifyAction) {
+					SolveAction lastAction = i == 0 ? null : currentStudentActions.get(i - 1);
+					if (lastAction instanceof StartSimplifyAction) {
+						updateArithmeticModel((StartSimplifyAction) lastAction, (FinishSimplifyAction) c);
+					}
 				}
+				
+//				if (currentSolution.size() + 1 > previousSolution.size()) {
+//					Debug.write("Incorrect: " + c);
+//				} else {
+//					Debug.write("Correct: " + c);
+//				}
+//			}
+//			previousSolution = currentSolution;
+		}
+	}
+
+	private void updateArithmeticModel(StartSimplifyAction startSimplifying,
+			FinishSimplifyAction finishSimplifying) {
+		int mistakes = finishSimplifying.mistakes;
+		if (mistakes == FinishSimplifyAction.AUTO_SIMPLIFY) return;
+		
+		boolean success = finishSimplifying.success;
+		int power = success ? 1 : 0;
+		
+		if (mistakes > 0) power--;
+		if (mistakes > 2) power--;
+		
+		if (power != 0) {
+			for (Object tag : startSimplifying.tags()) {
+				double p = knowledgeBits.get(tag).probLearned();
+				updateKC((ActionType) tag, power > 0, Math.abs(power));
+				Debug.write("Update: %s %s", tag, power);
+				Debug.write("Prob: %s->%s", p, knowledgeBits.get(tag).probLearned());
 			}
-			previousSolution = currentSolution;
+		}
+	}
+	
+	private void updateKC(ActionType type, boolean success, int power) {
+		KnowledgeComponent kc = knowledgeBits.get(type);
+		for (int i = 0; i < power; i++) {
+			kc.studentAnswered(success);
 		}
 	}
 
@@ -290,7 +323,7 @@ public class BasicStudentModel implements StudentModel {
 	}
 
 	@Override
-	public void addStartSimplifyTags(StartSimplifyingBlocksAction action,
+	public void addStartSimplifyTags(StartSimplifyAction action,
 			Renderer problem, int answer, Stat stat, int level) {
 		
 		ActionType algebraTag = null;

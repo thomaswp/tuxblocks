@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import playn.core.ImageLayer;
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.blocks.layer.BlockLayerDefault;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
@@ -231,7 +232,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 			};
 			
 			if (autoAnswer) {
-				listener.wasSimplified(0, true);
+				listener.wasSimplified(FinishSimplifyAction.AUTO_SIMPLIFY, true);
 			} else {
 				blockListener.wasReduced(renderer, answer, start, stat, level, listener);
 			}

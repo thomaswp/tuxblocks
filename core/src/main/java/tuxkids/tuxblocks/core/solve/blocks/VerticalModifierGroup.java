@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.ButtonFactory;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
@@ -237,7 +238,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 		
 		if (a.value == 1 || b.value == 1) {
 			// just automatically simplify if one of the terms is 1
-			listener.wasSimplified(0, true);
+			listener.wasSimplified(FinishSimplifyAction.AUTO_SIMPLIFY, true);
 		} else {
 			// otherwise show the NumberSelectScreen for the problem
 			blockListener.wasReduced(problem, answer, 0, Stat.Over, 
@@ -278,7 +279,7 @@ public class VerticalModifierGroup extends ModifierGroup {
 			
 			if (a.value == 1 || b.value == 1) {
 				// automatically combine if one is 1
-				listener.wasSimplified(0, true);
+				listener.wasSimplified(FinishSimplifyAction.AUTO_SIMPLIFY, true);
 			} else {
 				// show the NumberSelectScreen
 				blockListener.wasReduced(problem, answer, b.value, Stat.Times, 

@@ -10,7 +10,7 @@ import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
-import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
+import tuxkids.tuxblocks.core.solve.action.StartSimplifyAction;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.BlockListener;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.blocks.layer.SimplifyLayer.Aggregator;
@@ -269,7 +269,7 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	@Override
 	public void wasReduced(Renderer problem, int answer, int startNumber,
 			Stat stat, int level, SimplifyListener callback) {
-		extraActions.add(new StartSimplifyingBlocksAction(problem.getPlainText(), answer));
+		extraActions.add(new StartSimplifyAction(problem.getPlainText(), answer));
 		callback.wasSimplified(0, true);
 	}
 

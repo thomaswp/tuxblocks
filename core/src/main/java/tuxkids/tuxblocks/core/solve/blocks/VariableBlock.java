@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tuxkids.tuxblocks.core.GameState.Stat;
+import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.markup.BaseRenderer;
 import tuxkids.tuxblocks.core.solve.markup.BlankRenderer;
 import tuxkids.tuxblocks.core.solve.markup.JoinRenderer;
@@ -190,13 +191,13 @@ public class VariableBlock extends BaseBlock {
 			//if it's not just a +1, make them solve it
 			if (mustSolve) {
 				if (previewAdd()) {
-					r.wasSimplified(0, true); //show preview
+					r.wasSimplified(FinishSimplifyAction.AUTO_SIMPLIFY, true); //show preview
 				} else if (blockListener != null){
 					blockListener.wasReduced(problem, answer, myValue, Stat.Plus, 
 							Difficulty.rankPlus(myValue, spriteValue), r);
 				}
 			} else {
-				r.wasSimplified(0, true);
+				r.wasSimplified(FinishSimplifyAction.AUTO_SIMPLIFY, true);
 			}
 			
 			

@@ -12,7 +12,7 @@ import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
-import tuxkids.tuxblocks.core.solve.action.StartSimplifyingBlocksAction;
+import tuxkids.tuxblocks.core.solve.action.StartSimplifyAction;
 import tuxkids.tuxblocks.core.solve.action.callbacks.SolveActionCallback;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.student.StudentModel;
@@ -317,7 +317,7 @@ public abstract class EquationManipulator extends PlayNObject {
 	protected void startBlockReduce(Renderer problem, int answer, Stat stat, int level) {
 		actionPerformed();
 		if (shouldActionCallback()) {
-			StartSimplifyingBlocksAction action = new StartSimplifyingBlocksAction(problem.getPlainText(), answer);
+			StartSimplifyAction action = new StartSimplifyAction(problem.getPlainText(), answer);
 			if (studentModel != null) {
 				studentModel.addStartSimplifyTags(action, problem, answer, stat, level);
 			}

@@ -11,6 +11,7 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
+import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.student.StudentModel;
@@ -199,7 +200,7 @@ public class SolveScreen extends EquationScreen {
 			pushScreen(nss, screens.slide().left());
 		} else {
 			// if they're high enough level, simply solve the problem
-			callback.wasSimplified(0, true);
+			callback.wasSimplified(FinishSimplifyAction.AUTO_SIMPLIFY, true);
 		}
 	}
 
