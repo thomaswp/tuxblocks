@@ -148,7 +148,7 @@ public interface Persistable {
 				write(String.valueOf(x));
 			} else {
 				Boolean b = Boolean.parseBoolean(read());
-				if (b == null) throw new ParseDataException();
+				if (b == null) throw new ParseDataException();		//This will never happen.  parseBoolean doesn't return null
 				x = b;
 			}
 			return x;

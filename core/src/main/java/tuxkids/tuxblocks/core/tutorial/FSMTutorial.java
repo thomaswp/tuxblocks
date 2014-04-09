@@ -205,7 +205,7 @@ abstract class FSMTutorial implements TutorialInstance {
 		}
 
 		public String blockMessageForEvent(Trigger event) {
-			return blockMessageForEvent(event);
+			return blockMessageForEvent(event);	//TODO fix
 		}
 
 		public boolean hasBlockOnTrigger(Trigger event) {
