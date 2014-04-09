@@ -117,7 +117,7 @@ public class NumberBlock extends BaseBlock implements Simplifiable {
 
 			// if the last one is a "-"...
 			VerticalModifierBlock last = vMods.size() > 0 ? vMods.get(vMods.size() - 1) : null;
-			if (last != null && last instanceof TimesBlock && last.value == -1) {
+			if (last instanceof TimesBlock && last.value == -1) {
 				// just pop it
 				modifiers.addNegative();
 			} else {
