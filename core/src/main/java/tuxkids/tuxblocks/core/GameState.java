@@ -8,6 +8,7 @@ import tuxkids.tuxblocks.core.defense.TowerState;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
+import tuxkids.tuxblocks.core.defense.select.StarredProblem;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
@@ -96,6 +97,8 @@ public class GameState implements Persistable {
 		for (int i = 0; i < 2; i++) {
 			addProblemWithReward(0);
 		}
+		problems.add(new StarredProblem(EquationGenerator.generateFormA2(), 
+				new Reward(TowerType.BigShooter, 1), 0));
 	}
 
 	public Grid grid() {

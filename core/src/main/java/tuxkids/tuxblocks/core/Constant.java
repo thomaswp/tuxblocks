@@ -73,6 +73,7 @@ public class Constant {
 	public static final String IMAGE_UPGRADE = preloadImage(IMAGE_PATH + "upgrade.png");
 	public static final String IMAGE_LOGO = preloadImage(IMAGE_PATH + "logo.png");
 	public static final String IMAGE_TUX = preloadImage(IMAGE_PATH + "tux.png");
+	public static final String IMAGE_STAR = preloadImage(IMAGE_PATH) + "star.png";
 	public static final String IMAGE_START_LOCAL = "start.png";
 	
 	public final static String NINEPATCH_BUBBLE = preloadImage(NINEPATCH_PATH + "bubble.9.png");

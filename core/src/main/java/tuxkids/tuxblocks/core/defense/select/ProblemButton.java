@@ -14,6 +14,7 @@ import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter;
 import tuxkids.tuxblocks.core.solve.markup.ExpressionWriter.Config;
+import tuxkids.tuxblocks.core.utils.CanvasUtils;
 import tuxkids.tuxblocks.core.widget.Button;
 
 /**
@@ -110,10 +111,17 @@ public class ProblemButton extends Button {
 		
 		// draw the Tower reward
 		TowerType reward = problem.reward().tower();
-		Image rewardImage = reward.instance().createImage(cellSize, towerColor);
+		Image rewardImage;
+		if (problem instanceof StarredProblem) {
+			rewardImage = assets().getImage(Constant.IMAGE_STAR);
+			rewardImage = CanvasUtils.tintImage(rewardImage, towerColor);
+		} else {
+			rewardImage = reward.instance().createImage(cellSize, towerColor);
+		}
 		float rewardImageX = width - padding - (rewardImageSize + rewardImage.width()) / 2;
 		float rewardImageY = padding + (rewardImageSize - rewardImage.height()) / 2;
-		canvas.drawImage(rewardImage, rewardImageX, rewardImageY);
+		float ratio = rewardImage.height() / rewardImage.width();
+		canvas.drawImage(rewardImage, rewardImageX, rewardImageY, rewardImageSize, rewardImageSize * ratio);
 
 		// draw the count for the reward
 		canvas.setFillColor(Colors.BLACK);

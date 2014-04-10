@@ -9,6 +9,7 @@ import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.round.Level.Level1;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
+import tuxkids.tuxblocks.core.defense.select.StarredProblem;
 import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierGroup;
@@ -43,6 +44,7 @@ public class PersistUtils {
 		constructorMap.put(GameState.class, GameState.constructor());
 		constructorMap.put(Difficulty.class, Difficulty.constructor());
 		constructorMap.put(Problem.class, Problem.constructor());
+		constructorMap.put(StarredProblem.class, StarredProblem.constructor());
 		constructorMap.put(Reward.class, Reward.constructor());
 		constructorMap.put(Equation.class, Equation.constructor());
 		constructorMap.put(VariableBlock.class, VariableBlock.constructor());
