@@ -7,6 +7,7 @@ import playn.core.Image;
 import playn.core.Layer;
 import playn.core.TextFormat;
 import playn.core.TextLayout;
+import playn.core.util.Callback;
 import playn.core.util.Clock;
 import tripleplay.util.Colors;
 import tuxkids.tuxblocks.core.Constant;
@@ -28,7 +29,7 @@ public class ProblemButton extends Button {
 	private Problem problem;
 	private float minHeight;
 	private ProblemButton above, below;
-	private int towerColor;
+	private int towerColor, secondaryColor;
 	private float targetAlpha = 1;
 	
 	public Equation equation() {
@@ -37,7 +38,7 @@ public class ProblemButton extends Button {
 	
 	public void setEquation(Equation equation) {
 		problem.setEquation(equation);
-		setImage(createImage(problem, width(), minHeight, towerColor));
+		setImage(createImage(problem, width(), minHeight, towerColor, secondaryColor));
 		float top = top();
 		setSize(image().width(), image().height());
 		setTop(top);
@@ -72,33 +73,35 @@ public class ProblemButton extends Button {
 		return targetAlpha == 0 && layerAddable().alpha() < 0.03f;
 	}
 	
-	public ProblemButton(Problem problem, float width, float minHeight, int towerColor) {
-		super(createImage(problem, width, minHeight, towerColor), false);
+	public ProblemButton(Problem problem, float width, float minHeight, int towerColor, int secondaryColor) {
+		super(createImage(problem, width, minHeight, towerColor, secondaryColor), false);
 		this.problem = problem;
 		this.minHeight = minHeight;
 		this.towerColor = towerColor;
+		this.secondaryColor = secondaryColor;
 		setSoundPath(Constant.SE_TICK);
 	}
 
-	private static Image createImage(Problem problem, float width, float minHeight, int towerColor) {
-
+	private static Image createImage(final Problem problem, final float width, 
+			float minHeight, final int towerColor, final int secondaryColor) {
+		
 		float strokeWidth = 5;
-		float padding = strokeWidth * 2;
+		final float padding = strokeWidth * 2;
 		float rectRad = strokeWidth * 1.5f;
 		float eqTextSize = (minHeight - padding * 2) * 0.25f;
 		
 		TextFormat textFormat = new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, eqTextSize));
-		ExpressionWriter writer = problem.equation().renderer().getExpressionWriter(textFormat); // for drawing the equation
+		final ExpressionWriter writer = problem.equation().renderer().getExpressionWriter(textFormat); // for drawing the equation
 		
-		float eqWidth = writer.width(); 
+		final float eqWidth = writer.width(); 
 		float eqHeight = writer.height();
 		
-		float height = Math.max(eqHeight + padding * 2, minHeight);
+		final float height = Math.max(eqHeight + padding * 2, minHeight);
 		
 		CanvasImage image = graphics().createImage(width, height);
-		Canvas canvas = image.canvas();
+		final Canvas canvas = image.canvas();
 		
-		float rewardImageSize = minHeight - padding * 2;
+		final float rewardImageSize = minHeight - padding * 2;
 		float cellSize = rewardImageSize / 3;
 		
 		canvas.setFillColor(Colors.WHITE);
@@ -111,17 +114,43 @@ public class ProblemButton extends Button {
 		
 		// draw the Tower reward
 		TowerType reward = problem.reward().tower();
-		Image rewardImage;
+		final Image rewardImage;
 		if (problem instanceof StarredProblem) {
 			rewardImage = assets().getImage(Constant.IMAGE_STAR);
-			rewardImage = CanvasUtils.tintImage(rewardImage, towerColor);
+			rewardImage.addCallback(new Callback<Image>() {
+				@Override
+				public void onSuccess(Image result) {
+					Image tintedRewardImage = CanvasUtils.tintImage(rewardImage, secondaryColor);
+					drawButtonImageDependent(problem, width, padding, writer, eqWidth, height, canvas,
+							rewardImageSize, tintedRewardImage);
+				}
+
+				@Override
+				public void onFailure(Throwable cause) {
+					cause.printStackTrace();
+				}
+			});
 		} else {
 			rewardImage = reward.instance().createImage(cellSize, towerColor);
+			drawButtonImageDependent(problem, width, padding, writer, eqWidth, height, canvas,
+					rewardImageSize, rewardImage);
 		}
-		float rewardImageX = width - padding - (rewardImageSize + rewardImage.width()) / 2;
-		float rewardImageY = padding + (rewardImageSize - rewardImage.height()) / 2;
-		float ratio = rewardImage.height() / rewardImage.width();
-		canvas.drawImage(rewardImage, rewardImageX, rewardImageY, rewardImageSize, rewardImageSize * ratio);
+		
+		return image;
+	}
+
+	private static void drawButtonImageDependent(Problem problem, float width, float padding,
+			ExpressionWriter writer, float eqWidth, float height,
+			Canvas canvas, float rewardImageSize, Image rewardImage) {
+
+		float scale = rewardImageSize / Math.max(rewardImageSize, rewardImage.width() * 1.3f);
+		float sw = scale * rewardImage.width();
+		float sh = scale * rewardImage.height();
+		
+		float rewardImageX = width - padding - (rewardImageSize + sw) / 2;
+		float rewardImageY = padding + (rewardImageSize - sh) / 2;
+		
+		canvas.drawImage(rewardImage, rewardImageX, rewardImageY, sw, sh);
 
 		// draw the count for the reward
 		canvas.setFillColor(Colors.BLACK);
@@ -145,9 +174,6 @@ public class ProblemButton extends Button {
 		canvas.translate(eqStartX, (height - writer.height()) / 2);
 		writer.drawExpression(canvas, new Config(Colors.BLACK, Colors.BLACK, Colors.BLACK));
 		canvas.restore();
-		
-		
-		return image;
 	}
 	
 	public void fadeIn(float targetAlpha) {

@@ -112,7 +112,8 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		float aboveY = above == null ? 0 : above.bottom();
 		
 		// create and position
-		final ProblemButton pb = new ProblemButton(problem, width, minHeight, state.themeColor());
+		final ProblemButton pb = new ProblemButton(problem, width, minHeight, 
+				state.themeColor(), state.secondaryColor());
 		problemLayer.add(pb.layerAddable());
 		pb.setPosition((col + 0.5f) * width() / COLS, aboveY + margin + pb.height() / 2);
 		pb.setTint(Colors.WHITE, Colors.LIGHT_GRAY);
