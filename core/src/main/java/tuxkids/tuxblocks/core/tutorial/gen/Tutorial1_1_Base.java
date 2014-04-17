@@ -130,6 +130,11 @@ public interface Tutorial1_1_Base {
      */
     final static String id_simplifyScreen5 = "id_simplifyScreen5";
     /**
+     * We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!
+     * 
+     */
+    final static String id_badTowerPlacement = "id_badTowerPlacement";
+    /**
      * Your action just added 5 to x, but we didn't need to do that as x was already by itself.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started.
      * 
      */

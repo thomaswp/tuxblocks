@@ -101,7 +101,6 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 			}
 		}, Defense_BadTowerPlacement);
 		error.registerEpsilonTransition(originalState);
-
 	}
 
 	@Override

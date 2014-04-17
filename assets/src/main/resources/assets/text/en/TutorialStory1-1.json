@@ -45,5 +45,6 @@
 	"id_whenReady": "<Click> this button when your towers are set.",
 	"id_weWontSurviveHasCoached": "Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.",
 	"id_weWontSurviveHasNotCoached": "Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.  <Click> this button after we get more towers.",
+	"id_badTowerPlacement":"We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!",
 	"id_areYouSure": "You've still got towers to place, but if you want to start anyway, <click> it again."	
 }

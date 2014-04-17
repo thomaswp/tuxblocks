@@ -12,17 +12,19 @@ import tuxkids.tuxblocks.core.utils.Debug;
 
 public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 
-	protected boolean hasCoachedOnExtraDragging;
+	protected boolean hasCoachedOnExtraDragging = false;
 	private boolean triedToSkipAhead = false;
 	private boolean hasStartedSalvaging = false;
-	private boolean hasFinishedSalvaging = true;
+	private boolean hasFinishedSalvaging = false;
+	private boolean hasPlacedBlockingTower = false;
+	
+	private boolean hasGivenAreYouSure = false;
 
 	public Tutorial1(StoryGameState storyGameState) {
 		super(storyGameState);
 		
-		hasCoachedOnExtraDragging = storyGameState.getBoolean(StoryGameState.HCOED);
 		triedToSkipAhead = storyGameState.getBoolean(StoryGameState.TSRB);
-		
+		hasPlacedBlockingTower = storyGameState.getBoolean(StoryGameState.HPBT);
 	}
 
 	@Override
@@ -85,9 +87,28 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 			}
 		}, TextBoxHidden);
 		
-		continueReminder.registerEpsilonTransition(waitForEndOfRound);
+		continueReminder.addTransition(endState, Defense_RoundOver);
 		waitForEndOfRound.addTransition(endState, Defense_RoundOver);
 		
+		if (!hasPlacedBlockingTower) {
+			handleBadTowerTransition(placeTowers, continueReminder, waitForEndOfRound);
+		}
+		
+	}
+	
+	private void handleBadTowerTransition(FSMState... originalStates) {
+		for(FSMState originalState: originalStates) {
+			final FSMState error = makeBasicState(id_badTowerPlacement);
+			originalState.addTransition(new StateChooser() {
+
+				@Override
+				public FSMState chooseState(Object extraInformation) {
+					hasPlacedBlockingTower = true;
+					return error;
+				}
+			}, Defense_BadTowerPlacement);
+			error.registerEpsilonTransition(originalState);
+		}
 	}
 
 	private void promptSelectionOfFirstEquation(FSMState one, final FSMState _3x4First, final FSMState _6m5First) {
@@ -351,8 +372,8 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 		
 		//has finished salvaging towers and pressed the go ahead button, but still has towers to place
 		//will only show up once
-		if (hasFinishedSalvaging && event == Trigger.Defense_StartRound && 0 != TutorialUtils.towerCounts(gameState)) {
-			triedToSkipAhead = true;
+		if (hasFinishedSalvaging && event == Trigger.Defense_StartRound && 0 != TutorialUtils.towerCounts(gameState) && !hasGivenAreYouSure) {
+			hasGivenAreYouSure = true;
 			showMessage(getLocalizedText(id_areYouSure));
 			return false;
 		}
@@ -364,8 +385,9 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	protected void endOfTutorial() {
 		Debug.write("End");
 		super.endOfTutorial();
-		gameState.setBoolean(StoryGameState.HCOED, hasCoachedOnExtraDragging);
-		gameState.setBoolean(StoryGameState.TSRB, triedToSkipAhead);
+		gameState.setBoolean(StoryGameState.HCOED, this.hasCoachedOnExtraDragging);
+		gameState.setBoolean(StoryGameState.TSRB, true);  //they have now been coached on the go ahead button
+		gameState.setBoolean(StoryGameState.HPBT, this.hasPlacedBlockingTower);
 		gameState.finishedLesson();
 	}
 
