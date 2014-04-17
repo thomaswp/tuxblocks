@@ -5,10 +5,10 @@ import java.util.List;
 
 import playn.core.util.Clock;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
-import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
-import tuxkids.tuxblocks.core.tutorial.TutorialLayer;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
+import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
+import tuxkids.tuxblocks.core.tutorial.TutorialLayer;
 
 /**
  * Use FSMTutorial instead

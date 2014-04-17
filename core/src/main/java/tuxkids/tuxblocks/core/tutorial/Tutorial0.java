@@ -2,7 +2,6 @@ package tuxkids.tuxblocks.core.tutorial;
 
 
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
-import playn.core.Layer;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
