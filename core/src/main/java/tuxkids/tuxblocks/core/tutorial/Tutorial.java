@@ -50,7 +50,8 @@ public abstract class Tutorial extends PlayNObject {
 		Defense_StartRound, 
 		Defense_RoundOver, 
 		
-		Select_ScreenShown, 
+		Select_ScreenShown,
+		Select_GoToDefense,
 		
 		Solve_ScreenShown, 
 		Solve_BlockReleased, 

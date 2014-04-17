@@ -40,10 +40,15 @@ public interface Tutorial1_1_Base {
      */
     final static String id_unlockOther = "id_unlockOther";
     /**
-     * Push this button when your towers are ready to go.  You've still got towers to place, but if you want to start anyway, push it again.
+     * You've still got towers to place, but if you want to start anyway, <click> it again.
      * 
      */
     final static String id_areYouSure = "id_areYouSure";
+    /**
+     * <Click> this button when your towers are set.
+     * 
+     */
+    final static String id_whenReady = "id_whenReady";
     /**
      * Hey, did you see that?  Some of the robots weren’t destroyed.  Maybe we can salvage them and build more towers.
      * 
@@ -54,6 +59,11 @@ public interface Tutorial1_1_Base {
      * 
      */
     final static String id_6m5secondSimplify = "id_6m5secondSimplify";
+    /**
+     * We have to take this opportunity to shore up our towers. This button will take you back to the tower view when you've handled the robots here.
+     * 
+     */
+    final static String id_stillSalvaging = "id_stillSalvaging";
     /**
      * Since x is already by itself, all we need to do is simplify the right side. <Click> on the grey circle to simplify the multiplication.
      * 
@@ -105,11 +115,6 @@ public interface Tutorial1_1_Base {
      */
     final static String id_simplifyScreen2 = "id_simplifyScreen2";
     /**
-     * Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.
-     * 
-     */
-    final static String id_weWontSurvive = "id_weWontSurvive";
-    /**
      * Nice.  Click the check to unlock the second robot.
      * 
      */
@@ -145,10 +150,25 @@ public interface Tutorial1_1_Base {
      */
     final static String id_solveForX = "id_solveForX";
     /**
+     * Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.
+     * 
+     */
+    final static String id_weWontSurviveHasCoached = "id_weWontSurviveHasCoached";
+    /**
+     * Let's place our new-found towers and rock those robots!
+     * 
+     */
+    final static String id_placeTowers = "id_placeTowers";
+    /**
      * x is by itself once more. <Click> on the grey circle to simplify the subtraction.
      * 
      */
     final static String id_6m5fixDrag = "id_6m5fixDrag";
+    /**
+     * Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.  <Click> this button after we get more towers.
+     * 
+     */
+    final static String id_weWontSurviveHasNotCoached = "id_weWontSurviveHasNotCoached";
     /**
      * This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 3*4. The problem is written at the top of the screen. This one's pretty simple, right?
      * 

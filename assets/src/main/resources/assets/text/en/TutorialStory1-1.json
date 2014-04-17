@@ -40,8 +40,10 @@
 			"id_3x4secondSimplify":"And now solve the multiplication.",
 		"id_3x4dragged3reminder": "Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.",
 		
+	"id_stillSalvaging": "We have to take this opportunity to shore up our towers. This button will take you back to the tower view when you've handled the robots here.",
 	"id_placeTowers": "Let's place our new-found towers and rock those robots!",
-	"id_whenReady": "Press this button when your towers are set.",
-	"id_weWontSurvive": "Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.",
-	"id_areYouSure": "Push this button when your towers are ready to go.  You've still got towers to place, but if you want to start anyway, push it again."	
+	"id_whenReady": "<Click> this button when your towers are set.",
+	"id_weWontSurviveHasCoached": "Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.",
+	"id_weWontSurviveHasNotCoached": "Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.  <Click> this button after we get more towers.",
+	"id_areYouSure": "You've still got towers to place, but if you want to start anyway, <click> it again."	
 }

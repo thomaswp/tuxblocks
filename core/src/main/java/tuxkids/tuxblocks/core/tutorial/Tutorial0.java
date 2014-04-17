@@ -11,7 +11,6 @@ import tuxkids.tuxblocks.core.utils.Debug;
 
 public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
-	private int towersPlaced = 0;
 	private boolean hasPlacedBlockingTower = false;
 	private boolean triedToSkipAhead = false;
 
@@ -51,7 +50,6 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 			@Override
 			public FSMState chooseState(Object extraInformation) {
 				if (extraInformation instanceof Point) {
-					towersPlaced++;
 					Point point = (Point) extraInformation;
 					if (point.x == 5 && point.y == 2) {
 						return goodPlacement;
@@ -68,7 +66,6 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
 			@Override
 			public FSMState chooseState(Object extraInformation) {
-				towersPlaced++;
 				if (triedToSkipAhead) {
 					return nowPushButton;
 				}
@@ -109,8 +106,9 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
 	@Override
 	protected boolean handleTriggerPermissions(Trigger event) {
-		if (event == Defense_StartRound && towersPlaced < 2) {
-			if (towersPlaced == 0)
+		int towerInventoryCount = TutorialUtils.towerCounts(gameState);
+		if (event == Defense_StartRound && towerInventoryCount > 0) {
+			if (towerInventoryCount == 2)
 				showMessage(getLocalizedText(id_cant_skip_ahead2));
 			else
 				showMessage(getLocalizedText(id_cant_skip_ahead1));

@@ -1,11 +1,10 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-
-import static tuxkids.tuxblocks.core.tutorial.Tutorial.Tag.*;
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.tutorial.gen.Tutorial1_1_Base;
 import tuxkids.tuxblocks.core.utils.Debug;
@@ -16,12 +15,14 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	protected boolean hasCoachedOnExtraDragging;
 	private boolean triedToSkipAhead = false;
 	private boolean hasStartedSalvaging = false;
+	private boolean hasFinishedSalvaging = true;
 
 	public Tutorial1(StoryGameState storyGameState) {
 		super(storyGameState);
 		
 		hasCoachedOnExtraDragging = storyGameState.getBoolean(StoryGameState.HCOED);
 		triedToSkipAhead = storyGameState.getBoolean(StoryGameState.TSRB);
+		
 	}
 
 	@Override
@@ -31,17 +32,30 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 
 	@Override
 	protected void setUpStates() {
-		FSMState start = addStartState(id_salvageAndBuild, new FSMState(){
+		FSMState start = addStartState(id_salvageAndBuild);
+		
+		final FSMState _3x4First = addLocalizedTextToState(id_equationSolvingScreen, new FSMState(){
 			@Override
 			public FSMState notifyMessageShown() {
 				hasStartedSalvaging = true;
 				return super.notifyMessageShown();
 			}
 		});
-		
-		final FSMState _3x4First = makeBasicState(id_equationSolvingScreen);
-		final FSMState _6m5First = makeBasicState(id_equationSolvingScreen);	//6m5 means 6 minus 5 (6-5)
-		FSMState letsGoSetupRobots = makeBasicState(id_letsGoSetupRobots).addHighlightable(Select_Return);
+		final FSMState _6m5First = addLocalizedTextToState(id_equationSolvingScreen, new FSMState(){
+			@Override
+			public FSMState notifyMessageShown() {
+				hasStartedSalvaging = true;
+				return super.notifyMessageShown();
+			}
+		});
+		//FSMState letsGoSetupRobots = makeBasicState(id_letsGoSetupRobots).addHighlightable(Select_Return);
+		FSMState letsGoSetupRobots = addLocalizedTextToState(id_letsGoSetupRobots, new FSMState(){
+			@Override
+			public FSMState notifyMessageShown() {
+				hasFinishedSalvaging = true;
+				return super.notifyMessageShown();
+			}
+		}).addHighlightable(Tag.Select_Return);
 		
 		this.promptSelectionOfFirstEquation(start, _3x4First, _6m5First);
 		
@@ -54,14 +68,33 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 		_6m5SolvedSecond.addTransition(letsGoSetupRobots, Select_ScreenShown);
 		_3x4SolvedSecond.addTransition(letsGoSetupRobots, Select_ScreenShown);
 		
-		letsGoSetupRobots.addTransition(endState, Defense_ScreenShown);
+		
+		FSMState placeTowers = makeBasicState("id_placeTowers");
+		final FSMState continueReminder = makeBasicState("id_whenReady").addHighlightable(Tag.Defense_StartRound);
+		final FSMState waitForEndOfRound = new FSMState();
+		
+		letsGoSetupRobots.addTransition(placeTowers, Defense_ScreenShown);
+		placeTowers.addTransition(new StateChooser() {
+			
+			@Override
+			public FSMState chooseState(Object extraInformation) {
+				if (triedToSkipAhead) {
+					return waitForEndOfRound;
+				}
+				return continueReminder;
+			}
+		}, TextBoxHidden);
+		
+		continueReminder.registerEpsilonTransition(waitForEndOfRound);
+		waitForEndOfRound.addTransition(endState, Defense_RoundOver);
+		
 	}
 
 	private void promptSelectionOfFirstEquation(FSMState one, final FSMState _3x4First, final FSMState _6m5First) {
-		FSMState two = makeBasicState(id_goToEquationScreen).addHighlightable(Defense_EquationSelectScreen);
+		FSMState two = makeBasicState(id_goToEquationScreen).addHighlightable(Tag.Defense_EquationSelectScreen);
 		FSMState three = makeBasicState(id_solveTheClues);
-		final FSMState four = makeBasicState(id_selectFirstEquation).addHighlightable(Select_FirstEquation).
-		addHighlightable(Select_SecondEquation);
+		final FSMState four = makeBasicState(id_selectFirstEquation).addHighlightable(Tag.Select_FirstEquation).
+		addHighlightable(Tag.Select_SecondEquation);
 		
 		one.addTransition(two, TextBoxHidden);
 		two.addTransition(three, Select_ScreenShown);
@@ -93,9 +126,9 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 		FSMState _3x4Simplify2 = makeBasicState(id_simplifyScreen2);
 		FSMState _3x4Simplify3 = makeBasicState(id_simplifyScreen3);
 		FSMState _3x4Simplify4 = makeBasicState(id_simplifyScreen4);
-		FSMState _3x4Simplify5 = makeBasicState(id_simplifyScreen5).addHighlightable(NumberSelect_Ok);
+		FSMState _3x4Simplify5 = makeBasicState(id_simplifyScreen5).addHighlightable(Tag.NumberSelect_Ok);
 		FSMState _3x4PrematureSimplify = makeBasicState(id_prematureSimplify);	
-		FSMState _3x4Solved = makeBasicState(id_3x4solved).addHighlightable(Solve_Ok);
+		FSMState _3x4Solved = makeBasicState(id_3x4solved).addHighlightable(Tag.Solve_Ok);
 
 		joinMultiTextStates(_3x4One, _3x4Two, _3x4Three);
 		solve3x4AsFirst_handleDrag(_3x4Three);
@@ -142,7 +175,7 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 		FSMState _6m5One = makeBasicState(id_unlockOther);
 		FSMState _6m5Two = makeBasicState(id_6m5secondSubtract);
 		FSMState _6m5Simplify = makeBasicState(id_6m5secondSimplify);
-		FSMState _6m5Solved = makeBasicState(id_secondSolved).addHighlightable(Solve_Ok);
+		FSMState _6m5Solved = makeBasicState(id_secondSolved).addHighlightable(Tag.Solve_Ok);
 
 		_3x4SolvedFirst.addTransition(_6m5One, Select_ScreenShown);
 		_6m5One.addTransition(_6m5Two, Solve_ScreenShown);
@@ -193,9 +226,9 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 		FSMState _6m5Simplify2 = makeBasicState(id_simplifyScreen2);
 		FSMState _6m5Simplify3 = makeBasicState(id_simplifyScreen3);
 		FSMState _6m5Simplify4 = makeBasicState(id_simplifyScreen4);
-		FSMState _6m5Simplify5 = makeBasicState(id_simplifyScreen5).addHighlightable(NumberSelect_Ok);
+		FSMState _6m5Simplify5 = makeBasicState(id_simplifyScreen5).addHighlightable(Tag.NumberSelect_Ok);
 		FSMState _6m5PrematureSimplify = makeBasicState(id_prematureSimplify);	
-		FSMState _6m5Solved = makeBasicState(id_6m5solved).addHighlightable(Solve_Ok);
+		FSMState _6m5Solved = makeBasicState(id_6m5solved).addHighlightable(Tag.Solve_Ok);
 
 		joinMultiTextStates(_6m5One, _6m5Two, _6m5Three);
 		solve6m5AsFirst_handleDrag(_6m5Three);
@@ -242,7 +275,7 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 		FSMState _3x4One = makeBasicState(id_unlockOther);
 		FSMState _3x4Two = makeBasicState(id_3x4secondMultiply);
 		FSMState _3x4Simplify = makeBasicState(id_3x4secondSimplify);
-		FSMState _3x4Solved = makeBasicState(id_secondSolved).addHighlightable(Solve_Ok);
+		FSMState _3x4Solved = makeBasicState(id_secondSolved).addHighlightable(Tag.Solve_Ok);
 
 		_6m5SolvedFirst.addTransition(_3x4One, Select_ScreenShown);
 		_3x4One.addTransition(_3x4Two, Solve_ScreenShown);
@@ -300,13 +333,25 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 			showMessage(getLocalizedText(id_cant_go_back));
 			return false;
 		}
+		
 		if (!hasStartedSalvaging && event == Trigger.Defense_StartRound) {
+			
+			if (triedToSkipAhead)
+				showMessage(getLocalizedText(id_weWontSurviveHasCoached));
+			else 
+				showMessage(getLocalizedText(id_weWontSurviveHasNotCoached));
 			triedToSkipAhead = true;
-			showMessage(getLocalizedText(id_weWontSurvive));
 			return false;
 		}
-		if (hasStartedSalvaging && event == Trigger.Defense_StartRound && !triedToSkipAhead &&
-				0 != TutorialUtils.towerCounts(gameState)) {
+				
+		if (!hasFinishedSalvaging && event == Trigger.Select_GoToDefense) {
+			showMessage(getLocalizedText(id_stillSalvaging));
+			return false;
+		}
+		
+		//has finished salvaging towers and pressed the go ahead button, but still has towers to place
+		//will only show up once
+		if (hasFinishedSalvaging && event == Trigger.Defense_StartRound && 0 != TutorialUtils.towerCounts(gameState)) {
 			triedToSkipAhead = true;
 			showMessage(getLocalizedText(id_areYouSure));
 			return false;
