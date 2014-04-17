@@ -14,4 +14,11 @@ public interface StoryGameStateKeys {
      * 
      */
     final static String HPBT = "Has Placed Blocking Tower";
+    
+    /**
+     * Has the UI taught what pushing the start round buggon does?
+     * 
+     */
+    final static String TSRB = "Taught Start Round Button";
+
 }

@@ -9,6 +9,7 @@
 	"id_secondTowerPlacement":"And now we wait for the next wave.  May our towers bring us strength.",
 	"id_badTowerPlacement":"We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!",
 	"id_cant_skip_ahead2": "This button is for when all of your towers are in place.  We still have two towers left to place, so don't hit this quite yet.",
-	"id_cant_skip_ahead1": "This button is for when all of your towers are in place.  We still have a tower left to place."
+	"id_cant_skip_ahead1": "This button is for when all of your towers are in place.  We still have a tower left to place.",
+	"id_nowPushButton":"Go ahead and push the button when your towers are how you like them.  May they keep us safe."
 
 }

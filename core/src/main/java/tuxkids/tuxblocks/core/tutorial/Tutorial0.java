@@ -1,11 +1,9 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
 import static tuxkids.tuxblocks.core.story.StoryGameState.*;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.story.StoryGameState;
-import tuxkids.tuxblocks.core.tutorial.FSMTutorial.FSMState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.tutorial.gen.Tutorial0_Base;
@@ -15,10 +13,11 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
 	private int towersPlaced = 0;
 	private boolean hasPlacedBlockingTower = false;
+	private boolean triedToSkipAhead = false;
 
 	public Tutorial0(StoryGameState storyGameState) {
 		super(storyGameState);
-		
+
 	}
 
 	@Override
@@ -28,15 +27,16 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
 	@Override
 	protected void setUpStates() {
-		FSMState one = addStartState(id_nextWaveSoon);
-		FSMState two = addState(id_shoreUpDefenses);
-		FSMState three = addState(id_dragFirstTower).addHighlightable(Tag.Defense_PeaShooter);
-		final FSMState four = addState(id_goodFirstPlacement);
-		final FSMState five = addState(id_okayFirstPlacement);
-		FSMState six = addState(id_secondTowerPlacement);
+		FSMState nextWaveSoon = addStartState(id_nextWaveSoon);
+		FSMState shoreUpDefenses = makeBasicState(id_shoreUpDefenses);
+		FSMState firstTower = makeBasicState(id_dragFirstTower).addHighlightable(Tag.Defense_PeaShooter);
+		final FSMState goodPlacement = makeBasicState(id_goodFirstPlacement);
+		final FSMState okayPlacement = makeBasicState(id_okayFirstPlacement);
+		final FSMState nowWeWait = makeBasicState(id_secondTowerPlacement);
+		final FSMState nowPushButton = makeBasicState(id_nowPushButton).addHighlightable(Tag.Defense_StartRound);
 
-		//non message state that starts the round
-		FSMState seven = new FSMState(){
+		// non message state that starts the round
+		final FSMState autoStartLevel = new FSMState() {
 			@Override
 			public FSMState notifyMessageShown() {
 				gameState.level().startNextRound();
@@ -44,41 +44,59 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 			}
 		};
 
-		joinMultiTextStates(one,two,three);
+		joinMultiTextStates(nextWaveSoon, shoreUpDefenses, firstTower);
 
-		three.addTransition(new StateChooser() {
+		firstTower.addTransition(new StateChooser() {
 
 			@Override
 			public FSMState chooseState(Object extraInformation) {
 				if (extraInformation instanceof Point) {
+					towersPlaced++;
 					Point point = (Point) extraInformation;
 					if (point.x == 5 && point.y == 2) {
-						return four;
+						return goodPlacement;
 					}
 				}
-				return five;
+				return okayPlacement;
 			}
 		}, Defense_TowerDropped);
 
-		four.addTransition(six, Defense_TowerDropped);
-		five.addTransition(six, Defense_TowerDropped);
-		six.addTransition(seven, TextBoxHidden);
-		seven.addTransition(endState, Defense_RoundOver);
+		// goodPlacement.addTransition(nowWeWait, Defense_TowerDropped);
+		// okayPlacement.addTransition(nowWeWait, Defense_TowerDropped);
+
+		StateChooser chooseButtonOrAutostart = new StateChooser() {
+
+			@Override
+			public FSMState chooseState(Object extraInformation) {
+				towersPlaced++;
+				if (triedToSkipAhead) {
+					return nowPushButton;
+				}
+				return nowWeWait;
+			}
+		};
+
+		goodPlacement.addTransition(chooseButtonOrAutostart, Defense_TowerDropped);
+
+		okayPlacement.addTransition(chooseButtonOrAutostart, Defense_TowerDropped);
+
+		nowWeWait.addTransition(autoStartLevel, TextBoxHidden);
+		nowPushButton.addTransition(endState, Defense_RoundOver);
+		autoStartLevel.addTransition(endState, Defense_RoundOver);
 		anyState.addTransition(endState, Defense_RoundOver);
 
-		handleBadTowerTransition(one);
-		handleBadTowerTransition(two);
-		handleBadTowerTransition(three);
-		handleBadTowerTransition(four);
-		handleBadTowerTransition(five);
-
+		handleBadTowerTransition(nextWaveSoon);
+		handleBadTowerTransition(shoreUpDefenses);
+		handleBadTowerTransition(firstTower);
+		handleBadTowerTransition(goodPlacement);
+		handleBadTowerTransition(okayPlacement);
 
 	}
 
 	private void handleBadTowerTransition(FSMState originalState) {
-		final FSMState error = addState(id_badTowerPlacement);
+		final FSMState error = makeBasicState(id_badTowerPlacement);
 		originalState.addTransition(new StateChooser() {
-			
+
 			@Override
 			public FSMState chooseState(Object extraInformation) {
 				hasPlacedBlockingTower = true;
@@ -91,22 +109,23 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
 	@Override
 	protected boolean handleTriggerPermissions(Trigger event) {
-		if (event == Defense_StartRound) {
+		if (event == Defense_StartRound && towersPlaced < 2) {
 			if (towersPlaced == 0)
 				showMessage(getLocalizedText(id_cant_skip_ahead2));
-			else 
+			else
 				showMessage(getLocalizedText(id_cant_skip_ahead1));
+			triedToSkipAhead = true;
 			return false;
 		}
 		return true;
 	}
 
-
 	@Override
 	protected void endOfTutorial() {
 		Debug.write("End");
 		super.endOfTutorial();
-		gameState.setBoolean(HPBT, hasPlacedBlockingTower);
+		gameState.setBoolean(HPBT, this.hasPlacedBlockingTower);
+		gameState.setBoolean(TSRB, this.triedToSkipAhead);
 		gameState.finishedLesson();
 	}
 
