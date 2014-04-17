@@ -108,6 +108,6 @@ public class TutorialValidator {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		new TutorialValidator().validate();;
+		new TutorialValidator().validate();
 	}
 }
