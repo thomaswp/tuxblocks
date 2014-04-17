@@ -285,7 +285,7 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	@Override
 	protected boolean handleTriggerPermissions(Trigger event) {
 		if (event == Solve_GoBack) {
-			showMessage(getLocalizedText(cant_go_back));
+			showMessage(getLocalizedText(id_cant_go_back));
 			return false;
 		}
 		return true;

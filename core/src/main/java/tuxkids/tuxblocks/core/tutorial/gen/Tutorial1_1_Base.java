@@ -30,11 +30,6 @@ public interface Tutorial1_1_Base {
      */
     final static String id_letsGoSetupRobots = "id_letsGoSetupRobots";
     /**
-     * No, don't leave!  You can totally solve this clue
-     * 
-     */
-    final static String cant_go_back = "cant_go_back";
-    /**
      * Very good.  Now we have figured out the robot’s secret number is 1.  Go ahead and hit the check mark to unlock the robot.
      * 
      */
@@ -125,6 +120,11 @@ public interface Tutorial1_1_Base {
      */
     final static String id_6m5dragged5reminder = "id_6m5dragged5reminder";
     /**
+     * No, don't leave!  You can totally solve this clue
+     * 
+     */
+    final static String id_cant_go_back = "id_cant_go_back";
+    /**
      * Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.
      * 
      */
@@ -169,5 +169,10 @@ public interface Tutorial1_1_Base {
      * 
      */
     final static String id_3x4dragged3 = "id_3x4dragged3";
+    /**
+     * Teaches how to simplify expressions where x is already isolated, specifically x = 4*3 and x = 6-5
+     * 
+     */
+    final static String tutorial_desc = "tutorial_desc";
 
 }

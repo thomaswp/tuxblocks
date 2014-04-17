@@ -83,9 +83,9 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 	protected boolean handleTriggerPermissions(Trigger event) {
 		if (event == Defense_StartRound) {
 			if (towersPlaced == 0)
-				showMessage(getLocalizedText(cant_skip_ahead2));
+				showMessage(getLocalizedText(id_cant_skip_ahead2));
 			else 
-				showMessage(getLocalizedText(cant_skip_ahead1));
+				showMessage(getLocalizedText(id_cant_skip_ahead1));
 			return false;
 		}
 		return true;

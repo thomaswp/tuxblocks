@@ -10,10 +10,20 @@ public interface Tutorial0_Base {
      */
     final static String filename = "TutorialStory0.json";
     /**
+     * This button is for when all of your towers are in place.  We still have two towers left to place, so don't hit this quite yet.
+     * 
+     */
+    final static String id_cant_skip_ahead2 = "id_cant_skip_ahead2";
+    /**
      * Excellent.  Now add the second tower.
      * 
      */
     final static String id_goodFirstPlacement = "id_goodFirstPlacement";
+    /**
+     * This button is for when all of your towers are in place.  We still have a tower left to place.
+     * 
+     */
+    final static String id_cant_skip_ahead1 = "id_cant_skip_ahead1";
     /**
      * Go ahead and drag one of the two pea shooters onto the screen.  Put them anywhere, but I'd suggest adding them to the first set of three, what I call 'the maze'
      * 
@@ -24,16 +34,6 @@ public interface Tutorial0_Base {
      * 
      */
     final static String id_nextWaveSoon = "id_nextWaveSoon";
-    /**
-     * This button is for when all of your towers are in place.  We still have two towers left to place, so don't hit this quite yet.
-     * 
-     */
-    final static String cant_skip_ahead2 = "cant_skip_ahead2";
-    /**
-     * This button is for when all of your towers are in place.  We still have a tower left to place.
-     * 
-     */
-    final static String cant_skip_ahead1 = "cant_skip_ahead1";
     /**
      * We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!
      * 
@@ -54,5 +54,10 @@ public interface Tutorial0_Base {
      * 
      */
     final static String id_secondTowerPlacement = "id_secondTowerPlacement";
+    /**
+     * Lays the preliminary story and shows how to drop towers
+     * 
+     */
+    final static String tutorial_desc = "tutorial_desc";
 
 }
