@@ -480,7 +480,7 @@ public class Grid extends PlayNObject implements Highlightable {
 		Point p = tower.coordinates();
 		int rows = tower.rows(), cols = tower.cols();
 
-		if (p.x < 0 || p.x + rows > this.rows || p.y < 0 || p.y + cols > this.cols){
+		if (p.x <= 0 || p.x + rows >= this.rows || p.y <= 0 || p.y + cols >= this.cols){
 			return true;
 		}
 		return false;
