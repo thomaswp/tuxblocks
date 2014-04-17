@@ -1,7 +1,6 @@
 package tuxkids.tuxblocks.core;
 
-import static playn.core.PlayN.currentTime;
-import static playn.core.PlayN.graphics;
+import static playn.core.PlayN.*;
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Color;

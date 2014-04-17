@@ -13,10 +13,12 @@ import tuxkids.tuxblocks.core.utils.Debug;
 
 public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 
-	protected boolean hasCoachedOnExtraDragging = false;
+	protected boolean hasCoachedOnExtraDragging;
 
 	public Tutorial1(StoryGameState storyGameState) {
 		super(storyGameState);
+		
+		hasCoachedOnExtraDragging = storyGameState.getBoolean(StoryGameState.HCOED);
 	}
 
 	@Override
@@ -295,6 +297,7 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	protected void endOfTutorial() {
 		Debug.write("End");
 		super.endOfTutorial();
+		gameState.setBoolean(StoryGameState.HCOED, hasCoachedOnExtraDragging);
 		gameState.finishedLesson();
 	}
 
