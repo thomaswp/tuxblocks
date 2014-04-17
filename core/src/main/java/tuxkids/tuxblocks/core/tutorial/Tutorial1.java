@@ -14,11 +14,14 @@ import tuxkids.tuxblocks.core.utils.Debug;
 public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 
 	protected boolean hasCoachedOnExtraDragging;
+	private boolean triedToSkipAhead = false;
+	private boolean hasStartedSalvaging = false;
 
 	public Tutorial1(StoryGameState storyGameState) {
 		super(storyGameState);
 		
 		hasCoachedOnExtraDragging = storyGameState.getBoolean(StoryGameState.HCOED);
+		triedToSkipAhead = storyGameState.getBoolean(StoryGameState.TSRB);
 	}
 
 	@Override
@@ -28,7 +31,14 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 
 	@Override
 	protected void setUpStates() {
-		FSMState start = addStartState(id_salvageAndBuild);
+		FSMState start = addStartState(id_salvageAndBuild, new FSMState(){
+			@Override
+			public FSMState notifyMessageShown() {
+				hasStartedSalvaging = true;
+				return super.notifyMessageShown();
+			}
+		});
+		
 		final FSMState _3x4First = makeBasicState(id_equationSolvingScreen);
 		final FSMState _6m5First = makeBasicState(id_equationSolvingScreen);	//6m5 means 6 minus 5 (6-5)
 		FSMState letsGoSetupRobots = makeBasicState(id_letsGoSetupRobots).addHighlightable(Select_Return);
@@ -290,6 +300,18 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 			showMessage(getLocalizedText(id_cant_go_back));
 			return false;
 		}
+		if (!hasStartedSalvaging && event == Trigger.Defense_StartRound) {
+			triedToSkipAhead = true;
+			showMessage(getLocalizedText(id_weWontSurvive));
+			return false;
+		}
+		if (hasStartedSalvaging && event == Trigger.Defense_StartRound && !triedToSkipAhead &&
+				0 != TutorialUtils.towerCounts(gameState)) {
+			triedToSkipAhead = true;
+			showMessage(getLocalizedText(id_areYouSure));
+			return false;
+		}
+		
 		return true;
 	}
 	
@@ -298,6 +320,7 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 		Debug.write("End");
 		super.endOfTutorial();
 		gameState.setBoolean(StoryGameState.HCOED, hasCoachedOnExtraDragging);
+		gameState.setBoolean(StoryGameState.TSRB, triedToSkipAhead);
 		gameState.finishedLesson();
 	}
 

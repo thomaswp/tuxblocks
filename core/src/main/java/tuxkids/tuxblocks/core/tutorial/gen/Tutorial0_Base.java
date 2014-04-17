@@ -35,7 +35,7 @@ public interface Tutorial0_Base {
      */
     final static String id_nextWaveSoon = "id_nextWaveSoon";
     /**
-     * Go ahead and push the button when your towers are how you like them
+     * Go ahead and push the button when your towers are how you like them.  May they keep us safe.
      * 
      */
     final static String id_nowPushButton = "id_nowPushButton";

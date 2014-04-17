@@ -38,8 +38,10 @@
 		"id_6m5solved":"Very good.  Now we have figured out the robot’s secret number is 1.  Go ahead and hit the check mark to unlock the robot.",
 		"id_3x4secondMultiply":"This clue is also set up where x is all by itself.  Just like with the subtraction, click the grey dot to perform the multiplication.",
 			"id_3x4secondSimplify":"And now solve the multiplication.",
-		"id_3x4dragged3reminder": "Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started."
+		"id_3x4dragged3reminder": "Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.",
 		
-	
-			
+	"id_placeTowers": "Let's place our new-found towers and rock those robots!",
+	"id_whenReady": "Press this button when your towers are set.",
+	"id_weWontSurvive": "Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.",
+	"id_areYouSure": "Push this button when your towers are ready to go.  You've still got towers to place, but if you want to start anyway, push it again."	
 }

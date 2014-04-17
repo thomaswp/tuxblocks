@@ -40,6 +40,11 @@ public interface Tutorial1_1_Base {
      */
     final static String id_unlockOther = "id_unlockOther";
     /**
+     * Push this button when your towers are ready to go.  You've still got towers to place, but if you want to start anyway, push it again.
+     * 
+     */
+    final static String id_areYouSure = "id_areYouSure";
+    /**
      * Hey, did you see that?  Some of the robots weren’t destroyed.  Maybe we can salvage them and build more towers.
      * 
      */
@@ -99,6 +104,11 @@ public interface Tutorial1_1_Base {
      * 
      */
     final static String id_simplifyScreen2 = "id_simplifyScreen2";
+    /**
+     * Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.
+     * 
+     */
+    final static String id_weWontSurvive = "id_weWontSurvive";
     /**
      * Nice.  Click the check to unlock the second robot.
      * 
