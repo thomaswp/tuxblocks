@@ -7,4 +7,11 @@ public interface StoryGameStateKeys {
      * 
      */
     final static String HCOED = "Has Coached on Extra Dragging";
+    
+    /**
+     * Has the student placed a blocking tower and been told the in-game reason 
+     * for no blocking?
+     * 
+     */
+    final static String HPBT = "Has Placed Blocking Tower";
 }

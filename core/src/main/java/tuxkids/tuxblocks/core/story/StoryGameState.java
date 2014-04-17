@@ -109,6 +109,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	public void setBoolean(String key, boolean value) {
 		booleansMap.put(key, value);
+		Debug.write(key + " = "+ value);
 	}
 
 	public boolean getBoolean(String key) {

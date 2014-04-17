@@ -2,8 +2,10 @@ package tuxkids.tuxblocks.core.tutorial;
 
 
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
+import static tuxkids.tuxblocks.core.story.StoryGameState.*;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.tutorial.FSMTutorial.FSMState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.tutorial.gen.Tutorial0_Base;
@@ -12,9 +14,11 @@ import tuxkids.tuxblocks.core.utils.Debug;
 public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
 	private int towersPlaced = 0;
+	private boolean hasPlacedBlockingTower = false;
 
 	public Tutorial0(StoryGameState storyGameState) {
 		super(storyGameState);
+		
 	}
 
 	@Override
@@ -71,9 +75,16 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
 	}
 
-	private void handleBadTowerTransition(final FSMState originalState) {
-		FSMState error = addState(id_badTowerPlacement);
-		originalState.addTransition(error, Defense_BadTowerPlacement);
+	private void handleBadTowerTransition(FSMState originalState) {
+		final FSMState error = addState(id_badTowerPlacement);
+		originalState.addTransition(new StateChooser() {
+			
+			@Override
+			public FSMState chooseState(Object extraInformation) {
+				hasPlacedBlockingTower = true;
+				return error;
+			}
+		}, Defense_BadTowerPlacement);
 		error.registerEpsilonTransition(originalState);
 
 	}
@@ -95,6 +106,7 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 	protected void endOfTutorial() {
 		Debug.write("End");
 		super.endOfTutorial();
+		gameState.setBoolean(HPBT, hasPlacedBlockingTower);
 		gameState.finishedLesson();
 	}
 
