@@ -10,7 +10,12 @@ public interface StarredTutorial1_Base {
      */
     final static String filename = "StarredTutorial1.json";
     /**
-     * Teaches how to simplify expressions where x is already isolated, specifically x = 4*3 and x = 6-5
+     * So, this clue isn't as straight-forward as the ones we've seen before.  The unknown number X isn't by itself yet.
+     * 
+     */
+    final static String id_intro = "id_intro";
+    /**
+     * Teaches how to do basic isolation of x (x/5 = 2)
      * 
      */
     final static String tutorial_desc = "tutorial_desc";

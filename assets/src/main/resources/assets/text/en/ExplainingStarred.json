@@ -1,0 +1,8 @@
+{
+	"tutorial_desc":"Explains what a starred Tutorial is",
+	"tutorial_id":"ExplainingStarred",
+	
+	"id_noticeStars":"This robot seems a bit different than others we've seen so far.  Notice the star?",
+	"id_theStarsMean":"Our engineers have tagged this robot with a star because the clue is a bid more advanced equation, but their sensors say the payload is more valuable.",
+	"id_whenReady":"When you feel ready, select the starred problem and we'll work through the problem together.  Who knows what's inside?  Upgrades? Better towers?"
+}
