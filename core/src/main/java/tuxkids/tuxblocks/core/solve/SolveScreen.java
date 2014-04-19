@@ -12,6 +12,7 @@ import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
+import tuxkids.tuxblocks.core.solve.action.HintAction;
 import tuxkids.tuxblocks.core.solve.blocks.Sprite.SimplifyListener;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.student.StudentModel;
@@ -113,6 +114,7 @@ public class SolveScreen extends EquationScreen {
 	}
 
 	private void displayHint(Hint hint) {
+		controller.logSolveAction(new HintAction(hint));
 		hintMessageBox.showMessage(hint.text);
 		controller.clearHighlights();
 		controller.addHighlights(hint.highlights);

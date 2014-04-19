@@ -26,6 +26,7 @@ import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_EQUATION_SIDES;
 import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_INTEGERS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -34,6 +35,7 @@ import tuxkids.tuxblocks.core.GameState.Stat;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishProblemAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
+import tuxkids.tuxblocks.core.solve.action.HintAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
@@ -58,6 +60,7 @@ import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
 import tuxkids.tuxblocks.core.tutor.Tutor;
+import tuxkids.tuxblocks.core.tutor.Tutor.HintLevel;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class BasicStudentModel implements StudentModel {
@@ -236,30 +239,70 @@ public class BasicStudentModel implements StudentModel {
 
 	private void updateModel() {
 		if (currentEquations.size() < 1) return;
-		int maxSteps = Tutor.MAX_HINT_ITERATIONS;
-		List<Step> previousSolution = null;
+	
+		System.out.println("Student Model Update");
+		System.out.println("====================");
+		
+		int resets = 0;
+		int[] hints = new int[HintLevel.values().length];
+		boolean success = false;
 		for (int i = 0; i < currentEquations.size(); i++) {
-//			List<Step> currentSolution = IdealEquationSolver.aStar(
-//					currentEquations.get(0), maxSteps);
-//			if (previousSolution != null) {
-				SolveAction c = currentStudentActions.get(i);
-				
-				if (c instanceof FinishSimplifyAction) {
-					SolveAction lastAction = i == 0 ? null : currentStudentActions.get(i - 1);
+				SolveAction action = currentStudentActions.get(i);
+				SolveAction lastAction = i == 0 ? null : currentStudentActions.get(i - 1);
+
+				// update arithmetic 
+				if (action instanceof FinishSimplifyAction) {
 					if (lastAction instanceof StartSimplifyAction) {
-						updateArithmeticModel((StartSimplifyAction) lastAction, (FinishSimplifyAction) c);
+						updateArithmeticModel((StartSimplifyAction) lastAction, (FinishSimplifyAction) action);
 					}
 				}
 				
-//				if (currentSolution.size() + 1 > previousSolution.size()) {
-//					Debug.write("Incorrect: " + c);
-//				} else {
-//					Debug.write("Correct: " + c);
-//				}
-//			}
-//			previousSolution = currentSolution;
+				// count resets
+				if (action instanceof StartProblemAction && i > 0) {
+					resets++;
+				}
+				
+				
+				// count hints
+				if (action instanceof HintAction) {
+					hints[((HintAction) action).level]++;
+				}
+				
+				// check success
+				if (action instanceof FinishProblemAction) {
+					success = action.success;
+				}
 		}
-		System.out.println(getSolveExcess());
+		
+		int extraSteps = getSolveExcess();
+		
+		System.out.println("Resets: " + resets);
+		System.out.println("Hints: " + Arrays.toString(hints));
+		System.out.println("Extra Solve Steps: " + getSolveExcess());
+		System.out.println();
+		
+		int rating = 0;
+		if (success) rating++;
+		for (int i = 0; i < hints.length; i++) {
+			if (i < 2) {
+				if (hints[i] > 1) rating--;
+			} else {
+				if (hints[i] > 0) rating--;
+			}
+		}
+		if (extraSteps > 1) rating--;
+		if (resets > 0) rating--;
+		else if (extraSteps <= 0) rating++;
+		
+		int meaningfulSteps = getNumMeaningfulSteps(currentStudentActions, true);
+		double rawUpdates = rating * meaningfulSteps / 6.0f;
+		int updates = (int) (rawUpdates > 0 ? Math.ceil(rawUpdates) : Math.floor(rawUpdates));
+		if (updates > 2) updates = 2;
+		if (updates < -2) updates = -2;
+		
+		System.out.println("Rating: " + rating);
+		System.out.println("Meaningful Steps: " + meaningfulSteps);
+		System.out.println("Updates: " + updates);
 	}
 	
 	private int getSolveExcess() {
@@ -281,9 +324,9 @@ public class BasicStudentModel implements StudentModel {
 		double heuristicEsitmate = idealSteps + 
 				IdealEquationSolver.heuristic(lastIdealEquation) * heuristicOverweight;
 		
-		System.out.printf("%d vs %d, %s vs %s, %.02f\n", studentSteps, idealSteps, "" + studentSolved,
-				"" + idealSolved, heuristicEsitmate);
-		debugList(aStar);
+//		System.out.printf("%d vs %d, %s vs %s, %.02f\n", studentSteps, idealSteps, "" + studentSolved,
+//				"" + idealSolved, heuristicEsitmate);
+//		debugList(aStar);
 		
 		if (studentSolved) {
 			if (idealSolved) {
@@ -297,8 +340,8 @@ public class BasicStudentModel implements StudentModel {
 			if (aStarAfter == null) return studentSteps;
 			int idealStepsAfter = getNumSteps(aStarAfter);
 			
-			System.out.println("idealAfter: " + idealStepsAfter);
-			debugList(aStarAfter);
+//			System.out.println("idealAfter: " + idealStepsAfter);
+//			debugList(aStarAfter);
 			
 			if (idealSolved) {	
 				return idealStepsAfter + studentSteps - idealSteps;
@@ -313,6 +356,7 @@ public class BasicStudentModel implements StudentModel {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void debugList(List<Step> aStar) {
 		List<List<String>> s = new ArrayList<List<String>>();
 		for (Step st : aStar) {
@@ -322,8 +366,6 @@ public class BasicStudentModel implements StudentModel {
 		}
 		System.out.println(s);
 	}
-	
-	
 	
 	private static int getNumSteps(List<Step> steps) {
 		int numSteps = 0;

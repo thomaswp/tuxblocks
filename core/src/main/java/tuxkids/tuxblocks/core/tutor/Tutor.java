@@ -17,7 +17,6 @@ import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
-import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Formatter;
@@ -30,23 +29,24 @@ public class Tutor implements Strings_Hint {
 		Vague, Specific, BottomOut
 	}
 	
-	private StudentModel model;
 	private Equation lastHintEquation;
 	private HintLevel lastHintLevel = HintLevel.Vague;
 
 	public static class Hint {
 		public final String text;
 		public final SolveAction action;
+		public final HintLevel level;
 		public final List<EquationBlockIndex> highlights = new ArrayList<EquationBlockIndex>();
 		
 		public final static String DOMAIN = "hint";
 
 		public Hint(String key) {
-			this(null, key);
+			this(null, null, key);
 		}
 		
-		public Hint(SolveAction action, String key, Object... args) {
+		public Hint(SolveAction action, HintLevel level, String key, Object... args) {
 			this.action = action;
+			this.level = level;
 			this.text = Formatter.format(Lang.getString(DOMAIN, key), args);
 		}
 		
@@ -110,21 +110,21 @@ public class Tutor implements Strings_Hint {
 			} else {
 				text = key_dragVagueVertical;
 			}
-			return new Hint(action, text);
+			return new Hint(action, level, text);
 		}
 		
 		if (level == HintLevel.Specific) {
-			return new Hint(action, key_dragSpecific, dragging.toString())
+			return new Hint(action, level, key_dragSpecific, dragging.toString())
 			.addHighlights(action.fromIndex);
 		}
 		
-		return new Hint(action, key_dragBottomOut, dragging.toString(), dragTo.toString())
+		return new Hint(action, level, key_dragBottomOut, dragging.toString(), dragTo.toString())
 		.addHighlights(action.fromIndex, EquationBlockIndex.fromBaseBlockIndex(action.toIndex));
 	}
 	
 	private Hint getSimplifyHint(Equation equation, FinishSimplifyAction action, HintLevel level) {
 		if (level == HintLevel.Vague) {
-			return new Hint(action, key_simplifyVague);
+			return new Hint(action, level, key_simplifyVague);
 		}
 		
 		Block base = equation.getBlock(action.baseIndex);
@@ -137,34 +137,34 @@ public class Tutor implements Strings_Hint {
 		
 		if (level == HintLevel.Specific) {
 			if (!cancel) {
-				return new Hint(action, key_simplifySpecificSimplify, base.toString())
+				return new Hint(action, level, key_simplifySpecificSimplify, base.toString())
 				.addHighlights(action.baseIndex);
 			} else {
-				return new Hint(action, key_simplifySpecificCancel);
+				return new Hint(action, level, key_simplifySpecificCancel);
 			}
 		}
 		
 		if (!cancel) {
-			return new Hint(action, key_simplifyBottomOutSimplify, base.toString(), pair.toString())
+			return new Hint(action, level, key_simplifyBottomOutSimplify, base.toString(), pair.toString())
 			.addHighlights(action.baseIndex, action.pairIndex);
 		} else {
-			return new Hint(action, key_simplifyBottomOutCancel, base.toString(), pair.toString())
+			return new Hint(action, level, key_simplifyBottomOutCancel, base.toString(), pair.toString())
 			.addHighlights(action.baseIndex, action.pairIndex);
 		}
 	}
 	
 	private Hint getReciprocalHint(Equation equation, ReciprocalAction action, HintLevel level) {
 		if (level == HintLevel.Vague) {
-			return new Hint(action, key_reciprocateVague);
+			return new Hint(action, level, key_reciprocateVague);
 		}
 		
 		Block toCancel = equation.getBlock(action.index);
 		if (level == HintLevel.Specific) {
-			return new Hint(action, key_reciprocateSpecific, toCancel.toString())
+			return new Hint(action, level, key_reciprocateSpecific, toCancel.toString())
 			.addHighlights(action.index);
 		}
 		
-		return new Hint(action, key_reciprocateBottomOut, 
+		return new Hint(action, level, key_reciprocateBottomOut, 
 				Lang.getDeviceString("tutorial", Constant.TUTORIAL_TEXT_CLICK), toCancel)
 		.addHighlights(action.index);
 	}

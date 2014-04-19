@@ -9,6 +9,7 @@ import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.solve.action.DragAction;
 import tuxkids.tuxblocks.core.solve.action.FinishProblemAction;
 import tuxkids.tuxblocks.core.solve.action.FinishSimplifyAction;
+import tuxkids.tuxblocks.core.solve.action.HintAction;
 import tuxkids.tuxblocks.core.solve.action.ReciprocalAction;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.StartProblemAction;
@@ -365,6 +366,10 @@ public abstract class EquationManipulator extends PlayNObject {
 		if (shouldActionCallback()) {
 			reportSolveAction(new FinishProblemAction(isEquationSolved(equation)));
 		}
+	}
+	
+	public void logSolveAction(HintAction action) {
+		if (shouldActionCallback()) reportSolveAction(action);
 	}
 	
 	protected void reportSolveAction(SolveAction action) {		
