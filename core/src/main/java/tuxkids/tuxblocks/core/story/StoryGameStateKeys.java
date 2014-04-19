@@ -21,4 +21,9 @@ public interface StoryGameStateKeys {
      */
     final static String TSRB = "Taught Start Round Button";
 
+    /**
+     * Has Tutorial2ExplainingStarred executed?
+     */
+	final static String HESP = "Has Explained Starred Problems";
+
 }

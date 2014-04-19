@@ -117,6 +117,10 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 		if (retVal == null) return false;
 		return retVal.booleanValue();
 	}
+
+	public boolean isThereAStarredProblemOut() {
+		return false;
+	}
 	
 
 
