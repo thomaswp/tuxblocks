@@ -54,7 +54,6 @@ import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VerticalModifierBlock;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
-import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.utils.Debug;
@@ -106,79 +105,79 @@ public class BasicStudentModel implements StudentModel {
 
 	private void initializeKnowledgeComponents() {
 		knowledgeBits.put(ADD_INTEGERS, new KnowledgeComponent(
-				"Add Integers < 100", L0_HIGH, BASE_SLIP, BASE_GUESS,
+				"Add Integers < 100", L0_HIGH, SLIP_EXTREME, GUESS_HIGH,
 				TRANSITION_MED));
 		knowledgeBits.put(SUBTRACT_INTEGERS, new KnowledgeComponent(
-				"Subtract Integers < 100", L0_HIGH, BASE_SLIP, BASE_GUESS,
+				"Subtract Integers < 100", L0_HIGH, SLIP_EXTREME, GUESS_HIGH,
 				TRANSITION_MED));
 		knowledgeBits.put(MULTIPLY_INTEGERS_LOW, new KnowledgeComponent(
-				"Multiply Integers 1-4", L0_HIGH, BASE_SLIP, BASE_GUESS,
+				"Multiply Integers 1-4", L0_HIGH, SLIP_EXTREME, GUESS_HIGH,
 				TRANSITION_MED));
 		knowledgeBits.put(MULTIPLY_INTEGERS_MED, new KnowledgeComponent(
-				"Multiply Integers 4-9", L0_HIGH, BASE_SLIP, BASE_GUESS,
+				"Multiply Integers 4-9", L0_MED, SLIP_EXTREME, GUESS_HIGH,
 				TRANSITION_MED));
 		knowledgeBits.put(MULTIPLY_INTEGERS_HIGH, new KnowledgeComponent(
-				"Multiply Integers 10+", L0_MED, BASE_SLIP, BASE_GUESS,
+				"Multiply Integers 10+", L0_MED, SLIP_EXTREME, GUESS_MED,
 				TRANSITION_MED));
 		knowledgeBits.put(DIVIDE_INTEGERS_LOW, new KnowledgeComponent(
-				"Divide Integers 1-4", L0_HIGH, BASE_SLIP, BASE_GUESS,
+				"Divide Integers 1-4", L0_HIGH, SLIP_EXTREME, GUESS_HIGH,
 				TRANSITION_MED));
 		knowledgeBits.put(DIVIDE_INTEGERS_MED, new KnowledgeComponent(
-				"Divide Integers 4-9", L0_HIGH, BASE_SLIP, BASE_GUESS,
+				"Divide Integers 4-9", L0_MED, SLIP_EXTREME, GUESS_HIGH,
 				TRANSITION_MED));
 		knowledgeBits.put(DIVIDE_INTEGERS_HIGH, new KnowledgeComponent(
-				"Divide Integers 10+", L0_MED, BASE_SLIP, BASE_GUESS,
+				"Divide Integers 10+", L0_MED, SLIP_EXTREME, GUESS_MED,
 				TRANSITION_MED));
 
 		knowledgeBits.put(COMBINE_UNKNOWNS, new KnowledgeComponent(
-				"Combine Unknowns", L0_MED, BASE_SLIP, BASE_GUESS, TRANSITION_MED));
+				"Combine Unknowns", L0_MED, SLIP_LOW, GUESS_LOW, TRANSITION_MED));
 
 		knowledgeBits.put(ADD_EQUATION_SIDES, new KnowledgeComponent(
-				"Add Sides of Equations", L0_MED, BASE_SLIP, BASE_GUESS,
+				"Add Sides of Equations", L0_MED, SLIP_MED, GUESS_MED,
 				TRANSITION_LOW));
 		knowledgeBits.put(SUBTRACT_EQUATION_SIDES, new KnowledgeComponent(
-				"Subtract Sides of Equations", L0_MED, BASE_SLIP, BASE_GUESS,
+				"Subtract Sides of Equations", L0_MED, SLIP_MED, GUESS_MED,
 				TRANSITION_LOW));
 
 		knowledgeBits.put(MULTIPLY_SINGLE_SIDE, new KnowledgeComponent(
-				"Multiply Sides of Equations 1 term", L0_MED, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Multiply Sides of Equations 1 term", L0_MED, SLIP_MED,
+				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(MULTIPLY_MULTIPLE_SIDES, new KnowledgeComponent(
-				"Multiply Sides of Equations 2+ terms", L0_LOW, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Multiply Sides of Equations 2+ terms", L0_LOW, SLIP_LOW,
+				GUESS_LOW, TRANSITION_LOW));
 		knowledgeBits.put(DIVIDE_SINGLE_SIDE, new KnowledgeComponent(
-				"Divide Sides of Equations 1 term", L0_MED, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Divide Sides of Equations 1 term", L0_MED, SLIP_MED,
+				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(DIVIDE_MULTIPLE_SIDES, new KnowledgeComponent(
-				"Divide Sides of Equations 2+ terms", L0_LOW, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Divide Sides of Equations 2+ terms", L0_LOW, SLIP_LOW,
+				GUESS_LOW, TRANSITION_LOW));
 		
 		knowledgeBits.put(SIMPLIFY_ADDENS, new KnowledgeComponent(
-				"Combine two addens", L0_LOW, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Combine two addens", L0_LOW, SLIP_MED,
+				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(SIMPLIFY_DIFFERENT_FACTORS, new KnowledgeComponent(
-				"Combine a times and over block", L0_LOW, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Combine a times and over block", L0_LOW, SLIP_MED,
+				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(SIMPLIFY_LIKE_FACTORS, new KnowledgeComponent(
-				"Combine two times or over blocks", L0_LOW, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Combine two times or over blocks", L0_LOW, SLIP_MED,
+				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(CANCEL_ADDENS, new KnowledgeComponent(
-				"Cancel two negating addens", L0_LOW, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Cancel two negating addens", L0_LOW, SLIP_MED,
+				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(CANCEL_FACTORS, new KnowledgeComponent(
-				"Cancel two negating factors", L0_LOW, BASE_SLIP,
-				BASE_GUESS, TRANSITION_LOW));
+				"Cancel two negating factors", L0_LOW, SLIP_LOW,
+				GUESS_LOW, TRANSITION_LOW));
 
 		knowledgeBits.put(DISTRIBUTION, new KnowledgeComponent("Distribution",
-				L0_LOW, BASE_SLIP, BASE_GUESS, TRANSITION_MED));
+				L0_LOW, SLIP_LOW, GUESS_LOW, TRANSITION_MED));
 		knowledgeBits.put(COMBINATION, new KnowledgeComponent("Combination",
-				L0_LOW, BASE_SLIP, BASE_GUESS, TRANSITION_LOW));
+				L0_LOW, SLIP_LOW, GUESS_LOW, TRANSITION_LOW));
 
 		knowledgeBits.put(BUILDING_SYMBOLIC_EQUATIONS, new KnowledgeComponent(
-				"Building Symbolic Equations", L0_MED, BASE_SLIP, BASE_GUESS,
+				"Building Symbolic Equations", L0_MED, SLIP_LOW, GUESS_LOW,
 				TRANSITION_MED));
 		knowledgeBits.put(BUILDING_WRITTEN_EQUATIONS, new KnowledgeComponent(
-				"Building Written Equations", L0_MED, BASE_SLIP, BASE_GUESS,
+				"Building Written Equations", L0_MED, SLIP_LOW, GUESS_LOW,
 				TRANSITION_MED));
 	}
 	
