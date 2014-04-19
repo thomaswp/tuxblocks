@@ -283,7 +283,9 @@ public class NumberSelectScreen extends GameScreen implements Listener {
 	
 	// try to go back, checking the selected answer, if any
 	private void tryAnswer() {
-		if (selectedPoint != null && !hasCorrectAnswer()) {
+		if (buttonBack.image() == backImageCancel) {
+			popThis();
+		} else if (selectedPoint != null && !hasCorrectAnswer()) {
 			buttonBack.setImage(backImageCancel);
 			Audio.se().play(Constant.SE_BACK);
 			mistakes++;
