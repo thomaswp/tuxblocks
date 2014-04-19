@@ -25,6 +25,7 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 	protected final MultiList<BaseBlock> allBlocks = new MultiList<BaseBlock>(leftSide, rightSide);
 	private Renderer renderer;
 	private String machineReadableName;
+	private final List<Integer> tags = new ArrayList<Integer>();
 	
 	/** Returns the left side of the equation. */
 	public Iterable<BaseBlock> leftSide() {
@@ -78,12 +79,20 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 		return renderer().getPlainText();
 	}
 	
+	public Iterable<Integer> tags() {
+		return tags;
+	}
+	
 	protected Equation() { }
 	
 	/** Constructions an Equation from the given left and right sides */
 	public Equation(List<BaseBlock> leftSide, List<BaseBlock> rightSide) {
 		this.leftSide.addAll(leftSide);
 		this.rightSide.addAll(rightSide);
+	}
+	
+	public void addTag(Integer tag) {
+		tags.add(tag);
 	}
 	
 	protected Renderer createRenderer() {
@@ -124,12 +133,16 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 	
 	/** Returns a deep copy of this Equation */
 	public Equation copy() {
-		return createCopyBuilder().createEquation();
+		Equation eq = createCopyBuilder().createEquation();
+		eq.tags.addAll(tags);
+		return eq;
 	}
 	
 	/** Returns a mutable deep copy of this Equation */
 	public MutableEquation mutableCopy() {
-		return createCopyBuilder().createMutableEquation();
+		MutableEquation eq = createCopyBuilder().createMutableEquation();
+		((Equation) eq).tags.addAll(tags);
+		return eq;
 	}
 	
 	
@@ -261,6 +274,7 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 			NumberFormatException {
 		data.persistList(leftSide);
 		data.persistList(rightSide);
+		data.persistIntList(tags);
 	}
 
 	/**

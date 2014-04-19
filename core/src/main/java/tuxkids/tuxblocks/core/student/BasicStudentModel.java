@@ -233,7 +233,6 @@ public class BasicStudentModel implements StudentModel {
 	}
 
 	private void updateModel() {
-		Debug.write("size: " + currentEquations.size());
 		if (currentEquations.size() < 1) return;
 		int maxSteps = Tutor.MAX_HINT_ITERATIONS;
 		List<Step> previousSolution = null;

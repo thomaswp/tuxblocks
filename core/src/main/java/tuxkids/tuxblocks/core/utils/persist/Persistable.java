@@ -166,7 +166,7 @@ public interface Persistable {
 		// Arrays are stored int the format "length{\n}1|2|3|4"
 		public int[] persistArray(int[] x) throws NumberFormatException, ParseDataException {
 			if (writeMode) {
-				int length = persist(x == null ? 0 : x.length);
+				int length = persist(x == null ? -1 : x.length);
 				if (x != null) {
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < length; i++) {
@@ -177,16 +177,19 @@ public interface Persistable {
 				}
 			} else {
 				int length = persist(0);
-				if (length != 0) {
+				if (length >= 0) {
 					if (x != null){
 						if (x.length != length) throw new ParseDataException();
 					} else {
 						x = new int[length];
 					}
-					String[] data = read().split("\\" + DIV);
-					int i = 0;
-					for (String part : data) {
-						x[i++] = Integer.parseInt(part);
+					String read = read();
+					if (read.length() > 0) {
+						String[] data = read.split("\\" + DIV);
+						int i = 0;
+						for (String part : data) {
+							x[i++] = Integer.parseInt(part);
+						}
 					}
 				} else {
 					x = null;
@@ -228,12 +231,15 @@ public interface Persistable {
 		
 		public List<Integer> persistIntList(List<Integer> x) throws NumberFormatException, ParseDataException  {
 			if (writeMode) {
-				int[] array = new int[x == null ? 0 : x.size()];
-				for (int i = 0; i < array.length; i++) {
-					array[i] = x.get(i);
+				int length = x == null ? -1 : x.size();
+				int[] array = null;
+				if (length >= 0) {
+					array = new int[length];
+					for (int i = 0; i < length; i++) {
+						array[i] = x.get(i);
+					}
 				}
 				persistArray(array);
-				return x;
 			} else {
 				int[] array = persistArray(null);
 				if (array == null) return null;
@@ -241,6 +247,7 @@ public interface Persistable {
 				for (int i : array) list.add(i);
 				return list;
 			}
+			return x;
 		}
 		
 		private final static String NULL = "null";
