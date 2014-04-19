@@ -25,6 +25,7 @@ public class TutorialValidator {
 	public final static String DEFAULT_LANG = "en";
 	private final static PrintStream log = System.out;
 	private final static String TUTORIAL_ID = "tutorial_id";
+	private final static String TUTORIAL_DESC = "tutorial_desc";
 	private final static String PACKAGE = "tuxkids.tuxblocks.core.tutorial.gen";
 	
 	private HashMap<String, JSONObject> objects = new HashMap<String, JSONObject>();
@@ -90,12 +91,15 @@ public class TutorialValidator {
 		
 		try {
 			JDefinedClass tutorial = codeModel._class(PACKAGE + "." + id + "_Base", ClassType.INTERFACE);
+			if (object.has(TUTORIAL_DESC)) {
+				tutorial.javadoc().add(object.get(TUTORIAL_DESC));
+			}
 			JFieldVar filenameField = tutorial.field(JMod.FINAL | JMod.STATIC, String.class, "filename");
 			filenameField.javadoc().add("The file name of this tutorial");
 			filenameField.init(JExpr.lit(filename));
 			String[] keys = JSONObject.getNames(object);
 			for (String key : keys) {
-				if (TUTORIAL_ID.equals(key)) continue;
+				if (TUTORIAL_ID.equals(key) || TUTORIAL_DESC.equals(key)) continue;
 				String value = object.getString(key);
 				JFieldVar field = tutorial.field(JMod.FINAL | JMod.STATIC, String.class, key);
 				field.javadoc().add(value);

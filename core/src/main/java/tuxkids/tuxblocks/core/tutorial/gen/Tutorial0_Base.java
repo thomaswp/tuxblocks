@@ -2,6 +2,11 @@
 package tuxkids.tuxblocks.core.tutorial.gen;
 
 
+
+/**
+ * Lays the preliminary story and shows how to drop towers
+ * 
+ */
 public interface Tutorial0_Base {
 
     /**
