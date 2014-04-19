@@ -265,7 +265,10 @@ public class BasicStudentModel implements StudentModel {
 				
 				// count hints
 				if (action instanceof HintAction) {
-					hints[((HintAction) action).level]++;
+					if (!(lastAction instanceof HintAction &&
+							((HintAction) action).level == ((HintAction) lastAction).level)) {
+						hints[((HintAction) action).level]++;
+					}
 				}
 				
 				// check success
