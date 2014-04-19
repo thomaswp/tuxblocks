@@ -1,10 +1,7 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-import static tuxkids.tuxblocks.core.story.StoryGameStateKeys.*;
-import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
+import static tuxkids.tuxblocks.core.story.StoryGameStateKeys.HESP;
 import tuxkids.tuxblocks.core.story.StoryGameState;
-import tuxkids.tuxblocks.core.story.StoryGameStateKeys;
-import tuxkids.tuxblocks.core.tutorial.FSMTutorial.FSMState;
 import tuxkids.tuxblocks.core.tutorial.gen.ExplainingStarred_Base;
 import tuxkids.tuxblocks.core.utils.Debug;
 
@@ -33,7 +30,7 @@ public class Tutorial2ExplainingStarred extends FSMTutorial implements Explainin
 	protected void endOfTutorial() {
 		Debug.write("End");
 		super.endOfTutorial();
-		gameState.setBoolean(StoryGameStateKeys.HESP, true);
+		gameState.setBoolean(HESP, true);
 		gameState.finishedLesson();
 	}
 

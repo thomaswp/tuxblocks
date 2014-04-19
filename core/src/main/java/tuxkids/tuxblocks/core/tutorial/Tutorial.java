@@ -138,7 +138,7 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	public static void start(StoryGameState state) {
-		loadTutorial(state.getCurrentTutorialInstance());
+		loadTutorial(state.makeTutorialInstance());
 	}
 
 	public static void loadTutorial(final TutorialInstance tutorial) {
@@ -154,6 +154,10 @@ public abstract class Tutorial extends PlayNObject {
 				cause.printStackTrace();
 			}
 		});
+	}
+
+	public static void unloadTutorial() {
+		instance = null;
 	}
 
 	/** Called from {@link TuxBlocksGame#paint(float)} */
