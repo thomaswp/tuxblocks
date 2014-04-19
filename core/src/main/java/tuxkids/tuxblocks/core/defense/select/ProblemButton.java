@@ -93,7 +93,6 @@ public class ProblemButton extends Button {
 		TextFormat textFormat = new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, eqTextSize));
 		final ExpressionWriter writer = problem.equation().renderer().getExpressionWriter(textFormat); // for drawing the equation
 		
-		final float eqWidth = writer.width(); 
 		float eqHeight = writer.height();
 		
 		final float height = Math.max(eqHeight + padding * 2, minHeight);
@@ -121,8 +120,8 @@ public class ProblemButton extends Button {
 				@Override
 				public void onSuccess(Image result) {
 					Image tintedRewardImage = CanvasUtils.tintImage(rewardImage, secondaryColor);
-					drawButtonImageDependent(problem, width, padding, writer, eqWidth, height, canvas,
-							rewardImageSize, tintedRewardImage);
+					drawButtonImageDependent(problem, width, padding, writer, height, canvas,
+							rewardImageSize, tintedRewardImage, 0.8f);
 				}
 
 				@Override
@@ -132,18 +131,19 @@ public class ProblemButton extends Button {
 			});
 		} else {
 			rewardImage = reward.instance().createImage(cellSize, towerColor);
-			drawButtonImageDependent(problem, width, padding, writer, eqWidth, height, canvas,
-					rewardImageSize, rewardImage);
+			drawButtonImageDependent(problem, width, padding, writer, height, canvas,
+					rewardImageSize, rewardImage, 1);
 		}
 		
 		return image;
 	}
 
+	// TODO: clean up 
 	private static void drawButtonImageDependent(Problem problem, float width, float padding,
-			ExpressionWriter writer, float eqWidth, float height,
-			Canvas canvas, float rewardImageSize, Image rewardImage) {
+			ExpressionWriter writer, float height, Canvas canvas, 
+			float rewardImageSize, Image rewardImage, float imageScale) {
 
-		float scale = rewardImageSize / Math.max(rewardImageSize, rewardImage.width() * 1.3f);
+		float scale = rewardImageSize / Math.max(rewardImageSize, rewardImage.width()) * imageScale;
 		float sw = scale * rewardImage.width();
 		float sh = scale * rewardImage.height();
 		
@@ -168,7 +168,7 @@ public class ProblemButton extends Button {
 		canvas.setStrokeWidth(1);
 		canvas.setFillColor(Colors.BLACK);
 		canvas.setStrokeColor(Colors.BLACK);
-		float eqStartX = (lineX - eqWidth) / 2;
+		float eqStartX = (lineX - writer.width()) / 2;
 		
 		canvas.save();
 		canvas.translate(eqStartX, (height - writer.height()) / 2);
