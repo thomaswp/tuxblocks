@@ -28,7 +28,7 @@ public class KnowledgeComponent implements Persistable {
 		double slip = this.slip;
 		if (wasCorrect) slip = 1 - slip;
 		double guess = this.guess;
-		if (!wasCorrect) guess = 1 - slip;
+		if (!wasCorrect) guess = 1 - guess;
 		
 		double lUpdated = (probLearned * slip) / (probLearned * slip + (1 - probLearned) * guess);
 		probLearned = lUpdated + (1 - probLearned) * transition;
