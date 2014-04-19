@@ -276,7 +276,8 @@ public class EquationManipulatorSolver extends EquationManipulator implements Bl
 	@Override
 	public void wasSimplified(Block sprite, ModifierBlock pair,
 			ModifierGroup modifiers, int fails, boolean success) {
-		extraActions.add(new FinishSimplifyAction(null, null, 0, fails, success));
+		//TODO: figure out if this is necessary and when
+		//extraActions.add(new FinishSimplifyAction(null, null, 0, fails, success));
 	}
 
 	@Override

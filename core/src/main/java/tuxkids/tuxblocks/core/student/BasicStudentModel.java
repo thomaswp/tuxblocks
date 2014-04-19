@@ -42,6 +42,7 @@ import tuxkids.tuxblocks.core.solve.blocks.BaseBlock;
 import tuxkids.tuxblocks.core.solve.blocks.Block;
 import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.EquationManipulator;
 import tuxkids.tuxblocks.core.solve.blocks.HorizontalModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.MinusBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
@@ -55,6 +56,7 @@ import tuxkids.tuxblocks.core.solve.blocks.VerticalModifierBlock;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
+import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
 import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.utils.Debug;
 
@@ -257,6 +259,96 @@ public class BasicStudentModel implements StudentModel {
 //			}
 //			previousSolution = currentSolution;
 		}
+		System.out.println(getSolveExcess());
+	}
+	
+	private int getSolveExcess() {
+		int studentSteps = getNumMeaningfulSteps(currentStudentActions, true);
+		if (studentSteps == 0) return 0;
+		
+		Equation start = currentEquations.get(0);
+		List<Step> aStar = IdealEquationSolver.aStar(start, Tutor.MAX_HINT_ITERATIONS);
+		if (aStar == null) return 0;
+		
+		Equation lastStudentEquation = currentEquations.get(currentEquations.size() - 1);
+		Equation lastIdealEquation = aStar.get(aStar.size() - 1).result;
+		
+		boolean studentSolved = EquationManipulator.isEquationSolved(lastStudentEquation);
+		boolean idealSolved = EquationManipulator.isEquationSolved(lastIdealEquation);
+		
+		int idealSteps = getNumSteps(aStar);
+		double heuristicOverweight = 1.5;
+		double heuristicEsitmate = idealSteps + 
+				IdealEquationSolver.heuristic(lastIdealEquation) * heuristicOverweight;
+		
+		System.out.printf("%d vs %d, %s vs %s, %.02f\n", studentSteps, idealSteps, "" + studentSolved,
+				"" + idealSolved, heuristicEsitmate);
+		debugList(aStar);
+		
+		if (studentSolved) {
+			if (idealSolved) {
+				return studentSteps - idealSteps;
+			} else {
+				return studentSteps - (int) heuristicEsitmate;
+			}
+		} else {
+			List<Step> aStarAfter = IdealEquationSolver.aStar(lastStudentEquation, 
+				Tutor.MAX_HINT_ITERATIONS);
+			if (aStarAfter == null) return studentSteps;
+			int idealStepsAfter = getNumSteps(aStarAfter);
+			
+			System.out.println("idealAfter: " + idealStepsAfter);
+			debugList(aStarAfter);
+			
+			if (idealSolved) {	
+				return idealStepsAfter + studentSteps - idealSteps;
+			} else {
+				if (aStarAfter.size() == 0) return 0;
+				Equation lastIdealEquationAfter = aStarAfter.get(aStarAfter.size() - 1).result;
+				double heuristicAfter = idealStepsAfter + 
+						IdealEquationSolver.heuristic(lastIdealEquationAfter) * heuristicOverweight;
+				
+				return studentSteps + (int) (heuristicAfter - heuristicEsitmate);
+			}
+		}
+	}
+
+	private void debugList(List<Step> aStar) {
+		List<List<String>> s = new ArrayList<List<String>>();
+		for (Step st : aStar) {
+			List<String> ss = new ArrayList<String>();
+			for (SolveAction action : st.actions) ss.add(action.name());
+			s.add(ss);
+		}
+		System.out.println(s);
+	}
+	
+	
+	
+	private static int getNumSteps(List<Step> steps) {
+		int numSteps = 0;
+		for (Step step : steps) {
+			numSteps += getNumMeaningfulSteps(step.actions, false);
+		}
+		return numSteps;
+	}
+	
+	private static int getNumMeaningfulSteps(List<SolveAction> actions, boolean inOrder) {
+		int steps = 0;
+		boolean lastStartSimplify = false;
+		for (SolveAction action : actions) {
+			if (action.success && (
+					action instanceof DragAction || 
+					action instanceof ReciprocalAction ||
+					action instanceof FinishSimplifyAction)) {
+				
+				if (!(action instanceof FinishSimplifyAction && inOrder && !lastStartSimplify)) {
+					steps++;
+				}
+			}
+			lastStartSimplify = action instanceof StartSimplifyAction;
+		}
+		return steps;
 	}
 
 	private void updateArithmeticModel(StartSimplifyAction startSimplifying,
