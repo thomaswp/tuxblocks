@@ -8,7 +8,6 @@ import tuxkids.tuxblocks.core.defense.TowerState;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
-import tuxkids.tuxblocks.core.defense.select.StarredProblem;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
@@ -97,8 +96,6 @@ public class GameState implements Persistable {
 		for (int i = 0; i < 2; i++) {
 			addProblemWithReward(0);
 		}
-		problems.add(new StarredProblem(EquationGenerator.generateFormA2(), 
-				new Reward(TowerType.BigShooter, 1), 0));
 	}
 
 	public Grid grid() {
@@ -220,8 +217,9 @@ public class GameState implements Persistable {
 	
 	// Creates an Equation based on a math difficulty and percent trough the
 	// current game (problems get harder as the game goes on)
-	protected Equation createEquation(int difficulty, float percFinished) {
-		return EquationGenerator.generate(difficulty, percFinished);
+	protected Problem createProblem(int difficulty, float percFinished, Reward reward) {
+		Equation equation = EquationGenerator.generate(difficulty, percFinished);
+		return new Problem(equation, reward);
 	}
 	
 	public void addProblemWithReward(float percFinished) {
@@ -254,8 +252,7 @@ public class GameState implements Persistable {
 		percFinished = Math.max(Math.min(percFinished, 1), 0);
 		int points = (int)(percFinished * (MAX_REWARD_POINTS - 0.5f) + 0.5f) + 1;
 		
-		Equation eq = createEquation(difficulty, percFinished);
-		Problem problem = new Problem(eq, createReward(points));
+		Problem problem = createProblem(difficulty, percFinished, createReward(points));
 		while (problems.size() >= MAX_PROBLEMS) {
 			removeProblem();
 		}

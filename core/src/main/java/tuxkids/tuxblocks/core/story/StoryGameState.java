@@ -6,6 +6,9 @@ import java.util.Map;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.Grid;
+import tuxkids.tuxblocks.core.defense.round.Reward;
+import tuxkids.tuxblocks.core.defense.select.Problem;
+import tuxkids.tuxblocks.core.defense.select.StarredProblem;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
@@ -101,10 +104,15 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 	}
 	
 	@Override
-	protected Equation createEquation(int difficulty, float percFinished) {
-		if (studentModel.isReadyForNextStarred())
-			return studentModel.getNextStarredEquation();
-		return studentModel.getNextGeneralEquation();
+	protected Problem createProblem(int difficulty, float percFinished, Reward reward) {
+		if (studentModel.isReadyForNextStarred() && level.roundNumber() > 1) {
+			Equation equation = studentModel.getNextStarredEquation();
+			return new StarredProblem(equation, reward, 0);
+		} else {
+			Equation equation = studentModel.getNextGeneralEquation();
+			return new Problem(equation, reward);
+		}
+		
 	}
 
 	public void setBoolean(String key, boolean value) {

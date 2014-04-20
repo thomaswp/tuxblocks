@@ -129,7 +129,7 @@ public class DifficultyScreen extends BaseScreen implements Strings_Difficulty {
 		// start sliders in the middle
 		mathSlider.setStop(2, true);
 		gameSlider.setStop(2, true);
-		timeSlider.setStop(2, true);
+		timeSlider.setStop(0, true);
 		
 		// add header buttons
 		Button buttonOk = header.addRightButton(Constant.BUTTON_OK);

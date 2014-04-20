@@ -1,6 +1,8 @@
 package tuxkids.tuxblocks.core.tutorial.linear;
 
 import tuxkids.tuxblocks.core.GameState;
+import tuxkids.tuxblocks.core.defense.round.Reward;
+import tuxkids.tuxblocks.core.defense.select.Problem;
 import tuxkids.tuxblocks.core.solve.blocks.BlockHolder;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
@@ -38,10 +40,10 @@ public class TutorialGameState extends GameState {
 	}
 
 	@Override
-	protected Equation createEquation(int difficulty, float percFinished) {
+	protected Problem createProblem(int difficulty, float percFinished, Reward reward) {
 		if (eqationIndex < equations.length) {
-			return equations[eqationIndex++];
+			return new Problem(equations[eqationIndex++], reward);
 		}
-		return super.createEquation(difficulty, percFinished);
+		return super.createProblem(difficulty, percFinished, reward);
 	}
 }
