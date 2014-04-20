@@ -162,25 +162,15 @@ public class BasicStudentModel implements StudentModel {
 				"Building Written Equations", L0_MED, SLIP_LOW, GUESS_LOW,
 				TRANSITION_MED));
 	}
-	
-	private static final Equation[] starredEquations = new Equation[2];
-	private int starredEquationIndex = 0;
-	
-	static {
-		starredEquations[0] = new Equation.Builder().addLeft(new VariableBlock("x"))
-				.addRight(new NumberBlock(4).times(3)).createEquation().name("3x4");
-		starredEquations[1] = new Equation.Builder().addLeft(new VariableBlock("x"))
-				.addRight(new NumberBlock(6).minus(5)).createEquation().name("6-5");
-	}
 
 	@Override
 	public boolean isReadyForNextStarred() {
-		return starredEquationIndex < 2;
+		return false;
 	}
 
 	@Override
-	public Equation getNextStarredEquation() {
-		return starredEquations[starredEquationIndex++];
+	public TutorialEquation getNextStarredEquation() {
+		return null;
 	}
 
 	@Override

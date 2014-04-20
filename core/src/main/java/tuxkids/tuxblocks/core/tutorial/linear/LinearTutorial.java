@@ -25,6 +25,10 @@ public abstract class LinearTutorial implements TutorialInstance {
 	
 	protected abstract void addActions();
 	
+	public void init() {
+		
+	}
+	
 	protected boolean hasAction() {
 		return actionIndex > 0 && actionIndex < actions.size();
 	}

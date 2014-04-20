@@ -5,6 +5,11 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public interface TutorialInstance {
 
+	/** 
+	 * Called before any other method, when this tutorial is loaded by {@link Tutorial} 
+	 * and set as the instance 
+	 */
+	void init();
 	void loadTextFile(String result);
 	void paint(Clock clock);
 	void update(int delta);

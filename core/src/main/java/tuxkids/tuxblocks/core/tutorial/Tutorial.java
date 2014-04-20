@@ -143,6 +143,7 @@ public abstract class Tutorial extends PlayNObject {
 
 	public static void loadTutorial(final TutorialInstance tutorial) {
 		instance = tutorial;
+		tutorial.init();
 		Lang.getText(tutorial.filename(), new Callback<String>() {
 			@Override
 			public void onSuccess(String result) {

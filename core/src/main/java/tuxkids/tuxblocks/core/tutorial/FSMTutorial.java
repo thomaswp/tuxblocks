@@ -28,8 +28,12 @@ abstract class FSMTutorial implements TutorialInstance {
 	protected abstract void setUpStates();
 	
 	public FSMTutorial(StoryGameState storyGameState) {
-		layer = new TutorialLayer();
 		this.gameState = storyGameState;
+	}
+	
+	public void init() {
+		// because TutorialLayer adds to the rootLayer, we don't create it until we're shown
+		layer = new TutorialLayer();
 	}
 	
 	protected FSMState addStartState(String id) {

@@ -11,6 +11,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierGroup;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public interface StudentModel extends Persistable, SolveActionCallback {
@@ -35,7 +36,7 @@ public interface StudentModel extends Persistable, SolveActionCallback {
 
 	boolean isReadyForNextStarred();
 
-	Equation getNextStarredEquation();
+	TutorialEquation getNextStarredEquation();
 
 	Equation getNextGeneralEquation();
 
@@ -49,4 +50,14 @@ public interface StudentModel extends Persistable, SolveActionCallback {
 
 	void addDragActionTags(DragAction action, Equation before);
 	
+	static class TutorialEquation {
+		public Equation equation;
+		public TutorialInstance tutorial;
+		
+		public TutorialEquation set(Equation equation, TutorialInstance tutorial) {
+			this.equation = equation;
+			this.tutorial = tutorial;
+			return this;
+		}
+	}
 }

@@ -12,11 +12,15 @@ import tuxkids.tuxblocks.core.defense.select.StarredProblem;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
+import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
+import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
+import tuxkids.tuxblocks.core.student.StudentModel.TutorialEquation;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
-import tuxkids.tuxblocks.core.tutorial.Tutorial2ExplainingStarred;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
@@ -24,26 +28,35 @@ import tuxkids.tuxblocks.core.utils.persist.Persistable;
 public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	private int tutorialIndex = 0;
-	
+
 	private boolean hasSetupTowersForLesson = false;
-	
+
 	private Map<String, Boolean> booleansMap = new HashMap<String, Boolean>();
-	
+
+	private final Equation[] starredEquations = new Equation[] {
+			new Equation.Builder().addLeft(new VariableBlock("x"))
+					.addRight(new NumberBlock(4).times(3)).createEquation().name("3x4"),
+			new Equation.Builder().addLeft(new VariableBlock("x"))
+					.addRight(new NumberBlock(6).minus(5)).createEquation().name("6-5")
+	};
+	private int starredEquationIndex = 0;
+
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
 
 	}
-	
+
 	@Override
 	protected void setUpProblems() {
 		//The student model gets these.
+		problems().add(new StarredProblem(EquationGenerator.generate(3, 1), createReward(1), new StarredTutorial1(this)));
 	}
-	
+
 	@Override
 	protected void setUpTowers() {
 		addItem(TowerType.PeaShooter, 2);
 	}
-	
+
 	public static Constructor constructor() {
 		return new Constructor() {
 			@Override
@@ -52,16 +65,16 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 			}
 		};
 	}
-	
+
 	@Override
 	public void persist(Data data) throws ParseDataException, NumberFormatException {
 		super.persist(data);
-		
+
 		tutorialIndex = data.persist(tutorialIndex);
 		hasSetupTowersForLesson = data.persist(hasSetupTowersForLesson);
 		data.persist(studentModel);
 	}
-	
+
 	@Override
 	public void registerGrid(Grid grid) {
 		super.registerGrid(grid);
@@ -86,7 +99,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 	}
 
 	public TutorialInstance makeTutorialInstance() {
-		
+
 		switch (tutorialIndex) {
 		case 0:
 			return new Tutorial0(this);
@@ -107,15 +120,15 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 			Tutorial.unloadTutorial();
 		}
 	}
-	
+
 	@Override
 	protected Problem createProblem(int difficulty, float percFinished, Reward reward) {
 		if (studentModel.isReadyForNextStarred() && level.roundNumber() > 1) {
-//			if (tutorialIndex > 1 && !getBoolean(HESP)) {
-//				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
-//			}
-			Equation equation = studentModel.getNextStarredEquation();
-			return new StarredProblem(equation, reward, 0);
+			//			if (tutorialIndex > 1 && !getBoolean(HESP)) {
+			//				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
+			//			}
+			TutorialEquation equation = studentModel.getNextStarredEquation();
+			return new StarredProblem(equation.equation, reward, equation.tutorial);
 		} else {
 			Equation equation = studentModel.getNextGeneralEquation();
 			return new Problem(equation, reward);
