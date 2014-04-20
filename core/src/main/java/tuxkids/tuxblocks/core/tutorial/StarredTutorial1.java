@@ -1,14 +1,9 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-import tuxkids.tuxblocks.core.story.StoryGameState;
+import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.tutorial.gen.StarredTutorial1_Base;
 
-public class StarredTutorial1 extends FSMTutorial implements StarredTutorial1_Base {
-
-	public StarredTutorial1(StoryGameState storyGameState) {
-		super(storyGameState);
-		// TODO Auto-generated constructor stub
-	}
+public class StarredTutorial1 extends StarredTutorial implements StarredTutorial1_Base {
 
 	@Override
 	public String filename() {
@@ -19,6 +14,12 @@ public class StarredTutorial1 extends FSMTutorial implements StarredTutorial1_Ba
 	protected void setUpStates() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public Equation createEquation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

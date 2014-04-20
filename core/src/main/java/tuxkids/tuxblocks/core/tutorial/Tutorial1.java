@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.tutorial;
 
 import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.story.StoryGameState;
@@ -20,11 +21,11 @@ public class Tutorial1 extends FSMTutorial implements Tutorial1_1_Base {
 	
 	private boolean hasGivenAreYouSure = false;
 
-	public Tutorial1(StoryGameState storyGameState) {
-		super(storyGameState);
-		
-		triedToSkipAhead = storyGameState.getBoolean(StoryGameState.TSRB);
-		hasPlacedBlockingTower = storyGameState.getBoolean(StoryGameState.HPBT);
+	@Override
+	public void init(GameState storyGameState) {
+		super.init(storyGameState);
+		triedToSkipAhead = gameState.getBoolean(StoryGameState.TSRB);
+		hasPlacedBlockingTower = gameState.getBoolean(StoryGameState.HPBT);
 	}
 
 	@Override

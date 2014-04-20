@@ -38,6 +38,8 @@ import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
 import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.tutor.Tutor.HintLevel;
+import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
+import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class BasicStudentModel implements StudentModel {
@@ -58,30 +60,53 @@ public class BasicStudentModel implements StudentModel {
 		initializeKnowledgeComponents();
 		initializeEquationTree();
 	}
+	
+	class SingleKCDependency extends SingleValueDependency {
+		
+		public final ActionType type;
+		public final float minValue;
+		
+		public SingleKCDependency(ActionType type, float minValue) {
+			this.type = type;
+			this.minValue = minValue;
+		}
+
+		@Override
+		float minValue() {
+			return minValue;
+		}
+		
+		float value() {
+			return (float) knowledgeBits.get(type).probLearned();
+		}
+	}
 
 	private void initializeEquationTree() {
 		this.equationTree = new EquationTree();
 
 		final EquationTreeNode firstLevelMD = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelMD());
-		final EquationTreeNode firstLevelAS = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelAS());
+		firstLevelMD.setDependency(new SingleKCDependency(SIMPLIFY_LIKE_FACTORS, 0));
 		
-		@SuppressWarnings("unused")
+		final EquationTreeNode firstLevelAS = equationTree.addInitialNode(BasicStudentModelEquationGenerator.firstLevelAS());
+		firstLevelAS.setDependency(new SingleKCDependency(SIMPLIFY_ADDENS, 0));
+		
 		final EquationTreeNode singleDragAS = equationTree.addNode(BasicStudentModelEquationGenerator.singleDragAS(), new Criteria() {
 			
 			@Override
 			public boolean hasBeenSatisfied() {
-				return firstLevelAS.confidence()>.8;
+				return firstLevelAS.confidence() > 0.8;
 			}
-		}, firstLevelAS);
+		});
+		singleDragAS.setTutorial(new StarredTutorial1());
 		
 		@SuppressWarnings("unused")
 		final EquationTreeNode firstLevelMDAS = equationTree.addNode(BasicStudentModelEquationGenerator.firstLevelMDAS(), new Criteria() {
 			
 			@Override
 			public boolean hasBeenSatisfied() {
-				return Math.min(firstLevelMD.confidence(), firstLevelAS.confidence()) > .7;
+				return Math.min(firstLevelMD.confidence(), firstLevelAS.confidence()) > 0.8;
 			}
-		}, firstLevelAS, firstLevelMD);
+		});
 
 	}
 
@@ -165,18 +190,19 @@ public class BasicStudentModel implements StudentModel {
 
 	@Override
 	public boolean isReadyForNextStarred() {
-		return false;
+		return equationTree.isReadyForStarredEquation();
 	}
 
 	@Override
-	public TutorialEquation getNextStarredEquation() {
-		return null;
+	public StarredTutorial getNextTutorial() {
+		EquationTreeNode node = equationTree.getStarredEquation();
+		return node.tutorial();
+		
 	}
 
 	@Override
 	public Equation getNextGeneralEquation() {
-
-		return equationTree.randomWeightedUnlockedNode(rand).equation();
+		return equationTree.randomWeightedUnlockedNode(rand).generateEquation();
 	}
 
 	
@@ -419,7 +445,8 @@ public class BasicStudentModel implements StudentModel {
 			} else if (pair instanceof TimesBlock) {
 				action.addTag(SIMPLIFY_LIKE_FACTORS);
 			} else if (pair instanceof OverBlock) {
-				action.addTag(SIMPLIFY_DIFFERENT_FACTORS);
+				// we consider this "like factors" because... it make life easier
+				action.addTag(SIMPLIFY_LIKE_FACTORS);
 			}
 		}
 	}

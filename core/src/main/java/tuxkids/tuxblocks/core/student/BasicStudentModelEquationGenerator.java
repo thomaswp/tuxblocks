@@ -2,6 +2,8 @@ package tuxkids.tuxblocks.core.student;
 
 import java.util.Random;
 
+import static tuxkids.tuxblocks.core.student.ActionType.*;
+
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
@@ -23,12 +25,14 @@ public class BasicStudentModelEquationGenerator {
 			Random random = new Random();
 			@Override
 			public Equation generate() {
-				
+				Equation eq;
 				if (random.nextBoolean()) {
-					return generateAddition();
+					eq = generateAddition();
+				} else {
+					eq = generateSubtraction();
 				}
-				return generateSubtraction();
-				
+				eq.addTag(SIMPLIFY_ADDENS.ordinal());
+				return eq;
 			}
 			private Equation generateSubtraction() {
 				int firstNum = randomNonZero(random, 30);
@@ -61,11 +65,14 @@ public class BasicStudentModelEquationGenerator {
 			@Override
 			public Equation generate() {
 				
+				Equation eq;
 				if (random.nextBoolean()) {
-					return generateMultiplication();
+					eq = generateMultiplication();
+				} else {
+					eq = generateDivision();
 				}
-				return generateDivision();
-				
+				eq.addTag(SIMPLIFY_LIKE_FACTORS.ordinal());
+				return eq;
 			}
 			private Equation generateDivision() {
 				int answer = randomNonZero(random, 6);
@@ -98,11 +105,15 @@ public class BasicStudentModelEquationGenerator {
 			@Override
 			public Equation generate() {
 				
+				Equation eq;
 				if (random.nextBoolean()) {
-					return generateFirstRoundAddition();
+					eq = generateFirstRoundAddition();
+				} else {
+					eq = generateFirstRoundSubtraction();
 				}
-				return generateFirstRoundSubtraction();
-				
+				eq.addTag(SIMPLIFY_ADDENS.ordinal());
+				eq.addTag(SIMPLIFY_LIKE_FACTORS.ordinal());
+				return eq;
 			}
 			private Equation generateFirstRoundSubtraction() {
 				int firstNum = randomNonZero(random, 10);

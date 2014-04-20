@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import playn.core.util.Clock;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
@@ -25,7 +26,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 	
 	protected abstract void addActions();
 	
-	public void init() {
+	public void init(GameState state) {
 		
 	}
 	
@@ -88,7 +89,7 @@ public abstract class LinearTutorial implements TutorialInstance {
 			if (action instanceof Segue) {
 				TutorialInstance tutorial = ((Segue) action).tutorial;
 				destroy();
-				Tutorial.loadTutorial(tutorial);
+				Tutorial.loadTutorial(tutorial, null);
 				return;
 			} else {
 				tutorialLayer.showMessage(action.message);

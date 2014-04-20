@@ -128,7 +128,7 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 					solveScreen.setEquation(pb.equation());
 					pushScreen(solveScreen, screens.slide().down());
 					if (pb.problem() instanceof StarredProblem) {
-						Tutorial.loadTutorial(((StarredProblem) pb.problem()).tutorial());
+						Tutorial.loadTutorial(((StarredProblem) pb.problem()).tutorial(), state);
 					}
 //					removeProblem(pb, true); // for auto-solving to test things
 				}

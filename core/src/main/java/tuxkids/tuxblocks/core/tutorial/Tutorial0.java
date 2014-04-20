@@ -1,9 +1,13 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
-import static tuxkids.tuxblocks.core.story.StoryGameState.*;
+import static tuxkids.tuxblocks.core.story.StoryGameStateKeys.HPBT;
+import static tuxkids.tuxblocks.core.story.StoryGameStateKeys.TSRB;
+import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.Defense_BadTowerPlacement;
+import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.Defense_RoundOver;
+import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.Defense_StartRound;
+import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.Defense_TowerDropped;
+import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.TextBoxHidden;
 import pythagoras.i.Point;
-import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.tutorial.gen.Tutorial0_Base;
@@ -13,11 +17,6 @@ public class Tutorial0 extends FSMTutorial implements Tutorial0_Base {
 
 	private boolean hasPlacedBlockingTower = false;
 	private boolean triedToSkipAhead = false;
-
-	public Tutorial0(StoryGameState storyGameState) {
-		super(storyGameState);
-
-	}
 
 	@Override
 	public String filename() {

@@ -8,6 +8,7 @@ import playn.core.util.Callback;
 import playn.core.util.Clock;
 import tripleplay.game.Screen;
 import tuxkids.tuxblocks.core.Constant;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
@@ -138,12 +139,12 @@ public abstract class Tutorial extends PlayNObject {
 	}
 	
 	public static void start(StoryGameState state) {
-		loadTutorial(state.makeTutorialInstance());
+		loadTutorial(state.makeTutorialInstance(), state);
 	}
 
-	public static void loadTutorial(final TutorialInstance tutorial) {
+	public static void loadTutorial(final TutorialInstance tutorial, GameState gameState) {
 		instance = tutorial;
-		tutorial.init();
+		tutorial.init(gameState);
 		Lang.getText(tutorial.filename(), new Callback<String>() {
 			@Override
 			public void onSuccess(String result) {

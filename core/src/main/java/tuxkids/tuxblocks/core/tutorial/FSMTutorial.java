@@ -7,6 +7,7 @@ import java.util.List;
 import playn.core.Json;
 import playn.core.PlayN;
 import playn.core.util.Clock;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
@@ -27,12 +28,12 @@ abstract class FSMTutorial implements TutorialInstance {
 	
 	protected abstract void setUpStates();
 	
-	public FSMTutorial(StoryGameState storyGameState) {
-		this.gameState = storyGameState;
+	public FSMTutorial() {
 	}
 	
-	public void init() {
+	public void init(GameState gameState) {
 		// because TutorialLayer adds to the rootLayer, we don't create it until we're shown
+		this.gameState = (StoryGameState) gameState;
 		layer = new TutorialLayer();
 	}
 	

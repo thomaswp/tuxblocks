@@ -17,6 +17,7 @@ import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.student.StudentModel.TutorialEquation;
 import tuxkids.tuxblocks.core.title.Difficulty;
+import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
 import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
@@ -49,7 +50,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 	@Override
 	protected void setUpProblems() {
 		//The student model gets these.
-		problems().add(new StarredProblem(EquationGenerator.generate(3, 1), createReward(1), new StarredTutorial1(this)));
+		problems().add(new StarredProblem(EquationGenerator.generate(3, 1), createReward(1), new StarredTutorial1()));
 	}
 
 	@Override
@@ -102,9 +103,9 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 		switch (tutorialIndex) {
 		case 0:
-			return new Tutorial0(this);
+			return new Tutorial0();
 		case 1:
-			return new Tutorial1(this);
+			return new Tutorial1();
 		default:
 			Debug.write("No lesson prepared for "+tutorialIndex);
 			return null;
@@ -115,7 +116,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 		tutorialIndex++;
 		TutorialInstance nextTutorial = makeTutorialInstance();
 		if (nextTutorial != null) {
-			Tutorial.loadTutorial(nextTutorial);
+			Tutorial.loadTutorial(nextTutorial, this);
 		} else {
 			Tutorial.unloadTutorial();
 		}
@@ -127,8 +128,8 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 			//			if (tutorialIndex > 1 && !getBoolean(HESP)) {
 			//				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
 			//			}
-			TutorialEquation equation = studentModel.getNextStarredEquation();
-			return new StarredProblem(equation.equation, reward, equation.tutorial);
+			StarredTutorial tutorial = studentModel.getNextTutorial();
+			return new StarredProblem(tutorial.createEquation(), reward, tutorial);
 		} else {
 			Equation equation = studentModel.getNextGeneralEquation();
 			return new Problem(equation, reward);

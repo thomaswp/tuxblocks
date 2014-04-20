@@ -1,6 +1,7 @@
 package tuxkids.tuxblocks.core.tutorial;
 
 import playn.core.util.Clock;
+import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 
 public interface TutorialInstance {
@@ -9,7 +10,7 @@ public interface TutorialInstance {
 	 * Called before any other method, when this tutorial is loaded by {@link Tutorial} 
 	 * and set as the instance 
 	 */
-	void init();
+	void init(GameState state);
 	void loadTextFile(String result);
 	void paint(Clock clock);
 	void update(int delta);

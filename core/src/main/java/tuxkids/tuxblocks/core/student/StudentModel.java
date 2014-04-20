@@ -11,6 +11,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierBlock;
 import tuxkids.tuxblocks.core.solve.blocks.ModifierGroup;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
+import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
@@ -36,7 +37,7 @@ public interface StudentModel extends Persistable, SolveActionCallback {
 
 	boolean isReadyForNextStarred();
 
-	TutorialEquation getNextStarredEquation();
+	StarredTutorial getNextTutorial();
 
 	Equation getNextGeneralEquation();
 

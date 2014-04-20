@@ -1,16 +1,10 @@
 package tuxkids.tuxblocks.core.tutorial;
 
 import static tuxkids.tuxblocks.core.story.StoryGameStateKeys.HESP;
-import tuxkids.tuxblocks.core.story.StoryGameState;
 import tuxkids.tuxblocks.core.tutorial.gen.ExplainingStarred_Base;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class Tutorial2ExplainingStarred extends FSMTutorial implements ExplainingStarred_Base{
-
-	public Tutorial2ExplainingStarred(StoryGameState storyGameState) {
-		super(storyGameState);
-
-	}
 
 	@Override
 	public String filename() {
