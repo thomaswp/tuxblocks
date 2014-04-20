@@ -135,7 +135,7 @@ public class TuxBlocksGame extends Game.Default {
 	@Override
 	public void update(int delta) {
 		delta = Math.min(delta, MAX_DELTA);
-		delta *=2;
+		//delta *=2;
 		clock.update(delta);
 		background.update(delta);
         screens.update(delta);

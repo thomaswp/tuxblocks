@@ -109,7 +109,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 	protected Equation createEquation(int difficulty, float percFinished) {
 		if (studentModel.isReadyForNextStarred())
 		{
-			if (!getBoolean(HESP)) {
+			if (tutorialIndex > 1 && !getBoolean(HESP)) {
 				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
 			}
 			return studentModel.getNextStarredEquation();
