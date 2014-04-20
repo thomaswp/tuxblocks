@@ -30,11 +30,6 @@ public interface Tutorial1_1_Base {
      */
     final static String id_letsGoSetupRobots = "id_letsGoSetupRobots";
     /**
-     * No, don't leave!  You can totally solve this clue
-     * 
-     */
-    final static String cant_go_back = "cant_go_back";
-    /**
      * Very good.  Now we have figured out the robot’s secret number is 1.  Go ahead and hit the check mark to unlock the robot.
      * 
      */
@@ -45,6 +40,16 @@ public interface Tutorial1_1_Base {
      */
     final static String id_unlockOther = "id_unlockOther";
     /**
+     * You've still got towers to place, but if you want to start anyway, <click> it again.
+     * 
+     */
+    final static String id_areYouSure = "id_areYouSure";
+    /**
+     * <Click> this button when your towers are set.
+     * 
+     */
+    final static String id_whenReady = "id_whenReady";
+    /**
      * Hey, did you see that?  Some of the robots weren’t destroyed.  Maybe we can salvage them and build more towers.
      * 
      */
@@ -54,6 +59,11 @@ public interface Tutorial1_1_Base {
      * 
      */
     final static String id_6m5secondSimplify = "id_6m5secondSimplify";
+    /**
+     * We have to take this opportunity to shore up our towers. This button will take you back to the tower view when you've handled the robots here.
+     * 
+     */
+    final static String id_stillSalvaging = "id_stillSalvaging";
     /**
      * Since x is already by itself, all we need to do is simplify the right side. <Click> on the grey circle to simplify the multiplication.
      * 
@@ -120,10 +130,20 @@ public interface Tutorial1_1_Base {
      */
     final static String id_simplifyScreen5 = "id_simplifyScreen5";
     /**
+     * We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!
+     * 
+     */
+    final static String id_badTowerPlacement = "id_badTowerPlacement";
+    /**
      * Your action just added 5 to x, but we didn't need to do that as x was already by itself.  Go ahead and drag the red plus 5 sidebar back to the right side, to get back to where we started.
      * 
      */
     final static String id_6m5dragged5reminder = "id_6m5dragged5reminder";
+    /**
+     * No, don't leave!  You can totally solve this clue
+     * 
+     */
+    final static String id_cant_go_back = "id_cant_go_back";
     /**
      * Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.
      * 
@@ -135,10 +155,25 @@ public interface Tutorial1_1_Base {
      */
     final static String id_solveForX = "id_solveForX";
     /**
+     * Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.
+     * 
+     */
+    final static String id_weWontSurviveHasCoached = "id_weWontSurviveHasCoached";
+    /**
+     * Let's place our new-found towers and rock those robots!
+     * 
+     */
+    final static String id_placeTowers = "id_placeTowers";
+    /**
      * x is by itself once more. <Click> on the grey circle to simplify the subtraction.
      * 
      */
     final static String id_6m5fixDrag = "id_6m5fixDrag";
+    /**
+     * Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.  <Click> this button after we get more towers.
+     * 
+     */
+    final static String id_weWontSurviveHasNotCoached = "id_weWontSurviveHasNotCoached";
     /**
      * This is the Simplify screen. It lets you solve arithmetic problems, like simplifying 3*4. The problem is written at the top of the screen. This one's pretty simple, right?
      * 
@@ -169,5 +204,10 @@ public interface Tutorial1_1_Base {
      * 
      */
     final static String id_3x4dragged3 = "id_3x4dragged3";
+    /**
+     * Teaches how to simplify expressions where x is already isolated, specifically x = 4*3 and x = 6-5
+     * 
+     */
+    final static String tutorial_desc = "tutorial_desc";
 
 }

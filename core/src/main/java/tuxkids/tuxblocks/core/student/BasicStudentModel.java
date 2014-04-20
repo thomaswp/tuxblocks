@@ -1,29 +1,6 @@
 package tuxkids.tuxblocks.core.student;
 
-import static tuxkids.tuxblocks.core.student.ActionType.ADD_EQUATION_SIDES;
-import static tuxkids.tuxblocks.core.student.ActionType.ADD_INTEGERS;
-import static tuxkids.tuxblocks.core.student.ActionType.BUILDING_SYMBOLIC_EQUATIONS;
-import static tuxkids.tuxblocks.core.student.ActionType.BUILDING_WRITTEN_EQUATIONS;
-import static tuxkids.tuxblocks.core.student.ActionType.CANCEL_ADDENS;
-import static tuxkids.tuxblocks.core.student.ActionType.CANCEL_FACTORS;
-import static tuxkids.tuxblocks.core.student.ActionType.COMBINATION;
-import static tuxkids.tuxblocks.core.student.ActionType.COMBINE_UNKNOWNS;
-import static tuxkids.tuxblocks.core.student.ActionType.DISTRIBUTION;
-import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_INTEGERS_HIGH;
-import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_INTEGERS_LOW;
-import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_INTEGERS_MED;
-import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_MULTIPLE_SIDES;
-import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_SINGLE_SIDE;
-import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_INTEGERS_HIGH;
-import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_INTEGERS_LOW;
-import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_INTEGERS_MED;
-import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_MULTIPLE_SIDES;
-import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_SINGLE_SIDE;
-import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_ADDENS;
-import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_DIFFERENT_FACTORS;
-import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_LIKE_FACTORS;
-import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_EQUATION_SIDES;
-import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_INTEGERS;
+import static tuxkids.tuxblocks.core.student.ActionType.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

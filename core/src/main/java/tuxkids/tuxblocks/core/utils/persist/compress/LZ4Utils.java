@@ -14,14 +14,7 @@ package tuxkids.tuxblocks.core.utils.persist.compress;
  * limitations under the License.
  */
 
-import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.HASH_LOG;
-import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.HASH_LOG_64K;
-import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.HASH_LOG_HC;
-import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.LAST_LITERALS;
-import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.MIN_MATCH;
-import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.ML_BITS;
-import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.ML_MASK;
-import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.RUN_MASK;
+import static tuxkids.tuxblocks.core.utils.persist.compress.LZ4Constants.*;
 import static tuxkids.tuxblocks.core.utils.persist.compress.Utils.readInt;
 
 enum LZ4Utils {

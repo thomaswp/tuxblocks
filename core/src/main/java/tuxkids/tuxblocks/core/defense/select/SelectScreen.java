@@ -16,6 +16,7 @@ import tuxkids.tuxblocks.core.defense.GameHeaderLayer;
 import tuxkids.tuxblocks.core.screen.BaseScreen;
 import tuxkids.tuxblocks.core.screen.GameScreen;
 import tuxkids.tuxblocks.core.solve.SolveScreen;
+import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.widget.Button;
@@ -51,7 +52,9 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 			@Override
 			public void onRelease(Event event, boolean inButton) {
 				if (inButton) {
-					popThis();
+					if (Tutorial.askPermission(Trigger.Select_GoToDefense)){
+						popThis();
+					}
 				}
 			}
 		});		

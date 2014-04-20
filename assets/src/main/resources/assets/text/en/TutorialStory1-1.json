@@ -1,6 +1,7 @@
 {
+	"tutorial_desc":"Teaches how to simplify expressions where x is already isolated, specifically x = 4*3 and x = 6-5",
 	"tutorial_id":"Tutorial1_1",
-	"cant_go_back": "No, don't leave!  You can totally solve this clue",
+	"id_cant_go_back": "No, don't leave!  You can totally solve this clue",
 	"id_salvageAndBuild":"Hey, did you see that?  Some of the robots weren’t destroyed.  Maybe we can salvage them and build more towers.",
 	"id_goToEquationScreen":"Go ahead, <click> the button to go see what we salvaged.",
 	"id_solveTheClues":"Our engineers say that the robots are rigged to explode if they aren’t disarmed with their 'hidden number'.  I guess we’ll have to solve the clues printed on the robots.",
@@ -37,8 +38,13 @@
 		"id_6m5solved":"Very good.  Now we have figured out the robot’s secret number is 1.  Go ahead and hit the check mark to unlock the robot.",
 		"id_3x4secondMultiply":"This clue is also set up where x is all by itself.  Just like with the subtraction, click the grey dot to perform the multiplication.",
 			"id_3x4secondSimplify":"And now solve the multiplication.",
-		"id_3x4dragged3reminder": "Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started."
+		"id_3x4dragged3reminder": "Your action just divided x by 3, but we didn't need to do that as x was already by itself.  Go ahead and drag the green /3 block back to the right side, to get back to where we started.",
 		
-	
-			
+	"id_stillSalvaging": "We have to take this opportunity to shore up our towers. This button will take you back to the tower view when you've handled the robots here.",
+	"id_placeTowers": "Let's place our new-found towers and rock those robots!",
+	"id_whenReady": "<Click> this button when your towers are set.",
+	"id_weWontSurviveHasCoached": "Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.",
+	"id_weWontSurviveHasNotCoached": "Wait!  Now's the perfect time to try to build stronger towers.  Let's go check them out.  <Click> this button after we get more towers.",
+	"id_badTowerPlacement":"We can't completely block the robots off.  They'll go bezerk and attack the towers themselves - we'll be helpless!",
+	"id_areYouSure": "You've still got towers to place, but if you want to start anyway, <click> it again."	
 }

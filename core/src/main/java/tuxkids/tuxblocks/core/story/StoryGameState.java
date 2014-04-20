@@ -1,9 +1,11 @@
 package tuxkids.tuxblocks.core.story;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.GameState;
 import tuxkids.tuxblocks.core.defense.Grid;
-import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
@@ -15,11 +17,13 @@ import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
-public class StoryGameState extends GameState {
+public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	private int lesson = 0;
 	
 	private boolean hasSetupTowersForLesson = false;
+	
+	private Map<String, Boolean> booleansMap = new HashMap<String, Boolean>();
 	
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
@@ -101,6 +105,17 @@ public class StoryGameState extends GameState {
 		if (studentModel.isReadyForNextStarred())
 			return studentModel.getNextStarredEquation();
 		return studentModel.getNextGeneralEquation();
+	}
+
+	public void setBoolean(String key, boolean value) {
+		booleansMap.put(key, value);
+		Debug.write(key + " = "+ value);
+	}
+
+	public boolean getBoolean(String key) {
+		Boolean retVal = booleansMap.get(key);
+		if (retVal == null) return false;
+		return retVal.booleanValue();
 	}
 	
 

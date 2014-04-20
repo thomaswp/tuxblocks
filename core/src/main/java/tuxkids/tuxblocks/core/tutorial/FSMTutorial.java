@@ -33,11 +33,11 @@ abstract class FSMTutorial implements TutorialInstance {
 	}
 	
 	protected FSMState addStartState(String id) {
-		return (startState = addState(id));
+		return (startState = makeBasicState(id));
 	}
 	
 	protected FSMState addStartState(String id, FSMState baseState) {
-		return (startState = addState(id, baseState));
+		return (startState = addLocalizedTextToState(id, baseState));
 	}
 	
 	/**
@@ -46,11 +46,16 @@ abstract class FSMTutorial implements TutorialInstance {
 	 * @param id
 	 * @return
 	 */
-	protected FSMState addState(String id) {
-		return addState(id, new FSMState());
+	protected FSMState makeBasicState(String id) {
+		return addLocalizedTextToState(id, new FSMState());
 	}
 	
-	protected FSMState addState(String idOfText, FSMState baseState) {
+	/**
+	 * Looks up text and adds it to an FSMState, usually a custom subclass
+	 * @param id
+	 * @return
+	 */
+	protected FSMState addLocalizedTextToState(String idOfText, FSMState baseState) {
 		String text = getLocalizedText(idOfText);
 		baseState.setMessage(text);
 		return baseState;
@@ -62,16 +67,16 @@ abstract class FSMTutorial implements TutorialInstance {
 			Debug.write("WARNING: no such tutorial text with id: " + idOfText);
 			text = "";
 		}
-		text = Tutorial.prepareMessage(text);
-		return text;
+		return Tutorial.prepareMessage(text);
+
 	}
 	
 	@Override
-	public void loadTextFile(String result) {
-		messages = PlayN.json().parse(result);
+	public void loadTextFile(String tutorialFileName) {
+		messages = PlayN.json().parse(tutorialFileName);
 		setUpStates();
 		if (startState == null) {
-			throw new RuntimeException("Must call addStartState()");
+			throw new RuntimeException("Must call addStartState() before starting "+tutorialFileName);
 		}
 		currentState = startState;
 		if (currentState.message != null) layer.showMessage(currentState.message);
@@ -113,7 +118,10 @@ abstract class FSMTutorial implements TutorialInstance {
 	}
 	
 	/**
-	 * By default, blocking of actions can depend on states
+	 * By default, blocking of actions can depend on states.  
+	 * 
+	 * However, Tutorials can override this instead and do the checking
+	 * themselves, rather than assign blocks on a case by case basis
 	 */
 	@Override
 	public boolean askPermission(Trigger event) {
@@ -176,7 +184,7 @@ abstract class FSMTutorial implements TutorialInstance {
 		FSMState chooseState(Object extraInformation);	
 	}
 	
-	private class DefaultStateChooser implements StateChooser {
+	private static class DefaultStateChooser implements StateChooser {
 		private FSMState state;
 
 		public DefaultStateChooser(FSMState state) {
@@ -205,7 +213,7 @@ abstract class FSMTutorial implements TutorialInstance {
 		}
 
 		public String blockMessageForEvent(Trigger event) {
-			return blockMessageForEvent(event);	//TODO fix
+			return blocksAndMessages.get(event);
 		}
 
 		public boolean hasBlockOnTrigger(Trigger event) {
@@ -218,7 +226,7 @@ abstract class FSMTutorial implements TutorialInstance {
 			StateChooser nextState = transitions.get(trigger);
 			if (nextState != null) {
 				return nextState.chooseState(extraInformation);
-			} else if (nextState == null && elseState == null && anyState.transitions.containsKey(trigger)) {
+			} else if (elseState == null && anyState.transitions.containsKey(trigger)) {
 				return anyState.transitions.get(trigger).chooseState(extraInformation);
 			}
 			return elseState; 

@@ -1,7 +1,6 @@
 package tuxkids.tuxblocks.core;
 
-import static playn.core.PlayN.currentTime;
-import static playn.core.PlayN.graphics;
+import static playn.core.PlayN.*;
 import playn.core.Canvas;
 import playn.core.CanvasImage;
 import playn.core.Color;
@@ -136,6 +135,7 @@ public class TuxBlocksGame extends Game.Default {
 	@Override
 	public void update(int delta) {
 		delta = Math.min(delta, MAX_DELTA);
+		delta *=2;
 		clock.update(delta);
 		background.update(delta);
         screens.update(delta);
