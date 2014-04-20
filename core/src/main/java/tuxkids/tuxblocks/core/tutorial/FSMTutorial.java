@@ -40,6 +40,11 @@ abstract class FSMTutorial implements TutorialInstance {
 		return (startState = addLocalizedTextToState(id, baseState));
 	}
 	
+	protected FSMState addStartState(FSMState baseState) {
+		startState = baseState;
+		return startState;
+	}
+	
 	/**
 	 * Convenience method to add a standard FSM state with text belonging to the
 	 * given id.

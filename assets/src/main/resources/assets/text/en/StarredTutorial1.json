@@ -1,4 +1,6 @@
 {
-	"tutorial_desc":"Teaches how to simplify expressions where x is already isolated, specifically x = 4*3 and x = 6-5",
-	"tutorial_id":"StarredTutorial1"
+	"tutorial_desc":"Teaches how to do basic isolation of x (x/5 = 2)",
+	"tutorial_id":"StarredTutorial1",
+	
+	"id_intro":"So, this clue isn't as straight-forward as the ones we've seen before.  The unknown number X isn't by itself yet."
 }

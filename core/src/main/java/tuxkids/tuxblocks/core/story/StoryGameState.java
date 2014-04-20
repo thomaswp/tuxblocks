@@ -16,13 +16,14 @@ import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
+import tuxkids.tuxblocks.core.tutorial.Tutorial2ExplainingStarred;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public class StoryGameState extends GameState implements StoryGameStateKeys{
 
-	private int lesson = 0;
+	private int tutorialIndex = 0;
 	
 	private boolean hasSetupTowersForLesson = false;
 	
@@ -56,7 +57,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 	public void persist(Data data) throws ParseDataException, NumberFormatException {
 		super.persist(data);
 		
-		lesson = data.persist(lesson);
+		tutorialIndex = data.persist(tutorialIndex);
 		hasSetupTowersForLesson = data.persist(hasSetupTowersForLesson);
 		data.persist(studentModel);
 	}
@@ -71,7 +72,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 	}
 
 	private void setUpTowersForLesson(Grid grid) {
-		switch (lesson) {
+		switch (tutorialIndex) {
 		case 0:
 			grid.placeTower(new PeaShooter(), new Point(8, 1));
 			grid.placeTower(new PeaShooter(), new Point(7, 2));
@@ -84,35 +85,41 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 		}
 	}
 
-	public TutorialInstance getCurrentTutorialInstance() {
+	public TutorialInstance makeTutorialInstance() {
 		
-		switch (lesson) {
+		switch (tutorialIndex) {
 		case 0:
 			return new Tutorial0(this);
 		case 1:
 			return new Tutorial1(this);
 		default:
-			Debug.write("No lesson prepared for "+lesson);
+			Debug.write("No lesson prepared for "+tutorialIndex);
 			return null;
 		}
 	}
 
 	public void finishedLesson() {
-		lesson++;
-		TutorialInstance nextTutorial = getCurrentTutorialInstance();
-		if (nextTutorial != null) Tutorial.loadTutorial(nextTutorial);
+		tutorialIndex++;
+		TutorialInstance nextTutorial = makeTutorialInstance();
+		if (nextTutorial != null) {
+			Tutorial.loadTutorial(nextTutorial);
+		} else {
+			Tutorial.unloadTutorial();
+		}
 	}
 	
 	@Override
 	protected Problem createProblem(int difficulty, float percFinished, Reward reward) {
 		if (studentModel.isReadyForNextStarred() && level.roundNumber() > 1) {
+//			if (tutorialIndex > 1 && !getBoolean(HESP)) {
+//				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
+//			}
 			Equation equation = studentModel.getNextStarredEquation();
 			return new StarredProblem(equation, reward, 0);
 		} else {
 			Equation equation = studentModel.getNextGeneralEquation();
 			return new Problem(equation, reward);
 		}
-		
 	}
 
 	public void setBoolean(String key, boolean value) {
@@ -125,7 +132,6 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 		if (retVal == null) return false;
 		return retVal.booleanValue();
 	}
-	
 
 
 }
