@@ -1,5 +1,9 @@
 package tuxkids.tuxblocks.core.story;
 
+/**
+ * Sometimes, we want to know if some topic (usually GUI related) has been covered in another tutorial. 
+ * StoryGameState has a map of keys and booleans, which allows state to be maintained.
+ */
 public interface StoryGameStateKeys {
 	/**
      * Has the tutoring system given coaching on what dragging is, and that x needs
@@ -16,7 +20,7 @@ public interface StoryGameStateKeys {
     final static String HPBT = "Has Placed Blocking Tower";
     
     /**
-     * Has the UI taught what pushing the start round buggon does?
+     * Has the UI taught what pushing the start round button does?
      * 
      */
     final static String TSRB = "Taught Start Round Button";
