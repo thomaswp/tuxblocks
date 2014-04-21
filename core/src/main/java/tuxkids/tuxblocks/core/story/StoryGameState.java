@@ -34,13 +34,13 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	private Map<String, Boolean> booleansMap = new HashMap<String, Boolean>();
 
-	private final Equation[] starredEquations = new Equation[] {
+	private final Equation[] cannedEquations = new Equation[] {
 			new Equation.Builder().addLeft(new VariableBlock("x"))
 					.addRight(new NumberBlock(4).times(3)).createEquation().name("3x4"),
 			new Equation.Builder().addLeft(new VariableBlock("x"))
 					.addRight(new NumberBlock(6).minus(5)).createEquation().name("6-5")
 	};
-	private int starredEquationIndex = 0;
+	private int cannedEquationIndex = 0;
 
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
@@ -50,7 +50,6 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 	@Override
 	protected void setUpProblems() {
 		//The student model gets these.
-		problems().add(new StarredProblem(EquationGenerator.generate(3, 1), createReward(1), new StarredTutorial1()));
 	}
 
 	@Override
@@ -124,6 +123,9 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	@Override
 	protected Problem createProblem(int difficulty, float percFinished, Reward reward) {
+		if (cannedEquationIndex < cannedEquations.length) {
+			return new Problem(cannedEquations[cannedEquationIndex++], reward);
+		}
 		if (studentModel.isReadyForNextStarred() && level.roundNumber() > 1) {
 			//			if (tutorialIndex > 1 && !getBoolean(HESP)) {
 			//				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
