@@ -63,6 +63,7 @@ import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.tutor.Tutor.HintLevel;
 import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
 import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
+import tuxkids.tuxblocks.core.tutorial.StarredTutorial2;
 import tuxkids.tuxblocks.core.utils.Debug;
 
 public class BasicStudentModel implements StudentModel {
@@ -122,7 +123,6 @@ public class BasicStudentModel implements StudentModel {
 		});
 		singleDragAS.setTutorial(new StarredTutorial1());
 		
-		@SuppressWarnings("unused")
 		final EquationTreeNode firstLevelMDAS = equationTree.addNode(BasicStudentModelEquationGenerator.firstLevelMDAS(), new Criteria() {
 			
 			@Override
@@ -130,6 +130,7 @@ public class BasicStudentModel implements StudentModel {
 				return Math.min(firstLevelMD.confidence(), firstLevelAS.confidence()) > 0.8;
 			}
 		});
+		firstLevelMDAS.setTutorial(new StarredTutorial2());
 
 	}
 

@@ -37,12 +37,12 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 			new Equation.Builder().addLeft(new VariableBlock("x"))
 					.addRight(new NumberBlock(6).minus(5)).createEquation().name("6-5")
 	};
-	private int cannedEquationIndex = 2;
+	private int cannedEquationIndex = 0;
 
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
-		problems().add(new Problem(studentModel.getNextGeneralEquation(), createReward(1)));
-		problems().add(new Problem(studentModel.getNextGeneralEquation(), createReward(1)));
+//		problems().add(new Problem(studentModel.getNextGeneralEquation(), createReward(1)));
+//		problems().add(new Problem(studentModel.getNextGeneralEquation(), createReward(1)));
 	}
 
 	@Override

@@ -154,7 +154,7 @@ public class BlockController extends EquationManipulator {
 		this.width = width;
 		this.height = height;
 		this.layer = graphics().createGroupLayer();
-//		this.equation = new MutableEquation();
+		this.equation = new MutableEquation();
 		
 		equals = graphics().createImageLayer(CanvasUtils.createTextCached("=", 
 				new TextFormat().withFont(graphics().createFont(Constant.NUMBER_FONT, Style.PLAIN, 20)), Colors.WHITE));
@@ -164,7 +164,7 @@ public class BlockController extends EquationManipulator {
 	
 	/** Clears and destroys the current {@link Equation} */
 	public void clear() {
-//		equation.clear();
+		equation.clear();
 		highlightBlocks.clear();
 		solved = false;
 		dragging = draggingFrom = null;
