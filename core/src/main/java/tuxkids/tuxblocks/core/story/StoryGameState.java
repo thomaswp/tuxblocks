@@ -1,3 +1,4 @@
+
 package tuxkids.tuxblocks.core.story;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.tutorial.AbstractStarredTutorial;
+import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
@@ -42,8 +44,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
-//		problems().add(new Problem(studentModel.getNextGeneralEquation(), createReward(1)));
-//		problems().add(new Problem(studentModel.getNextGeneralEquation(), createReward(1)));
+
 	}
 
 	@Override
@@ -125,13 +126,12 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 		if (cannedEquationIndex < cannedEquations.length) {
 			return new Problem(cannedEquations[cannedEquationIndex++], reward);
 		}
-		if (/*studentModel.isReadyForNextStarred() && */level.roundNumber() > 1) {
-			if (/*tutorialIndex > 1 && */!getBoolean(HESP)) {
+		if (studentModel.isReadyForNextStarred() && level.roundNumber() > 1) {
+			if (tutorialIndex > 1 && !getBoolean(HESP)) {
 				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(), this);
 			}
-			//StarredTutorial tutorial = studentModel.getNextTutorial();
-			return new StarredProblem(cannedEquations[0], reward, new StarredTutorial1());
-			//return new StarredProblem(tutorial.createEquation(), reward, tutorial);
+			AbstractStarredTutorial tutorial = studentModel.getNextTutorial();
+			return new StarredProblem(tutorial.createEquation(), reward, tutorial);
 		} else {
 			Equation equation = studentModel.getNextGeneralEquation();
 			return new Problem(equation, reward);
