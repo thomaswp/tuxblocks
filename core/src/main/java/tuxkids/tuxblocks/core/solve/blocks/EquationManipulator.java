@@ -379,6 +379,7 @@ public abstract class EquationManipulator extends PlayNObject {
 		Equation send = draggingPreviousEquation;
 		// otherwise the current equation should be representative
 		if (send == null) send = equation;
+		
 		for (SolveActionCallback callback : solveActionCallbacks) {
 			callback.onActionPerformed(action, send);
 		}

@@ -95,6 +95,10 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 		tags.add(tag);
 	}
 	
+	public void addTag(Enum<?> tag) {
+		addTag(tag.ordinal());
+	}
+	
 	protected Renderer createRenderer() {
 		Renderer lhs = getRenderer(leftSide);
 		Renderer rhs = getRenderer(rightSide);
@@ -256,6 +260,14 @@ public class Equation extends PlayNObject implements Persistable, Iterable<BaseB
 
 		public Builder addRight(int i) {
 			return addRight(new NumberBlock(i));
+		}
+
+		public Builder addLeft(String variable) {
+			return addLeft(new VariableBlock(variable));
+		}
+		
+		public Builder addRight(String variable) {
+			return addRight(new VariableBlock(variable));
 		}
 	}
 
