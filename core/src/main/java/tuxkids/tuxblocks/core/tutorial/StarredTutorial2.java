@@ -20,7 +20,7 @@ public class StarredTutorial2 extends AbstractStarredTutorial implements Starred
 	public Equation createEquation() {
 		return new Equation.Builder()
 		.addLeft("x")
-		.addRight(new NumberBlock(6).plus(4).over(3))
+		.addRight(new NumberBlock(6).plus(3).over(3))
 		.createEquation();
 	}
 
