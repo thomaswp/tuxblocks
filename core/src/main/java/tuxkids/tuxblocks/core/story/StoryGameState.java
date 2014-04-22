@@ -15,7 +15,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.title.Difficulty;
-import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
+import tuxkids.tuxblocks.core.tutorial.AbstractStarredTutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
@@ -128,7 +128,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 			//			if (tutorialIndex > 1 && !getBoolean(HESP)) {
 			//				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
 			//			}
-			StarredTutorial tutorial = studentModel.getNextTutorial();
+			AbstractStarredTutorial tutorial = studentModel.getNextTutorial();
 			return new StarredProblem(tutorial.createEquation(), reward, tutorial);
 		} else {
 			Equation equation = studentModel.getNextGeneralEquation();

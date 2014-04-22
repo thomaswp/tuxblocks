@@ -4,7 +4,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.tutorial.gen.StarredTutorial2_Base;
 
-public class StarredTutorial2 extends StarredTutorial implements StarredTutorial2_Base {
+public class StarredTutorial2 extends AbstractStarredTutorial implements StarredTutorial2_Base {
 
 	@Override
 	public String filename() {

@@ -63,8 +63,7 @@ public interface StarredTutorial1_Base {
      * So, this clue isn't as straight-forward as the ones we've seen before.  The unknown number X isn't by itself yet.
      * 
      */
-=======
->>>>>>> 6afdafd045913a19b7df8f3ccf2f1c336f62afbe
+
     final static String id_intro = "id_intro";
 
 }
