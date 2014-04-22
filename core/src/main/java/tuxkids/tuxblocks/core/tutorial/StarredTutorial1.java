@@ -3,7 +3,7 @@ package tuxkids.tuxblocks.core.tutorial;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.tutorial.gen.StarredTutorial1_Base;
 
-public class StarredTutorial1 extends StarredTutorial implements StarredTutorial1_Base {
+public class StarredTutorial1 extends AbstractStarredTutorial implements StarredTutorial1_Base {
 
 	@Override
 	public String filename() {

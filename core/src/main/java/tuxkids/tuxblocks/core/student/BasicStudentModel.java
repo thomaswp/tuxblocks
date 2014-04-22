@@ -38,7 +38,7 @@ import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
 import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.tutor.Tutor.HintLevel;
-import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
+import tuxkids.tuxblocks.core.tutorial.AbstractStarredTutorial;
 import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
 import tuxkids.tuxblocks.core.utils.Debug;
 
@@ -194,7 +194,7 @@ public class BasicStudentModel implements StudentModel {
 	}
 
 	@Override
-	public StarredTutorial getNextTutorial() {
+	public AbstractStarredTutorial getNextTutorial() {
 		EquationTreeNode node = equationTree.getStarredEquation();
 		return node.tutorial();
 		

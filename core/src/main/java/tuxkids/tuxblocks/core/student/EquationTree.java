@@ -6,7 +6,7 @@ import java.util.Random;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;
-import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
+import tuxkids.tuxblocks.core.tutorial.AbstractStarredTutorial;
 
 
 public class EquationTree {
@@ -118,7 +118,7 @@ public class EquationTree {
 		private List<Criteria> preRequisites = new ArrayList<Criteria>();
 
 		private Confidence confidence = new DefaultConfidence();
-		private StarredTutorial tutorial;
+		private AbstractStarredTutorial tutorial;
 		private boolean tutorialShown;
 		
 		private EquationTreeNode(EGenerator generator) {
@@ -152,12 +152,12 @@ public class EquationTree {
 		}
 
 
-		public StarredTutorial tutorial() {
+		public AbstractStarredTutorial tutorial() {
 			return tutorial;
 		}
 
 
-		public void setTutorial(StarredTutorial tutorial) {
+		public void setTutorial(AbstractStarredTutorial tutorial) {
 			this.tutorial = tutorial;
 		}
 
