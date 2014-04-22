@@ -1,6 +1,19 @@
 {
-	"tutorial_desc":"Teaches how to do basic isolation of x (x/5 = 2)",
+	"tutorial_desc":"Teaches how to do basic isolation of x (x+8 = 5)",
 	"tutorial_id":"StarredTutorial1",
 	
-	"id_intro":"So, this clue isn't as straight-forward as the ones we've seen before.  The unknown number X isn't by itself yet."
+	"id_intro":"So, this clue isn't as straight-forward as the ones we've seen before.  The unknown number X isn't by itself yet.",
+	"id_letsDrag":"To make X by itself, we are going to have to drag one of the blocks to its opposite side.  Do you see which one?",
+	"id_letsDrag_alreadyTrained":"As you've seen before, you can drag blocks to try to get X by itself.  Do you see which block we should drag?",
+		"id_dragged8":"Exactly! When we dragged the +8 from the left side to the right side,this was the same as subtracting 8 from both sides.",
+		"id_takeItFromHere":"Now, this should like a problem you know how to solve.  Take it away!",
+		
+			"id_dragged5_notTrainedEarlier":"Not quite.  Dragging the 5 like that subtracts 5 from both sides, but, it leaves our X term more congested than earlier.",
+			"id_dragged5_trainedEarlier":"Not quite.  Similar to before, this dragging the 5 actually makes the equation more complicated, not less.",
+		"id_undoDrag":"We'll want to drag both the 5 and the 8 to the right side, leaving x by itself.",
+		
+		"id_goodCorrectionDrag":"Yes.  Now drag the other one.",
+		"id_badCorrectionDrag":"Hmm...  We want both the 5 and the 8 on the right side.",
+		
+		
 }

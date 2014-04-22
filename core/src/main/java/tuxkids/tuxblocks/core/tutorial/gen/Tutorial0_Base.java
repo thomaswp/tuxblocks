@@ -64,10 +64,5 @@ public interface Tutorial0_Base {
      * 
      */
     final static String id_secondTowerPlacement = "id_secondTowerPlacement";
-    /**
-     * Lays the preliminary story and shows how to drop towers
-     * 
-     */
-    final static String tutorial_desc = "tutorial_desc";
 
 }
