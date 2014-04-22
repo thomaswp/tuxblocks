@@ -5,7 +5,6 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.story.StoryGameState;
-import tuxkids.tuxblocks.core.tutorial.FSMTutorial.FSMState;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
 import tuxkids.tuxblocks.core.tutorial.gen.StarredTutorial1_Base;
 import tuxkids.tuxblocks.core.utils.Debug;
