@@ -257,9 +257,9 @@ public class BasicStudentModel implements StudentModel {
 	private void updateModel() {
 		if (currentEquations.size() < 1) return;
 
-		System.out.println();
-		System.out.println("Student Model Update");
-		System.out.println("====================");
+		Debug.write();
+		Debug.write("Student Model Update");
+		Debug.write("====================");
 		
 		int resets = 0;
 		int[] hints = new int[HintLevel.values().length];
@@ -317,12 +317,12 @@ public class BasicStudentModel implements StudentModel {
 		if (updates > 2) updates = 2;
 		if (updates < -2) updates = -2;
 
-		System.out.println("Resets: " + resets);
-		System.out.println("Hints: " + Arrays.toString(hints));
-		System.out.println("Extra Solve Steps: " + getSolveExcess());
-		System.out.println("Rating: " + rating);
-//		System.out.println("Meaningful Steps: " + meaningfulSteps);
-//		System.out.println("Updates: " + updates);
+		Debug.write("Resets: " + resets);
+		Debug.write("Hints: " + Arrays.toString(hints));
+		Debug.write("Extra Solve Steps: " + getSolveExcess());
+		Debug.write("Rating: " + rating);
+//		Debug.write("Meaningful Steps: " + meaningfulSteps);
+//		Debug.write("Updates: " + updates);
 		
 		if (updates != 0) {
 			for (int tag : currentEquations.get(0).tags()) {
@@ -367,7 +367,7 @@ public class BasicStudentModel implements StudentModel {
 			if (aStarAfter == null) return studentSteps;
 			int idealStepsAfter = getNumSteps(aStarAfter);
 			
-//			System.out.println("idealAfter: " + idealStepsAfter);
+//			Debug.write("idealAfter: " + idealStepsAfter);
 //			debugList(aStarAfter);
 			
 			if (idealSolved) {	
@@ -391,7 +391,7 @@ public class BasicStudentModel implements StudentModel {
 			for (SolveAction action : st.actions) ss.add(action.name());
 			s.add(ss);
 		}
-		System.out.println(s);
+		Debug.write(s);
 	}
 	
 	private static int getNumSteps(List<Step> steps) {
