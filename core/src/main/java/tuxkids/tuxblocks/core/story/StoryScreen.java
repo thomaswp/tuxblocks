@@ -41,16 +41,15 @@ public class StoryScreen extends GameScreen implements Strings_Story {
 		
 		TextFormat optionFormat = new TextFormat().withFont(graphics().createFont(Lang.font(), Style.PLAIN, (int)(height() / 10)));
 		
-		float midY = (height()) / 2;
 		int tintPressed = Colors.WHITE, tintUnpressed = Color.rgb(200, 200, 200);
 		
-		float size = (height() - header.height()) / 1.8f;
+		float size = (height() - header.height()) / 2.4f;
 		CanvasImage modeImage = CanvasUtils.createRoundRect(size, size, size / 10, Color.argb(0, 255, 255, 255), size / 10, Colors.WHITE);
 		
 		float buttonTextMaxWidth = size * 0.7f;
 		
 		Button startButton = new Button(modeImage, false);
-		startButton.setPosition(width() / 2, midY);
+		startButton.setPosition(startButton.width() * 0.7f, startButton.height() * 0.7f + header.height());
 		startButton.setTint(tintPressed, tintUnpressed);
 		registerHighlightable(startButton, Tag.Title_Play);
 		layer.add(startButton.layerAddable());

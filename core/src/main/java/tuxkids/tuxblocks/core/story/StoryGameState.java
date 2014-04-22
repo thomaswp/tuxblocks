@@ -15,7 +15,7 @@ import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.title.Difficulty;
-import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
+import tuxkids.tuxblocks.core.tutorial.AbstractStarredTutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
