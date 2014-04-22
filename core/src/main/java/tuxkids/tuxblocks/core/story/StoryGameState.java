@@ -19,6 +19,7 @@ import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
+import tuxkids.tuxblocks.core.tutorial.Tutorial2ExplainingStarred;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
@@ -47,7 +48,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	@Override
 	protected void setUpProblems() {
-		
+		//The student model gets these.
 	}
 
 	@Override
@@ -124,12 +125,13 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 		if (cannedEquationIndex < cannedEquations.length) {
 			return new Problem(cannedEquations[cannedEquationIndex++], reward);
 		}
-		if (studentModel.isReadyForNextStarred() && level.roundNumber() > 1) {
-			//			if (tutorialIndex > 1 && !getBoolean(HESP)) {
-			//				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
-			//			}
-			StarredTutorial tutorial = studentModel.getNextTutorial();
-			return new StarredProblem(tutorial.createEquation(), reward, tutorial);
+		if (/*studentModel.isReadyForNextStarred() && */level.roundNumber() > 1) {
+			if (/*tutorialIndex > 1 && */!getBoolean(HESP)) {
+				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(), this);
+			}
+			//StarredTutorial tutorial = studentModel.getNextTutorial();
+			return new StarredProblem(cannedEquations[0], reward, new StarredTutorial1());
+			//return new StarredProblem(tutorial.createEquation(), reward, tutorial);
 		} else {
 			Equation equation = studentModel.getNextGeneralEquation();
 			return new Problem(equation, reward);
