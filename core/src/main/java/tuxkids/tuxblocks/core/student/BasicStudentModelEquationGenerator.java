@@ -20,6 +20,10 @@ public class BasicStudentModelEquationGenerator {
 		return rand.nextInt(bounds - 1)+1;
 	}
 	
+	protected static int randomNonZeroPlusOrMinus(Random rand, int bounds) {
+		return randomNonZero(rand, bounds) * (rand.nextInt(2) * 2 - 1);
+	}
+	
 	public static EGenerator firstLevelAS() {
 		return new EGenerator() {
 			Random random = new Random();
@@ -36,7 +40,7 @@ public class BasicStudentModelEquationGenerator {
 			}
 			private Equation generateSubtraction() {
 				int firstNum = randomNonZero(random, 30);
-				int secondNum = randomNonZero(random, firstNum);
+				int secondNum = randomNonZero(random, firstNum + 1);
 				
 				return new Equation.Builder().
 						addLeft(new VariableBlock("x")).
@@ -95,8 +99,27 @@ public class BasicStudentModelEquationGenerator {
 	}
 
 	public static EGenerator singleDragAS() {
-		// TODO Auto-generated method stub
-		return null;
+		return new EGenerator() {
+			Random rand = new Random();
+			
+			@Override
+			public Equation generate() {
+				int addend = randomNonZeroPlusOrMinus(rand, 20);  
+				
+				Equation eq = new Equation.Builder()
+				.addLeft(new VariableBlock("x").add(randomNonZero(rand, 20)))
+				.addRight(addend)
+				.createEquation();
+				
+				if (addend < 0) {
+					eq.addTag(ADD_EQUATION_SIDES);
+				} else {
+					eq.addTag(SUBTRACT_EQUATION_SIDES);
+				}
+				
+				return eq;
+			}
+		};
 	}
 
 	public static EGenerator firstLevelMDAS() {

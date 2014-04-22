@@ -1,9 +1,10 @@
 package tuxkids.tuxblocks.core.tutorial;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
-import tuxkids.tuxblocks.core.tutorial.gen.StarredTutorial1_Base;
+import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
+import tuxkids.tuxblocks.core.tutorial.gen.StarredTutorial2_Base;
 
-public class StarredTutorial1 extends StarredTutorial implements StarredTutorial1_Base {
+public class StarredTutorial2 extends StarredTutorial implements StarredTutorial2_Base {
 
 	@Override
 	public String filename() {
@@ -12,14 +13,14 @@ public class StarredTutorial1 extends StarredTutorial implements StarredTutorial
 
 	@Override
 	protected void setUpStates() {
-		addStartState(new FSMState());
+		addStartState(id_intro);
 	}
 
 	@Override
 	public Equation createEquation() {
 		return new Equation.Builder()
 		.addLeft("x")
-		.addRight(6)
+		.addRight(new NumberBlock(6).plus(4).over(3))
 		.createEquation();
 	}
 

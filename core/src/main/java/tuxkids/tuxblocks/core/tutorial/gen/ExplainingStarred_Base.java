@@ -2,6 +2,11 @@
 package tuxkids.tuxblocks.core.tutorial.gen;
 
 
+
+/**
+ * Explains what a starred Tutorial is
+ * 
+ */
 public interface ExplainingStarred_Base {
 
     /**
@@ -24,10 +29,5 @@ public interface ExplainingStarred_Base {
      * 
      */
     final static String id_whenReady = "id_whenReady";
-    /**
-     * Explains what a starred Tutorial is
-     * 
-     */
-    final static String tutorial_desc = "tutorial_desc";
 
 }

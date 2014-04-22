@@ -1,6 +1,29 @@
 package tuxkids.tuxblocks.core.student;
 
-import static tuxkids.tuxblocks.core.student.ActionType.*;
+import static tuxkids.tuxblocks.core.student.ActionType.ADD_EQUATION_SIDES;
+import static tuxkids.tuxblocks.core.student.ActionType.ADD_INTEGERS;
+import static tuxkids.tuxblocks.core.student.ActionType.BUILDING_SYMBOLIC_EQUATIONS;
+import static tuxkids.tuxblocks.core.student.ActionType.BUILDING_WRITTEN_EQUATIONS;
+import static tuxkids.tuxblocks.core.student.ActionType.CANCEL_ADDENS;
+import static tuxkids.tuxblocks.core.student.ActionType.CANCEL_FACTORS;
+import static tuxkids.tuxblocks.core.student.ActionType.COMBINATION;
+import static tuxkids.tuxblocks.core.student.ActionType.COMBINE_UNKNOWNS;
+import static tuxkids.tuxblocks.core.student.ActionType.DISTRIBUTION;
+import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_INTEGERS_HIGH;
+import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_INTEGERS_LOW;
+import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_INTEGERS_MED;
+import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_MULTIPLE_SIDES;
+import static tuxkids.tuxblocks.core.student.ActionType.DIVIDE_SINGLE_SIDE;
+import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_INTEGERS_HIGH;
+import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_INTEGERS_LOW;
+import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_INTEGERS_MED;
+import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_MULTIPLE_SIDES;
+import static tuxkids.tuxblocks.core.student.ActionType.MULTIPLY_SINGLE_SIDE;
+import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_ADDENS;
+import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_DIFFERENT_FACTORS;
+import static tuxkids.tuxblocks.core.student.ActionType.SIMPLIFY_LIKE_FACTORS;
+import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_EQUATION_SIDES;
+import static tuxkids.tuxblocks.core.student.ActionType.SUBTRACT_INTEGERS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +57,8 @@ import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VerticalModifierBlock;
 import tuxkids.tuxblocks.core.solve.markup.Renderer;
 import tuxkids.tuxblocks.core.student.EquationTree.EquationTreeNode;
-import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.tutor.IdealEquationSolver;
+import tuxkids.tuxblocks.core.tutor.IdealEquationSolver.Step;
 import tuxkids.tuxblocks.core.tutor.Tutor;
 import tuxkids.tuxblocks.core.tutor.Tutor.HintLevel;
 import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
@@ -160,19 +183,19 @@ public class BasicStudentModel implements StudentModel {
 				GUESS_LOW, TRANSITION_LOW));
 		
 		knowledgeBits.put(SIMPLIFY_ADDENS, new KnowledgeComponent(
-				"Combine two addens", L0_LOW, SLIP_MED,
+				"Combine two addens", L0_MED, SLIP_MED,
 				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(SIMPLIFY_DIFFERENT_FACTORS, new KnowledgeComponent(
 				"Combine a times and over block", L0_LOW, SLIP_MED,
 				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(SIMPLIFY_LIKE_FACTORS, new KnowledgeComponent(
-				"Combine two times or over blocks", L0_LOW, SLIP_MED,
+				"Combine two times or over blocks", L0_MED, SLIP_MED,
 				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(CANCEL_ADDENS, new KnowledgeComponent(
-				"Cancel two negating addens", L0_LOW, SLIP_MED,
+				"Cancel two negating addens", L0_MED, SLIP_MED,
 				GUESS_MED, TRANSITION_LOW));
 		knowledgeBits.put(CANCEL_FACTORS, new KnowledgeComponent(
-				"Cancel two negating factors", L0_LOW, SLIP_LOW,
+				"Cancel two negating factors", L0_MED, SLIP_LOW,
 				GUESS_LOW, TRANSITION_LOW));
 
 		knowledgeBits.put(DISTRIBUTION, new KnowledgeComponent("Distribution",
@@ -232,7 +255,8 @@ public class BasicStudentModel implements StudentModel {
 
 	private void updateModel() {
 		if (currentEquations.size() < 1) return;
-	
+
+		System.out.println();
 		System.out.println("Student Model Update");
 		System.out.println("====================");
 		
@@ -271,11 +295,7 @@ public class BasicStudentModel implements StudentModel {
 		}
 		
 		int extraSteps = getSolveExcess();
-		
-		System.out.println("Resets: " + resets);
-		System.out.println("Hints: " + Arrays.toString(hints));
-		System.out.println("Extra Solve Steps: " + getSolveExcess());
-		System.out.println();
+
 		
 		int rating = 0;
 		if (success) rating++;
@@ -295,10 +315,20 @@ public class BasicStudentModel implements StudentModel {
 		int updates = (int) (rawUpdates > 0 ? Math.ceil(rawUpdates) : Math.floor(rawUpdates));
 		if (updates > 2) updates = 2;
 		if (updates < -2) updates = -2;
-		
+
+		System.out.println("Resets: " + resets);
+		System.out.println("Hints: " + Arrays.toString(hints));
+		System.out.println("Extra Solve Steps: " + getSolveExcess());
 		System.out.println("Rating: " + rating);
-		System.out.println("Meaningful Steps: " + meaningfulSteps);
-		System.out.println("Updates: " + updates);
+//		System.out.println("Meaningful Steps: " + meaningfulSteps);
+//		System.out.println("Updates: " + updates);
+		
+		if (updates != 0) {
+			for (int tag : currentEquations.get(0).tags()) {
+				ActionType type = ActionType.values()[tag];
+				updateKC(type, updates > 0, Math.abs(updates));
+			}
+		}
 	}
 	
 	private int getSolveExcess() {
@@ -402,19 +432,18 @@ public class BasicStudentModel implements StudentModel {
 		
 		if (power != 0) {
 			for (Object tag : startSimplifying.tags()) {
-				double p = knowledgeBits.get(tag).probLearned();
 				updateKC((ActionType) tag, power > 0, Math.abs(power));
-				Debug.write("Update: %s %s", tag, power);
-				Debug.write("Prob: %s->%s", p, knowledgeBits.get(tag).probLearned());
 			}
 		}
 	}
 	
 	private void updateKC(ActionType type, boolean success, int power) {
 		KnowledgeComponent kc = knowledgeBits.get(type);
+		double before = kc.probLearned();
 		for (int i = 0; i < power; i++) {
 			kc.studentAnswered(success);
 		}
+		Debug.write("Update %s: %s->%s", type, before, kc.probLearned());
 	}
 
 	@Override

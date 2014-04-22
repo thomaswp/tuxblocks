@@ -12,13 +12,10 @@ import tuxkids.tuxblocks.core.defense.select.StarredProblem;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
-import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
-import tuxkids.tuxblocks.core.student.StudentModel.TutorialEquation;
 import tuxkids.tuxblocks.core.title.Difficulty;
 import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
-import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
@@ -40,16 +37,17 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 			new Equation.Builder().addLeft(new VariableBlock("x"))
 					.addRight(new NumberBlock(6).minus(5)).createEquation().name("6-5")
 	};
-	private int cannedEquationIndex = 0;
+	private int cannedEquationIndex = 2;
 
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
-
+		problems().add(new Problem(studentModel.getNextGeneralEquation(), createReward(1)));
+		problems().add(new Problem(studentModel.getNextGeneralEquation(), createReward(1)));
 	}
 
 	@Override
 	protected void setUpProblems() {
-		//The student model gets these.
+		
 	}
 
 	@Override

@@ -2,6 +2,11 @@
 package tuxkids.tuxblocks.core.tutorial.gen;
 
 
+
+/**
+ * Teaches how to simplify expressions where x is already isolated, specifically x = 4*3 and x = 6-5
+ * 
+ */
 public interface Tutorial1_1_Base {
 
     /**
@@ -204,10 +209,5 @@ public interface Tutorial1_1_Base {
      * 
      */
     final static String id_3x4dragged3 = "id_3x4dragged3";
-    /**
-     * Teaches how to simplify expressions where x is already isolated, specifically x = 4*3 and x = 6-5
-     * 
-     */
-    final static String tutorial_desc = "tutorial_desc";
 
 }

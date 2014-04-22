@@ -2,6 +2,11 @@
 package tuxkids.tuxblocks.core.tutorial.gen;
 
 
+
+/**
+ * Teaches how to do basic isolation of x (x/5 = 2)
+ * 
+ */
 public interface StarredTutorial1_Base {
 
     /**
@@ -14,10 +19,5 @@ public interface StarredTutorial1_Base {
      * 
      */
     final static String id_intro = "id_intro";
-    /**
-     * Teaches how to do basic isolation of x (x/5 = 2)
-     * 
-     */
-    final static String tutorial_desc = "tutorial_desc";
 
 }
