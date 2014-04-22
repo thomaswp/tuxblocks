@@ -13,7 +13,6 @@ import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.lang.Lang;
 import tuxkids.tuxblocks.core.solve.blocks.EquationBlockIndex;
 import tuxkids.tuxblocks.core.story.StoryGameState;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.PlayNObject;
 import tuxkids.tuxblocks.core.widget.Button;
 

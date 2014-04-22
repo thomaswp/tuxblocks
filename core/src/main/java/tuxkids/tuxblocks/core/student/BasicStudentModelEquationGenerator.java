@@ -1,8 +1,8 @@
 package tuxkids.tuxblocks.core.student;
 
-import java.util.Random;
-
 import static tuxkids.tuxblocks.core.student.ActionType.*;
+
+import java.util.Random;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;

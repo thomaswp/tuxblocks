@@ -8,7 +8,6 @@ import tuxkids.tuxblocks.core.defense.TowerState;
 import tuxkids.tuxblocks.core.defense.round.Level;
 import tuxkids.tuxblocks.core.defense.round.Reward;
 import tuxkids.tuxblocks.core.defense.select.Problem;
-import tuxkids.tuxblocks.core.defense.select.StarredProblem;
 import tuxkids.tuxblocks.core.defense.tower.Tower;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
@@ -16,7 +15,6 @@ import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.student.BasicStudentModel;
 import tuxkids.tuxblocks.core.student.StudentModel;
 import tuxkids.tuxblocks.core.title.Difficulty;
-import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 import tuxkids.tuxblocks.core.widget.GameBackgroundSprite;
 

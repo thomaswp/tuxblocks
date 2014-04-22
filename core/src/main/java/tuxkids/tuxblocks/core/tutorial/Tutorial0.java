@@ -1,12 +1,7 @@
 package tuxkids.tuxblocks.core.tutorial;
 
-import static tuxkids.tuxblocks.core.story.StoryGameStateKeys.HPBT;
-import static tuxkids.tuxblocks.core.story.StoryGameStateKeys.TSRB;
-import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.Defense_BadTowerPlacement;
-import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.Defense_RoundOver;
-import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.Defense_StartRound;
-import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.Defense_TowerDropped;
-import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.TextBoxHidden;
+import static tuxkids.tuxblocks.core.story.StoryGameStateKeys.*;
+import static tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger.*;
 import pythagoras.i.Point;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Tag;
 import tuxkids.tuxblocks.core.tutorial.Tutorial.Trigger;
