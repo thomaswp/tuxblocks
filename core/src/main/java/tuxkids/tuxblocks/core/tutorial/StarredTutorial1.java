@@ -49,6 +49,8 @@ public class StarredTutorial1 extends AbstractStarredTutorial implements Starred
 			}
 		}, Trigger.TextBoxHidden);
 		
+		
+		
 		letsDrag.addTransition(new StateChooser() {
 			
 			@Override
@@ -58,9 +60,23 @@ public class StarredTutorial1 extends AbstractStarredTutorial implements Starred
 					if (((EquationBlockIndex) extraInformation).expressionIndex == 1) 
 						return takeItFromHere;
 					
-					if (wasTrainedEarlierOnDrag)
-						return dragged5Trained;
 					return dragged5NotTrained;
+				}
+				Debug.write("no drag information?");
+				return takeItFromHere;
+			}
+		}, Trigger.Solve_BlockReleasedOnOther);
+		
+		letsDragTrained.addTransition(new StateChooser() {
+			
+			@Override
+			public FSMState chooseState(Object extraInformation) {
+				if (extraInformation instanceof EquationBlockIndex) {
+					Debug.write(extraInformation);
+					if (((EquationBlockIndex) extraInformation).expressionIndex == 1) 
+						return takeItFromHere;
+					
+					return dragged5Trained;
 				}
 				Debug.write("no drag information?");
 				return takeItFromHere;
