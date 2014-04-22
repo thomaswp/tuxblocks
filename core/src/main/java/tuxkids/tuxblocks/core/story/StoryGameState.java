@@ -23,7 +23,6 @@ import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
 import tuxkids.tuxblocks.core.tutorial.Tutorial2ExplainingStarred;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public class StoryGameState extends GameState implements StoryGameStateKeys{
@@ -106,7 +105,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 		case 1:
 			return new Tutorial1();
 		default:
-			Debug.write("No lesson prepared for "+tutorialIndex);
+//			Debug.write("No lesson prepared for "+tutorialIndex);
 			return null;
 		}
 	}
@@ -140,7 +139,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	public void setBoolean(String key, boolean value) {
 		booleansMap.put(key, value);
-		Debug.write(key + " = "+ value);
+//		Debug.write(key + " = "+ value);
 	}
 
 	public boolean getBoolean(String key) {
