@@ -24,13 +24,19 @@ abstract class FSMTutorial implements TutorialInstance {
 	protected FSMState currentState = startState;
 	private Json.Object messages;
 	protected StoryGameState gameState;
-	private static final Object NO_EXTRA_INFO = new Object();
-	
+	private static final Object NO_EXTRA_INFO = new Object(){
+		@Override
+		public String toString() {
+			return "NoExtraInfo"; //when debugging the object, we get a better 
+		}		
+	};
+
 	protected abstract void setUpStates();
 	
 	public FSMTutorial() {
 	}
 	
+	@Override
 	public void init(GameState gameState) {
 		// because TutorialLayer adds to the rootLayer, we don't create it until we're shown
 		this.gameState = (StoryGameState) gameState;
@@ -107,6 +113,7 @@ abstract class FSMTutorial implements TutorialInstance {
 	
 	@Override
 	public void trigger(Trigger event, Object extraInformation) {
+		//Debug.write("Trigger: "+event+" "+(extraInformation!=null?extraInformation:""));
 		if (currentState == endState || currentState == null) return;
 		
 		FSMState nextState = currentState.sawTrigger(event, extraInformation);

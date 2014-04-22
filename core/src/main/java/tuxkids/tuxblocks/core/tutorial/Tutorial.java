@@ -27,6 +27,8 @@ public abstract class Tutorial extends PlayNObject {
 	public final static int HIGHLIGHT_COLOR_2 = Color.rgb(0xff, 0x44, 0x44);
 	public final static int HIGHLIGHT_CYCLE = 1500;
 	
+	
+	
 	/**
 	 * Events which can happen in-game. When they do happen, the
 	 * corresponding Trigger will be passed to {@link Tutorial#trigger(Trigger)}.
@@ -111,7 +113,7 @@ public abstract class Tutorial extends PlayNObject {
 		Build_NumberSelect, 
 		Build_Ok, 
 		Build_NumberDown, 
-		Build_NumberUp, 
+		Build_NumberUp, StarredEquation, 
 	}
 	
 	private static TutorialInstance instance;
@@ -286,8 +288,10 @@ public abstract class Tutorial extends PlayNObject {
 
 	public static void refreshBlockHighlights(
 			List<EquationBlockIndex> highlightableBlocks) {
-		Debug.write(highlightableBlocks.size());
+		//Debug.write(highlightableBlocks.size());
 		Tutorial.highlightableBlocks.clear();
 		Tutorial.highlightableBlocks.addAll(highlightableBlocks);
+		
+		
 	}
 }
