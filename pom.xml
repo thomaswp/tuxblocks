@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.googlecode.playn</groupId>
     <artifactId>playn-project</artifactId>
-    <version>1.8</version>
+    <version>1.8.5</version>
   </parent>
 
   <groupId>tuxkids</groupId>
@@ -14,8 +14,8 @@
   <name>TuxBlocksGame Metaproject</name>
 
   <properties>
-    <playn.version>1.8</playn.version>
-    <ooo.version>1.8</ooo.version>
+    <playn.version>1.8.5</playn.version>
+    <ooo.version>1.8.5</ooo.version>
   </properties>
 
   <profiles>
