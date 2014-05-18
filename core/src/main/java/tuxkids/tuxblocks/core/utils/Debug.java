@@ -38,6 +38,10 @@ public class Debug {
 		}
 	}
 	
+	public static void write() {
+		write("");
+	}
+	
 	public static void write(Exception e) {
 		if (DEBUG) e.printStackTrace();
 	}

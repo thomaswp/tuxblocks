@@ -1,8 +1,8 @@
 package tuxkids.tuxblocks.core.student;
 
-import java.util.Random;
-
 import static tuxkids.tuxblocks.core.student.ActionType.*;
+
+import java.util.Random;
 
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
 import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator.EGenerator;
@@ -18,6 +18,10 @@ public class BasicStudentModelEquationGenerator {
 	
 	protected static int randomNonZero(Random rand, int bounds) {
 		return rand.nextInt(bounds - 1)+1;
+	}
+	
+	protected static int randomNonZeroPlusOrMinus(Random rand, int bounds) {
+		return randomNonZero(rand, bounds) * (rand.nextInt(2) * 2 - 1);
 	}
 	
 	public static EGenerator firstLevelAS() {
@@ -36,7 +40,7 @@ public class BasicStudentModelEquationGenerator {
 			}
 			private Equation generateSubtraction() {
 				int firstNum = randomNonZero(random, 30);
-				int secondNum = randomNonZero(random, firstNum);
+				int secondNum = randomNonZero(random, firstNum + 1);
 				
 				return new Equation.Builder().
 						addLeft(new VariableBlock("x")).
@@ -45,8 +49,8 @@ public class BasicStudentModelEquationGenerator {
 			}
 			
 			private Equation generateAddition() {
-				int answer = random.nextInt(30);
-				int addend = random.nextInt(31-answer);
+				int answer = randomNonZero(random, 30);
+				int addend = randomNonZero(random, 31-answer);
 				return new Equation.Builder().
 				addLeft(new VariableBlock("x")).
 				addRight(new NumberBlock(answer - addend).plus(addend)).
@@ -84,8 +88,8 @@ public class BasicStudentModelEquationGenerator {
 						createEquation();
 			}
 			private Equation generateMultiplication() {
-				int firstFactor = random.nextInt(6);
-				int secondFactor = random.nextInt(6);
+				int firstFactor = randomPlusOrMinus(random, 5);
+				int secondFactor = randomNonZero(random, 6) + 1;
 				return new Equation.Builder().
 				addLeft(new VariableBlock("x")).
 				addRight(new NumberBlock(firstFactor).times(secondFactor)).
@@ -95,8 +99,27 @@ public class BasicStudentModelEquationGenerator {
 	}
 
 	public static EGenerator singleDragAS() {
-		// TODO Auto-generated method stub
-		return null;
+		return new EGenerator() {
+			Random rand = new Random();
+			
+			@Override
+			public Equation generate() {
+				int addend = randomNonZeroPlusOrMinus(rand, 20);  
+				
+				Equation eq = new Equation.Builder()
+				.addLeft(new VariableBlock("x").add(randomNonZero(rand, 20)))
+				.addRight(addend)
+				.createEquation();
+				
+				if (addend < 0) {
+					eq.addTag(ADD_EQUATION_SIDES);
+				} else {
+					eq.addTag(SUBTRACT_EQUATION_SIDES);
+				}
+				
+				return eq;
+			}
+		};
 	}
 
 	public static EGenerator firstLevelMDAS() {

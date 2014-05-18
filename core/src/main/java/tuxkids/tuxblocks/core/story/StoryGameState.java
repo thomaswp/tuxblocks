@@ -1,3 +1,4 @@
+
 package tuxkids.tuxblocks.core.story;
 
 import java.util.HashMap;
@@ -12,18 +13,16 @@ import tuxkids.tuxblocks.core.defense.select.StarredProblem;
 import tuxkids.tuxblocks.core.defense.tower.PeaShooter;
 import tuxkids.tuxblocks.core.defense.tower.TowerType;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
-import tuxkids.tuxblocks.core.solve.blocks.EquationGenerator;
 import tuxkids.tuxblocks.core.solve.blocks.NumberBlock;
 import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
-import tuxkids.tuxblocks.core.student.StudentModel.TutorialEquation;
 import tuxkids.tuxblocks.core.title.Difficulty;
-import tuxkids.tuxblocks.core.tutorial.StarredTutorial;
+import tuxkids.tuxblocks.core.tutorial.AbstractStarredTutorial;
 import tuxkids.tuxblocks.core.tutorial.StarredTutorial1;
 import tuxkids.tuxblocks.core.tutorial.Tutorial;
 import tuxkids.tuxblocks.core.tutorial.Tutorial0;
 import tuxkids.tuxblocks.core.tutorial.Tutorial1;
+import tuxkids.tuxblocks.core.tutorial.Tutorial2ExplainingStarred;
 import tuxkids.tuxblocks.core.tutorial.TutorialInstance;
-import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.persist.Persistable;
 
 public class StoryGameState extends GameState implements StoryGameStateKeys{
@@ -34,13 +33,13 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	private Map<String, Boolean> booleansMap = new HashMap<String, Boolean>();
 
-	private final Equation[] starredEquations = new Equation[] {
+	private final Equation[] cannedEquations = new Equation[] {
 			new Equation.Builder().addLeft(new VariableBlock("x"))
 					.addRight(new NumberBlock(4).times(3)).createEquation().name("3x4"),
 			new Equation.Builder().addLeft(new VariableBlock("x"))
 					.addRight(new NumberBlock(6).minus(5)).createEquation().name("6-5")
 	};
-	private int starredEquationIndex = 0;
+	private int cannedEquationIndex = 0;
 
 	public StoryGameState() {
 		super(new Difficulty(0, 2, Difficulty.ROUND_TIME_INFINITE));
@@ -50,7 +49,6 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 	@Override
 	protected void setUpProblems() {
 		//The student model gets these.
-		problems().add(new StarredProblem(EquationGenerator.generate(3, 1), createReward(1), new StarredTutorial1()));
 	}
 
 	@Override
@@ -107,7 +105,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 		case 1:
 			return new Tutorial1();
 		default:
-			Debug.write("No lesson prepared for "+tutorialIndex);
+//			Debug.write("No lesson prepared for "+tutorialIndex);
 			return null;
 		}
 	}
@@ -124,11 +122,14 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	@Override
 	protected Problem createProblem(int difficulty, float percFinished, Reward reward) {
+		if (cannedEquationIndex < cannedEquations.length) {
+			return new Problem(cannedEquations[cannedEquationIndex++], reward);
+		}
 		if (studentModel.isReadyForNextStarred() && level.roundNumber() > 1) {
-			//			if (tutorialIndex > 1 && !getBoolean(HESP)) {
-			//				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(this));
-			//			}
-			StarredTutorial tutorial = studentModel.getNextTutorial();
+			if (tutorialIndex > 1 && !getBoolean(HESP)) {
+				Tutorial.loadTutorial(new Tutorial2ExplainingStarred(), this);
+			}
+			AbstractStarredTutorial tutorial = studentModel.getNextTutorial();
 			return new StarredProblem(tutorial.createEquation(), reward, tutorial);
 		} else {
 			Equation equation = studentModel.getNextGeneralEquation();
@@ -138,7 +139,7 @@ public class StoryGameState extends GameState implements StoryGameStateKeys{
 
 	public void setBoolean(String key, boolean value) {
 		booleansMap.put(key, value);
-		Debug.write(key + " = "+ value);
+//		Debug.write(key + " = "+ value);
 	}
 
 	public boolean getBoolean(String key) {

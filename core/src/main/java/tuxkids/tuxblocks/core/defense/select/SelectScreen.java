@@ -155,6 +155,9 @@ public class SelectScreen extends GameScreen implements ProblemsChangedListener 
 		} else if (problemButtons.size() == 1) {
 			registerHighlightable(pb, Tag.Select_SecondEquation);
 		}
+		if (problem instanceof StarredProblem) {
+			registerHighlightable(pb, Tag.StarredEquation);
+		}
 		
 		problemButtons.add(pb);
 	}

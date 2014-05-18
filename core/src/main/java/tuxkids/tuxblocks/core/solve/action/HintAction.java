@@ -9,7 +9,7 @@ public class HintAction extends SolveAction {
 	
 	public HintAction(Hint hint) {
 		super(true);
-		this.level = hint.level.ordinal();
+		this.level = hint.level == null ? 0 : hint.level.ordinal();
 		this.text = hint.text;
 		this.hintString = hint.action == null ? "" : hint.action.toString();
 	}

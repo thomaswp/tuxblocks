@@ -173,32 +173,31 @@ public class BlockController extends EquationManipulator {
 	/** Sets the current equation */
 	public void setEquation(Equation equation) {
 		clear();
-		for (BaseBlock sprite : equation.leftSide()) {
-			addExpression(Side.Left, sprite);
-		}
-		for (BaseBlock sprite : equation.rightSide()) {
-			addExpression(Side.Right, sprite);
+		this.equation = equation.mutableCopy();
+		for (BaseBlock block : this.equation) {
+			addBaseBlock(block);
 		}
 		updateExpressionPositions(0, 1);
+		refreshEquation = true;
+		refreshEquals();
 		startSolving();
 	}
 	
-	// Adds the given expression to the given side (used in construction, no during manipulation)
-	private void addExpression(Side side, BaseBlock expression) {
-		List<BaseBlock> blocks = getBlocks(side);
-		addExpression(blocks, expression, 0, 0, blocks.size());
-		refreshEquationImage();
-	}
-	
-	// adds the expression at to the given side at the given index
+	// adds the expression to the given side at the given index
 	private void addExpression(List<BaseBlock> side, BaseBlock expression, float x, float y, int index) {
-		expression.initSprite();
-		layer.addAt(expression.layer(), x, y);
-		expression.layer().setDepth(0);
+		addBaseBlock(expression);
+		expression.layer().setTranslation(x, y);
 		side.add(index, expression);
-		expression.addBlockListener(listener);
 		refreshEquation = true;
 		refreshEquals();
+	}
+	
+	// adds a BaseBlock to the layer, inits its sprite and registers the listener
+	private void addBaseBlock(BaseBlock block) {
+		block.initSprite();
+		layer.add(block.layer());
+		block.layer().setDepth(0);
+		block.addBlockListener(listener);
 	}
 	
 	// removed the expression from the given side
