@@ -25,6 +25,7 @@ import tuxkids.tuxblocks.core.TuxBlocksGame;
 import tuxkids.tuxblocks.core.solve.action.SolveAction;
 import tuxkids.tuxblocks.core.solve.action.callbacks.SolveActionCallback;
 import tuxkids.tuxblocks.core.solve.blocks.Equation;
+import tuxkids.tuxblocks.core.utils.Formatter;
 import tuxkids.tuxblocks.core.utils.ImageSaver;
 
 public class TuxBlocksGameJava {
@@ -71,10 +72,18 @@ public class TuxBlocksGameJava {
 //		JavaGraphics graphics = platform.graphics();
 //		graphics.registerFont("Raavi", "fonts/RAAVI.TTF");
 //		graphics.registerFont("Mangal", "fonts/MANGAL.TTF");
-	
+
+		Formatter.setInstance(new Formatter() {
+			@Override
+			protected String formatInstance(String format, Object... args) {
+				return String.format(format, args);
+			}
+		});
+		
 		TuxBlocksGame game = new TuxBlocksGame(Locale.getDefault().getLanguage());
 		TuxBlocksGame.loggingCallback = new LogCallback();
 		PlayN.run(game);
+		
 	}
 
 	// modified from: http://www.jpct.net/forum2/index.php?topic=795.0
