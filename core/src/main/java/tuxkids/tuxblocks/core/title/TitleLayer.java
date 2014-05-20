@@ -94,7 +94,7 @@ public class TitleLayer extends LayerWrapper implements Listener {
 		boundsWidth = graphics().width();
 		boundsHeight = graphics().height();
 		
-		int[] rgbArray = new int[4 * pxWidth * pxHeight];
+		int[] rgbArray = new int[pxWidth * pxHeight];
 		image.getRgb(0, 0, pxWidth, pxHeight, rgbArray, 0, pxWidth);
 		
 		// render with an ImmediateLayer to avoid the allocation of a bunch of

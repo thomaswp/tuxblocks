@@ -90,6 +90,7 @@ public class GameState implements Persistable {
 
 	protected void setUpTowers() {
 		addItem(TowerType.PeaShooter, 3);
+		addItem(TowerType.BigShooter, 3);
 	}
 
 	protected void setUpProblems() {

@@ -27,6 +27,7 @@ public class MissileExplosion {
 	public MissileExplosion(Grid grid, Vector position, int level) {
 		int p = 30;
 		Emitter emitter = grid.createEmitter(p, CanvasUtils.createCircleCached(2 + level, grid.towerColor()));
+		if (emitter == null) return;
 		emitter.generator = Generator.impulse(p);
         emitter.initters.add(Lifespan.constant(1));
         emitter.initters.add(Color.constant(Colors.WHITE));

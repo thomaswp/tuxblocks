@@ -198,7 +198,7 @@ public class Grid extends PlayNObject implements Highlightable {
 		centerImageLayer(selectorLayer);
 		layer.add(selectorLayer);
 		
-		particles = new TuxParticles();
+		particles = TuxParticles.create();
 		
 		// indicates a Tower's range when its clicked on
 		rangeIndicatorLayer = graphics().createImageLayer();
@@ -208,6 +208,7 @@ public class Grid extends PlayNObject implements Highlightable {
 
 	/** Creates an {@link Emitter} for this Grid's {@link Particles} */
 	public Emitter createEmitter(int maxParticles, Image image) {
+		if (particles == null) return null;
 		Emitter e = particles.createEmitter(maxParticles, image, overlayLayer);
 		return e;
 	}
@@ -257,7 +258,7 @@ public class Grid extends PlayNObject implements Highlightable {
 			GridObject gridObject = gridObjects.get(i);
 			gridObject.paint(clock);
 		}
-		particles.paint(clock);
+		if (particles != null) particles.paint(clock);
 		upgradePanel.paint(clock);
 		updateSelecting();
 	}

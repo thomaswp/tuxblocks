@@ -30,4 +30,13 @@ public class TuxParticles extends Particles {
         onLayer.add(emitter.myLayer);
         return emitter;
     }
+	
+	public static TuxParticles create() {
+		try {
+			return new TuxParticles();
+		} catch (Exception e) {
+			
+		}
+		return null;
+	}
 }

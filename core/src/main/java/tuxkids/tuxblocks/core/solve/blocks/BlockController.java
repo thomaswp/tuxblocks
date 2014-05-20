@@ -315,7 +315,7 @@ public class BlockController extends EquationManipulator {
 			dragging.lerpAlpha(1, clock.dt());
 		}
 		updatePosition();
-		particles.paint(clock);
+		if (particles != null) particles.paint(clock);
 		
 		// Update highlighted blocks
 		if (dragging == null) {
@@ -411,8 +411,9 @@ public class BlockController extends EquationManipulator {
 	}
 	
 	// give a nice little POOF when the block crosses the equals
-	private TuxParticles particles = new TuxParticles();
+	private TuxParticles particles = TuxParticles.create();
 	private void showInvertAnimation(float x, float y) {
+		if (particles == null) return;
 		int p = 30;
 		Emitter emitter = particles.createEmitter(p, CanvasUtils.createCircleCached(10, Colors.WHITE), layer);
 		emitter.generator = Generator.impulse(p);
