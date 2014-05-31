@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{A1FAA6C5-27EF-44C3-818C-B82F423C30A9}</ProjectGuid>
@@ -118,8 +118,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TuxblocksXNA.cs" />
     <Compile Include="Importer.cs" />
+    <Compile Include="TuxblocksXNA.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\content\TuxblocksContent.contentproj">

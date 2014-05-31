@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{AE956C53-4E72-4DDB-ABC9-761075852D63}</ProjectGuid>
@@ -550,71 +550,6 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
-    <Compile Include="fonts\Helvetica-12.0-Bold.spritefont">
-      <Name>Helvetica-12.0-Bold</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-12.0-BoldItalic.spritefont">
-      <Name>Helvetica-12.0-BoldItalic</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-12.0-Italic.spritefont">
-      <Name>Helvetica-12.0-Italic</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-12.0-Plain.spritefont">
-      <Name>Helvetica-12.0-Plain</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-24.0-Bold.spritefont">
-      <Name>Helvetica-24.0-Bold</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-24.0-BoldItalic.spritefont">
-      <Name>Helvetica-24.0-BoldItalic</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-24.0-Italic.spritefont">
-      <Name>Helvetica-24.0-Italic</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-24.0-Plain.spritefont">
-      <Name>Helvetica-24.0-Plain</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-9.0-Bold.spritefont">
-      <Name>Helvetica-9.0-Bold</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-9.0-BoldItalic.spritefont">
-      <Name>Helvetica-9.0-BoldItalic</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-9.0-Italic.spritefont">
-      <Name>Helvetica-9.0-Italic</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-9.0-Plain.spritefont">
-      <Name>Helvetica-9.0-Plain</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="fonts\Helvetica-90-Bold.spritefont">
-      <Name>Helvetica-90-Bold</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
     <Compile Include="fonts\Mangal-12.0-Bold.spritefont">
       <Name>Mangal-12.0-Bold</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -812,6 +747,68 @@
     </Compile>
     <Compile Include="fonts\Raavi-8.0-Plain.spritefont">
       <Name>Raavi-8.0-Plain</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="fonts\Arial-48.0-Bold.spritefont">
+      <Name>Arial-48.0-Bold</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Arial-48.0-BoldItalic.spritefont">
+      <Name>Arial-48.0-BoldItalic</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Arial-48.0-Italic.spritefont">
+      <Name>Arial-48.0-Italic</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Arial-48.0-Plain.spritefont">
+      <Name>Arial-48.0-Plain</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Mangal-48.0-Bold.spritefont">
+      <Name>Mangal-48.0-Bold</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Mangal-48.0-BoldItalic.spritefont">
+      <Name>Mangal-48.0-BoldItalic</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Mangal-48.0-Italic.spritefont">
+      <Name>Mangal-48.0-Italic</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Mangal-48.0-Plain.spritefont">
+      <Name>Mangal-48.0-Plain</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Raavi-48.0-Bold.spritefont">
+      <Name>Raavi-48.0-Bold</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Raavi-48.0-BoldItalic.spritefont">
+      <Name>Raavi-48.0-BoldItalic</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Raavi-48.0-Italic.spritefont">
+      <Name>Raavi-48.0-Italic</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="fonts\Raavi-48.0-Plain.spritefont">
+      <Name>Raavi-48.0-Plain</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>

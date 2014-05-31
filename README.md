@@ -109,6 +109,10 @@ The HTML5 backend for PlayN contains both an HTML5 Canvas graphics implementatio
 
 The iOS build is still in development, but for more information on how to run a PlayN game on iOS, see [PlayN-IOS](http://github.com/thomaswp/playn-ios).
 
+### XNA ###
+
+The XNA build (for PC and theoretically Xbox 360) is still in development, but a buggy version can be played by installing [PlayN-XNA](https://github.com/thomaswp/playn-xna/), following the instructions in the README.
+
 Structure
 ---------
 

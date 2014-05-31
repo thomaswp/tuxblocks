@@ -28,6 +28,10 @@ namespace Tuxblocks
             graphics.registerFont("Arial", "fonts\\Arial-36.0-Italic", 36.0f, Font.Style.ITALIC);
             graphics.registerFont("Arial", "fonts\\Arial-36.0-Bold", 36.0f, Font.Style.BOLD);
             graphics.registerFont("Arial", "fonts\\Arial-36.0-BoldItalic", 36.0f, Font.Style.BOLD_ITALIC);
+            graphics.registerFont("Arial", "fonts\\Arial-48.0-Plain", 48.0f, Font.Style.PLAIN);
+            graphics.registerFont("Arial", "fonts\\Arial-48.0-Italic", 48.0f, Font.Style.ITALIC);
+            graphics.registerFont("Arial", "fonts\\Arial-48.0-Bold", 48.0f, Font.Style.BOLD);
+            graphics.registerFont("Arial", "fonts\\Arial-48.0-BoldItalic", 48.0f, Font.Style.BOLD_ITALIC);
             graphics.registerFont("Raavi", "fonts\\Raavi-8.0-Plain", 8.0f, Font.Style.PLAIN);
             graphics.registerFont("Raavi", "fonts\\Raavi-8.0-Italic", 8.0f, Font.Style.ITALIC);
             graphics.registerFont("Raavi", "fonts\\Raavi-8.0-Bold", 8.0f, Font.Style.BOLD);
@@ -48,6 +52,10 @@ namespace Tuxblocks
             graphics.registerFont("Raavi", "fonts\\Raavi-36.0-Italic", 36.0f, Font.Style.ITALIC);
             graphics.registerFont("Raavi", "fonts\\Raavi-36.0-Bold", 36.0f, Font.Style.BOLD);
             graphics.registerFont("Raavi", "fonts\\Raavi-36.0-BoldItalic", 36.0f, Font.Style.BOLD_ITALIC);
+            graphics.registerFont("Raavi", "fonts\\Raavi-48.0-Plain", 48.0f, Font.Style.PLAIN);
+            graphics.registerFont("Raavi", "fonts\\Raavi-48.0-Italic", 48.0f, Font.Style.ITALIC);
+            graphics.registerFont("Raavi", "fonts\\Raavi-48.0-Bold", 48.0f, Font.Style.BOLD);
+            graphics.registerFont("Raavi", "fonts\\Raavi-48.0-BoldItalic", 48.0f, Font.Style.BOLD_ITALIC);
             graphics.registerFont("Mangal", "fonts\\Mangal-8.0-Plain", 8.0f, Font.Style.PLAIN);
             graphics.registerFont("Mangal", "fonts\\Mangal-8.0-Italic", 8.0f, Font.Style.ITALIC);
             graphics.registerFont("Mangal", "fonts\\Mangal-8.0-Bold", 8.0f, Font.Style.BOLD);
@@ -68,6 +76,10 @@ namespace Tuxblocks
             graphics.registerFont("Mangal", "fonts\\Mangal-36.0-Italic", 36.0f, Font.Style.ITALIC);
             graphics.registerFont("Mangal", "fonts\\Mangal-36.0-Bold", 36.0f, Font.Style.BOLD);
             graphics.registerFont("Mangal", "fonts\\Mangal-36.0-BoldItalic", 36.0f, Font.Style.BOLD_ITALIC);
+            graphics.registerFont("Mangal", "fonts\\Mangal-48.0-Plain", 48.0f, Font.Style.PLAIN);
+            graphics.registerFont("Mangal", "fonts\\Mangal-48.0-Italic", 48.0f, Font.Style.ITALIC);
+            graphics.registerFont("Mangal", "fonts\\Mangal-48.0-Bold", 48.0f, Font.Style.BOLD);
+            graphics.registerFont("Mangal", "fonts\\Mangal-48.0-BoldItalic", 48.0f, Font.Style.BOLD_ITALIC);
         }
     }
 }

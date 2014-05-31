@@ -89,9 +89,9 @@
         <configuration>
 			<qualifiedGameName>tuxkids.tuxblocks.core.TuxBlocksGame</qualifiedGameName>
 			<spritefonts>
-				<spritefont>Arial;Arial;8,12,16,24,36;Plain,Bold,Italic;32-126,183,215,247,8734</spritefont>
-				<spritefont>Raavi;Raavi;8,12,16,24,36;Plain,Bold,Italic;32-126,183,215,247,8734,2500-2700</spritefont>
-				<spritefont>Mangal;Mangal;8,12,16,24,36;Plain,Bold,Italic;32-126,183,215,247,8734,2300-2500</spritefont>
+				<spritefont>Arial;Arial;8,12,16,24,36,48;Plain,Bold,Italic;32-126,183,215,247,8734</spritefont>
+				<spritefont>Raavi;Raavi;8,12,16,24,36,48;Plain,Bold,Italic;32-126,183,215,247,8734,2500-2700</spritefont>
+				<spritefont>Mangal;Mangal;8,12,16,24,36,48;Plain,Bold,Italic;32-126,183,215,247,8734,2300-2500</spritefont>
 			</spritefonts>
 			<overwriteContent>false</overwriteContent>
         </configuration>

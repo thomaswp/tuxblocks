@@ -20,7 +20,10 @@ namespace Tuxblocks
 
         protected override XNAPlatform registerPlatform()
         {
-            return XNAPlatform.register();
+            XNAPlatform.Config config = new XNAPlatform.Config();
+            config.width = 1000;
+            config.height = 620;
+            return XNAPlatform.register(config);
         }
 
         static void Main(string[] args)
