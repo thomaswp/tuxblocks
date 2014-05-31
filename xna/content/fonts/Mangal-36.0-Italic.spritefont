@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+  <Asset Type="Graphics:FontDescription">
+    <FontName>Mangal</FontName>
+    <Size>36.00</Size>
+    <Spacing>0</Spacing>
+    <UseKerning>true</UseKerning>
+    <Style>Italic</Style>
+    <CharacterRegions>
+      <CharacterRegion>
+        <Start>&#32;</Start>
+        <End>&#126;</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>&#183;</Start>
+        <End>&#183;</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>&#215;</Start>
+        <End>&#215;</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>&#247;</Start>
+        <End>&#247;</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>&#8734;</Start>
+        <End>&#8734;</End>
+      </CharacterRegion>
+      <CharacterRegion>
+        <Start>&#2300;</Start>
+        <End>&#2500;</End>
+      </CharacterRegion>
+    </CharacterRegions>
+  </Asset>
+</XnaContent>

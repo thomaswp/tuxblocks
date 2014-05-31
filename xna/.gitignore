@@ -1,0 +1,4 @@
+*.dll
+*/bin/
+*/obj/
+content/assets

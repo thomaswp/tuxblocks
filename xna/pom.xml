@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>tuxkids</groupId>
+    <artifactId>tuxblocks</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>tuxblocks-xna</artifactId>
+  <packaging>dll</packaging>
+  <name>TuxBlocksGame XNA</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>tuxkids</groupId>
+      <artifactId>tuxblocks-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <directory>game</directory>
+    <!-- omit the version from the dll name so it doesn't change with releases -->
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>com.pyx4j</groupId>
+        <artifactId>maven-junction-plugin</artifactId>
+        <version>1.0.3</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>link</goal>
+            </goals>
+          </execution>
+        </executions>
+        <!-- generate a symlink to our assets directory in the proper location -->
+        <configuration>
+          <links>
+            <link>
+              <src>${basedir}/../assets/src/main/resources/assets</src>
+              <dst>${basedir}/content/assets</dst>
+            </link>
+          </links>
+        </configuration>
+      </plugin>
+	  
+      <plugin>
+        <groupId>playn.xna</groupId>
+        <artifactId>ikvm-maven-plugin</artifactId>
+        <version>1.3</version>
+        <extensions>true</extensions>
+        <configuration>
+          <ikvmArgs>
+            <ikvmArg>-debug</ikvmArg>
+          </ikvmArgs>
+          <createStub>true</createStub>
+          <dlls>
+          </dlls>
+          <copyDlls>
+            <copyDll>bin/IKVM.Runtime.dll</copyDll>
+            <copyDll>bin/IKVM.Runtime.JNI.dll</copyDll>
+            <copyDll>bin/IKVM.OpenJDK.Core.dll</copyDll>
+            <copyDll>bin/IKVM.OpenJDK.Util.dll</copyDll>
+            <copyDll>bin/IKVM.OpenJDK.Text.dll</copyDll>
+			<copyDll>PlayN-1.8.5.dll</copyDll>
+			<copyDll>PlayNXNA.dll</copyDll>
+			<copyDll>PlayNContentImporter.dll</copyDll>
+          </copyDlls>
+        </configuration>
+      </plugin>
+	  
+	  <plugin>
+        <groupId>playn.xna</groupId>
+        <artifactId>xna-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>xna</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+			<qualifiedGameName>tuxkids.tuxblocks.core.TuxBlocksGame</qualifiedGameName>
+			<spritefonts>
+				<spritefont>Arial;Arial;8,12,16,24,36;Plain,Bold,Italic;32-126,183,215,247,8734</spritefont>
+				<spritefont>Raavi;Raavi;8,12,16,24,36;Plain,Bold,Italic;32-126,183,215,247,8734,2500-2700</spritefont>
+				<spritefont>Mangal;Mangal;8,12,16,24,36;Plain,Bold,Italic;32-126,183,215,247,8734,2300-2500</spritefont>
+			</spritefonts>
+			<overwriteContent>false</overwriteContent>
+        </configuration>
+      </plugin>
+	  
+    </plugins>
+  </build>
+</project>

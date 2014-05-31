@@ -40,10 +40,14 @@
       <id>flash</id>
       <modules><module>flash</module></modules>
     </profile>
-	<profile>
-		<id>tutorial-validator</id>
-		<modules><module>tutorial-validator</module></modules>
-	</profile>
+    <profile>
+      <id>xna</id>
+      <modules><module>xna</module></modules>
+    </profile>
+    <profile>
+      <id>tutorial-validator</id>
+      <modules><module>tutorial-validator</module></modules>
+    </profile>
   </profiles>
   <modules>
     <module>assets</module>
