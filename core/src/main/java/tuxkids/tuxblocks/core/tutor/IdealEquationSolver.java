@@ -27,6 +27,7 @@ import tuxkids.tuxblocks.core.utils.Formatter;
 
 /**
  * Handles solving an equation using search and a heuristic.
+ * Works pretty well, but still stalls out one some larger problems.
  */
 public class IdealEquationSolver {
 
