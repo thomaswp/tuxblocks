@@ -25,6 +25,9 @@ import tuxkids.tuxblocks.core.solve.blocks.VariableBlock;
 import tuxkids.tuxblocks.core.utils.Debug;
 import tuxkids.tuxblocks.core.utils.Formatter;
 
+/**
+ * Handles solving an equation using search and a heuristic.
+ */
 public class IdealEquationSolver {
 
 	private static final int MAX_TERMS_PER_SIDE = 7;
